@@ -1,0 +1,26 @@
+<scheduledscript scriptid="customscript_gw_batch_genandxml_schedule">
+    <description></description>
+    <isinactive>F</isinactive>
+    <name>GW Batch Gen Voucher Schedule</name>
+    <notifyadmins>F</notifyadmins>
+    <notifyemails></notifyemails>
+    <notifyowner>T</notifyowner>
+    <scriptfile>[/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_batchegui_genandxml_schedule.js]
+    </scriptfile>
+    <scriptdeployments>
+        <scriptdeployment scriptid="customdeploy_gw_batch_voucher_schedule">
+            <isdeployed>T</isdeployed>
+            <loglevel>DEBUG</loglevel>
+            <status>SCHEDULED</status>
+            <title>GW Batch Gen Voucher Schedule</title>
+            <recurrence>
+                <daily>
+                    <everyxdays>1</everyxdays>
+                    <repeat>PT15M</repeat>
+                    <startdate>2020-09-01</startdate>
+                    <starttime>16:00:00Z</starttime>
+                </daily>
+            </recurrence>
+        </scriptdeployment>
+    </scriptdeployments>
+</scheduledscript>

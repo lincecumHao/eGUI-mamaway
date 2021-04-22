@@ -1,0 +1,24 @@
+<suitelet scriptid="customscript_gw_egui_ui_list">
+    <description></description>
+    <isinactive>F</isinactive>
+    <name>GW EGUI Search LIST</name>
+    <notifyadmins>F</notifyadmins>
+    <notifyemails></notifyemails>
+    <notifyowner>T</notifyowner>
+    <notifyuser>F</notifyuser>
+    <scriptfile>[/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_egui_ui_list.js]</scriptfile>
+    <scriptdeployments>
+        <scriptdeployment scriptid="customdeploy_gw_egui_ui_list">
+            <allemployees>F</allemployees>
+            <allroles>T</allroles>
+            <audslctrole></audslctrole>
+            <eventtype></eventtype>
+            <isdeployed>T</isdeployed>
+            <isonline>F</isonline>
+            <loglevel>ERROR</loglevel>
+            <runasrole></runasrole>
+            <status>RELEASED</status>
+            <title>GW EGUI Search LIST</title>
+        </scriptdeployment>
+    </scriptdeployments>
+</suitelet>
