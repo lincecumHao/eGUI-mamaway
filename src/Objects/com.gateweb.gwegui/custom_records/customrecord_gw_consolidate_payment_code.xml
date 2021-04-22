@@ -156,4 +156,27 @@
             <subtab></subtab>
         </customrecordcustomfield>
     </customrecordcustomfields>
+    <instances>
+        <instance scriptid="val_67972_2130928_633">
+            <custrecord_consolidate_pay_text>單一機構或無總繳之總分支機構</custrecord_consolidate_pay_text>
+            <custrecord_consolidate_pay_value>0</custrecord_consolidate_pay_value>
+            <custrecord_gw_consolidate_pay_apply_code>1</custrecord_gw_consolidate_pay_apply_code>
+            <isinactive>F</isinactive>
+            <name>0-單一機構或無總繳之總分支機構</name>
+        </instance>
+        <instance scriptid="val_67973_2130928_212">
+            <custrecord_consolidate_pay_text>總機構彙總報繳</custrecord_consolidate_pay_text>
+            <custrecord_consolidate_pay_value>1</custrecord_consolidate_pay_value>
+            <custrecord_gw_consolidate_pay_apply_code>5</custrecord_gw_consolidate_pay_apply_code>
+            <isinactive>F</isinactive>
+            <name>1-總機構彙總報繳</name>
+        </instance>
+        <instance scriptid="val_67974_2130928_262">
+            <custrecord_consolidate_pay_text>各單位分別申報</custrecord_consolidate_pay_text>
+            <custrecord_consolidate_pay_value>2</custrecord_consolidate_pay_value>
+            <custrecord_gw_consolidate_pay_apply_code>1</custrecord_gw_consolidate_pay_apply_code>
+            <isinactive>F</isinactive>
+            <name>2-各單位分別申報</name>
+        </instance>
+    </instances>
 </customrecordtype>

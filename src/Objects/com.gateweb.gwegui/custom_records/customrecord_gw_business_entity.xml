@@ -325,7 +325,7 @@
             <displaywidth></displaywidth>
             <dynamicdefault></dynamicdefault>
             <encryptatrest>F</encryptatrest>
-            <fieldtype>TEXT</fieldtype>
+            <fieldtype>SELECT</fieldtype>
             <globalsearch>F</globalsearch>
             <help></help>
             <isformula>F</isformula>
@@ -342,7 +342,7 @@
             <searchcomparefield></searchcomparefield>
             <searchdefault></searchdefault>
             <searchlevel>2</searchlevel>
-            <selectrecordtype></selectrecordtype>
+            <selectrecordtype>[scriptid=customrecord_gw_city_options]</selectrecordtype>
             <showinlist>T</showinlist>
             <sourcefilterby></sourcefilterby>
             <sourcefrom></sourcefrom>
@@ -871,7 +871,7 @@
             <displaywidth></displaywidth>
             <dynamicdefault></dynamicdefault>
             <encryptatrest>F</encryptatrest>
-            <fieldtype>INTEGER</fieldtype>
+            <fieldtype>SELECT</fieldtype>
             <globalsearch>F</globalsearch>
             <help></help>
             <isformula>F</isformula>
@@ -888,7 +888,46 @@
             <searchcomparefield></searchcomparefield>
             <searchdefault></searchdefault>
             <searchlevel>2</searchlevel>
-            <selectrecordtype></selectrecordtype>
+            <selectrecordtype>-117</selectrecordtype>
+            <showinlist>T</showinlist>
+            <sourcefilterby></sourcefilterby>
+            <sourcefrom></sourcefrom>
+            <sourcelist></sourcelist>
+            <storevalue>T</storevalue>
+            <subtab></subtab>
+        </customrecordcustomfield>
+        <customrecordcustomfield scriptid="custrecord_gw_be_location">
+            <accesslevel>2</accesslevel>
+            <allowquickadd>F</allowquickadd>
+            <applyformatting>T</applyformatting>
+            <checkspelling>F</checkspelling>
+            <defaultchecked>F</defaultchecked>
+            <defaultselection></defaultselection>
+            <defaultvalue></defaultvalue>
+            <description></description>
+            <displayheight></displayheight>
+            <displaytype>NORMAL</displaytype>
+            <displaywidth></displaywidth>
+            <dynamicdefault></dynamicdefault>
+            <encryptatrest>F</encryptatrest>
+            <fieldtype>SELECT</fieldtype>
+            <globalsearch>F</globalsearch>
+            <help></help>
+            <isformula>F</isformula>
+            <ismandatory>F</ismandatory>
+            <isparent>F</isparent>
+            <label>Location</label>
+            <linktext></linktext>
+            <maxlength></maxlength>
+            <maxvalue></maxvalue>
+            <minvalue></minvalue>
+            <onparentdelete></onparentdelete>
+            <parentsubtab></parentsubtab>
+            <rolerestrict>F</rolerestrict>
+            <searchcomparefield></searchcomparefield>
+            <searchdefault></searchdefault>
+            <searchlevel>2</searchlevel>
+            <selectrecordtype>-103</selectrecordtype>
             <showinlist>T</showinlist>
             <sourcefilterby></sourcefilterby>
             <sourcefrom></sourcefrom>

@@ -1,9 +1,9 @@
 <deploy>
     <files>
-        <path>~/FileCabinet/SuiteApps/com.gatewebtw.egui/*</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/*</path>
     </files>
     <objects>
-        <path>~/Objects/com.gatewebtw.egui/*</path>
+        <path>~/Objects/com.gateweb.gwegui/*</path>
     </objects>
     <translationimports>
         <path>~/Translations/*</path>
