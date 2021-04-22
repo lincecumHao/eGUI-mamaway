@@ -1,0 +1,56 @@
+<clientscript scriptid="customscript_gw_cs_lock_record">
+    <description></description>
+    <isinactive>F</isinactive>
+    <name>GW CS Lock Record</name>
+    <notifyadmins>F</notifyadmins>
+    <notifyemails></notifyemails>
+    <notifyowner>T</notifyowner>
+    <notifyuser>F</notifyuser>
+    <scriptfile>[/SuiteScripts/gw_issue_egui/gw_lock_record/gw_cs_lock_record.js]</scriptfile>
+    <scriptdeployments>
+        <scriptdeployment scriptid="customdeploy_gw_cs_lock_record_da">
+            <allemployees>T</allemployees>
+            <alllocalizationcontexts>T</alllocalizationcontexts>
+            <allroles>T</allroles>
+            <audslctrole></audslctrole>
+            <eventtype></eventtype>
+            <isdeployed>T</isdeployed>
+            <loglevel>DEBUG</loglevel>
+            <recordtype>DEPOSITAPPLICATION</recordtype>
+            <status>RELEASED</status>
+        </scriptdeployment>
+        <scriptdeployment scriptid="customdeploy_gw_cs_lock_record_cd">
+            <allemployees>T</allemployees>
+            <alllocalizationcontexts>T</alllocalizationcontexts>
+            <allroles>T</allroles>
+            <audslctrole></audslctrole>
+            <eventtype></eventtype>
+            <isdeployed>T</isdeployed>
+            <loglevel>DEBUG</loglevel>
+            <recordtype>CUSTOMERDEPOSIT</recordtype>
+            <status>RELEASED</status>
+        </scriptdeployment>
+        <scriptdeployment scriptid="customdeploy_gw_cs_lock_record_cm">
+            <allemployees>F</allemployees>
+            <alllocalizationcontexts>T</alllocalizationcontexts>
+            <allroles>T</allroles>
+            <audslctrole></audslctrole>
+            <eventtype></eventtype>
+            <isdeployed>T</isdeployed>
+            <loglevel>DEBUG</loglevel>
+            <recordtype>CREDITMEMO</recordtype>
+            <status>RELEASED</status>
+        </scriptdeployment>
+        <scriptdeployment scriptid="customdeploy_gw_cs_rec_locked_inv">
+            <allemployees>F</allemployees>
+            <alllocalizationcontexts>T</alllocalizationcontexts>
+            <allroles>T</allroles>
+            <audslctrole></audslctrole>
+            <eventtype></eventtype>
+            <isdeployed>T</isdeployed>
+            <loglevel>DEBUG</loglevel>
+            <recordtype>INVOICE</recordtype>
+            <status>RELEASED</status>
+        </scriptdeployment>
+    </scriptdeployments>
+</clientscript>

@@ -1,0 +1,62 @@
+rules: {
+                itemName: {required: true, validItemName: true},
+                unitPrice: {required: true},
+                quantity: {required: true},
+                buyerIdentifier: {
+                    validBuyerIdentifier: true,
+                    isBuyerExchangeQualifications: true,
+                    required: false
+                },
+                buyerName: {validBuyerName: true},
+//                buyerEmail: {buyerEmail: true},
+                carrierType: {
+                    validCarrierType: true,
+                    validCarrierTypeNull: true,
+                    validNaturalPersonAndBusiness: true
+                },
+                carrierId: {
+                    validCarrierId: true,
+                    validPhoneCode: true,
+                    validNaturalPerson: true,
+                    validGw: true
+                },
+                npoban: {validNpoban: true},
+                invoiceType: {invoiceType2: true, invoiceType3: true},
+                totalAmount: {validTotalAmount: true},
+                customsClearanceMark: {validCustomsClearanceMark: true},
+                mainRemark: {validMainRemark: true}
+
+            },
+            ignore: ":hidden",
+            messages: {
+                itemName: {
+                    required: '*請輸入商品名稱',
+                    validItemName: '中文30字以內, 英文60字以內'
+                },
+                unitPrice: {required: '請填寫商品單價'},
+                quantity: {required: '請輸入商品數量'},
+                buyerIdentifier: {
+                    validBuyerIdentifier: '無效統編!',
+                    isBuyerExchangeQualifications: '此統編無交換資格!'
+                },
+                buyerName: {validBuyerName: '請填寫客戶公司名稱'},
+                carrierType: {
+                    validCarrierType: '載具格式錯誤!',
+                    validCarrierTypeNull: '請輸入載具類別',
+                    validNaturalPersonAndBusiness: '輸入統編不得使用自然人載具!'
+                },
+                carrierId: {
+                    validCarrierId: '載具號碼錯誤!',
+                    validPhoneCode: '手機條碼',
+                    validNaturalPerson: '自然人載具錯誤!',
+                    validGw: 'Email格式錯誤!'
+                },
+                npoban: {validNpoban: '請輸入3-7碼數字'},
+                invoiceType: {
+                    invoiceType2: '特種稅發票不得選擇一般、零稅、免稅之稅率!',
+                    invoiceType3: '一般稅發票不得選擇特種稅之稅率!'
+                },
+                totalAmount: {validTotalAmount: '總金額太大 或 金額小於零,請修正!'},
+                customsClearanceMark: {validCustomsClearanceMark: '*請選擇通關方式(零稅必填!)'},
+                mainRemark: {validMainRemark: '[ 熱感紙 ] 中文15字以內,英文字30字以內 [ A4 ] 中文100字以內,英文字200字以內'}
+            },

@@ -1,0 +1,16 @@
+<customlist scriptid="customlist_gw_tax_filing_type_option">
+    <description></description>
+    <isinactive>F</isinactive>
+    <isordered>T</isordered>
+    <name>申報種類選項</name>
+    <customvalues>
+        <customvalue scriptid="val_7954_2130928_181">
+            <isinactive>F</isinactive>
+            <value>按期申報</value>
+        </customvalue>
+        <customvalue scriptid="val_7955_2130928_483">
+            <isinactive>F</isinactive>
+            <value>按月申報</value>
+        </customvalue>
+    </customvalues>
+</customlist>

@@ -1,0 +1,25 @@
+<centercategory scriptid="custcentercategorycustcentercategory_gw_invoice_list">
+    <center>BASIC</center>
+    <centertab>[scriptid=custcentertab_gw_egui]</centertab>
+    <label>電子發票管理</label>
+    <links>
+        <link>
+            <linklabel>電子發票作廢作業</linklabel>
+            <linkobject>[scriptid=customscript_gw_egui_cancel_ui_list.customdeploy_gw_egui_cancel_ui_list]</linkobject>
+            <linktasktype>SCRIPT</linktasktype>
+            <shortlist>F</shortlist>
+        </link>
+        <link>
+            <linklabel>電子發票下載 PDF作業</linklabel>
+            <linkobject>[scriptid=customscript_gw_egui_pdf_ui_list.customdeploy_gw_egui_pdf_ui_list]</linkobject>
+            <linktasktype>SCRIPT</linktasktype>
+            <shortlist>F</shortlist>
+        </link>
+        <link>
+            <linklabel>電子發票列印作業</linklabel>
+            <linkobject>[scriptid=customscript_gw_egui_print_ui_list.customdeploy_gw_egui_print_ui_list]</linkobject>
+            <linktasktype>SCRIPT</linktasktype>
+            <shortlist>F</shortlist>
+        </link>
+    </links>
+</centercategory>

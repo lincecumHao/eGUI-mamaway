@@ -1,0 +1,24 @@
+<customlist scriptid="customlist_gw_printer_type_options">
+    <description></description>
+    <isinactive>F</isinactive>
+    <isordered>T</isordered>
+    <name>印表機種類列表</name>
+    <customvalues>
+        <customvalue scriptid="val_10150_2247990_455">
+            <isinactive>F</isinactive>
+            <value>GENERAL</value>
+        </customvalue>
+        <customvalue scriptid="val_10151_2247990_731">
+            <isinactive>F</isinactive>
+            <value>ACLAS</value>
+        </customvalue>
+        <customvalue scriptid="val_10152_2247990_143">
+            <isinactive>F</isinactive>
+            <value>WINPOS</value>
+        </customvalue>
+        <customvalue scriptid="val_10153_2247990_917">
+            <isinactive>F</isinactive>
+            <value>POSIFLEX</value>
+        </customvalue>
+    </customvalues>
+</customlist>

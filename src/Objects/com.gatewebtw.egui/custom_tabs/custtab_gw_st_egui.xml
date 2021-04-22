@@ -1,0 +1,5 @@
+<subtab scriptid="custtab_gw_st_egui">
+    <parent></parent>
+    <tabtype>TRANSACTION</tabtype>
+    <title>電子發票</title>
+</subtab>

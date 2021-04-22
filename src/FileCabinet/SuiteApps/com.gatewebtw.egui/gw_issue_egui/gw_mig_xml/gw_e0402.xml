@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BranchTrackBlank>
+    <Main>
+        <HeadBan></HeadBan>
+        <BranchBan></BranchBan>
+        <InvoiceType></InvoiceType>
+        <YearMonth></YearMonth>
+        <InvoiceTrack></InvoiceTrack>
+    </Main>
+    <Details>
+        <BranchTrackBlankItem>
+            <InvoiceBeginNo></InvoiceBeginNo>
+            <InvoiceEndNo></InvoiceEndNo>
+        </BranchTrackBlankItem>
+    </Details>
+</BranchTrackBlank>

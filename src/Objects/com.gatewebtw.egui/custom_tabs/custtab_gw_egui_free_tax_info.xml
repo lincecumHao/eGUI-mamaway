@@ -1,0 +1,5 @@
+<subtab scriptid="custtab_gw_egui_free_tax_info">
+    <parent></parent>
+    <tabtype>TRANSACTION</tabtype>
+    <title>出口零稅率資訊</title>
+</subtab>

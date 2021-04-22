@@ -1,0 +1,25 @@
+<scheduledscript scriptid="customscript_gw_egui_cancel_schedule">
+    <description></description>
+    <isinactive>F</isinactive>
+    <name>Batch EGUI Cancel Schedule</name>
+    <notifyadmins>F</notifyadmins>
+    <notifyemails></notifyemails>
+    <notifyowner>T</notifyowner>
+    <scriptfile>[/SuiteScripts/gw_issue_egui/gw_voucher_module/gw_batchegui_cancel_schedule.js]</scriptfile>
+    <scriptdeployments>
+        <scriptdeployment scriptid="customdeploy_gw_egui_cancel_schedule">
+            <isdeployed>T</isdeployed>
+            <loglevel>DEBUG</loglevel>
+            <status>SCHEDULED</status>
+            <title>Batch EGUI Cancel Schedule</title>
+            <recurrence>
+                <daily>
+                    <everyxdays>1</everyxdays>
+                    <repeat>PT15M</repeat>
+                    <startdate>2020-08-23</startdate>
+                    <starttime>16:00:00Z</starttime>
+                </daily>
+            </recurrence>
+        </scriptdeployment>
+    </scriptdeployments>
+</scheduledscript>

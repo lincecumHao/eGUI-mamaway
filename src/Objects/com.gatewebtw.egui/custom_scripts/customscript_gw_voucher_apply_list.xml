@@ -1,0 +1,24 @@
+<suitelet scriptid="customscript_gw_voucher_apply_list">
+    <description></description>
+    <isinactive>F</isinactive>
+    <name>Voucher Apply List</name>
+    <notifyadmins>F</notifyadmins>
+    <notifyemails></notifyemails>
+    <notifyowner>T</notifyowner>
+    <notifyuser>F</notifyuser>
+    <scriptfile>[/SuiteScripts/gw_issue_egui/gw_voucher_module/gw_voucher_apply_list.js]</scriptfile>
+    <scriptdeployments>
+        <scriptdeployment scriptid="customdeploy_gw_voucher_apply_list">
+            <allemployees>F</allemployees>
+            <allroles>T</allroles>
+            <audslctrole></audslctrole>
+            <eventtype></eventtype>
+            <isdeployed>T</isdeployed>
+            <isonline>F</isonline>
+            <loglevel>ERROR</loglevel>
+            <runasrole>ADMINISTRATOR</runasrole>
+            <status>RELEASED</status>
+            <title>Voucher Apply List</title>
+        </scriptdeployment>
+    </scriptdeployments>
+</suitelet>

@@ -1,0 +1,254 @@
+<customrecordtype scriptid="customrecord_gw_city_options">
+    <accesstype>NONENEEDED</accesstype>
+    <allowattachments>T</allowattachments>
+    <allowinlinedeleting>F</allowinlinedeleting>
+    <allowinlinedetaching>T</allowinlinedetaching>
+    <allowinlineediting>F</allowinlineediting>
+    <allowmobileaccess>T</allowmobileaccess>
+    <allownumberingoverride>F</allownumberingoverride>
+    <allowquickadd>T</allowquickadd>
+    <allowquicksearch>T</allowquicksearch>
+    <allowuiaccess>T</allowuiaccess>
+    <description></description>
+    <enablekeywords>T</enablekeywords>
+    <enablenametranslation>T</enablenametranslation>
+    <enablenumbering>F</enablenumbering>
+    <enableoptimisticlocking>T</enableoptimisticlocking>
+    <enablesystemnotes>T</enablesystemnotes>
+    <hierarchical>F</hierarchical>
+    <icon></icon>
+    <iconbuiltin>T</iconbuiltin>
+    <iconindex></iconindex>
+    <includeinsearchmenu>T</includeinsearchmenu>
+    <includename>T</includename>
+    <isinactive>F</isinactive>
+    <isordered>F</isordered>
+    <numberinginit></numberinginit>
+    <numberingmindigits></numberingmindigits>
+    <numberingprefix></numberingprefix>
+    <numberingsuffix></numberingsuffix>
+    <recordname>縣市別選項</recordname>
+    <showcreationdate>F</showcreationdate>
+    <showcreationdateonlist>F</showcreationdateonlist>
+    <showid>F</showid>
+    <showlastmodified>F</showlastmodified>
+    <showlastmodifiedonlist>F</showlastmodifiedonlist>
+    <shownotes>T</shownotes>
+    <showowner>F</showowner>
+    <showownerallowchange>F</showownerallowchange>
+    <showowneronlist>F</showowneronlist>
+    <customrecordcustomfields>
+        <customrecordcustomfield scriptid="custrecord_gw_city_option_value">
+            <accesslevel>2</accesslevel>
+            <allowquickadd>F</allowquickadd>
+            <applyformatting>F</applyformatting>
+            <checkspelling>F</checkspelling>
+            <defaultchecked>F</defaultchecked>
+            <defaultselection></defaultselection>
+            <defaultvalue></defaultvalue>
+            <description></description>
+            <displayheight></displayheight>
+            <displaytype>NORMAL</displaytype>
+            <displaywidth></displaywidth>
+            <dynamicdefault></dynamicdefault>
+            <encryptatrest>F</encryptatrest>
+            <fieldtype>TEXT</fieldtype>
+            <globalsearch>F</globalsearch>
+            <help></help>
+            <isformula>F</isformula>
+            <ismandatory>F</ismandatory>
+            <isparent>F</isparent>
+            <label>Value</label>
+            <linktext></linktext>
+            <maxlength></maxlength>
+            <maxvalue></maxvalue>
+            <minvalue></minvalue>
+            <onparentdelete></onparentdelete>
+            <parentsubtab></parentsubtab>
+            <rolerestrict>F</rolerestrict>
+            <searchcomparefield></searchcomparefield>
+            <searchdefault></searchdefault>
+            <searchlevel>2</searchlevel>
+            <selectrecordtype></selectrecordtype>
+            <showinlist>T</showinlist>
+            <sourcefilterby></sourcefilterby>
+            <sourcefrom></sourcefrom>
+            <sourcelist></sourcelist>
+            <storevalue>T</storevalue>
+            <subtab></subtab>
+        </customrecordcustomfield>
+        <customrecordcustomfield scriptid="custrecord_gw_city_option_text">
+            <accesslevel>2</accesslevel>
+            <allowquickadd>F</allowquickadd>
+            <applyformatting>F</applyformatting>
+            <checkspelling>F</checkspelling>
+            <defaultchecked>F</defaultchecked>
+            <defaultselection></defaultselection>
+            <defaultvalue></defaultvalue>
+            <description></description>
+            <displayheight></displayheight>
+            <displaytype>NORMAL</displaytype>
+            <displaywidth></displaywidth>
+            <dynamicdefault></dynamicdefault>
+            <encryptatrest>F</encryptatrest>
+            <fieldtype>TEXT</fieldtype>
+            <globalsearch>F</globalsearch>
+            <help></help>
+            <isformula>F</isformula>
+            <ismandatory>F</ismandatory>
+            <isparent>F</isparent>
+            <label>DisplayText</label>
+            <linktext></linktext>
+            <maxlength></maxlength>
+            <maxvalue></maxvalue>
+            <minvalue></minvalue>
+            <onparentdelete></onparentdelete>
+            <parentsubtab></parentsubtab>
+            <rolerestrict>F</rolerestrict>
+            <searchcomparefield></searchcomparefield>
+            <searchdefault></searchdefault>
+            <searchlevel>2</searchlevel>
+            <selectrecordtype></selectrecordtype>
+            <showinlist>T</showinlist>
+            <sourcefilterby></sourcefilterby>
+            <sourcefrom></sourcefrom>
+            <sourcelist></sourcelist>
+            <storevalue>T</storevalue>
+            <subtab></subtab>
+        </customrecordcustomfield>
+    </customrecordcustomfields>
+    <instances>
+        <instance scriptid="val_65934_2130928_137">
+            <custrecord_gw_city_option_text>台北市</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>A</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>台北市</name>
+        </instance>
+        <instance scriptid="val_65935_2130928_331">
+            <custrecord_gw_city_option_text>台中市</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>B</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>台中市</name>
+        </instance>
+        <instance scriptid="val_65936_2130928_701">
+            <custrecord_gw_city_option_text>基隆市</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>C</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>基隆市</name>
+        </instance>
+        <instance scriptid="val_65937_2130928_447">
+            <custrecord_gw_city_option_text>台南市</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>D</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>台南市</name>
+        </instance>
+        <instance scriptid="val_65938_2130928_992">
+            <custrecord_gw_city_option_text>高雄市</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>E</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>高雄市</name>
+        </instance>
+        <instance scriptid="val_65939_2130928_576">
+            <custrecord_gw_city_option_text>新北市</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>F</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>新北市</name>
+        </instance>
+        <instance scriptid="val_65940_2130928_882">
+            <custrecord_gw_city_option_text>宜蘭縣</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>G</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>宜蘭縣</name>
+        </instance>
+        <instance scriptid="val_65941_2130928_506">
+            <custrecord_gw_city_option_text>桃園縣</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>H</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>桃園縣</name>
+        </instance>
+        <instance scriptid="val_65942_2130928_762">
+            <custrecord_gw_city_option_text>嘉義市</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>I</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>嘉義市</name>
+        </instance>
+        <instance scriptid="val_65943_2130928_553">
+            <custrecord_gw_city_option_text>新竹縣</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>J</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>新竹縣</name>
+        </instance>
+        <instance scriptid="val_65944_2130928_233">
+            <custrecord_gw_city_option_text>苗栗縣</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>K</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>苗栗縣</name>
+        </instance>
+        <instance scriptid="val_65945_2130928_479">
+            <custrecord_gw_city_option_text>南投縣</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>M</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>南投縣</name>
+        </instance>
+        <instance scriptid="val_65946_2130928_351">
+            <custrecord_gw_city_option_text>彰化縣</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>N</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>彰化縣</name>
+        </instance>
+        <instance scriptid="val_65947_2130928_655">
+            <custrecord_gw_city_option_text>新竹市</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>O</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>新竹市</name>
+        </instance>
+        <instance scriptid="val_65948_2130928_277">
+            <custrecord_gw_city_option_text>雲林縣</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>P</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>雲林縣</name>
+        </instance>
+        <instance scriptid="val_65949_2130928_456">
+            <custrecord_gw_city_option_text>嘉義縣</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>Q</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>嘉義縣</name>
+        </instance>
+        <instance scriptid="val_65950_2130928_466">
+            <custrecord_gw_city_option_text>屏東縣</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>T</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>屏東縣</name>
+        </instance>
+        <instance scriptid="val_65951_2130928_578">
+            <custrecord_gw_city_option_text>花蓮縣</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>U</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>花蓮縣</name>
+        </instance>
+        <instance scriptid="val_65952_2130928_435">
+            <custrecord_gw_city_option_text>台東縣</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>V</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>台東縣</name>
+        </instance>
+        <instance scriptid="val_65953_2130928_268">
+            <custrecord_gw_city_option_text>金門縣</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>W</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>金門縣</name>
+        </instance>
+        <instance scriptid="val_65954_2130928_358">
+            <custrecord_gw_city_option_text>澎湖縣</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>X</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>澎湖縣</name>
+        </instance>
+        <instance scriptid="val_65955_2130928_371">
+            <custrecord_gw_city_option_text>連江縣</custrecord_gw_city_option_text>
+            <custrecord_gw_city_option_value>Z</custrecord_gw_city_option_value>
+            <isinactive>F</isinactive>
+            <name>連江縣</name>
+        </instance>
+    </instances>
+</customrecordtype>

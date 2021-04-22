@@ -1,0 +1,24 @@
+<customlist scriptid="customlist_gw_exp_csv_task_status">
+    <description></description>
+    <isinactive>F</isinactive>
+    <isordered>T</isordered>
+    <name>GW Expense CSV Task Status</name>
+    <customvalues>
+        <customvalue scriptid="val_36011_2130928_561">
+            <isinactive>F</isinactive>
+            <value>已進入排程</value>
+        </customvalue>
+        <customvalue scriptid="val_36012_2130928_961">
+            <isinactive>F</isinactive>
+            <value>執行中</value>
+        </customvalue>
+        <customvalue scriptid="val_36013_2130928_120">
+            <isinactive>F</isinactive>
+            <value>已完成</value>
+        </customvalue>
+        <customvalue scriptid="val_55965_2130928_383">
+            <isinactive>F</isinactive>
+            <value>錯誤發生</value>
+        </customvalue>
+    </customvalues>
+</customlist>
