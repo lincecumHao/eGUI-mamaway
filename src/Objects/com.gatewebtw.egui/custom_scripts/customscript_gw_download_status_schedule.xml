@@ -5,7 +5,7 @@
     <notifyadmins>F</notifyadmins>
     <notifyemails></notifyemails>
     <notifyowner>T</notifyowner>
-    <scriptfile>[/SuiteScripts/gw_issue_egui/gw_voucher_module/gw_download_voucher_status_schedule.js]
+    <scriptfile>[/SuiteApps/com.gatewebtw.egui/gw_issue_egui/gw_voucher_module/gw_download_voucher_status_schedule.js]
     </scriptfile>
     <scriptdeployments>
         <scriptdeployment scriptid="customdeploy_gw_download_status_schedule">

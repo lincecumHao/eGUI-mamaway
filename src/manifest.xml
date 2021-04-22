@@ -1,7 +1,21 @@
 <manifest projecttype="SUITEAPP">
-  <publisherid>com.gatewebtw</publisherid>
-  <projectid>egui</projectid>
-  <projectname>Taiwan EGUI</projectname>
+  <publisherid>com.gateweb</publisherid>
+  <projectid>gwegui</projectid>
+  <projectname>GW Taiwan EGUI</projectname>
   <projectversion>1.0.0</projectversion>
   <frameworkversion>1.0</frameworkversion>
+  <dependencies>
+    <features>
+      <feature required="true">SERVERSIDESCRIPTING</feature>
+      <feature required="true">CUSTOMRECORDS</feature>
+      <feature required="true">CLASSES</feature>
+      <feature required="true">DEPARTMENTS</feature>
+      <feature required="true">ACCOUNTING</feature>
+      <feature required="true">SUBSIDIARIES</feature>
+      <feature required="false">MULTILANGUAGE</feature>
+      <feature required="false">RECEIVABLES</feature>
+      <feature required="false">EXPREPORTS</feature>
+      <feature required="false">PAYABLES</feature>
+    </features>
+  </dependencies>
 </manifest>

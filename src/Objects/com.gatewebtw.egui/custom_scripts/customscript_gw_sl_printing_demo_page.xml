@@ -6,7 +6,7 @@
     <notifyemails></notifyemails>
     <notifyowner>T</notifyowner>
     <notifyuser>F</notifyuser>
-    <scriptfile>[/SuiteScripts/gw_print/gw_printing_demo/gw_sl_printing_demo_page.js]</scriptfile>
+    <scriptfile>[/SuiteApps/com.gatewebtw.egui/gw_print/gw_printing_demo/gw_sl_printing_demo_page.js]</scriptfile>
     <scriptdeployments>
         <scriptdeployment scriptid="customdeploy_gw_sl_printing_demo_page">
             <allemployees>F</allemployees>

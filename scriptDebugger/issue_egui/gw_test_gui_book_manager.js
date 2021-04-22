@@ -1,5 +1,5 @@
 require(['SuiteApps/com.gateweb.egui/egui_book/service/gw_egui_book_manager'], (
-  gwEguiBookManager
+  gwEguiBookManager,
 ) => {
   // Test Import
   /**
@@ -14,12 +14,12 @@ require(['SuiteApps/com.gateweb.egui/egui_book/service/gw_egui_book_manager'], (
    var result = gwEguiBookManager.importGuiNumber(import_params)
    log.debug({ title: 'result', details: result })
    */
-  // Test Get GuiNumber
+    // Test Get GuiNumber
   var params = {
-    taxId: '24549210',
-    taxPeriod: '11004',
-    count: 100,
-  }
+      taxId: '24549210',
+      taxPeriod: '11004',
+      count: 100,
+    }
   var result = gwEguiBookManager.getNewEguiNumber(params)
   log.debug({ title: 'result', details: result })
   log.debug({ title: 'Execution end' })
