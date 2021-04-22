@@ -1,0 +1,7 @@
+<manifest projecttype="SUITEAPP">
+  <publisherid>com.gatewebtw</publisherid>
+  <projectid>egui</projectid>
+  <projectname>Taiwan EGUI</projectname>
+  <projectversion>1.0.0</projectversion>
+  <frameworkversion>1.0</frameworkversion>
+</manifest>
