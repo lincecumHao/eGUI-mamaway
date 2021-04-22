@@ -1,4 +1,4 @@
-define(['N/record', '../library/gw_lib_search'], function (record, searchLib) {
+define(['N/record', '../library/gw_lib_search'], function(record, searchLib) {
   /**
    * Module Description...
    *
@@ -12,6 +12,7 @@ define(['N/record', '../library/gw_lib_search'], function (record, searchLib) {
 
    */
   var exports = {}
+
   // TODO: not finished
   class DataAccessObject {
     constructor(recordTypeId, masterFieldConfig, detailFieldConfig) {
@@ -30,14 +31,14 @@ define(['N/record', '../library/gw_lib_search'], function (record, searchLib) {
       mainObj.lines = this.getSublistFields(
         docRecord,
         sublistId,
-        this.detailFieldConfig
+        this.detailFieldConfig,
       )
     }
 
     getRecord(docRecord, recFieldConfig) {
       var docRecordObj = {}
       docRecordObj.id = docRecord.id
-      columns.forEach(function (columnId) {
+      columns.forEach(function(columnId) {
         var value = docRecord.getValue({
           fieldId: columnId,
         })
@@ -62,7 +63,7 @@ define(['N/record', '../library/gw_lib_search'], function (record, searchLib) {
       })
       for (var line = 0; line < lineCount; line++) {
         var sublistObj = {}
-        sublistFieldIds.forEach(function (fieldId) {
+        sublistFieldIds.forEach(function(fieldId) {
           var outputField = recFieldConfig.fields[fieldId].outputField
           if (outputField) {
             var value = docRecord.getSublistValue({
@@ -101,9 +102,9 @@ define(['N/record', '../library/gw_lib_search'], function (record, searchLib) {
       var searchColumns = JSON.parse(JSON.stringify(columns))
       var result = searchLib.runSearch(this.recordTypeId, searchColumns)
       const fieldOutputMapping = this.fieldConfig.fieldOutputMapping
-      this.allOptions = result.map(function (recordObj) {
+      this.allOptions = result.map(function(recordObj) {
         var optionObject = {}
-        columns.forEach(function (columnId) {
+        columns.forEach(function(columnId) {
           var attribute = fieldOutputMapping[columnId]
           optionObject[attribute] = recordObj[columnId]
         })
@@ -118,20 +119,20 @@ define(['N/record', '../library/gw_lib_search'], function (record, searchLib) {
     }
 
     getById(id) {
-      return this.allOptions.filter(function (option) {
+      return this.allOptions.filter(function(option) {
         return parseInt(option.id) === parseInt(id)
       })[0]
     }
 
     getByValue(value) {
       log.debug({ title: 'getValue this.allOptions', details: this.allOptions })
-      return this.allOptions.filter(function (option) {
+      return this.allOptions.filter(function(option) {
         return option.value.toString() === value.toString()
       })[0]
     }
 
     getByText(text) {
-      return this.allOptions.filter(function (option) {
+      return this.allOptions.filter(function(option) {
         return option.text.toString() === text.toString()
       })[0]
     }

@@ -130,6 +130,11 @@ define(['../../library/ramda.min'], function (ramda) {
       sourceField: '',
       outputField: 'subsidiary',
     },
+    custrecord_gw_be_location: {
+      id: 'custrecord_gw_be_location',
+      sourceField: '',
+      outputField: 'location',
+    },
     custrecord_gw_be_tax_filing_agent: {
       id: 'custrecord_gw_be_tax_filing_agent',
       sourceField: '',
