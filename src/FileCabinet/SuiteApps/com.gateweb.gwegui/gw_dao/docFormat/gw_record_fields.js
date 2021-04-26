@@ -18,18 +18,18 @@ define(['../../library/ramda.min'], function (ramda) {
       sourceField: '',
       outputField: 'name',
     },
-    custrecord_gw_doc_format_value: {
-      id: 'custrecord_gw_doc_format_value',
+    custrecord_gw_ap_doc_type_value: {
+      id: 'custrecord_gw_ap_doc_type_value',
       sourceField: '',
       outputField: 'value',
     },
-    custrecord_gw_doc_format_text: {
-      id: 'custrecord_gw_doc_format_text',
+    custrecord_gw_ap_doc_type_text: {
+      id: 'custrecord_gw_ap_doc_type_text',
       sourceField: '',
       outputField: 'text',
     },
-    custrecord_gw_doc_format_mof_code: {
-      id: 'custrecord_gw_doc_format_mof_code',
+    custrecord_gw_ap_doc_mof_doc_type_code: {
+      id: 'custrecord_gw_ap_doc_mof_doc_type_code',
       sourceField: '',
       outputField: 'mofCode',
     },

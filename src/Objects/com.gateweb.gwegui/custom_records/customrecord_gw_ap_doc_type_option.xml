@@ -156,4 +156,167 @@
             <subtab></subtab>
         </customrecordcustomfield>
     </customrecordcustomfields>
+    <instances>
+        <instance scriptid="val_352574_t2302493_211">
+            <custrecord_gw_ap_doc_mof_doc_type_code>01</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>三聯式手開統一發票</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>21</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>21-三聯式手開統一發票</name>
+        </instance>
+        <instance scriptid="val_352575_t2302493_212">
+            <custrecord_gw_ap_doc_mof_doc_type_code>05</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>三聯式, 電子計算機統一發票</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>21</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>21-三聯式, 電子計算機統一發票</name>
+        </instance>
+        <instance scriptid="val_352576_t2302493_221">
+            <custrecord_gw_ap_doc_mof_doc_type_code>02</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>二聯式手開統一發票, 載有稅額之其他憑證</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>22</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>22-二聯式手開統一發票, 載有稅額之其他憑證</name>
+        </instance>
+        <instance scriptid="val_352577_t2302493_222">
+            <custrecord_gw_ap_doc_mof_doc_type_code>03</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>二聯式收銀機統一發票, 載有稅額之其他憑證</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>22</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>22-二聯式收銀機統一發票, 載有稅額之其他憑證</name>
+        </instance>
+        <instance scriptid="val_352578_t2302493_231">
+            <custrecord_gw_ap_doc_mof_doc_type_code>00</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>三聯式, 電子計算機, 三聯式收銀機統一發票, 一般稅額電子發票之折讓單</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>23</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>23-三聯式, 電子計算機, 三聯式收銀機統一發票, 一般稅額電子發票之折讓單</name>
+        </instance>
+        <instance scriptid="val_352579_t2302493_241">
+            <custrecord_gw_ap_doc_mof_doc_type_code>00</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>二聯式收銀機統一發票, 載有稅額之其他憑證之折讓單</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>24</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>24-二聯式收銀機統一發票, 載有稅額之其他憑證之折讓單</name>
+        </instance>
+        <instance scriptid="val_352580_t2302493_251">
+            <custrecord_gw_ap_doc_mof_doc_type_code>06</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>三聯式收銀機統一發票, 一般稅額電子發票</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>25</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>25-三聯式收銀機統一發票</name>
+        </instance>
+        <instance scriptid="val_352581_t2302493_252">
+            <custrecord_gw_ap_doc_mof_doc_type_code>07</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>三聯式一般稅額電子發票</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>25</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>25-三聯式一般稅額電子發票</name>
+        </instance>
+        <instance scriptid="val_352582_t2302493_261">
+            <custrecord_gw_ap_doc_mof_doc_type_code>00</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>三聯式, 電子計算機統一發票 (彙總登錄, 每張稅額0~500)</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>26</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>26-三聯式, 電子計算機統一發票 (彙總登錄, 每張稅額0~500)</name>
+        </instance>
+        <instance scriptid="val_352583_t2302493_271">
+            <custrecord_gw_ap_doc_mof_doc_type_code>00</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>二聯式收銀機統一發票, 載有稅額之其他憑證 (彙總登錄, 每張稅額0~500)</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>27</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>27-二聯式收銀機統一發票, 載有稅額之其他憑證 (彙總登錄, 每張稅額0~500)</name>
+        </instance>
+        <instance scriptid="val_352584_t2302493_281">
+            <custrecord_gw_ap_doc_mof_doc_type_code>00</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>海關代徵營業稅繳納證</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>28</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>28-海關代徵營業稅繳納證</name>
+        </instance>
+        <instance scriptid="val_352585_t2302493_291">
+            <custrecord_gw_ap_doc_mof_doc_type_code>00</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>海關退還溢繳營業稅申報單</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>29</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>29-海關退還溢繳營業稅申報單</name>
+        </instance>
+        <instance scriptid="val_352585_t2302493_311">
+            <custrecord_gw_ap_doc_mof_doc_type_code>01</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>銷項三聯式[裝訂數:50張]</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>31</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>31-銷項三聯式[裝訂數:50張]</name>
+        </instance>
+        <instance scriptid="val_352585_t2302493_312">
+            <custrecord_gw_ap_doc_mof_doc_type_code>05</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>銷項電子計算機統一發票[裝訂數:50張]</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>31</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>31-銷項電子計算機統一發票[裝訂數:50張]</name>
+        </instance>
+        <instance scriptid="val_352585_t2302493_321">
+            <custrecord_gw_ap_doc_mof_doc_type_code>02</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>銷項二聯式[裝訂數:50張]</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>32</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>32-銷項二聯式[裝訂數:50張]</name>
+        </instance>
+        <instance scriptid="val_352585_t2302493_322">
+            <custrecord_gw_ap_doc_mof_doc_type_code>03</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>銷項二聯式收銀機統一發票[裝訂數:250張]</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>32</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>32-銷項二聯式收銀機統一發票[裝訂數:250張]</name>
+        </instance>
+        <instance scriptid="val_352585_t2302493_331">
+            <custrecord_gw_ap_doc_mof_doc_type_code>00</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>三聯式、電子計算機三聯式收銀機、一般稅電子發票之折讓單</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>33</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>33-三聯式、電子計算機三聯式收銀機、一般稅電子發票之折讓單</name>
+        </instance>
+        <instance scriptid="val_352585_t2302493_341">
+            <custrecord_gw_ap_doc_mof_doc_type_code>00</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>二聯式、二聯式收銀機、免用電子發票之折讓單</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>34</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>34-二聯式、二聯式收銀機、免用電子發票之折讓單</name>
+        </instance>
+        <instance scriptid="val_352585_t2302493_351">
+            <custrecord_gw_ap_doc_mof_doc_type_code>06</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>銷項三聯式收銀機統一發票[裝訂數:250張]</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>35</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>35-銷項三聯式收銀機統一發票[裝訂數:250張]</name>
+        </instance>
+        <instance scriptid="val_352585_t2302493_352">
+            <custrecord_gw_ap_doc_mof_doc_type_code>07</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>一般稅額電子發票[裝訂數:50張]</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>35</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>35-一般稅額電子發票[裝訂數:50張]</name>
+        </instance>
+        <instance scriptid="val_352585_t2302493_361">
+            <custrecord_gw_ap_doc_mof_doc_type_code>00</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>免用電子發票</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>36</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>36-免用電子發票</name>
+        </instance>
+        <instance scriptid="val_352585_t2302493_371">
+            <custrecord_gw_ap_doc_mof_doc_type_code>00</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>特種稅額之銷項憑證</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>37</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>37-特種稅額之銷項憑證</name>
+        </instance>
+        <instance scriptid="val_352585_t2302493_381">
+            <custrecord_gw_ap_doc_mof_doc_type_code>00</custrecord_gw_ap_doc_mof_doc_type_code>
+            <custrecord_gw_ap_doc_type_text>特種稅額之銷項憑證之折讓單</custrecord_gw_ap_doc_type_text>
+            <custrecord_gw_ap_doc_type_value>38</custrecord_gw_ap_doc_type_value>
+            <isinactive>F</isinactive>
+            <name>38-特種稅額之銷項憑證之折讓單</name>
+        </instance>
+    </instances>
 </customrecordtype>
