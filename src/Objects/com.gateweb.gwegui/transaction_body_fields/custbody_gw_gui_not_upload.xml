@@ -1,4 +1,4 @@
-<transactionbodycustomfield scriptid="custbody_gw_egui_not_upload">
+<transactionbodycustomfield scriptid="custbody_gw_gui_not_upload">
     <accesslevel>2</accesslevel>
     <applyformatting>F</applyformatting>
     <bodycustomerpayment>T</bodycustomerpayment>
