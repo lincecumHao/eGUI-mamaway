@@ -1,4 +1,4 @@
-require(['SuiteApps/com.gateweb.egui/egui_book/service/gw_egui_book_manager'], (
+require(['SuiteApps/com.gateweb.gwegui/egui_book/service/gw_egui_book_manager'], (
   gwEguiBookManager,
 ) => {
   // Test Import

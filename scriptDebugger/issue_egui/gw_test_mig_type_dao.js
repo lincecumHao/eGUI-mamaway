@@ -1,4 +1,4 @@
-require(['SuiteApps/com.gateweb.egui/dao/migType/gw_dao_mig_type_21'], (
+require(['SuiteApps/com.gateweb.gwegui/dao/migType/gw_dao_mig_type_21'], (
   gwMigTypeDao
 ) => {
   var migType = gwMigTypeDao.getIssueEguiMigType()

@@ -1,4 +1,4 @@
-require(['SuiteApps/com.gateweb.egui/dao/guiType/gw_dao_egui_type_21'], (
+require(['SuiteApps/com.gateweb.gwegui/dao/guiType/gw_dao_egui_type_21'], (
   gwGuiTypeDao
 ) => {
   var guiType = gwGuiTypeDao.getByValue('07')

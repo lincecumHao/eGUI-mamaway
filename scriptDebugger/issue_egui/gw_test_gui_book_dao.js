@@ -1,4 +1,4 @@
-require(['SuiteApps/com.gateweb.egui/dao/eguiBook/gw_dao_egui_book_21'], (
+require(['SuiteApps/com.gateweb.gwegui/dao/eguiBook/gw_dao_egui_book_21'], (
   gwEguiBookDao
 ) => {
   // Test Import

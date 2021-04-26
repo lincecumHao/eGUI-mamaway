@@ -1,6 +1,6 @@
 require([
-  'SuiteApps/com.gateweb.egui/library/gw_lib_search',
-  'SuiteApps/com.gateweb.egui/dao/eguiBook/gw_record_fields',
+  'SuiteApps/com.gateweb.gwegui/library/gw_lib_search',
+  'SuiteApps/com.gateweb.gwegui/dao/eguiBook/gw_record_fields',
 ], (gwSearchLib, fieldConfig) => {
   // Test Import
 
