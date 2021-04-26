@@ -1,4 +1,4 @@
-define(['../../library/ramda.min'], function (ramda) {
+define(['../../library/ramda.min'], function(ramda) {
   /**
    * Module Description...
    *
@@ -12,6 +12,7 @@ define(['../../library/ramda.min'], function (ramda) {
 
    */
   var exports = {}
+  var recordId = 'customrecord_gw_ap_doc_type_option'
   var fieldConfig = {
     name: {
       id: 'name',
@@ -36,7 +37,7 @@ define(['../../library/ramda.min'], function (ramda) {
   }
 
   var fieldInputMapping = ramda.reduce(
-    function (result, fieldId) {
+    function(result, fieldId) {
       var fieldObj = fieldConfig[fieldId]
       if (fieldObj.sourceField) {
         result[fieldId] = fieldObj.sourceField
@@ -44,11 +45,11 @@ define(['../../library/ramda.min'], function (ramda) {
       return result
     },
     {},
-    Object.keys(fieldConfig)
+    Object.keys(fieldConfig),
   )
 
   var fieldOutputMapping = ramda.reduce(
-    function (result, fieldId) {
+    function(result, fieldId) {
       var fieldObj = fieldConfig[fieldId]
       if (fieldObj.outputField) {
         result[fieldObj.id] = fieldObj.outputField
@@ -56,14 +57,15 @@ define(['../../library/ramda.min'], function (ramda) {
       return result
     },
     {},
-    Object.keys(fieldConfig)
+    Object.keys(fieldConfig),
   )
 
   exports.fields = fieldConfig
-  exports.allFieldIds = Object.keys(fieldConfig).map(function (key) {
+  exports.allFieldIds = Object.keys(fieldConfig).map(function(key) {
     return key
   })
   exports.fieldOutputMapping = fieldOutputMapping
   exports.fieldInputMapping = fieldInputMapping
+  exports.recordId = recordId
   return exports
 })

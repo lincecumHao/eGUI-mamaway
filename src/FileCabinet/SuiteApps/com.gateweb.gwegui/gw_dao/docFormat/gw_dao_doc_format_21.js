@@ -1,7 +1,7 @@
 define(['../gw_abstract_dao', './gw_record_fields'], (gwDao, fieldConfig) => {
   class DocumentFormat extends gwDao.DataAccessObject {
     constructor() {
-      super('customrecord_gw_doc_format_option', fieldConfig)
+      super(fieldConfig.recordId, fieldConfig)
     }
     getDefaultApFormat() {}
     getDefaultArGuiFormat(eguiTypeCode) {
