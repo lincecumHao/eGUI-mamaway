@@ -5,6 +5,7 @@
  */
 
 define([
+  'N/runtime',
   'N/ui/serverWidget',
   'N/config',
   'N/record',
@@ -13,6 +14,7 @@ define([
   '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_configure',
 ], function (
+  runtime,
   serverWidget,
   config,
   record,
@@ -29,9 +31,41 @@ define([
 
   //字軌本數上限
   var _count_limit = 150
+  
+  //紀錄user的subsidary 
+  //20210427 walter 增加賣方公司 List
+  function getUserSubsidaryTaxId(){
+	  var _user_subsidary_taxId_ary = []
+	  
+	  var _user_obj        = runtime.getCurrentUser()
+	  var _user_subsidiary = _user_obj.subsidiary
+	     
+	  var _businessSearch = search
+	      .create({
+	        type: 'customrecord_gw_business_entity',
+	        columns: ['custrecord_gw_be_tax_id_number', 'custrecord_gw_be_gui_title'],
+	        filters: ['custrecord_gw_be_ns_subsidiary', 'is', _user_subsidiary]
+	      })
+	      .run()
+	      .each(function (result) {
+	        var _internalid = result.id
+	
+	        var _tax_id_number = result.getValue({
+	          name: 'custrecord_gw_be_tax_id_number',
+	        })
+	        
+	        _user_subsidary_taxId_ary.push(_tax_id_number)
+	        
+	        return true
+	      })
+	
+	  return _user_subsidary_taxId_ary
+  }
+  
 
   //驗證欄位
   function verifyColumn(
+    userSubsidaryTaxIdAry,
     businessNo,
     invoiceType,
     period,
@@ -49,16 +83,26 @@ define([
     })
     var _isError = false
     var _errorMsg = ''
+   
+    //檢查須為權限內統編 
+    if (userSubsidaryTaxIdAry.toString().indexOf(businessNo) == -1) {
+	    _errorMsg += '匯入統編錯誤,'
+	    _isError = true
+    }
+    	
     //統編8碼
     if (businessNo.length != 8) {
       _errorMsg += '統編長度需為8碼,'
       _isError = true
     }
+    
     //統編與設定檔檢查
+    /**
     if (businessNo !== _ban) {
       _errorMsg += '統編[' + businessNo + ']錯誤,'
       _isError = true
     }
+    */
     //類別代號(07,08)
     if (invoiceType != '07' && invoiceType != '08') {
       _errorMsg += '發票類別代號需為07或08,'
@@ -355,6 +399,8 @@ define([
 
     if (context.request.method === 'POST') {
       //removeRecord();
+     var _user_subsidary_taxId_ary = getUserSubsidaryTaxId()
+    	
       //dept code
       var _selectDeptCode = context.request.parameters.custpage_select_deptcode
       var _selectDeptName = ''
@@ -418,6 +464,7 @@ define([
 
         //check Data
         var _resultJsonObject = verifyColumn(
+          _user_subsidary_taxId_ary,
           _businessno,
           _invoiceType,
           _period,

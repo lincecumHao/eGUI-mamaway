@@ -4,6 +4,7 @@
  * @NModuleScope Public
  */
 define([
+  'N/runtime',
   'N/ui/serverWidget',
   'N/config',
   'N/record',
@@ -13,6 +14,7 @@ define([
   '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_configure',
 ], function (
+  runtime,
   serverWidget,
   config,
   record,
@@ -123,11 +125,41 @@ define([
     _selectBusinessNo.updateLayoutType({
       layoutType: serverWidget.FieldLayoutType.OUTSIDE,
     })
-
+    /**
     _selectBusinessNo.addSelectOption({
       value: _ban,
       text: _legalname,
     })
+    */
+    ////////////////////////////////////////////////////////////////////////////
+    //20210427 walter 增加賣方公司 List
+    var _user_obj        = runtime.getCurrentUser()
+    var _user_subsidiary = _user_obj.subsidiary
+     
+    var _businessSearch = search
+      .create({
+        type: 'customrecord_gw_business_entity',
+        columns: ['custrecord_gw_be_tax_id_number', 'custrecord_gw_be_gui_title'],
+        filters: ['custrecord_gw_be_ns_subsidiary', 'is', _user_subsidiary]
+      })
+      .run()
+      .each(function (result) {
+        var _internalid = result.id
+
+        var _tax_id_number = result.getValue({
+          name: 'custrecord_gw_be_tax_id_number',
+        })
+        var _be_gui_title = result.getValue({
+          name: 'custrecord_gw_be_gui_title',
+        })
+
+        _selectBusinessNo.addSelectOption({
+          value: _tax_id_number,
+          text: _tax_id_number + '-' + _be_gui_title,
+        })
+        return true
+      })
+    ////////////////////////////////////////////////////////////////////////////
 
     //格式代號
     //31格式：50張，包含三聯式及電子計算機發票
