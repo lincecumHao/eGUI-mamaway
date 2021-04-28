@@ -4,6 +4,7 @@
  * @NModuleScope Public
  */
 define([
+  'N/runtime',
   'N/ui/serverWidget',
   'N/redirect',
   'N/search',
@@ -12,6 +13,7 @@ define([
   '../gw_common_utility/gw_common_invoice_utility',
   '../gw_common_utility/gw_common_configure',
 ], function (
+  runtime,
   serverWidget,
   redirect,
   search,
@@ -103,6 +105,7 @@ define([
   function searchInvoice(
     form,
     subListObj,
+    businessno,
     customerid,
     deptcode,
     classification,
@@ -132,6 +135,11 @@ define([
 
     _filterArray.push('and')
     _filterArray.push(['custbody_gw_no_egui', search.Operator.IS, false])
+     
+    if (businessno != '') {
+	    _filterArray.push('and')
+	    _filterArray.push(['custbody_gw_tax_id_number', search.Operator.IS, businessno])
+	}
 
     if (customerid != '') {
       _filterArray.push('and')
@@ -898,6 +906,47 @@ define([
       id: 'row01_fieldgroupid',
       label: '條件',
     })
+    ///////////////////////////////////////////////////////////////////////////////////
+    //公司別
+    var _selectBusinessNo = form.addField({
+      id: 'custpage_businessno',
+      type: serverWidget.FieldType.SELECT,
+      label: '統一編號',
+      container: 'row01_fieldgroupid',
+    })
+    _selectBusinessNo.updateLayoutType({
+      layoutType: serverWidget.FieldLayoutType.OUTSIDEABOVE,
+    })
+    ///////////////////////////////////////////////////////////////////////////////////
+    //20210427 walter 增加賣方公司 List
+    var _user_obj        = runtime.getCurrentUser()
+    var _user_subsidiary = _user_obj.subsidiary
+     
+    var _businessSearch = search
+      .create({
+        type: 'customrecord_gw_business_entity',
+        columns: ['custrecord_gw_be_tax_id_number', 'custrecord_gw_be_gui_title'],
+        filters: ['custrecord_gw_be_ns_subsidiary', 'is', _user_subsidiary]
+      })
+      .run()
+      .each(function (result) {
+        var _internalid = result.id
+
+        var _tax_id_number = result.getValue({
+          name: 'custrecord_gw_be_tax_id_number',
+        })
+        var _be_gui_title = result.getValue({
+          name: 'custrecord_gw_be_gui_title',
+        })
+
+        _selectBusinessNo.addSelectOption({
+          value: _tax_id_number,
+          text: _tax_id_number + '-' + _be_gui_title,
+        })
+        return true
+      }) 
+    
+    //////////////////////////////////////////////////////////////////////////////////
     //客戶代碼
     var _selectCustomerCode = form.addField({
       id: 'custpage_selectcustomerid',
@@ -1548,6 +1597,8 @@ define([
       }
 
       //search
+      var _select_businessno =
+          context.request.parameters.custpage_businessno          
       var _selectcustomerid =
         context.request.parameters.custpage_selectcustomerid
       var _select_deptcode = context.request.parameters.custpage_select_deptcode
@@ -1564,6 +1615,11 @@ define([
         context.request.parameters.custpage_select_tranenddate
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      var _businessnoField = form.getField({
+        id: 'custpage_businessno',
+      })
+      _businessnoField.defaultValue = _select_businessno
+          
       var _customeridField = form.getField({
         id: 'custpage_selectcustomerid',
       })
@@ -1605,7 +1661,8 @@ define([
       searchInvoice(
         form,
         _invoiceSubList,
-        _selectcustomerid,
+        _select_businessno,
+        _selectcustomerid,        
         _select_deptcode,
         _select_classification,
         _select_employee,

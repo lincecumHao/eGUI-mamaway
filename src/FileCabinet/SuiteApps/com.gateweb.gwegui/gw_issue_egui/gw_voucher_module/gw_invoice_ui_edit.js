@@ -2722,8 +2722,8 @@ define([
     //做畫面-END
     ///////////////////////////////////////////////////////////////////////////////////////////
 
-    form.clientScriptModulePath = './gw_invoice_ui_event_v2.js'
-    //form.clientScriptModulePath = './gw_invoice_ui_event.js';
+    //form.clientScriptModulePath = './gw_invoice_ui_event_v2.js'
+    form.clientScriptModulePath = './gw_invoice_ui_event.js';
     context.response.writePage(form)
   } //End onRequest
 
