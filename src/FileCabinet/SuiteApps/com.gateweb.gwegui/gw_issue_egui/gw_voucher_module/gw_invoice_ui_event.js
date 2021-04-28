@@ -4329,7 +4329,7 @@ define([
         ['custrecord_gw_assignlog_status', search.Operator.IS, '22'],
       ])
     }
-alert('_filterArray='+JSON.stringify(_filterArray));
+//alert('_filterArray='+JSON.stringify(_filterArray));
     _assignLogSearch.filterExpression = _filterArray
 
     var _totalCount = 0
