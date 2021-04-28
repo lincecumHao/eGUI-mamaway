@@ -1576,6 +1576,9 @@ define([
 
     if (context.request.method === 'POST') {
       //Open Document
+      var _select_businessno =
+            context.request.parameters.custpage_businessno    
+            
       var _buttonType = context.request.parameters.custpage_hiddent_buttontype
       var _invoice_hiddent_listId =
         context.request.parameters.custpage_invoice_hiddent_listid
@@ -1583,6 +1586,7 @@ define([
         context.request.parameters.custpage_creditmemo_hiddent_listid
 
       var _arrParams = {
+        custpage_businessno: _select_businessno,
         invoice_hiddent_listid: _invoice_hiddent_listId,
         creditmemo_hiddent_listid: _creditmemo_hiddent_listid,
       }
@@ -1596,9 +1600,7 @@ define([
         })
       }
 
-      //search
-      var _select_businessno =
-          context.request.parameters.custpage_businessno          
+      //search 
       var _selectcustomerid =
         context.request.parameters.custpage_selectcustomerid
       var _select_deptcode = context.request.parameters.custpage_select_deptcode

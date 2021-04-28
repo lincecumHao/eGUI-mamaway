@@ -262,7 +262,7 @@ define([
   }
 
   //顯示畫面
-  function createFormHeader(form) {
+  function createFormHeader(apply_business_no, form) {
     /////////////////////////////////////////////////////////////
     //load company information
     var _companyInfo = config.load({
@@ -358,7 +358,9 @@ define([
       breakType: serverWidget.FieldBreakType.STARTROW,
     })
     log.debug('_mainaddress_text=' + _mainaddress_text)
-    _company_ban.defaultValue = _ban
+    
+    //_company_ban.defaultValue = _ban
+    _company_ban.defaultValue = apply_business_no
     _company_address.defaultValue = _mainaddress_text
     _company_name.defaultValue = _legalname
 
@@ -2622,12 +2624,17 @@ define([
   }
 
   function onRequest(context) {
+	//取得開立統編
+	var _selected_business_no = context.request.parameters.custpage_businessno
+	  
     var _selected_invoice_Id = context.request.parameters.invoice_hiddent_listid
     var _selected_creditmemo_Id =
       context.request.parameters.creditmemo_hiddent_listid
     log.debug(
       'parameters',
-      'selected_invoice_Id:' +
+      ' selected_business_no:' +
+      _selected_business_no +
+      ' ,selected_invoice_Id:' +
         _selected_invoice_Id +
         ' ,selected_creditmemo_Id=' +
         _selected_creditmemo_Id
@@ -2686,7 +2693,7 @@ define([
     //////////////////////////////////////////////////////////////////////////////////////////
 
     /////////////////////////////////////////////////////////////////////////////////////////
-    createFormHeader(form)
+    createFormHeader(_selected_business_no, form)
 
     if (_selected_invoice_Id != null) {
       var _idAry = _selected_invoice_Id.split(',')
