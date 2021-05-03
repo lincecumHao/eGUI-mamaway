@@ -1,12 +1,14 @@
-<transactionbodycustomfield scriptid="custbody_gw_gui_address">
+<transactionbodycustomfield scriptid="custbody_gw_gui_format">
     <accesslevel>2</accesslevel>
     <applyformatting>F</applyformatting>
     <bodycustomerpayment>T</bodycustomerpayment>
     <bodydeposit>T</bodydeposit>
     <bodydepositapplication>T</bodydepositapplication>
-    <bodyexpensereport>T</bodyexpensereport>
-    <bodypurchase>T</bodypurchase>
+    <bodyexpensereport>F</bodyexpensereport>
+    <bodyjournal>F</bodyjournal>
+    <bodypurchase>F</bodypurchase>
     <bodysale>T</bodysale>
+    <bodyvendorpayment>T</bodyvendorpayment>
     <checkspelling>F</checkspelling>
     <defaultchecked>F</defaultchecked>
     <defaultselection></defaultselection>
@@ -17,29 +19,29 @@
     <displaywidth></displaywidth>
     <dynamicdefault></dynamicdefault>
     <encryptatrest>F</encryptatrest>
-    <fieldtype>TEXT</fieldtype>
+    <fieldtype>SELECT</fieldtype>
     <fldsizelabel></fldsizelabel>
     <globalsearch>T</globalsearch>
     <help></help>
     <isformula>F</isformula>
     <ismandatory>F</ismandatory>
     <isparent>F</isparent>
-    <label>登記地址</label>
+    <label>憑證格式代號</label>
     <linktext></linktext>
-    <maxlength>100</maxlength>
+    <maxlength></maxlength>
     <maxvalue></maxvalue>
     <minvalue></minvalue>
-    <onparentdelete>SET_NULL</onparentdelete>
+    <onparentdelete></onparentdelete>
     <parentsubtab></parentsubtab>
     <searchcomparefield></searchcomparefield>
     <searchdefault></searchdefault>
     <searchlevel>2</searchlevel>
-    <selectrecordtype></selectrecordtype>
+    <selectrecordtype>[scriptid=customrecord_gw_ap_doc_type_option]</selectrecordtype>
     <showhierarchy>F</showhierarchy>
-    <showinlist>T</showinlist>
+    <showinlist>F</showinlist>
     <sourcefilterby></sourcefilterby>
-    <sourcefrom>[scriptid=custentity_gw_gui_address]</sourcefrom>
-    <sourcelist>STDBODYENTITY</sourcelist>
+    <sourcefrom></sourcefrom>
+    <sourcelist></sourcelist>
     <storevalue>T</storevalue>
     <subtab>[scriptid=custtab_gw_st_egui]</subtab>
 </transactionbodycustomfield>

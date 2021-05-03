@@ -1,12 +1,14 @@
-<transactionbodycustomfield scriptid="custbody_gw_gui_address">
+<transactionbodycustomfield scriptid="custbody_gw_gui_apply_period">
     <accesslevel>2</accesslevel>
     <applyformatting>F</applyformatting>
     <bodycustomerpayment>T</bodycustomerpayment>
     <bodydeposit>T</bodydeposit>
     <bodydepositapplication>T</bodydepositapplication>
-    <bodyexpensereport>T</bodyexpensereport>
-    <bodypurchase>T</bodypurchase>
+    <bodyexpensereport>F</bodyexpensereport>
+    <bodyjournal>F</bodyjournal>
+    <bodypurchase>F</bodypurchase>
     <bodysale>T</bodysale>
+    <bodyvendorpayment>T</bodyvendorpayment>
     <checkspelling>F</checkspelling>
     <defaultchecked>F</defaultchecked>
     <defaultselection></defaultselection>
@@ -24,22 +26,22 @@
     <isformula>F</isformula>
     <ismandatory>F</ismandatory>
     <isparent>F</isparent>
-    <label>登記地址</label>
+    <label>營業稅申報期別</label>
     <linktext></linktext>
-    <maxlength>100</maxlength>
+    <maxlength></maxlength>
     <maxvalue></maxvalue>
     <minvalue></minvalue>
-    <onparentdelete>SET_NULL</onparentdelete>
+    <onparentdelete></onparentdelete>
     <parentsubtab></parentsubtab>
     <searchcomparefield></searchcomparefield>
     <searchdefault></searchdefault>
     <searchlevel>2</searchlevel>
     <selectrecordtype></selectrecordtype>
     <showhierarchy>F</showhierarchy>
-    <showinlist>T</showinlist>
+    <showinlist>F</showinlist>
     <sourcefilterby></sourcefilterby>
-    <sourcefrom>[scriptid=custentity_gw_gui_address]</sourcefrom>
-    <sourcelist>STDBODYENTITY</sourcelist>
+    <sourcefrom></sourcefrom>
+    <sourcelist></sourcelist>
     <storevalue>T</storevalue>
     <subtab>[scriptid=custtab_gw_st_egui]</subtab>
 </transactionbodycustomfield>

@@ -1,0 +1,170 @@
+<customrecordtype scriptid="customrecord_gw_gui_book_status">
+    <accesstype>NONENEEDED</accesstype>
+    <allowattachments>T</allowattachments>
+    <allowinlinedeleting>T</allowinlinedeleting>
+    <allowinlinedetaching>T</allowinlinedetaching>
+    <allowinlineediting>T</allowinlineediting>
+    <allowmobileaccess>T</allowmobileaccess>
+    <allownumberingoverride>F</allownumberingoverride>
+    <allowquickadd>T</allowquickadd>
+    <allowquicksearch>F</allowquicksearch>
+    <allowuiaccess>T</allowuiaccess>
+    <description></description>
+    <enablekeywords>T</enablekeywords>
+    <enablenametranslation>F</enablenametranslation>
+    <enablenumbering>F</enablenumbering>
+    <enableoptimisticlocking>T</enableoptimisticlocking>
+    <enablesystemnotes>T</enablesystemnotes>
+    <hierarchical>F</hierarchical>
+    <icon></icon>
+    <iconbuiltin>T</iconbuiltin>
+    <iconindex></iconindex>
+    <includeinsearchmenu>T</includeinsearchmenu>
+    <includename>T</includename>
+    <isinactive>F</isinactive>
+    <isordered>F</isordered>
+    <numberinginit></numberinginit>
+    <numberingmindigits></numberingmindigits>
+    <numberingprefix></numberingprefix>
+    <numberingsuffix></numberingsuffix>
+    <recordname>GW GUI Book Status</recordname>
+    <showcreationdate>T</showcreationdate>
+    <showcreationdateonlist>T</showcreationdateonlist>
+    <showid>T</showid>
+    <showlastmodified>T</showlastmodified>
+    <showlastmodifiedonlist>T</showlastmodifiedonlist>
+    <shownotes>T</shownotes>
+    <showowner>T</showowner>
+    <showownerallowchange>F</showownerallowchange>
+    <showowneronlist>T</showowneronlist>
+    <customrecordcustomfields>
+        <customrecordcustomfield scriptid="custrecord_gw_gbs_value">
+            <accesslevel>2</accesslevel>
+            <allowquickadd>F</allowquickadd>
+            <applyformatting>F</applyformatting>
+            <checkspelling>F</checkspelling>
+            <defaultchecked>F</defaultchecked>
+            <defaultselection></defaultselection>
+            <defaultvalue></defaultvalue>
+            <description></description>
+            <displayheight></displayheight>
+            <displaytype>NORMAL</displaytype>
+            <displaywidth></displaywidth>
+            <dynamicdefault></dynamicdefault>
+            <encryptatrest>F</encryptatrest>
+            <fieldtype>TEXT</fieldtype>
+            <globalsearch>F</globalsearch>
+            <help></help>
+            <isformula>F</isformula>
+            <ismandatory>F</ismandatory>
+            <isparent>F</isparent>
+            <label>Value</label>
+            <linktext></linktext>
+            <maxlength></maxlength>
+            <maxvalue></maxvalue>
+            <minvalue></minvalue>
+            <onparentdelete></onparentdelete>
+            <parentsubtab></parentsubtab>
+            <rolerestrict>F</rolerestrict>
+            <searchcomparefield></searchcomparefield>
+            <searchdefault></searchdefault>
+            <searchlevel>2</searchlevel>
+            <selectrecordtype></selectrecordtype>
+            <showinlist>T</showinlist>
+            <sourcefilterby></sourcefilterby>
+            <sourcefrom></sourcefrom>
+            <sourcelist></sourcelist>
+            <storevalue>T</storevalue>
+            <subtab></subtab>
+        </customrecordcustomfield>
+        <customrecordcustomfield scriptid="custrecord_gw_gbs_text">
+            <accesslevel>2</accesslevel>
+            <allowquickadd>F</allowquickadd>
+            <applyformatting>F</applyformatting>
+            <checkspelling>F</checkspelling>
+            <defaultchecked>F</defaultchecked>
+            <defaultselection></defaultselection>
+            <defaultvalue></defaultvalue>
+            <description></description>
+            <displayheight></displayheight>
+            <displaytype>NORMAL</displaytype>
+            <displaywidth></displaywidth>
+            <dynamicdefault></dynamicdefault>
+            <encryptatrest>F</encryptatrest>
+            <fieldtype>TEXT</fieldtype>
+            <globalsearch>F</globalsearch>
+            <help></help>
+            <isformula>F</isformula>
+            <ismandatory>F</ismandatory>
+            <isparent>F</isparent>
+            <label>Text</label>
+            <linktext></linktext>
+            <maxlength></maxlength>
+            <maxvalue></maxvalue>
+            <minvalue></minvalue>
+            <onparentdelete></onparentdelete>
+            <parentsubtab></parentsubtab>
+            <rolerestrict>F</rolerestrict>
+            <searchcomparefield></searchcomparefield>
+            <searchdefault></searchdefault>
+            <searchlevel>2</searchlevel>
+            <selectrecordtype></selectrecordtype>
+            <showinlist>T</showinlist>
+            <sourcefilterby></sourcefilterby>
+            <sourcefrom></sourcefrom>
+            <sourcelist></sourcelist>
+            <storevalue>T</storevalue>
+            <subtab></subtab>
+        </customrecordcustomfield>
+    </customrecordcustomfields>
+    <instances>
+        <instance scriptid="val_52784_t2411467_319">
+            <custrecord_gw_gbs_text>一般字軌-未使用</custrecord_gw_gbs_text>
+            <custrecord_gw_gbs_value>new</custrecord_gw_gbs_value>
+            <isinactive>F</isinactive>
+            <name>11-一般字軌-未使用</name>
+        </instance>
+        <instance scriptid="val_52785_t2411467_222">
+            <custrecord_gw_gbs_text>一般字軌-使用中</custrecord_gw_gbs_text>
+            <custrecord_gw_gbs_value>inUse</custrecord_gw_gbs_value>
+            <isinactive>F</isinactive>
+            <name>12-一般字軌-使用中</name>
+        </instance>
+        <instance scriptid="val_52786_t2411467_783">
+            <custrecord_gw_gbs_text>一般字軌-已使用完畢</custrecord_gw_gbs_text>
+            <custrecord_gw_gbs_value>used</custrecord_gw_gbs_value>
+            <isinactive>F</isinactive>
+            <name>13-一般字軌-已使用完畢</name>
+        </instance>
+        <instance scriptid="val_52787_t2411467_735">
+            <custrecord_gw_gbs_text>一般字軌-作廢</custrecord_gw_gbs_text>
+            <custrecord_gw_gbs_value>void</custrecord_gw_gbs_value>
+            <isinactive>F</isinactive>
+            <name>14-一般字軌-作廢</name>
+        </instance>
+        <!--    <instance scriptid="val_52788_t2411467_501">-->
+        <!--      <custrecord_gw_gbs_text>手開(不上傳)字軌-未使用</custrecord_gw_gbs_text>-->
+        <!--      <custrecord_gw_gbs_value>21</custrecord_gw_gbs_value>-->
+        <!--      <isinactive>F</isinactive>-->
+        <!--      <name>21-手開(不上傳)字軌-未使用</name>-->
+        <!--    </instance>-->
+        <!--    <instance scriptid="val_52789_t2411467_291">-->
+        <!--      <custrecord_gw_gbs_text>手開(不上傳)字軌-使用中</custrecord_gw_gbs_text>-->
+        <!--      <custrecord_gw_gbs_value>22</custrecord_gw_gbs_value>-->
+        <!--      <isinactive>F</isinactive>-->
+        <!--      <name>22-手開(不上傳)字軌-使用中</name>-->
+        <!--    </instance>-->
+        <!--    <instance scriptid="val_52790_t2411467_558">-->
+        <!--      <custrecord_gw_gbs_text>手開(不上傳)字軌-已使用完畢</custrecord_gw_gbs_text>-->
+        <!--      <custrecord_gw_gbs_value>23</custrecord_gw_gbs_value>-->
+        <!--      <isinactive>F</isinactive>-->
+        <!--      <name>23-手開(不上傳)字軌-已使用完畢</name>-->
+        <!--    </instance>-->
+        <!--    <instance scriptid="val_52791_t2411467_670">-->
+        <!--      <custrecord_gw_gbs_text>手開(不上傳)字軌-作廢</custrecord_gw_gbs_text>-->
+        <!--      <custrecord_gw_gbs_value>24</custrecord_gw_gbs_value>-->
+        <!--      <isinactive>F</isinactive>-->
+        <!--      <name>24-手開(不上傳)字軌-作廢</name>-->
+        <!--    </instance>-->
+    </instances>
+</customrecordtype>

@@ -31,7 +31,7 @@
     <maxlength>60</maxlength>
     <maxvalue></maxvalue>
     <minvalue></minvalue>
-    <onparentdelete></onparentdelete>
+    <onparentdelete>SET_NULL</onparentdelete>
     <parentsubtab></parentsubtab>
     <searchcomparefield></searchcomparefield>
     <searchdefault></searchdefault>
