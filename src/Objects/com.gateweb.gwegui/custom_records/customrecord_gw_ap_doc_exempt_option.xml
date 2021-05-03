@@ -117,4 +117,60 @@
             <subtab></subtab>
         </customrecordcustomfield>
     </customrecordcustomfields>
+    <instances>
+        <instance scriptid="val_6510_2130928_351">
+            <custrecord_gw_ap_doc_exempt_text></custrecord_gw_ap_doc_exempt_text>
+            <custrecord_gw_ap_doc_exempt_value>1</custrecord_gw_ap_doc_exempt_value>
+            <isinactive>F</isinactive>
+            <name>1</name>
+        </instance>
+        <instance scriptid="val_6511_2130928_813">
+            <custrecord_gw_ap_doc_exempt_text></custrecord_gw_ap_doc_exempt_text>
+            <custrecord_gw_ap_doc_exempt_value>2</custrecord_gw_ap_doc_exempt_value>
+            <isinactive>F</isinactive>
+            <name>2</name>
+        </instance>
+        <instance scriptid="val_6512_2130928_705">
+            <custrecord_gw_ap_doc_exempt_text></custrecord_gw_ap_doc_exempt_text>
+            <custrecord_gw_ap_doc_exempt_value>3</custrecord_gw_ap_doc_exempt_value>
+            <isinactive>F</isinactive>
+            <name>3</name>
+        </instance>
+        <instance scriptid="val_6513_2130928_721">
+            <custrecord_gw_ap_doc_exempt_text></custrecord_gw_ap_doc_exempt_text>
+            <custrecord_gw_ap_doc_exempt_value>4</custrecord_gw_ap_doc_exempt_value>
+            <isinactive>F</isinactive>
+            <name>4</name>
+        </instance>
+        <instance scriptid="val_6514_2130928_689">
+            <custrecord_gw_ap_doc_exempt_text></custrecord_gw_ap_doc_exempt_text>
+            <custrecord_gw_ap_doc_exempt_value>5</custrecord_gw_ap_doc_exempt_value>
+            <isinactive>F</isinactive>
+            <name>5</name>
+        </instance>
+        <instance scriptid="val_6515_2130928_590">
+            <custrecord_gw_ap_doc_exempt_text></custrecord_gw_ap_doc_exempt_text>
+            <custrecord_gw_ap_doc_exempt_value>6</custrecord_gw_ap_doc_exempt_value>
+            <isinactive>F</isinactive>
+            <name>6</name>
+        </instance>
+        <instance scriptid="val_6516_2130928_297">
+            <custrecord_gw_ap_doc_exempt_text></custrecord_gw_ap_doc_exempt_text>
+            <custrecord_gw_ap_doc_exempt_value>7</custrecord_gw_ap_doc_exempt_value>
+            <isinactive>F</isinactive>
+            <name>7</name>
+        </instance>
+        <instance scriptid="val_6517_2130928_309">
+            <custrecord_gw_ap_doc_exempt_text></custrecord_gw_ap_doc_exempt_text>
+            <custrecord_gw_ap_doc_exempt_value>8</custrecord_gw_ap_doc_exempt_value>
+            <isinactive>F</isinactive>
+            <name>8</name>
+        </instance>
+        <instance scriptid="val_6518_2130928_291">
+            <custrecord_gw_ap_doc_exempt_text></custrecord_gw_ap_doc_exempt_text>
+            <custrecord_gw_ap_doc_exempt_value>9</custrecord_gw_ap_doc_exempt_value>
+            <isinactive>F</isinactive>
+            <name>9</name>
+        </instance>
+    </instances>
 </customrecordtype>

@@ -117,4 +117,18 @@
             <subtab></subtab>
         </customrecordcustomfield>
     </customrecordcustomfields>
+    <instances>
+        <instance scriptid="val_6504_2130928_893">
+            <custrecord_gw_ap_doc_custom_text>非經海關</custrecord_gw_ap_doc_custom_text>
+            <custrecord_gw_ap_doc_custom_value>1</custrecord_gw_ap_doc_custom_value>
+            <isinactive>F</isinactive>
+            <name>1-非經海關</name>
+        </instance>
+        <instance scriptid="val_6505_2130928_824">
+            <custrecord_gw_ap_doc_custom_text>非經海關</custrecord_gw_ap_doc_custom_text>
+            <custrecord_gw_ap_doc_custom_value>2</custrecord_gw_ap_doc_custom_value>
+            <isinactive>F</isinactive>
+            <name>2-非經海關</name>
+        </instance>
+    </instances>
 </customrecordtype>

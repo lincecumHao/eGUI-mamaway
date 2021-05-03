@@ -156,4 +156,20 @@
             <subtab></subtab>
         </customrecordcustomfield>
     </customrecordcustomfields>
+    <instances>
+        <instance scriptid="val_6498_2130928_865">
+            <custrecord_gw_ap_doc_status_csv_value>開立已確認,已確認</custrecord_gw_ap_doc_status_csv_value>
+            <custrecord_gw_ap_doc_status_text>確認開立</custrecord_gw_ap_doc_status_text>
+            <custrecord_gw_ap_doc_status_value>1</custrecord_gw_ap_doc_status_value>
+            <isinactive>F</isinactive>
+            <name>1-確認開立</name>
+        </instance>
+        <instance scriptid="val_6499_2130928_670">
+            <custrecord_gw_ap_doc_status_csv_value>作廢已確認,已作廢</custrecord_gw_ap_doc_status_csv_value>
+            <custrecord_gw_ap_doc_status_text>確認作廢</custrecord_gw_ap_doc_status_text>
+            <custrecord_gw_ap_doc_status_value>2</custrecord_gw_ap_doc_status_value>
+            <isinactive>F</isinactive>
+            <name>2-確認作廢</name>
+        </instance>
+    </instances>
 </customrecordtype>

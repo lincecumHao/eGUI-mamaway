@@ -117,4 +117,126 @@
             <subtab></subtab>
         </customrecordcustomfield>
     </customrecordcustomfields>
+    <instances>
+        <instance scriptid="val_6478_2130928_811">
+            <custrecord_gw_ap_doc_currency_text>台幣</custrecord_gw_ap_doc_currency_text>
+            <custrecord_gw_ap_doc_currency_value>TWD</custrecord_gw_ap_doc_currency_value>
+            <isinactive>F</isinactive>
+            <name>TWD-台幣</name>
+        </instance>
+        <instance scriptid="val_6479_2130928_903">
+            <custrecord_gw_ap_doc_currency_text>美金</custrecord_gw_ap_doc_currency_text>
+            <custrecord_gw_ap_doc_currency_value>USD</custrecord_gw_ap_doc_currency_value>
+            <isinactive>F</isinactive>
+            <name>USD-美金</name>
+        </instance>
+        <instance scriptid="val_6480_2130928_129">
+            <custrecord_gw_ap_doc_currency_text>港幣</custrecord_gw_ap_doc_currency_text>
+            <custrecord_gw_ap_doc_currency_value>HKD</custrecord_gw_ap_doc_currency_value>
+            <isinactive>F</isinactive>
+            <name>HKD-港幣</name>
+        </instance>
+        <instance scriptid="val_6481_2130928_176">
+            <custrecord_gw_ap_doc_currency_text>英鎊</custrecord_gw_ap_doc_currency_text>
+            <custrecord_gw_ap_doc_currency_value>GBP</custrecord_gw_ap_doc_currency_value>
+            <isinactive>F</isinactive>
+            <name>GBP-英鎊</name>
+        </instance>
+        <instance scriptid="val_6482_2130928_619">
+            <custrecord_gw_ap_doc_currency_text>澳幣</custrecord_gw_ap_doc_currency_text>
+            <custrecord_gw_ap_doc_currency_value>AUD</custrecord_gw_ap_doc_currency_value>
+            <isinactive>F</isinactive>
+            <name>AUD-澳幣</name>
+        </instance>
+        <instance scriptid="val_6483_2130928_878">
+            <custrecord_gw_ap_doc_currency_text>加拿大幣</custrecord_gw_ap_doc_currency_text>
+            <custrecord_gw_ap_doc_currency_value>CAD</custrecord_gw_ap_doc_currency_value>
+            <isinactive>F</isinactive>
+            <name>CAD-加拿大幣</name>
+        </instance>
+        <instance scriptid="val_6484_2130928_755">
+            <custrecord_gw_ap_doc_currency_text>新加坡幣</custrecord_gw_ap_doc_currency_text>
+            <custrecord_gw_ap_doc_currency_value>SGD</custrecord_gw_ap_doc_currency_value>
+            <isinactive>F</isinactive>
+            <name>SGD-新加坡幣</name>
+        </instance>
+        <instance scriptid="val_6485_2130928_166">
+            <custrecord_gw_ap_doc_currency_text>瑞士法郎</custrecord_gw_ap_doc_currency_text>
+            <custrecord_gw_ap_doc_currency_value>CHF</custrecord_gw_ap_doc_currency_value>
+            <isinactive>F</isinactive>
+            <name>CHF-瑞士法郎</name>
+        </instance>
+        <instance scriptid="val_6486_2130928_568">
+            <custrecord_gw_ap_doc_currency_text>日圓</custrecord_gw_ap_doc_currency_text>
+            <custrecord_gw_ap_doc_currency_value>JPY</custrecord_gw_ap_doc_currency_value>
+            <isinactive>F</isinactive>
+            <name>JPY-日圓</name>
+        </instance>
+        <instance scriptid="val_6487_2130928_573">
+            <custrecord_gw_ap_doc_currency_text>南非</custrecord_gw_ap_doc_currency_text>
+            <custrecord_gw_ap_doc_currency_value>ZAR</custrecord_gw_ap_doc_currency_value>
+            <isinactive>F</isinactive>
+            <name>ZAR-南非</name>
+        </instance>
+        <instance scriptid="val_6488_2130928_267">
+            <custrecord_gw_ap_doc_currency_text>瑞典幣</custrecord_gw_ap_doc_currency_text>
+            <custrecord_gw_ap_doc_currency_value>SEK</custrecord_gw_ap_doc_currency_value>
+            <isinactive>F</isinactive>
+            <name>SEK-瑞典幣</name>
+        </instance>
+        <instance scriptid="val_6489_2130928_722">
+            <custrecord_gw_ap_doc_currency_text>紐元</custrecord_gw_ap_doc_currency_text>
+            <custrecord_gw_ap_doc_currency_value>NZD</custrecord_gw_ap_doc_currency_value>
+            <isinactive>F</isinactive>
+            <name>NZD-紐元</name>
+        </instance>
+        <instance scriptid="val_6490_2130928_539">
+            <custrecord_gw_ap_doc_currency_text>泰銖</custrecord_gw_ap_doc_currency_text>
+            <custrecord_gw_ap_doc_currency_value>THB</custrecord_gw_ap_doc_currency_value>
+            <isinactive>F</isinactive>
+            <name>THB-泰銖</name>
+        </instance>
+        <instance scriptid="val_6491_2130928_118">
+            <custrecord_gw_ap_doc_currency_text>菲國比索</custrecord_gw_ap_doc_currency_text>
+            <custrecord_gw_ap_doc_currency_value>PHP</custrecord_gw_ap_doc_currency_value>
+            <isinactive>F</isinactive>
+            <name>PHP-菲國比索</name>
+        </instance>
+        <instance scriptid="val_6492_2130928_663">
+            <custrecord_gw_ap_doc_currency_text>印尼盾</custrecord_gw_ap_doc_currency_text>
+            <custrecord_gw_ap_doc_currency_value>IDR</custrecord_gw_ap_doc_currency_value>
+            <isinactive>F</isinactive>
+            <name>IDR-印尼盾</name>
+        </instance>
+        <instance scriptid="val_6493_2130928_798">
+            <custrecord_gw_ap_doc_currency_text>歐元</custrecord_gw_ap_doc_currency_text>
+            <custrecord_gw_ap_doc_currency_value>EUR</custrecord_gw_ap_doc_currency_value>
+            <isinactive>F</isinactive>
+            <name>EUR-歐元</name>
+        </instance>
+        <instance scriptid="val_6494_2130928_894">
+            <custrecord_gw_ap_doc_currency_text>韓元</custrecord_gw_ap_doc_currency_text>
+            <custrecord_gw_ap_doc_currency_value>KRW</custrecord_gw_ap_doc_currency_value>
+            <isinactive>F</isinactive>
+            <name>KRW-韓元</name>
+        </instance>
+        <instance scriptid="val_6495_2130928_256">
+            <custrecord_gw_ap_doc_currency_text>越南盾</custrecord_gw_ap_doc_currency_text>
+            <custrecord_gw_ap_doc_currency_value>VND</custrecord_gw_ap_doc_currency_value>
+            <isinactive>F</isinactive>
+            <name>VND-越南盾</name>
+        </instance>
+        <instance scriptid="val_6496_2130928_704">
+            <custrecord_gw_ap_doc_currency_text>馬來幣</custrecord_gw_ap_doc_currency_text>
+            <custrecord_gw_ap_doc_currency_value>MYR</custrecord_gw_ap_doc_currency_value>
+            <isinactive>F</isinactive>
+            <name>MYR-馬來幣</name>
+        </instance>
+        <instance scriptid="val_6497_2130928_350">
+            <custrecord_gw_ap_doc_currency_text>人民幣</custrecord_gw_ap_doc_currency_text>
+            <custrecord_gw_ap_doc_currency_value>CNY</custrecord_gw_ap_doc_currency_value>
+            <isinactive>F</isinactive>
+            <name>CNY-人民幣</name>
+        </instance>
+    </instances>
 </customrecordtype>

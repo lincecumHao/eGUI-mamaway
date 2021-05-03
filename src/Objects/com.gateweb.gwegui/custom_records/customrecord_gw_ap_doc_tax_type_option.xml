@@ -61,7 +61,7 @@
             <label>Value</label>
             <linktext></linktext>
             <maxlength></maxlength>
-            <maxvalue>4</maxvalue>
+            <maxvalue>10</maxvalue>
             <minvalue></minvalue>
             <onparentdelete></onparentdelete>
             <parentsubtab></parentsubtab>
@@ -156,4 +156,41 @@
             <subtab></subtab>
         </customrecordcustomfield>
     </customrecordcustomfields>
+    <instances>
+        <instance scriptid="val_6500_2130928_959">
+            <custrecord_gw_ap_doc_tax_type_csv_value>應稅</custrecord_gw_ap_doc_tax_type_csv_value>
+            <custrecord_gw_ap_doc_tax_type_text>應稅</custrecord_gw_ap_doc_tax_type_text>
+            <custrecord_gw_ap_doc_tax_type_value>1</custrecord_gw_ap_doc_tax_type_value>
+            <isinactive>F</isinactive>
+            <name>1-應稅</name>
+        </instance>
+        <instance scriptid="val_6501_2130928_708">
+            <custrecord_gw_ap_doc_tax_type_csv_value>零稅率</custrecord_gw_ap_doc_tax_type_csv_value>
+            <custrecord_gw_ap_doc_tax_type_text>零稅率</custrecord_gw_ap_doc_tax_type_text>
+            <custrecord_gw_ap_doc_tax_type_value>2</custrecord_gw_ap_doc_tax_type_value>
+            <isinactive>F</isinactive>
+            <name>2-零稅率</name>
+        </instance>
+        <instance scriptid="val_6502_2130928_335">
+            <custrecord_gw_ap_doc_tax_type_csv_value>免稅</custrecord_gw_ap_doc_tax_type_csv_value>
+            <custrecord_gw_ap_doc_tax_type_text>免稅</custrecord_gw_ap_doc_tax_type_text>
+            <custrecord_gw_ap_doc_tax_type_value>3</custrecord_gw_ap_doc_tax_type_value>
+            <isinactive>F</isinactive>
+            <name>3-免稅</name>
+        </instance>
+        <instance scriptid="val_6503_2130928_952">
+            <custrecord_gw_ap_doc_tax_type_csv_value>特種稅</custrecord_gw_ap_doc_tax_type_csv_value>
+            <custrecord_gw_ap_doc_tax_type_text>特種稅</custrecord_gw_ap_doc_tax_type_text>
+            <custrecord_gw_ap_doc_tax_type_value>4</custrecord_gw_ap_doc_tax_type_value>
+            <isinactive>F</isinactive>
+            <name>4-特種稅</name>
+        </instance>
+        <instance scriptid="val_6503_2130928_953">
+            <custrecord_gw_ap_doc_tax_type_csv_value>混合應稅與免稅或零稅率</custrecord_gw_ap_doc_tax_type_csv_value>
+            <custrecord_gw_ap_doc_tax_type_text>混合稅</custrecord_gw_ap_doc_tax_type_text>
+            <custrecord_gw_ap_doc_tax_type_value>9</custrecord_gw_ap_doc_tax_type_value>
+            <isinactive>F</isinactive>
+            <name>9-混合稅</name>
+        </instance>
+    </instances>
 </customrecordtype>

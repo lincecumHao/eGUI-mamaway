@@ -156,4 +156,34 @@
             <subtab></subtab>
         </customrecordcustomfield>
     </customrecordcustomfields>
+    <instances>
+        <instance scriptid="val_6506_2130928_799">
+            <custrecord_gw_ap_doc_deduct_csv_value>得扣抵</custrecord_gw_ap_doc_deduct_csv_value>
+            <custrecord_gw_ap_doc_deduct_text>進項可抵扣之進貨及費用</custrecord_gw_ap_doc_deduct_text>
+            <custrecord_gw_ap_doc_deduct_value>1</custrecord_gw_ap_doc_deduct_value>
+            <isinactive>F</isinactive>
+            <name>1-進項可抵扣之進貨及費用</name>
+        </instance>
+        <instance scriptid="val_6507_2130928_120">
+            <custrecord_gw_ap_doc_deduct_csv_value></custrecord_gw_ap_doc_deduct_csv_value>
+            <custrecord_gw_ap_doc_deduct_text>進項可抵扣之固定資產</custrecord_gw_ap_doc_deduct_text>
+            <custrecord_gw_ap_doc_deduct_value>2</custrecord_gw_ap_doc_deduct_value>
+            <isinactive>F</isinactive>
+            <name>2-進項可抵扣之固定資產</name>
+        </instance>
+        <instance scriptid="val_6508_2130928_251">
+            <custrecord_gw_ap_doc_deduct_csv_value>不得扣抵</custrecord_gw_ap_doc_deduct_csv_value>
+            <custrecord_gw_ap_doc_deduct_text>進項不可抵扣之進貨及費用</custrecord_gw_ap_doc_deduct_text>
+            <custrecord_gw_ap_doc_deduct_value>3</custrecord_gw_ap_doc_deduct_value>
+            <isinactive>F</isinactive>
+            <name>3-進項不可抵扣之進貨及費用</name>
+        </instance>
+        <instance scriptid="val_6509_2130928_159">
+            <custrecord_gw_ap_doc_deduct_csv_value></custrecord_gw_ap_doc_deduct_csv_value>
+            <custrecord_gw_ap_doc_deduct_text>進項不可抵扣之固定資產</custrecord_gw_ap_doc_deduct_text>
+            <custrecord_gw_ap_doc_deduct_value>4</custrecord_gw_ap_doc_deduct_value>
+            <isinactive>F</isinactive>
+            <name>4-進項不可抵扣之固定資產</name>
+        </instance>
+    </instances>
 </customrecordtype>

@@ -117,4 +117,24 @@
             <subtab></subtab>
         </customrecordcustomfield>
     </customrecordcustomfields>
+    <instances>
+        <instance scriptid="val_6475_2130928_768">
+            <custrecord_gw_ap_doc_consol_text>單張</custrecord_gw_ap_doc_consol_text>
+            <custrecord_gw_ap_doc_consol_value>S</custrecord_gw_ap_doc_consol_value>
+            <isinactive>F</isinactive>
+            <name>單張</name>
+        </instance>
+        <instance scriptid="val_6476_2130928_529">
+            <custrecord_gw_ap_doc_consol_text>彙加</custrecord_gw_ap_doc_consol_text>
+            <custrecord_gw_ap_doc_consol_value>A</custrecord_gw_ap_doc_consol_value>
+            <isinactive>F</isinactive>
+            <name>A-彙加</name>
+        </instance>
+        <instance scriptid="val_6477_2130928_843">
+            <custrecord_gw_ap_doc_consol_text>分攤</custrecord_gw_ap_doc_consol_text>
+            <custrecord_gw_ap_doc_consol_value>B</custrecord_gw_ap_doc_consol_value>
+            <isinactive>F</isinactive>
+            <name>B-分攤</name>
+        </instance>
+    </instances>
 </customrecordtype>
