@@ -124,19 +124,19 @@
       <isinactive>F</isinactive>
       <name>手機條碼</name>
     </instance>
-    <instance scriptid="val_111473_t2411467_348">
+    <instance scriptid="val_111473_t2411467_392">
       <custrecord_gw_ct_text>自然人憑證</custrecord_gw_ct_text>
       <custrecord_gw_ct_value>CQ0001</custrecord_gw_ct_value>
       <isinactive>F</isinactive>
       <name>自然人憑證</name>
     </instance>
-    <instance scriptid="val_111473_t2411467_348">
+    <instance scriptid="val_111473_t2411467_393">
       <custrecord_gw_ct_text>悠遊卡</custrecord_gw_ct_text>
       <custrecord_gw_ct_value>1K0001</custrecord_gw_ct_value>
       <isinactive>F</isinactive>
       <name>悠遊卡</name>
     </instance>
-    <instance scriptid="val_111473_t2411467_348">
+    <instance scriptid="val_111473_t2411467_394">
       <custrecord_gw_ct_text>一卡通</custrecord_gw_ct_text>
       <custrecord_gw_ct_value>1H0001</custrecord_gw_ct_value>
       <isinactive>F</isinactive>
