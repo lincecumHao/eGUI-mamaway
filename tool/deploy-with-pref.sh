@@ -7,10 +7,10 @@
 # optional: using java 11 in current execution
 #sdk use java 11.0.2-open
 
-#remove_files() {
+remove_files() {
 #  rm ./src/deploy.xml
-#  rm ./project.json
-#}
+  rm ./project.json
+}
 
 deploy() {
   suitecloud project:deploy
@@ -19,7 +19,7 @@ deploy() {
 
 deployWithApplyInstallPrefs() {
   suitecloud project:deploy -a
-  #  remove_files
+    remove_files
 }
 
 # deploy project
