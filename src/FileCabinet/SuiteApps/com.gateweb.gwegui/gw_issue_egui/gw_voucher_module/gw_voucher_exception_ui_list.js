@@ -75,6 +75,7 @@ define([
     form,
     subListObj,
     voucher_type,
+	business_no,
     customerid,
     deptcode,
     classification,
@@ -108,6 +109,15 @@ define([
       _filterArray.push(['custrecord_gw_buyer', search.Operator.IS, customerid])
     }
      */
+	
+	if (business_no != '') {
+      _filterArray.push('and')
+      _filterArray.push([
+        'custrecord_gw_seller',
+        search.Operator.IS,
+        business_no,
+      ])
+    }
     if (customerid != '') {
       _filterArray.push('and')
       _filterArray.push([
@@ -429,6 +439,47 @@ define([
   }
 
   function createForm(form) {
+	///////////////////////////////////////////////////////////////////////////////////
+    //公司別
+    var _selectBusinessNo = form.addField({
+      id: 'custpage_businessno',
+      type: serverWidget.FieldType.SELECT,
+      label: '統一編號' 
+    })
+    _selectBusinessNo.updateLayoutType({
+      layoutType: serverWidget.FieldLayoutType.OUTSIDEABOVE,
+    })
+    ///////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////
+    //20210506 walter 增加賣方公司 List
+    var _user_obj        = runtime.getCurrentUser()
+    var _user_subsidiary = _user_obj.subsidiary
+     
+    var _businessSearch = search
+      .create({
+        type: 'customrecord_gw_business_entity',
+        columns: ['custrecord_gw_be_tax_id_number', 'custrecord_gw_be_gui_title'],
+        filters: ['custrecord_gw_be_ns_subsidiary', 'is', _user_subsidiary]
+      })
+      .run()
+      .each(function (result) {
+        var _internalid = result.id
+
+        var _tax_id_number = result.getValue({
+          name: 'custrecord_gw_be_tax_id_number',
+        })
+        var _be_gui_title = result.getValue({
+          name: 'custrecord_gw_be_gui_title',
+        })
+
+        _selectBusinessNo.addSelectOption({
+          value: _tax_id_number,
+          text: _tax_id_number + '-' + _be_gui_title,
+        })
+        return true
+      }) 
+    
+    //////////////////////////////////////////////////////////////////////////////////
     //客戶代碼 search.Type.CUSTOMER
     var _selectCustomerCode = form.addField({
       id: 'custpage_selectcustomerid',
@@ -794,7 +845,7 @@ define([
     context.response.writePage(form)
 
     if (context.request.method === 'POST') {
-      //Open Document
+      //Open Document 
       var _buttonType = context.request.parameters.custpage_hiddent_buttontype
       var _voucher_list_id =
         context.request.parameters.custpage_voucher_hiddent_listid
@@ -829,6 +880,8 @@ define([
       }
 
       //search
+	  var _select_businessno =
+            context.request.parameters.custpage_businessno  
       var _selectcustomerid =
         context.request.parameters.custpage_selectcustomerid
       var _select_deptcode = context.request.parameters.custpage_select_deptcode
@@ -850,7 +903,11 @@ define([
         context.request.parameters.custpage_select_voucher_type
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      var _customeridField = form.getField({
+      var _businessnoField = form.getField({
+        id: 'custpage_businessno',
+      })
+      _businessnoField.defaultValue = _select_businessno
+	  var _customeridField = form.getField({
         id: 'custpage_selectcustomerid',
       })
       if (_selectcustomerid !== '') {
@@ -904,6 +961,7 @@ define([
         form,
         _invoiceSubList,
         _voucher_type,
+		_select_businessno,
         _selectcustomerid,
         _select_deptcode,
         _select_classification,

@@ -2626,7 +2626,7 @@ define([
   function onRequest(context) {
 	//取得開立統編
 	var _selected_business_no = context.request.parameters.custpage_businessno
-	  
+	  log.debug('_selected_business_no', '_selected_business_no=' + _selected_business_no)
     var _selected_invoice_Id = context.request.parameters.invoice_hiddent_listid
     var _selected_creditmemo_Id =
       context.request.parameters.creditmemo_hiddent_listid
