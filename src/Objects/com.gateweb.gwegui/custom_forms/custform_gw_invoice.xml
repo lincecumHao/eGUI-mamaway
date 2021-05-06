@@ -1231,6 +1231,33 @@
                             <sameRowAsPrevious>F</sameRowAsPrevious>
                         </field>
                         <field>
+                            <id>[appid=com.gateweb.gwegui, scriptid=custbody_gw_gui_format]</id>
+                            <label>發票格式代號</label>
+                            <visible>T</visible>
+                            <mandatory>F</mandatory>
+                            <displayType>NORMAL</displayType>
+                            <columnBreak>F</columnBreak>
+                            <sameRowAsPrevious>F</sameRowAsPrevious>
+                        </field>
+                        <field>
+                            <id>[appid=com.gateweb.gwegui, scriptid=custbody_gw_gui_date]</id>
+                            <label>發票日期</label>
+                            <visible>T</visible>
+                            <mandatory>F</mandatory>
+                            <displayType>NORMAL</displayType>
+                            <columnBreak>F</columnBreak>
+                            <sameRowAsPrevious>F</sameRowAsPrevious>
+                        </field>
+                        <field>
+                            <id>[appid=com.gateweb.gwegui, scriptid=custbody_gw_gui_apply_period]</id>
+                            <label>營業稅申報期別</label>
+                            <visible>T</visible>
+                            <mandatory>F</mandatory>
+                            <displayType>NORMAL</displayType>
+                            <columnBreak>F</columnBreak>
+                            <sameRowAsPrevious>F</sameRowAsPrevious>
+                        </field>
+                        <field>
                             <id>[appid=com.gateweb.gwegui, scriptid=custbody_gw_gui_donation_mark]</id>
                             <label>捐贈發票</label>
                             <visible>T</visible>
@@ -1294,6 +1321,24 @@
                     <singleColumn>F</singleColumn>
                     <fields position="MIDDLE">
                         <field>
+                            <id>[appid=com.gateweb.gwegui, scriptid=custbody_gw_gui_tax_type]</id>
+                            <label>課稅別</label>
+                            <visible>T</visible>
+                            <mandatory>F</mandatory>
+                            <displayType>NORMAL</displayType>
+                            <columnBreak>F</columnBreak>
+                            <sameRowAsPrevious>F</sameRowAsPrevious>
+                        </field>
+                        <field>
+                            <id>[appid=com.gateweb.gwegui, scriptid=custbody_gw_gui_tax_rate]</id>
+                            <label>稅率</label>
+                            <visible>T</visible>
+                            <mandatory>F</mandatory>
+                            <displayType>NORMAL</displayType>
+                            <columnBreak>F</columnBreak>
+                            <sameRowAsPrevious>F</sameRowAsPrevious>
+                        </field>
+                        <field>
                             <id>[appid=com.gateweb.gwegui, scriptid=custbody_gw_gui_sales_amt]</id>
                             <label>應稅銷售額</label>
                             <visible>T</visible>
@@ -1329,6 +1374,24 @@
                             <columnBreak>F</columnBreak>
                             <sameRowAsPrevious>F</sameRowAsPrevious>
                         </field>
+                        <field>
+                            <id>[appid=com.gateweb.gwegui, scriptid=custbody_gw_gui_total_amt]</id>
+                            <label>總計</label>
+                            <visible>T</visible>
+                            <mandatory>F</mandatory>
+                            <displayType>NORMAL</displayType>
+                            <columnBreak>F</columnBreak>
+                            <sameRowAsPrevious>F</sameRowAsPrevious>
+                        </field>
+                        <field>
+                            <id>[appid=com.gateweb.gwegui, scriptid=custbody_gw_customer_deposit_amount]</id>
+                            <label>押金金額</label>
+                            <visible>T</visible>
+                            <mandatory>F</mandatory>
+                            <displayType>NORMAL</displayType>
+                            <columnBreak>F</columnBreak>
+                            <sameRowAsPrevious>F</sameRowAsPrevious>
+                        </field>
                     </fields>
                 </fieldGroup>
                 <fieldGroup scriptid="fieldgroup_gw_egui_allowance_info">
@@ -1349,6 +1412,15 @@
                         <field>
                             <id>[appid=com.gateweb.gwegui, scriptid=custbody_gw_allowance_num_end]</id>
                             <label>折讓單號碼訖號</label>
+                            <visible>T</visible>
+                            <mandatory>F</mandatory>
+                            <displayType>NORMAL</displayType>
+                            <columnBreak>F</columnBreak>
+                            <sameRowAsPrevious>F</sameRowAsPrevious>
+                        </field>
+                        <field>
+                            <id>[appid=com.gateweb.gwegui, scriptid=custbody_gw_creditmemo_deduction_list]</id>
+                            <label>折讓單折讓列表</label>
                             <visible>T</visible>
                             <mandatory>F</mandatory>
                             <displayType>NORMAL</displayType>
@@ -1384,14 +1456,41 @@
                             <checkBoxDefault>USE_FIELD_DEFAULT</checkBoxDefault>
                         </field>
                         <field>
-                            <id>[appid=com.gateweb.gwegui, scriptid=custbody_gw_no_egui]</id>
-                            <label>不開發票</label>
+                            <id>[appid=com.gateweb.gwegui, scriptid=custbody_gw_is_issue_egui]</id>
+                            <label>開立發票</label>
                             <visible>T</visible>
                             <mandatory>F</mandatory>
                             <displayType>NORMAL</displayType>
                             <columnBreak>F</columnBreak>
                             <sameRowAsPrevious>F</sameRowAsPrevious>
                             <checkBoxDefault>USE_FIELD_DEFAULT</checkBoxDefault>
+                        </field>
+                        <field>
+                            <id>[appid=com.gateweb.gwegui, scriptid=custbody_gw_gui_department]</id>
+                            <label>發票配號部門</label>
+                            <visible>T</visible>
+                            <mandatory>F</mandatory>
+                            <displayType>NORMAL</displayType>
+                            <columnBreak>F</columnBreak>
+                            <sameRowAsPrevious>F</sameRowAsPrevious>
+                        </field>
+                        <field>
+                            <id>[appid=com.gateweb.gwegui, scriptid=custbody_gw_gui_class]</id>
+                            <label>發票配號類別</label>
+                            <visible>T</visible>
+                            <mandatory>F</mandatory>
+                            <displayType>NORMAL</displayType>
+                            <columnBreak>F</columnBreak>
+                            <sameRowAsPrevious>F</sameRowAsPrevious>
+                        </field>
+                        <field>
+                            <id>[appid=com.gateweb.gwegui, scriptid=custbody_gw_gui_main_memo]</id>
+                            <label>發票主備註</label>
+                            <visible>T</visible>
+                            <mandatory>F</mandatory>
+                            <displayType>NORMAL</displayType>
+                            <columnBreak>F</columnBreak>
+                            <sameRowAsPrevious>F</sameRowAsPrevious>
                         </field>
                     </fields>
                 </fieldGroup>
