@@ -1,9 +1,10 @@
-define(['N/https', './gw_api_auth', 'N/encode', '../gw_config_service'], (
-  https,
-  GwApiAuth,
-  encode,
-  GwConfigService
-) => {
+define([
+  'N/https',
+  './gw_api_auth',
+  'N/encode',
+  '../gw_config_service',
+  '../../gw_dao/settings/gw_dao_egui_config_21',
+], (https, GwApiAuth, encode, GwConfigService, gwConfigDao) => {
   /**
    * Module Description...
    *
@@ -34,7 +35,8 @@ define(['N/https', './gw_api_auth', 'N/encode', '../gw_config_service'], (
   }
 
   function getDownloadUrl(type) {
-    var baseUrl = GwConfigService.getDownloadBaseUrl() // 'https://nsprint.tweinv.com:443'
+    // var baseUrl = GwConfigService.getDownloadBaseUrl() // 'https://nsprint.tweinv.com:443'
+    var baseUrl = gwConfigDao.getConfig().downloadBaseUrl
     var typeUrlMap = {
       invoice: '/api/v1/pdf/invoice',
       allowance: '/api/v1/pdf/allowance',
@@ -44,7 +46,8 @@ define(['N/https', './gw_api_auth', 'N/encode', '../gw_config_service'], (
   }
 
   function getPrintUrl(type) {
-    var baseUrl = GwConfigService.getPrintBaseUrl() // 'https://nsprint.tweinv.com:443'
+    // var baseUrl = GwConfigService.getPrintBaseUrl() // 'https://nsprint.tweinv.com:443'
+    var baseUrl = gwConfigDao.getConfig().printBaseUrl
     var typeUrlMap = {
       invoice: '/api/v1/print/invoice',
       allowance: '/api/v1/print/allowance',
@@ -59,7 +62,8 @@ define(['N/https', './gw_api_auth', 'N/encode', '../gw_config_service'], (
       code: 0,
       body: '',
     }
-    var turnkeyBaseUrl = GwConfigService.getTurnkeyBaseUrl()
+    // var turnkeyBaseUrl = GwConfigService.getTurnkeyBaseUrl()
+    var turnkeyBaseUrl = gwConfigDao.getConfig().turkeyBaseUrl
     var url = `${turnkeyBaseUrl}/v1/ns/turnkey/mig?filename=${filename}`
     // var url = `https://sstest.gwis.com.tw:443/v1/ns/turnkey/mig?filename=${filename}`
     log.debug({ title: 'getGuiStatus url', details: url })
@@ -89,7 +93,8 @@ define(['N/https', './gw_api_auth', 'N/encode', '../gw_config_service'], (
       body: '',
     }
     var filenameParts = getFilenameParts(filename)
-    var turnkeyBaseUrl = GwConfigService.getTurnkeyBaseUrl()
+    // var turnkeyBaseUrl = GwConfigService.getTurnkeyBaseUrl()
+    var turnkeyBaseUrl = gwConfigDao.getConfig().turkeyBaseUrl
     var url = `${turnkeyBaseUrl}/v1/ns/turnkey/mig?migType=${filenameParts.migType}&filename=${filenameParts.filename}`
     // var url = `https://sstest.gwis.com.tw:443/v1/ns/turnkey/mig?migType=${filenameParts.migType}&filename=${filenameParts.filename}`
     var headers = getHeaders()
