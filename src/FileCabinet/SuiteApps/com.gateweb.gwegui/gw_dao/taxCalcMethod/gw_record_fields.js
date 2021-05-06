@@ -12,52 +12,22 @@ define(['../../library/ramda.min'], function (ramda) {
 
    */
   var exports = {}
-  var recordId = 'customrecord_gw_egui_config'
+  var recordId = 'customrecord_gw_tax_calc_method_option'
   var fieldConfig = {
     name: {
       id: 'name',
       sourceField: '',
       outputField: 'name',
     },
-    custrecord_gw_conf_ns_acct_id: {
-      id: 'custrecord_gw_conf_ns_acct_id',
+    custrecord_gw_tcm_value: {
+      id: 'custrecord_gw_tcm_value',
       sourceField: '',
-      outputField: 'nsAcctId',
+      outputField: 'value',
     },
-    custrecord_gw_conf_print_base_url: {
-      id: 'custrecord_gw_conf_print_base_url',
+    custrecord_gw_tcm_text: {
+      id: 'custrecord_gw_tcm_text',
       sourceField: '',
-      outputField: 'printBaseUrl',
-    },
-    custrecord_gw_config_dl_base_url: {
-      id: 'custrecord_gw_config_dl_base_url',
-      sourceField: '',
-      outputField: 'downloadBaseUrl',
-    },
-    custrecord_gw_conf_turnkey_base_url: {
-      id: 'custrecord_gw_conf_turnkey_base_url',
-      sourceField: '',
-      outputField: 'turkeyBaseUrl',
-    },
-    custrecord_gw_conf_active: {
-      id: 'custrecord_gw_conf_active',
-      sourceField: '',
-      outputField: 'isActive',
-    },
-    custrecord_gw_conf_tax_calc_method: {
-      id: 'custrecord_gw_conf_tax_calc_method',
-      sourceField: '',
-      outputField: 'taxCalcMethod',
-    },
-    custrecord_gw_conf_egui_init_fmt: {
-      id: 'custrecord_gw_conf_egui_init_fmt',
-      sourceField: '',
-      outputField: 'defaultEGuiFormat',
-    },
-    custrecord_gw_conf_allowance_init_fmt: {
-      id: 'custrecord_gw_conf_allowance_init_fmt',
-      sourceField: '',
-      outputField: 'defaultAllowanceFormat',
+      outputField: 'text',
     },
   }
 

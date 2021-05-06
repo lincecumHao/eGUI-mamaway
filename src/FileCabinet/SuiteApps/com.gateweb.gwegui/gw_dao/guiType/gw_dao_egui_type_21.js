@@ -4,11 +4,11 @@ define(['../gw_abstract_dao', './gw_record_fields'], (gwDao, fieldConfig) => {
       super(fieldConfig.recordId, fieldConfig)
     }
 
-    getDefaultBookType() {
-      return this.getByValue('egui')
+    getRegularGuiType() {
+      return this.getByValue('07')
     }
-    getManualGuiBookType() {
-      return this.getByValue('mgui')
+    getSpecialGuiType() {
+      return this.getByValue('08')
     }
   }
 

@@ -21,7 +21,7 @@ define(['../library/gw_lib_search'], function (searchLib) {
     }
 
     getAllOptions() {
-      log.debug({ title: 'Abstract getAllOptions' })
+      // log.debug({ title: 'Abstract getAllOptions' })
       var columns = this.fieldConfig.allFieldIds
       var searchColumns = JSON.parse(JSON.stringify(columns))
       var result = searchLib.runSearch(this.recordTypeId, searchColumns)

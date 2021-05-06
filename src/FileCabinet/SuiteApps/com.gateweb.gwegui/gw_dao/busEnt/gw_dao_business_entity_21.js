@@ -1,7 +1,7 @@
 define([
   '../gw_abstract_dao',
   './gw_record_fields',
-  '../consolidatePaymentCode/gw_dao_consolidate_payment_code',
+  '../consolidatePaymentCode/gw_dao_consolidate_payment_code_21',
 ], function (gwDao, fieldConfig, gwDaoConsolidatePaymentCode) {
   /**
    * Module Description...
@@ -19,7 +19,7 @@ define([
   class BusinessEntityDao extends gwDao.DataAccessObject {
     constructor() {
       super(fieldConfig.recordId, fieldConfig)
-      this.allOptions = this.mapAllOptions()
+      // this.allOptions = this.mapAllOptions()
     }
 
     mapAllOptions() {
@@ -45,17 +45,17 @@ define([
             account &&
           recordObj[
             fieldConfig.fields.custrecord_gw_be_ns_subsidiary.outputField
-          ] === subsidiary
+          ].value === subsidiary
         )
       })[0]
     }
 
-    getBySubsidiary(subsidiary) {
+    getBySubsidiary(subsidiaryId) {
       return this.allOptions.filter(function (recordObj) {
         return (
           recordObj[
             fieldConfig.fields.custrecord_gw_be_ns_subsidiary.outputField
-          ] === subsidiary
+          ].value === subsidiaryId
         )
       })[0]
     }

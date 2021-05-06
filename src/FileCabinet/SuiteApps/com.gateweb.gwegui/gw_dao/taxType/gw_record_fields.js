@@ -12,52 +12,32 @@ define(['../../library/ramda.min'], function (ramda) {
 
    */
   var exports = {}
-  var recordId = 'customrecord_gw_egui_config'
+  var recordId = 'customrecord_gw_ap_doc_tax_type_option'
   var fieldConfig = {
     name: {
       id: 'name',
       sourceField: '',
       outputField: 'name',
     },
-    custrecord_gw_conf_ns_acct_id: {
-      id: 'custrecord_gw_conf_ns_acct_id',
+    custrecord_gw_ap_doc_tax_type_value: {
+      id: 'custrecord_gw_ap_doc_tax_type_value',
       sourceField: '',
-      outputField: 'nsAcctId',
+      outputField: 'value',
     },
-    custrecord_gw_conf_print_base_url: {
-      id: 'custrecord_gw_conf_print_base_url',
+    custrecord_gw_ap_doc_tax_type_text: {
+      id: 'custrecord_gw_ap_doc_tax_type_text',
       sourceField: '',
-      outputField: 'printBaseUrl',
+      outputField: 'text',
     },
-    custrecord_gw_config_dl_base_url: {
-      id: 'custrecord_gw_config_dl_base_url',
+    custrecord_gw_ap_doc_tax_type_csv_value: {
+      id: 'custrecord_gw_ap_doc_tax_type_csv_value',
       sourceField: '',
-      outputField: 'downloadBaseUrl',
+      outputField: 'csvValue',
     },
-    custrecord_gw_conf_turnkey_base_url: {
-      id: 'custrecord_gw_conf_turnkey_base_url',
+    custrecord_gw_tax_type_tax_code: {
+      id: 'custrecord_gw_tax_type_tax_code',
       sourceField: '',
-      outputField: 'turkeyBaseUrl',
-    },
-    custrecord_gw_conf_active: {
-      id: 'custrecord_gw_conf_active',
-      sourceField: '',
-      outputField: 'isActive',
-    },
-    custrecord_gw_conf_tax_calc_method: {
-      id: 'custrecord_gw_conf_tax_calc_method',
-      sourceField: '',
-      outputField: 'taxCalcMethod',
-    },
-    custrecord_gw_conf_egui_init_fmt: {
-      id: 'custrecord_gw_conf_egui_init_fmt',
-      sourceField: '',
-      outputField: 'defaultEGuiFormat',
-    },
-    custrecord_gw_conf_allowance_init_fmt: {
-      id: 'custrecord_gw_conf_allowance_init_fmt',
-      sourceField: '',
-      outputField: 'defaultAllowanceFormat',
+      outputField: 'taxCodes',
     },
   }
 

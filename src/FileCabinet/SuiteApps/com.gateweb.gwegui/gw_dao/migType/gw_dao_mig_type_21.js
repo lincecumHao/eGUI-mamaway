@@ -43,10 +43,10 @@ define([
       }, this.allOptions)[0]
     }
 
-    getIssueEguiMigType() {
+    getIssueEguiMigType(businessType) {
       return this.getByBusinessTypeAndDocType(
         this.eguiActionEnum.ISSUE,
-        this.businessTranTypeEnum.B2B,
+        businessType,
         this.eguiTypeEnum.EGUI
       )
     }

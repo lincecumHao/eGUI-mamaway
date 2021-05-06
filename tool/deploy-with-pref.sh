@@ -14,12 +14,12 @@
 
 deploy() {
   suitecloud project:deploy
-#  remove_files
+  #  remove_files
 }
 
 deployWithApplyInstallPrefs() {
   suitecloud project:deploy -a
-#  remove_files
+  #  remove_files
 }
 
 # deploy project

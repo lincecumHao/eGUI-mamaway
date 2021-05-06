@@ -155,6 +155,45 @@
             <storevalue>T</storevalue>
             <subtab></subtab>
         </customrecordcustomfield>
+        <customrecordcustomfield scriptid="custrecord_gw_tax_type_tax_code">
+            <accesslevel>2</accesslevel>
+            <allowquickadd>F</allowquickadd>
+            <applyformatting>F</applyformatting>
+            <checkspelling>F</checkspelling>
+            <defaultchecked>F</defaultchecked>
+            <defaultselection></defaultselection>
+            <defaultvalue></defaultvalue>
+            <description></description>
+            <displayheight></displayheight>
+            <displaytype>NORMAL</displaytype>
+            <displaywidth></displaywidth>
+            <dynamicdefault></dynamicdefault>
+            <encryptatrest>F</encryptatrest>
+            <fieldtype>MULTISELECT</fieldtype>
+            <globalsearch>F</globalsearch>
+            <help></help>
+            <isformula>F</isformula>
+            <ismandatory>F</ismandatory>
+            <isparent>F</isparent>
+            <label>Tax Codes</label>
+            <linktext></linktext>
+            <maxlength></maxlength>
+            <maxvalue></maxvalue>
+            <minvalue></minvalue>
+            <onparentdelete>NO_ACTION</onparentdelete>
+            <parentsubtab></parentsubtab>
+            <rolerestrict>F</rolerestrict>
+            <searchcomparefield></searchcomparefield>
+            <searchdefault></searchdefault>
+            <searchlevel>2</searchlevel>
+            <selectrecordtype>-128</selectrecordtype>
+            <showinlist>T</showinlist>
+            <sourcefilterby></sourcefilterby>
+            <sourcefrom></sourcefrom>
+            <sourcelist></sourcelist>
+            <storevalue>T</storevalue>
+            <subtab></subtab>
+        </customrecordcustomfield>
     </customrecordcustomfields>
     <instances>
         <instance scriptid="val_6500_2130928_959">

@@ -31,37 +31,39 @@ define([
 
   //字軌本數上限
   var _count_limit = 150
-  
-  //紀錄user的subsidary 
+
+  //紀錄user的subsidary
   //20210427 walter 增加賣方公司 List
-  function getUserSubsidaryTaxId(){
-	  var _user_subsidary_taxId_ary = []
-	  
-	  var _user_obj        = runtime.getCurrentUser()
-	  var _user_subsidiary = _user_obj.subsidiary
-	     
-	  var _businessSearch = search
-	      .create({
-	        type: 'customrecord_gw_business_entity',
-	        columns: ['custrecord_gw_be_tax_id_number', 'custrecord_gw_be_gui_title'],
-	        filters: ['custrecord_gw_be_ns_subsidiary', 'is', _user_subsidiary]
-	      })
-	      .run()
-	      .each(function (result) {
-	        var _internalid = result.id
-	
-	        var _tax_id_number = result.getValue({
-	          name: 'custrecord_gw_be_tax_id_number',
-	        })
-	        
-	        _user_subsidary_taxId_ary.push(_tax_id_number)
-	        
-	        return true
-	      })
-	
-	  return _user_subsidary_taxId_ary
+  function getUserSubsidaryTaxId() {
+    var _user_subsidary_taxId_ary = []
+
+    var _user_obj = runtime.getCurrentUser()
+    var _user_subsidiary = _user_obj.subsidiary
+
+    var _businessSearch = search
+      .create({
+        type: 'customrecord_gw_business_entity',
+        columns: [
+          'custrecord_gw_be_tax_id_number',
+          'custrecord_gw_be_gui_title',
+        ],
+        filters: ['custrecord_gw_be_ns_subsidiary', 'is', _user_subsidiary],
+      })
+      .run()
+      .each(function (result) {
+        var _internalid = result.id
+
+        var _tax_id_number = result.getValue({
+          name: 'custrecord_gw_be_tax_id_number',
+        })
+
+        _user_subsidary_taxId_ary.push(_tax_id_number)
+
+        return true
+      })
+
+    return _user_subsidary_taxId_ary
   }
-  
 
   //驗證欄位
   function verifyColumn(
@@ -83,26 +85,26 @@ define([
     })
     var _isError = false
     var _errorMsg = ''
-   
-    //檢查須為權限內統編 
+
+    //檢查須為權限內統編
     if (userSubsidaryTaxIdAry.toString().indexOf(businessNo) == -1) {
-	    _errorMsg += '匯入統編錯誤,'
-	    _isError = true
+      _errorMsg += '匯入統編錯誤,'
+      _isError = true
     }
-    	
+
     //統編8碼
     if (businessNo.length != 8) {
       _errorMsg += '統編長度需為8碼,'
       _isError = true
     }
-    
+
     //統編與設定檔檢查
     /**
-    if (businessNo !== _ban) {
+     if (businessNo !== _ban) {
       _errorMsg += '統編[' + businessNo + ']錯誤,'
       _isError = true
     }
-    */
+     */
     //類別代號(07,08)
     if (invoiceType != '07' && invoiceType != '08') {
       _errorMsg += '發票類別代號需為07或08,'
@@ -399,8 +401,8 @@ define([
 
     if (context.request.method === 'POST') {
       //removeRecord();
-     var _user_subsidary_taxId_ary = getUserSubsidaryTaxId()
-    	
+      var _user_subsidary_taxId_ary = getUserSubsidaryTaxId()
+
       //dept code
       var _selectDeptCode = context.request.parameters.custpage_select_deptcode
       var _selectDeptName = ''
@@ -733,32 +735,32 @@ define([
             }
             ////////////////////////////////////////////////////////
             /**
-               var assignLogRecord = record.create({
+             var assignLogRecord = record.create({
 								type: _assignLogRecordId,
 								isDynamic:true
 							});
 
-               assignLogRecord.setValue({fieldId:'name',value:'assignlog'});
-               assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_businessno',value:_businessno});
-               assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_deptcode',value:_selectDeptCode});
-               assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_deptname',value:_selectDeptName});
-               assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_classification',value:_selectClassification});
-               assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_class_name',value:_selectClassificationName});
+             assignLogRecord.setValue({fieldId:'name',value:'assignlog'});
+             assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_businessno',value:_businessno});
+             assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_deptcode',value:_selectDeptCode});
+             assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_deptname',value:_selectDeptName});
+             assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_classification',value:_selectClassification});
+             assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_class_name',value:_selectClassificationName});
 
-               assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_invoicetype',value:_invoiceType});
-               assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_invoicetrack',value:_invoiceTrack});
-               assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_startno',value: stringutility.padding(''+_startNo, 8)});
-               assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_endno',value:stringutility.padding(''+_endNo, 8)});
-               assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_yearmonth',value:_yearMonth.toString()});
-               assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_status',value:_status});
-               //assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_taketime',value:_startdate});
-               //assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_lastinvnumbe',value:_twcurrency});
-               //assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_reason',value:_selectowner});
-               assignLogRecord.setValue({fieldId:'custrecord_gw_last_invoice_date',value:0});
-               assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_usedcount',value:_usedCount});
-               assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_version',value:_version});
-               assignLogRecord.setValue({fieldId:'custrecord_gw_egui_format_code',value:_invoceFormatCode});
-               try {
+             assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_invoicetype',value:_invoiceType});
+             assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_invoicetrack',value:_invoiceTrack});
+             assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_startno',value: stringutility.padding(''+_startNo, 8)});
+             assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_endno',value:stringutility.padding(''+_endNo, 8)});
+             assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_yearmonth',value:_yearMonth.toString()});
+             assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_status',value:_status});
+             //assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_taketime',value:_startdate});
+             //assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_lastinvnumbe',value:_twcurrency});
+             //assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_reason',value:_selectowner});
+             assignLogRecord.setValue({fieldId:'custrecord_gw_last_invoice_date',value:0});
+             assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_usedcount',value:_usedCount});
+             assignLogRecord.setValue({fieldId:'custrecord_gw_assignlog_version',value:_version});
+             assignLogRecord.setValue({fieldId:'custrecord_gw_egui_format_code',value:_invoceFormatCode});
+             try {
 								 var callId = assignLogRecord.save();
 								 log.debug('Call assignLogObj record created successfully', 'Id: ' + callId);
 							} catch (e) { 
@@ -767,7 +769,7 @@ define([
 								   details: e.message
 								 });   
 							}
-               */
+             */
             //Save to assignLog Record End
             ////////////////////////////////////////////////////////////////////////////////////////////////////////
             //處理結果
