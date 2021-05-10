@@ -124,6 +124,7 @@ define([
     form,
     subListObj,
     voucher_type,
+    business_no,
     customerid,
     deptcode,
     classification,
@@ -152,6 +153,10 @@ define([
         select_year_month,
       ])
     }
+    if (business_no != '') {
+	    _filterArray.push('and')
+	    _filterArray.push(['custbody_gw_tax_id_number', search.Operator.IS, business_no])
+	}
     if (customerid != '') {
       _filterArray.push('and')
       //_filterArray.push(['custrecord_gw_original_buyer_id', search.Operator.IS, customerid])
@@ -591,6 +596,41 @@ define([
   }
 
   function createForm(form) {
+    ///////////////////////////////////////////////////////////////////////////////////
+    //查詢條件
+    //公司別
+    var _selectBusinessNo = form.addField({
+      id: 'custpage_businessno',
+      type: serverWidget.FieldType.SELECT,
+      label: '統一編號',
+    })
+    _selectBusinessNo.updateLayoutType({
+      layoutType: serverWidget.FieldLayoutType.OUTSIDE,
+    })
+    /**
+    _selectBusinessNo.addSelectOption({
+      value: _ban,
+      text: _legalname,
+    })
+    */
+    ////////////////////////////////////////////////////////////////////////////
+    //20210427 walter 增加賣方公司 List
+    var _user_obj        = runtime.getCurrentUser()
+    var _user_subsidiary = _user_obj.subsidiary
+     
+    var _company_ary = invoiceutility.getSellerInfoBySubsidiary(_user_subsidiary)
+    if (_company_ary!=null) {
+    	for (var i=0; i<_company_ary.length; i++) {
+    		var _company = _company_ary[i];
+    		
+    		_selectBusinessNo.addSelectOption({
+    	          value: _company.tax_id_number,
+    	          text: _company.tax_id_number + '-' + _company.be_gui_title,
+    	        })
+    	}
+    }
+     
+    ////////////////////////////////////////////////////////////////////////////
     //客戶代碼
     var _selectCustomerCode = form.addField({
       id: 'custpage_selectcustomerid',
@@ -1110,6 +1150,8 @@ define([
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       //search
+      var _select_businessno =
+          context.request.parameters.custpage_businessno
       var _select_year_month =
         context.request.parameters.custpage_select_year_month
       var _selectcustomerid =
@@ -1173,6 +1215,10 @@ define([
       }
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      var _businessnoField = form.getField({
+	      id: 'custpage_businessno',
+	  })
+	  _businessnoField.defaultValue = _select_businessno
       var _yearMonthField = form.getField({
         id: 'custpage_select_year_month',
       })
@@ -1240,6 +1286,7 @@ define([
         form,
         _invoiceSubList,
         _voucher_type,
+        _select_businessno,
         _selectcustomerid,
         _select_deptcode,
         _select_classification,
