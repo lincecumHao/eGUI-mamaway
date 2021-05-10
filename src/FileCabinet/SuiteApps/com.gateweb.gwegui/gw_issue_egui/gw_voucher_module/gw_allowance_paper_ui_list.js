@@ -155,7 +155,7 @@ define([
     }
     if (business_no != '') {
 	    _filterArray.push('and')
-	    _filterArray.push(['custbody_gw_tax_id_number', search.Operator.IS, business_no])
+	    _filterArray.push(['custrecord_gw_seller', search.Operator.IS, business_no])
 	}
     if (customerid != '') {
       _filterArray.push('and')
