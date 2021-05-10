@@ -921,7 +921,19 @@ define([
     //20210427 walter 增加賣方公司 List
     var _user_obj        = runtime.getCurrentUser()
     var _user_subsidiary = _user_obj.subsidiary
-     
+    
+    var _company_ary = invoiceutility.getSellerInfoBySubsidiary(_user_subsidiary)
+    if (_company_ary!=null) {
+    	for (var i=0; i<_company_ary.length; i++) {
+    		var _company = _company_ary[i];
+    		
+    		_selectBusinessNo.addSelectOption({
+    	          value: _company.tax_id_number,
+    	          text: _company.tax_id_number + '-' + _company.be_gui_title,
+    	        })
+    	}
+    }
+    /**
     var _businessSearch = search
       .create({
         type: 'customrecord_gw_business_entity',
@@ -945,7 +957,7 @@ define([
         })
         return true
       }) 
-    
+    */
     //////////////////////////////////////////////////////////////////////////////////
     //客戶代碼
     var _selectCustomerCode = form.addField({

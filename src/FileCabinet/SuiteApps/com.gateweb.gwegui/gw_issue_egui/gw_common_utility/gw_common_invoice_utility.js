@@ -1074,6 +1074,41 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////
+  //20210510 walter modify
+  function getSellerInfoBySubsidiary(subsidiary) {
+	  var _comapny_ary = [];
+	  
+	  var _businessSearch = search
+		      .create({
+		        type: 'customrecord_gw_business_entity',
+		        columns: ['custrecord_gw_be_tax_id_number', 'custrecord_gw_be_gui_title'],
+		        filters: ['custrecord_gw_be_ns_subsidiary', 'is', subsidiary]
+		      })
+		      .run()
+		      .each(function (result) {
+		        var _internalid = result.id
+		
+		        var _tax_id_number = result.getValue({
+		          name: 'custrecord_gw_be_tax_id_number',
+		        })
+		        var _be_gui_title = result.getValue({
+		          name: 'custrecord_gw_be_gui_title',
+		        })
+		        
+		        var _obj = {
+		        	'tax_id_number': _tax_id_number,
+		        	'be_gui_title': _be_gui_title
+		        }
+		        
+		        _comapny_ary.push(_obj);
+		      
+		        return true
+		      }) 
+	  
+		      return _comapny_ary;
+  }
+  
+  /////////////////////////////////////////////////////////////////////////////////////////////
 
   return {
     getApplyPeriodOptionId: getApplyPeriodOptionId,
@@ -1096,6 +1131,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
     getAllowanceNumber: getAllowanceNumber,
     getAssignLogNumber: getAssignLogNumber,
     getRandomNum: getRandomNum,
+    getSellerInfoBySubsidiary: getSellerInfoBySubsidiary,
     test1: test1,
   }
 })
