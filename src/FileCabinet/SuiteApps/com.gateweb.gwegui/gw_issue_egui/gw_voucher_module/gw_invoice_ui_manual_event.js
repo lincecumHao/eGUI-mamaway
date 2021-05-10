@@ -1191,11 +1191,19 @@ define([
         var _invoice_hiddent_listid = _current_record.getValue({
           fieldId: 'custpage_voucher_hiddent_listid',
         })
-
+        
+        var _selected_businessno = _current_record.getValue({
+            fieldId: 'custpage_businessno',
+        })
+        
         var _params = {
           invoice_hiddent_listid: _invoice_hiddent_listid,
+          selected_business_no: _selected_businessno,
         }
-        if (_invoice_hiddent_listid == '') {
+         
+        //alert('_params='+JSON.stringify(_params));
+        
+        if (_invoice_hiddent_listid == '' && _selected_businessno == '') {
           window.location = url.resolveScript({
             scriptId: scriptID,
             deploymentId: deployID,
