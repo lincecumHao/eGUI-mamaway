@@ -315,7 +315,7 @@ define([
     var _mainaddress_text = _seller_obj.business_address
     //暫借欄位做統編
     var _ban = _taxid
-    var _legalname = _seller_obj.contact_email
+    var _legalname = _companyname
     ////////////////////////////////////////////////////////////////////////////////////////////
     //適用零稅率規定
     var _applicable_zero_tax_field = form.addField({
