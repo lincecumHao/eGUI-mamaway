@@ -1081,7 +1081,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
 	  var _businessSearch = search
 		      .create({
 		        type: 'customrecord_gw_business_entity',
-		        columns: ['custrecord_gw_be_tax_id_number', 'custrecord_gw_be_gui_title'],
+		        columns: ['custrecord_gw_be_tax_id_number', 'custrecord_gw_be_gui_title', 'custrecord_gw_be_ns_subsidiary'],
 		        filters: ['custrecord_gw_be_ns_subsidiary', 'is', subsidiary]
 		      })
 		      .run()
@@ -1094,17 +1094,21 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
 		        var _be_gui_title = result.getValue({
 		          name: 'custrecord_gw_be_gui_title',
 		        })
+		        var _be_ns_subsidiary = result.getValue({
+		          name: 'custrecord_gw_be_ns_subsidiary',
+		        })
 		        
 		        var _obj = {
 		        	'tax_id_number': _tax_id_number,
-		        	'be_gui_title': _be_gui_title
+		        	'be_gui_title': _be_gui_title,
+		        	'subsidiary': _be_ns_subsidiary
 		        }
 		        
 		        _comapny_ary.push(_obj);
 		      
 		        return true
 		      }) 
-	  
+	   
 		      return _comapny_ary;
   }
   

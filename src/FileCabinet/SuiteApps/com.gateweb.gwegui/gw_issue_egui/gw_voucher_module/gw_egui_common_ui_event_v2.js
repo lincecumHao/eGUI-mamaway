@@ -974,12 +974,17 @@ define([
           return
         }
 
+        
+        var _selected_business_no = _currentRecord.getValue({
+            fieldId: 'custpage_businessno',
+          })
         var _voucher_hiddent_listid = _currentRecord.getValue({
           fieldId: 'custpage_voucher_hiddent_listid',
         })
 
         startBatchProcess(
           voucher_open_type,
+          _selected_business_no,
           _voucher_hiddent_listid,
           _cancel_reason
         )
@@ -1031,6 +1036,7 @@ define([
 
   function startBatchProcess(
     voucher_open_type,
+    business_no,
     voucher_hiddent_listid,
     cancel_reason
   ) {
@@ -1066,6 +1072,12 @@ define([
         fieldId: 'custrecord_gw_voucher_void_comment',
         value: cancel_reason,
       })
+      _voucherApplyRecord.setValue({
+        fieldId: 'custrecord_gw_voucher_apply_seller',
+        value: business_no,
+      })
+      
+      
       //_voucherApplyRecord.setValue({fieldId:'custrecord_gw_voucher_apply_yearmonth',value:_year_month});
       //_voucherApplyRecord.setValue({fieldId:'custrecord_gw_voucher_apply_seller',value:applyMainObj.company_ban});
       //_voucherApplyRecord.setValue({fieldId:'custrecord_gw_voucher_apply_seller_name',value:applyMainObj.company_name});
