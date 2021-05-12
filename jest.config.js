@@ -91,5 +91,25 @@ module.exports = SuiteCloudJestConfiguration.build({
       path:
         '<rootDir>/src/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_dao/consolidatePaymentCode/gw_dao_consolidate_payment_code_21',
     },
+    {
+      module: 'gwEguiService',
+      path:
+        '<rootDir>/src/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/gw_egui_service',
+    },
+    {
+      module: 'gwInvoiceService',
+      path:
+        '<rootDir>/src/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/gw_invoice_service',
+    },
+    {
+      module: 'gwInvToGuiMapper',
+      path:
+        '<rootDir>/src/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/services/mapper/gw_service_map_inv_egui',
+    },
+    {
+      module: 'InvToGuiMapper',
+      path:
+        '<rootDir>/src/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/services/mapper/gw_service_map_inv_egui_instance',
+    },
   ],
 })

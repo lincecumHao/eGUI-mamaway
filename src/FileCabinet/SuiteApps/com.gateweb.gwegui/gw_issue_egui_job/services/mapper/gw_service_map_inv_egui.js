@@ -1,32 +1,30 @@
 define([
-  '../library/ramda.min',
-  '../library/gw_date_util',
-  './gw_transform_util',
-  '../gw_dao/settings/gw_dao_egui_config_21',
-  '../gw_dao/busEnt/gw_dao_business_entity_21',
-  '../gw_dao/guiType/gw_dao_egui_type_21',
-  '../gw_dao/applyPeriod/gw_dao_apply_period_21',
-  '../gw_dao/docFormat/gw_dao_doc_format_21',
-  '../gw_dao/migType/gw_dao_mig_type_21',
-  '../gw_dao/taxCalcMethod/gw_dao_tax_calc_method_21',
-  '../gw_dao/taxType/gw_dao_tax_type_21',
-  './gw_egui_main_fields',
-  './gw_egui_line_fields',
-], function (
+  '../../../library/ramda.min',
+  '../../../library/gw_date_util',
+  '../gw_mapping_util',
+  '../../../gw_dao/settings/gw_dao_egui_config_21',
+  '../../../gw_dao/busEnt/gw_dao_business_entity_21',
+  '../../../gw_dao/guiType/gw_dao_egui_type_21',
+  '../../../gw_dao/applyPeriod/gw_dao_apply_period_21',
+  '../../../gw_dao/docFormat/gw_dao_doc_format_21',
+  '../../../gw_dao/taxCalcMethod/gw_dao_tax_calc_method_21',
+  '../../../gw_dao/taxType/gw_dao_tax_type_21',
+  '../../domain/vo/egui/gw_egui_main_fields',
+  '../../domain/vo/egui/gw_egui_line_fields',
+], (
   ramda,
   dateUtil,
-  gwObjectMapper,
+  gwObjectMappingUtil,
   gwEguiConfigDao,
   gwBusinessEntityDao,
   gwGuiTypeDao,
   gwApplyPeriodDao,
   gwDocFormatDao,
-  gwMigTypeDao,
   gwTaxCalculationDao,
   gwTaxTypeDao,
   mainFields,
   lineFields
-) {
+) => {
   /**
    * Module Description...
    *
@@ -39,10 +37,10 @@ define([
    * @NModuleScope Public
 
    */
-  var exports = {}
+  let exports = {}
 
   // Fill in values in body if field is missing
-  function updateBodyValues(eguiMain, action) {
+  function updateBodyValues(eguiMain) {
     var configuration = gwEguiConfigDao.getConfig()
     var eguiMainObj = JSON.parse(JSON.stringify(eguiMain))
     var seller = gwBusinessEntityDao.getBySubsidiary(eguiMainObj.subsidiaryId)
@@ -68,37 +66,48 @@ define([
       eguiMainObj['documentNumber'] = eguiMainObj.eguiNumStart
       eguiMainObj.isUploadEGui = 'F'
     }
-    if (!eguiMainObj['docFormat'])
-      eguiMainObj['docFormat'] = gwDocFormatDao.getById(
-        configuration.defaultEGuiFormat.value
-      )
     eguiMainObj['taxCalculationMethod'] = eguiMainObj['taxCalculationMethod']
       ? eguiMainObj['taxCalculationMethod']
       : gwTaxCalculationDao.getById(configuration.taxCalcMethod.value)
-    if (action === 'ISSUE') {
-      eguiMainObj['migType'] = gwMigTypeDao.getIssueEguiMigType(
-        gwMigTypeDao.businessTranTypeEnum.B2C
-      )
-    }
-    eguiMainObj['documentStatus'] = mainFields.voucherStatus.VOUCHER_ISSUE
+
+    eguiMainObj['documentStatus'] = getDocumentStatus(
+      eguiMainObj['isIssueEgui'],
+      eguiMainObj['isNotUploadEGui']
+    )
     eguiMainObj['documentUploadStatus'] =
       eguiMainObj.isUploadEGui === 'F'
         ? mainFields.uploadStatus.NOT_UPLOAD
         : mainFields.uploadStatus.PENDING_UPLOAD
+
     eguiMainObj['needUploadMig'] =
       eguiMainObj['isNotUploadEGui'] === 'F' ? 'ALL' : 'NONE'
     eguiMainObj['printMark'] =
       !eguiMainObj['carrierType'] && !eguiMainObj['donationCode'] ? 'Y' : 'N'
+
+    eguiMainObj['docFormat'] = eguiMainObj['docFormat']
+      ? eguiMainObj['docFormat']
+      : gwDocFormatDao.getDefaultArGuiFormat(eguiMainObj['guiType'].value)
+    log.debug({ title: 'eguiMainObj', details: eguiMainObj })
     return eguiMainObj
+  }
+
+  // TBD: more scenarios might be applicable
+  function getDocumentStatus(isIssueEgui, isNotUploadEgui) {
+    var issueEgui = isIssueEgui === 'T'
+    var uploadEgui = isNotUploadEgui === 'F'
+    if (issueEgui && uploadEgui) return mainFields.voucherStatus.VOUCHER_ISSUE
+    if (issueEgui && !uploadEgui)
+      return mainFields.voucherStatus.VOUCHER_SUCCESS
   }
 
   function transformLines(tranLines) {
     return ramda.map((line) => {
-      var eguiLine = gwObjectMapper.mapFrom(line, lineFields)
+      var eguiLine = gwObjectMappingUtil.mapFrom(line, lineFields)
       eguiLine['taxRate'] = line['rate.taxItem']
       return eguiLine
     }, tranLines)
   }
+
   // Fill in values in lines if field is missing
   function updateLines(eguiLines) {
     var lineSeq = 1
@@ -252,13 +261,16 @@ define([
       'NETSUITE'
     )
   }
-  class transformEguiService {
-    constructor() {}
 
-    transformInvToEgui(invObj, action) {
-      var eguiMain = gwObjectMapper.mapFrom(invObj, mainFields)
-      var lines = transformLines(invObj.lines)
-      eguiMain = updateBodyValues(eguiMain, action)
+  class InvoiceToEguiMapper {
+    constructor(invObj) {
+      this.invoice = invObj
+    }
+
+    transform(action) {
+      var eguiMain = gwObjectMappingUtil.mapFrom(this.invoice, mainFields)
+      var lines = transformLines(this.invoice.lines)
+      eguiMain = updateBodyValues(eguiMain)
       lines = updateLines(lines)
       this.egui = this.calculateLinesAndMergeToMain(eguiMain, lines)
       return this.egui
@@ -274,5 +286,5 @@ define([
     }
   }
 
-  return transformEguiService
+  return InvoiceToEguiMapper
 })

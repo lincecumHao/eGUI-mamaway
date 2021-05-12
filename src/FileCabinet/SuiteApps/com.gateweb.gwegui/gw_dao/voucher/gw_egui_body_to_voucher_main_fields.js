@@ -19,53 +19,53 @@ define(['../../library/ramda.min'], function (ramda) {
   var fieldConfig = {
     name: {
       id: 'name',
-      sourceField: '',
-      outputField: 'name',
+      sourceField: 'name',
+      outputField: '',
     },
-    custrecord_gw_voucher_type: {
+    documentType: {
       id: 'custrecord_gw_voucher_type',
       sourceField: 'documentType',
-      outputField: 'documentType',
+      outputField: '',
     },
-    custrecord_gw_voucher_number: {
+    documentNumber: {
       id: 'custrecord_gw_voucher_number',
       sourceField: 'documentNumber',
-      outputField: 'documentNumber',
+      outputField: '',
     },
-    custrecord_gw_voucher_date: {
+    documentDate: {
       id: 'custrecord_gw_voucher_date',
       sourceField: 'documentDate',
-      outputField: 'documentDate',
+      outputField: '',
     },
-    custrecord_gw_voucher_time: {
+    documentTime: {
       id: 'custrecord_gw_voucher_time',
       sourceField: 'documentTime',
-      outputField: 'documentTime',
+      outputField: '',
     },
-    custrecord_gw_voucher_yearmonth: {
+    documentPeriod: {
       id: 'custrecord_gw_voucher_yearmonth',
       sourceField: 'documentPeriod',
-      outputField: 'documentPeriod',
+      outputField: '',
     },
-    custrecord_voucher_sale_tax_apply_period: {
+    taxApplyPeriod: {
       id: 'custrecord_voucher_sale_tax_apply_period',
       sourceField: 'taxApplyPeriod.id',
-      outputField: 'taxApplyPeriod',
+      outputField: '',
     },
-    custrecord_gw_voucher_sales_tax_apply: {
+    isApplyTax: {
       id: 'custrecord_gw_voucher_sales_tax_apply',
       sourceField: 'isIssueEgui',
-      outputField: 'isApplyTax',
+      outputField: '',
     },
-    custrecord_gw_seller: {
+    sellerTaxId: {
       id: 'custrecord_gw_seller',
       sourceField: 'sellerTaxId',
-      outputField: 'sellerTaxId',
+      outputField: '',
     },
-    custrecord_gw_seller_name: {
+    sellerName: {
       id: 'custrecord_gw_seller_name',
       sourceField: 'sellerName',
-      outputField: 'sellerName',
+      outputField: '',
     },
     custrecord_gw_seller_address: {
       id: 'custrecord_gw_seller_address',

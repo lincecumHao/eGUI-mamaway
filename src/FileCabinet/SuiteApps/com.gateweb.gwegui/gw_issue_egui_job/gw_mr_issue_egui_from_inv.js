@@ -3,7 +3,8 @@ define([
   'N/error',
   '../library/ramda.min',
   './gw_invoice_service',
-], (runtime, error, ramda, gwInvoiceService) => {
+  './gw_egui_service',
+], (runtime, error, ramda, gwInvoiceService, gwEguiService) => {
   /**
    * Module Description...
    *
@@ -38,7 +39,7 @@ define([
    */
   function getInputData(context) {
     log.audit({ title: 'Start ...' })
-    return gwInvoiceService.gwtInvoiceToIssueEguiSearch()
+    return gwInvoiceService.getInvoiceToIssueEguiSearch()
   }
 
   /**
@@ -83,20 +84,17 @@ define([
   function reduce(context) {
     log.audit({ title: '[reduce] Processing Key:', details: context.key })
 
-    var invoiceId = context.key
-    var searchResults = ramda.map((value) => {
-      let invResultObj = JSON.parse(value)
-      invResultObj.id = invoiceId
-      return invResultObj
-    }, context.values)
-    log.debug({
-      title: 'context key values',
-      details: `key: ${invoiceId}, values: ${JSON.stringify(searchResults)}`,
+    var searchResults = context.values.map((value) => {
+      return JSON.parse(value)
     })
     var invoiceObj = gwInvoiceService.composeInvObj(searchResults)
     log.debug({ title: 'reduce invoiceObj', details: invoiceObj })
+    var eguiService = new gwEguiService(invoiceObj)
+    log.debug({ title: 'reduce eguiObj', details: eguiService.getEgui() })
+    var voucherId = eguiService.issueEgui()
+    log.debug({ title: 'reduce voucherId', details: voucherId })
     context.write({
-      key: invoiceId,
+      key: voucherId,
     })
 
     // TODO

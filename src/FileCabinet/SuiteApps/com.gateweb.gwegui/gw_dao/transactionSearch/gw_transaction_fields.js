@@ -1,19 +1,24 @@
 define(['../../library/ramda.min'], function (ramda) {
   /**
-   * Module Description...
-   *
-   * @type {Object} module-name
-   *
-   * @copyright 2021 Gateweb
-   * @author Sean Lin <sean.hyl@gmail.com>
-   *
-   * @NApiVersion 2.0
-   * @NModuleScope Public
+     * Module Description...
+     *
+     * @type {Object} module-name
+     *
+     * @copyright 2021 Gateweb
+     * @author Sean Lin <sean.hyl@gmail.com>
+     *
+     * @NApiVersion 2.0
+     * @NModuleScope Public
 
-   */
+     */
   var exports = {}
   var searchId = 'customsearch_gw_transaction_search'
   var fieldConfig = {
+    internalId: {
+      id: 'internalId',
+      sourceField: '',
+      outputField: 'tranInternalId',
+    },
     mainline: {
       id: 'mainline',
       sourceField: '',

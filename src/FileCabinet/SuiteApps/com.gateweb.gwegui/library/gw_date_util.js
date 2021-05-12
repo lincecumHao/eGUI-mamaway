@@ -56,6 +56,11 @@ define(['./moment-with-locales'], function (moment, config) {
     }
   }
 
+  function getCurrentDateInYYYYMMDD() {
+    var curDateTime = moment().utc().utcOffset(8)
+    return curDateTime.format('YYYYMMDD')
+  }
+
   function getDateObject(dateStr) {
     return moment(dateStr)
   }
@@ -65,5 +70,6 @@ define(['./moment-with-locales'], function (moment, config) {
   exports.getNsCompatibleDate = getNsCompatibleDate
   exports.getCurrentDateTime = getCurrentDateTime
   exports.getDateObject = getDateObject
+  exports.getCurrentDateInYYYYMMDD = getCurrentDateInYYYYMMDD
   return exports
 })

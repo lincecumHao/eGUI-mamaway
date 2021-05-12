@@ -18,7 +18,7 @@ define([
    */
   let exports = {}
 
-  function gwtInvoiceToIssueEguiSearch() {
+  function getInvoiceToIssueEguiSearch() {
     var searchFilters = []
     searchFilters.push(['cogs', 'is', 'F'])
     searchFilters.push('AND')
@@ -66,7 +66,9 @@ define([
     return invMainObj
   }
 
-  exports.gwtInvoiceToIssueEguiSearch = gwtInvoiceToIssueEguiSearch
+  function EguiIssued(eguiInfo) {}
+
+  exports.getInvoiceToIssueEguiSearch = getInvoiceToIssueEguiSearch
   exports.composeInvObj = composeInvObj
   return exports
 })

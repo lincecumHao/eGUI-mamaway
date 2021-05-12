@@ -26,19 +26,19 @@ define([
   gwDaoDocProcessStatus
 ) {
   /**
-   * Module Description...
-   *
-   * @type {Object} module-name
-   *
-   * @copyright 2020 Gateweb
-   * @author Sean Lin <seanlin816@gmail.com>
-   *
-   * @NApiVersion 2.0
-   * @NModuleScope Public
+     * Module Description...
+     *
+     * @type {Object} module-name
+     *
+     * @copyright 2020 Gateweb
+     * @author Sean Lin <seanlin816@gmail.com>
+     *
+     * @NApiVersion 2.0
+     * @NModuleScope Public
 
-   */
+     */
   var exports = {}
-  var recordTypeId = 'customrecord_gw_egui_doc_main'
+  var recordTypeId = 'customrecord_gw_voucher_main'
   var columnObj = gwDocMainFields.fieldIdMapping
   var columns = gwDocMainFields.allFieldIds
   var columnMap = gwDocMainFields.fieldOutputMapping

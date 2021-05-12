@@ -1,4 +1,4 @@
-define(['../library/ramda.min'], (ramda) => {
+define(['../../library/ramda.min'], (ramda) => {
   /**
          * Module Description...
          *
@@ -68,7 +68,7 @@ define(['../library/ramda.min'], (ramda) => {
     mapTo(fromObj, fieldConfig) {
       return ramda.reduce(
         function (result, fieldId) {
-          return convertToFields(fromObj, fieldConfig.fields[fieldId], result)
+          return convertFields(fromObj, fieldConfig.fields[fieldId], result)
         },
         {},
         Object.keys(fieldConfig.fieldOutputMapping)

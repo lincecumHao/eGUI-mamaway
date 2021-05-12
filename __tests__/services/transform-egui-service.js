@@ -39,6 +39,7 @@ describe('Basic jest test with simple assert', () => {
     gwTaxTypeDao.getByValue.mockReturnValue(mockData.taxableTaxType)
     const service = new eguiTransformService()
     const eguiObj = service.transformInvToEgui(mockData.invoice, 'ISSUE')
+    console.log(JSON.stringify(eguiObj))
     expect(JSON.stringify(eguiObj)).toBe(JSON.stringify(mockData.egui))
   })
 })

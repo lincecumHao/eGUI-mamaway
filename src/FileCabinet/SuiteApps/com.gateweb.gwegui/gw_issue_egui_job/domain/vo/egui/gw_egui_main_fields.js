@@ -1,4 +1,4 @@
-define(['../library/ramda.min'], function (ramda) {
+define(['../../../../library/ramda.min'], function (ramda) {
   /**
    * Module Description...
    *

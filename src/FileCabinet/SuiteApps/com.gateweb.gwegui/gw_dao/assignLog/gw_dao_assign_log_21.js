@@ -1,8 +1,21 @@
 define([
+  'N/record',
   './gw_record_fields',
   '../../library/ramda.min',
   '../../library/gw_lib_search',
-], (fieldConfig, ramda, searchLib) => {
+], (record, fieldConfig, ramda, searchLib) => {
+  /**
+   * Module Description...
+   *
+   * @type {Object} module-name
+   *
+   * @copyright 2021 Gateweb
+   * @author Sean Lin <sean.hyl@gmail.com>
+   *
+   * @NApiVersion 2.1
+   * @NModuleScope Public
+
+   */
   function getSearchFilters(params) {
     return insertAndOperators(convertParamsToSearchFilters(params))
   }
@@ -90,6 +103,7 @@ define([
 
     guiNumberPicked(books) {
       var updateRecords = ramda.map((book) => {
+        log.debug({ title: 'guiNumberPicked book', details: book })
         return {
           id: book.id,
           values: {
