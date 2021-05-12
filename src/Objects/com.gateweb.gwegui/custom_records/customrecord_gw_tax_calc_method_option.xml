@@ -120,13 +120,13 @@
   <instances>
     <instance scriptid="val_111434_t2411467_263">
       <custrecord_gw_tcm_text>Get NetSuite Field Values</custrecord_gw_tcm_text>
-      <custrecord_gw_tcm_value>NS</custrecord_gw_tcm_value>
+      <custrecord_gw_tcm_value>NETSUITE</custrecord_gw_tcm_value>
       <isinactive>F</isinactive>
       <name>Get NetSuite Field Values</name>
     </instance>
     <instance scriptid="val_111435_t2411467_462">
       <custrecord_gw_tcm_text>Recalculate By Gateweb</custrecord_gw_tcm_text>
-      <custrecord_gw_tcm_value>GW</custrecord_gw_tcm_value>
+      <custrecord_gw_tcm_value>GATEWEB</custrecord_gw_tcm_value>
       <isinactive>F</isinactive>
       <name>Recalculate By Gateweb</name>
     </instance>
