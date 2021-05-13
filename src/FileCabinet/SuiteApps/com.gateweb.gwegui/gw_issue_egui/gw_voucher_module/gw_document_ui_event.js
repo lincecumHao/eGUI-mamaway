@@ -511,6 +511,11 @@ define([
       var _user_id = _userObj.id
 
       var _title = '憑證管理'
+    	  
+      //20210513 walter modify	   
+	  var _selected_businessno = _currentRecord.getValue({
+        fieldId: 'custpage_businessno',
+      })
       var _invoiceSelectedIds = _currentRecord.getValue({
         fieldId: 'custpage_invoice_hiddent_listid',
       })
@@ -545,6 +550,7 @@ define([
       if (_invoiceIdAry.length > 1 && _creditMemoAry.length <= 1) {
         //批次作業
         startBatchProcess(
+          _selected_businessno,
           _voucher_open_type,
           _invoicetype,
           _migtype,
@@ -572,6 +578,7 @@ define([
   }
 
   function startBatchProcess(
+	selected_business_no,
     voucher_open_type,
     invoicetype,
     migtype,
@@ -594,6 +601,12 @@ define([
       })
 
       _voucherApplyRecord.setValue({ fieldId: 'name', value: 'VoucherApply' })
+      //20210513 walter modify
+      //business_no=7-24549210[subsidiary_business_no]
+      var _business_no_ary = selected_business_no.split('-');
+      var _business_no = _business_no_ary[1];
+      _voucherApplyRecord.setValue({ fieldId: 'custrecord_gw_voucher_apply_seller', value: _business_no_ary })
+      
       _voucherApplyRecord.setValue({
         fieldId: 'custrecord_gw_voucher_apply_type',
         value: 'APPLY',

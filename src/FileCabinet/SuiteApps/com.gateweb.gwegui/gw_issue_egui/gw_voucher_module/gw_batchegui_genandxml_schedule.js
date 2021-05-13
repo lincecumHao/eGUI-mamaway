@@ -67,6 +67,8 @@ define([
   //放公司基本資料
   var _companyObjAry = []
   var _taxObjAry = []
+  //營業人資料
+  var _seller_comapny_ary = [];
 
   //放期別資料
   var _apply_period_options_ary = []
@@ -288,6 +290,7 @@ define([
           search.createColumn({
             name: 'custrecord_gw_voucher_apply_dept_code',
           }),
+          search.createColumn({ name: 'custrecord_gw_voucher_apply_seller' }),
           search.createColumn({ name: 'custrecord_gw_voucher_apply_class' }),
           search.createColumn({ name: 'custrecord_gw_invoice_todo_list' }),
           search.createColumn({ name: 'custrecord_gw_need_upload_mig' }),
@@ -353,12 +356,16 @@ define([
         })
         var _voucher_apply_userid = result.getValue({
           name: 'custrecord_gw_voucher_apply_userid',
-        })
+        }) 
+        var _apply_seller = result.getValue({
+            name: 'custrecord_gw_voucher_apply_seller',
+          })
         //抓ToDO ID List
         if (stringutility.trim(_invoice_todo_list) !== '') {
           var _obj = {
             internalid: _internalid,
             openType: _voucher_open_type,
+            seller: _apply_seller,
             invoiceType: _invoice_type,
             migType: _mig_type,
             applyDeptCode: _voucher_apply_dept_code,
@@ -386,23 +393,10 @@ define([
     var _jsonObjAry = []
 
     try {
-      /////////////////////////////////////////////////////////////
-      var _taxid = companyInfo.getValue({
-        fieldId: 'taxid',
-      })
-      var _companyname = companyInfo.getValue({
-        fieldId: 'companyname',
-      })
-      var _mainaddress_text = companyInfo.getValue({
-        fieldId: 'mainaddress_text',
-      })
-      //暫借欄位做統編
-      var _ban = companyInfo.getValue({
-        fieldId: 'employerid',
-      })
-      var _legalname = companyInfo.getValue({
-        fieldId: 'legalname',
-      })
+      /////////////////////////////////////////////////////////////  
+      var _mainaddress_text = companyInfo.address 
+      var _ban = companyInfo.tax_id_number
+      var _legalname = companyInfo.be_gui_title
 
       ////////////////////////////////////////////////////////////
       //this search is ordered by id, taxrate
@@ -2717,23 +2711,10 @@ define([
     var _jsonObjAry = []
 
     try {
-      /////////////////////////////////////////////////////////////
-      var _taxid = companyInfo.getValue({
-        fieldId: 'taxid',
-      })
-      var _companyname = companyInfo.getValue({
-        fieldId: 'companyname',
-      })
-      var _mainaddress_text = companyInfo.getValue({
-        fieldId: 'mainaddress_text',
-      })
-      //暫借欄位做統編
-      var _ban = companyInfo.getValue({
-        fieldId: 'employerid',
-      })
-      var _legalname = companyInfo.getValue({
-        fieldId: 'legalname',
-      })
+      ///////////////////////////////////////////////////////////// 
+      var _mainaddress_text = companyInfo.address 
+      var _ban = companyInfo.tax_id_number
+      var _legalname = companyInfo.be_gui_title
       ////////////////////////////////////////////////////////////
       //this search is ordered by id, taxrate
       var _mySearch = search.load({
@@ -3372,21 +3353,27 @@ define([
     loadAllCustomerRecord()
     //2.載入稅別資料
     loadAllTaxInformation()
+    //2.2.載入營業人資料
+    loadAllSellerInfo()
     //3.取得待辦項目清單
     var _incoiceIdjAry = getVoucherSingleScheduleToDoList()
+    log.debug('get IncoiceIdjAry', JSON.stringify(_incoiceIdjAry))
     //4.處理
     if (_incoiceIdjAry.length != 0) {
       //Load company information
+      /**
       var _companyInfo = config.load({
         type: config.Type.COMPANY_INFORMATION,
       })
-
+      */
       //2. 逐筆[批]進行
       var _voucher_type = 'EGUI'
       var _invoice_completed_ids_ary = []
       for (var i = 0; i < _incoiceIdjAry.length; i++) {
         var _obj = _incoiceIdjAry[i]
 
+        //賣方統編
+        var _seller = _obj.seller
         var _internalid = _obj.internalid
         var _invoice_type = _obj.invoiceType
         var _mig_type = _obj.migType
@@ -3399,6 +3386,9 @@ define([
         var _apply_user_id = _obj.applyUserId
 
         //2.1. 處理發票
+        //取得公司資料
+        var _companyInfo = getSellerInfoByBusinessNo(_seller)
+        
         //2.1.1. 整理發票資料
         var _invoiceObjAry = getVoucherInvoiceMainAndDetails(
           _mig_type,
@@ -3525,6 +3515,62 @@ define([
       log.error(e.name, e.message)
     }
     return _companyObj
+  }
+  
+  /////////////////////////////////////////////////////////////////////////////
+  //取得營業人資料 
+  function loadAllSellerInfo() { 
+	  var _businessSearch = search
+		      .create({
+		        type: 'customrecord_gw_business_entity',
+		        columns: ['custrecord_gw_be_tax_id_number', 'custrecord_gw_be_gui_title', 'custrecord_gw_be_ns_subsidiary', 'custrecord_gw_be_business_address'],
+		        //filters: ['custrecord_gw_be_ns_subsidiary', 'is', subsidiary]
+		      })
+		      .run()
+		      .each(function (result) {
+		        var _internalid = result.id
+		
+		        var _tax_id_number = result.getValue({
+		          name: 'custrecord_gw_be_tax_id_number',
+		        })
+		        var _be_gui_title = result.getValue({
+		          name: 'custrecord_gw_be_gui_title',
+		        })
+		        var _be_ns_subsidiary = result.getValue({
+		          name: 'custrecord_gw_be_ns_subsidiary',
+		        })
+		        var _business_address = result.getValue({
+		          name: 'custrecord_gw_be_business_address',
+		        })
+		        
+		        var _obj = {
+		        	'tax_id_number': _tax_id_number,
+		        	'be_gui_title': _be_gui_title,
+		        	'subsidiary': _be_ns_subsidiary,
+		        	'address': _business_address
+		        }
+		        
+		        _seller_comapny_ary.push(_obj);
+		      
+		        return true
+		      })   
+  }
+  
+  function getSellerInfoByBusinessNo(business_no) { 
+	  var _company_obj
+	  if (_seller_comapny_ary.length==0) {
+		  loadAllSellerInfo();
+	  }	
+	  log.debug('get all seller_comapny_ary', JSON.stringify(_seller_comapny_ary))
+	  for(var i=0;i <_seller_comapny_ary.length; i++) {
+		  var _obj = _seller_comapny_ary[i];
+		  if (_obj.tax_id_number==business_no) {
+			  _company_obj = _obj;
+			  break;
+		  }
+	  }
+	   
+	  return _company_obj;
   }
 
   /////////////////////////////////////////////////////////////////////////////
