@@ -605,7 +605,7 @@ define([
       //business_no=7-24549210[subsidiary_business_no]
       var _business_no_ary = selected_business_no.split('-');
       var _business_no = _business_no_ary[1];
-      _voucherApplyRecord.setValue({ fieldId: 'custrecord_gw_voucher_apply_seller', value: _business_no_ary })
+      _voucherApplyRecord.setValue({ fieldId: 'custrecord_gw_voucher_apply_seller', value: _business_no })
       
       _voucherApplyRecord.setValue({
         fieldId: 'custrecord_gw_voucher_apply_type',
