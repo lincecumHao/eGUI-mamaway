@@ -2552,6 +2552,9 @@ define([
             console.log(e.name + ':' + e.message)
           }
 
+          //20210514 walter modify
+          var _gw_ns_document_apply_id_ary = [];
+          
           if (typeof _details !== 'undefined') {
             for (var j = 0; j < _details.length; j++) {
               var _obj = _details[j]
@@ -2663,6 +2666,9 @@ define([
                 fieldId: 'custrecord_gw_ns_document_apply_id',
                 value: _obj.invoice_id,
               })
+              
+              _gw_ns_document_apply_id_ary.push(_obj.invoice_id);
+              
               _voucherDetailRecord.setValue({
                 fieldId: 'custrecord_gw_ns_document_number',
                 value: _obj.invoice_number,
@@ -2694,10 +2700,11 @@ define([
                 console.log(e.name + ':' + e.message)
               }
             }
-
+            alert('gw_ns_document_apply_id_ary 2 : '+_gw_ns_document_apply_id_ary.toString())
             try {
               var values = {}
               values['custrecord_gw_is_completed_detail'] = true
+              values['custrecord_gw_ns_transaction'] = _gw_ns_document_apply_id_ary
               var _id = record.submitFields({
                 type: _voucher_main_record,
                 id: _mainRecordId,

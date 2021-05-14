@@ -194,11 +194,12 @@ define([
       
       log.debug('invoice _result', JSON.stringify(_result))
       
+      /**
       var _item_subsidiary;
       if (_result.values.subsidiary.length != 0) {
     	  _item_subsidiary = _result.values.subsidiary[0].value
       } 
-       
+      */
       var internalid = _result.id
 
       var _invoice_status = ''
@@ -599,12 +600,12 @@ define([
     if (_myResultSet !== null) {
       _mySearch.run().each(function (result) {
         var _result = JSON.parse(JSON.stringify(result))
-        
+        /**
         var _item_subsidiary;
         if (_result.values.subsidiary.length != 0) {
     	    _item_subsidiary = _result.values.subsidiary[0].value
         } 
-
+        */
         var internalid = _result.id
 
         var _creditmemo_status = ''
