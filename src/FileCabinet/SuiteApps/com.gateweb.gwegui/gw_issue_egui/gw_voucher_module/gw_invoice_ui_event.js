@@ -2704,7 +2704,7 @@ define([
             try {
               var values = {} 
               values['custrecord_gw_is_completed_detail'] = true   
-              values['custrecord_gw_ns_transaction'] = _gw_ns_document_apply_id_ary 
+              values['custrecord_gw_ns_transaction'] = _gw_ns_document_apply_id_ary.toString() 
                             
               //alert('values='+JSON.stringify(values));
               
