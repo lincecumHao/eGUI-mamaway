@@ -1099,8 +1099,12 @@ define([
       log.debug('searchNetsuiteDocumentList result', JSON.stringify(result))
 
       var _ns_document_type = _result.values.custrecord_gw_ns_document_type
-      var _ns_document_apply_id =
-        _result.values.custrecord_gw_ns_document_apply_id
+      //20210514 walter modify _ns_document_apply_id 
+      var _ns_document_apply_id = -1;
+      if (_result.values.custrecord_gw_ns_document_apply_id.length != 0) {
+    	  _ns_document_apply_id = _result.values.custrecord_gw_ns_document_apply_id[0].value //529           
+      }
+      
       var _ns_document_number = _result.values.custrecord_gw_ns_document_number
       ///////////////////////////////////////////////////////////////////
       if (_index_ns_document_number.indexOf(_ns_document_number) == -1) {
