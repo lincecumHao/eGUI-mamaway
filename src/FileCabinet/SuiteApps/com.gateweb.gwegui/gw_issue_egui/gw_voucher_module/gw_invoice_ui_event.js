@@ -2702,9 +2702,11 @@ define([
             }
    
             try {
-              var values = {}
-              values['custrecord_gw_is_completed_detail'] = true           
-              values['custrecord_gw_ns_transaction'] = _gw_ns_document_apply_id_ary
+              var values = {} 
+              values['custrecord_gw_is_completed_detail'] = true   
+              values['custrecord_gw_ns_transaction'] = _gw_ns_document_apply_id_ary 
+                            
+              //alert('values='+JSON.stringify(values));
               
               var _id = record.submitFields({
                 type: _voucher_main_record,
@@ -2715,7 +2717,7 @@ define([
                   ignoreMandatoryFields: true,
                 },
               })
-            } catch (e) {
+            } catch (e) {            	
               console.log(e.name + ':' + e.message)
             }
           }
@@ -3226,6 +3228,8 @@ define([
           //處理detail 分發票開立 [MIX or SINGLE]
           var _item_voucher_open_type = _main.voucher_open_type
 
+          var _gw_ns_document_apply_id_ary = []
+          
           if (_item_voucher_open_type === 'SINGLE') {
             //各自開立
             var _eGUIDetails = _all_Deduction_EGUIItems
@@ -3409,6 +3413,9 @@ define([
                       fieldId: 'custrecord_gw_ns_document_apply_id',
                       value: _obj.invoice_id,
                     })
+                    
+                    _gw_ns_document_apply_id_ary.push(_obj.invoice_id)
+                    
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_ns_document_number',
                       value: _obj.invoice_number,
@@ -3513,6 +3520,8 @@ define([
             try {
               var values = {}
               values['custrecord_gw_is_completed_detail'] = true
+              values['custrecord_gw_ns_transaction'] = _gw_ns_document_apply_id_ary 
+              
               var _id = record.submitFields({
                 type: _voucher_main_record,
                 id: _mainRecordId,
@@ -3638,6 +3647,9 @@ define([
                   fieldId: 'custrecord_gw_ns_document_apply_id',
                   value: _obj.invoice_id,
                 })
+                
+                _gw_ns_document_apply_id_ary.push(_obj.invoice_id)
+                
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_ns_document_number',
                   value: _obj.invoice_number,
@@ -3710,6 +3722,8 @@ define([
             try {
               var values = {}
               values['custrecord_gw_is_completed_detail'] = true
+              values['custrecord_gw_ns_transaction'] = _gw_ns_document_apply_id_ary
+              
               var _id = record.submitFields({
                 type: _voucher_main_record,
                 id: _mainRecordId,

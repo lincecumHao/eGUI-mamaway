@@ -2168,6 +2168,8 @@ define([
 
       if (typeof jsonObj !== 'undefined') {
         var _row = 0
+        
+        var _gw_ns_document_apply_id = -1;
         if (typeof detail_item_ary !== 'undefined') {
           for (var i = 0; i < detail_item_ary.length; i++) {
             var _detailObj = detail_item_ary[i]
@@ -2280,16 +2282,22 @@ define([
               fieldId: 'custrecord_gw_ns_document_type',
               value: _detailObj.nsDocumentType,
             })
+            
+            
             if (_detailObj.nsDocumentType == 'SALES_ORDER') {
               _voucherDetailRecord.setValue({
                 fieldId: 'custrecord_gw_ns_document_apply_id',
                 value: stringutility.convertToInt(_detailObj.nsDocumentApplyId),
               })
+              
+              _gw_ns_document_apply_id = stringutility.convertToInt(_detailObj.nsDocumentApplyId)
             } else {
               _voucherDetailRecord.setValue({
                 fieldId: 'custrecord_gw_ns_document_apply_id',
                 value: stringutility.convertToInt(jsonObj.applyId),
               })
+              
+              _gw_ns_document_apply_id = stringutility.convertToInt(jsonObj.applyId)
             }
             _voucherDetailRecord.setValue({
               fieldId: 'custrecord_gw_ns_document_number',
@@ -2347,8 +2355,12 @@ define([
           }
 
           try {
+        	var _gw_ns_document_apply_id_ary=[];
+        	_gw_ns_document_apply_id_ary.push(_gw_ns_document_apply_id);
+        	   
             var values = {}
             values['custrecord_gw_is_completed_detail'] = true
+            values['custrecord_gw_ns_transaction'] = _gw_ns_document_apply_id_ary
             var _id = record.submitFields({
               type: _voucher_main_record,
               id: _mainRecordId,
