@@ -253,6 +253,11 @@ define(['../../../../library/ramda.min'], function (ramda) {
       sourceField: 'custbody_gw_applicable_zero_tax',
       outputField: '',
     },
+    sellerProfile: {
+      id: 'sellerProfile',
+      sourceField: '',
+      outputField: '',
+    },
   }
 
   var inputMapping = (fieldConfig) => {

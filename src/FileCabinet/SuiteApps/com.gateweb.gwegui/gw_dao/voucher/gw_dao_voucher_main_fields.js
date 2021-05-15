@@ -332,6 +332,11 @@ define(['../../library/ramda.min'], function (ramda) {
       sourceField: 'migType.id',
       outputField: 'migTypeOption',
     },
+    custrecord_gw_dm_seller_profile: {
+      id: 'custrecord_gw_dm_seller_profile',
+      sourceField: 'sellerProfile',
+      outputField: 'sellerProfile',
+    },
   }
 
   var fieldInputMapping = ramda.reduce(

@@ -1,30 +1,46 @@
-define(['N/runtime', 'N/file', 'N/render', 'N/email'], (
-  runtime,
-  file,
-  render,
-  email
-) => {
+define([
+  'N/runtime',
+  'N/file',
+  'N/render',
+  'N/email',
+  '../../../library/ramda.min',
+], (runtime, file, render, email, ramda) => {
   /**
-         * Module Description...
-         *
-         * @type {Object} module-name
-         *
-         * @copyright 2021 Gateweb
-         * @author Sean Lin <sean.hyl@gmail.com>
-         *
-         * @NApiVersion 2.1
-         * @NModuleScope Public
+     * Module Description...
+     *
+     * @type {Object} module-name
+     *
+     * @copyright 2021 Gateweb
+     * @author Sean Lin <sean.hyl@gmail.com>
+     *
+     * @NApiVersion 2.1
+     * @NModuleScope Public
 
-         */
+     */
   var debuggerPath =
     'SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/services/email'
+
   function isInDebuggerMode() {
     return runtime.executionContext === runtime.ContextType.DEBUGGER
+  }
+
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   }
 
   function getHtmlTemplateFile() {
     var filename = 'eguiEmailTemplate.ftl'
     return isInDebuggerMode() ? `${debuggerPath}/${filename}` : `./${filename}`
+  }
+
+  function updateEguiObj(eguiObj) {
+    var eguiObjClone = JSON.parse(JSON.stringify(eguiObj))
+    eguiObjClone.lines = ramda.map((line) => {
+      line.unitPrice = Math.round(parseInt(line.unitPrice))
+      line.salesAmt = Math.round(parseInt(line.salesAmt))
+      return line
+    }, eguiObjClone.lines)
+    return eguiObjClone
   }
 
   class EmailService {
@@ -42,15 +58,18 @@ define(['N/runtime', 'N/file', 'N/render', 'N/email'], (
       return htmlRenderer.renderAsString()
     }
 
-    send(eguiObj) {
-      var emailContent = this.getEmailBody(eguiObj)
+    send(subject, eguiObj) {
+      var eguiObjUpdated = updateEguiObj(eguiObj)
+      var buyerEmail = eguiObjUpdated.buyerEmail || 'se10@gateweb.com.tw'
+      var emailContent = this.getEmailBody(eguiObjUpdated)
       return email.send({
-        author: 12,
+        author: eguiObjUpdated.sellerProfile.contactEmployee.value,
         body: emailContent,
-        recipients: ['seanlin816@gmail.com'],
-        subject: 'EGUI Test',
+        recipients: [buyerEmail],
+        subject: subject,
       })
     }
   }
+
   return new EmailService()
 })

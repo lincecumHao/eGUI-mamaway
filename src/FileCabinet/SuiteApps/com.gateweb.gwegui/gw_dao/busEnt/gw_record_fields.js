@@ -1,16 +1,16 @@
 define(['../../library/ramda.min'], function (ramda) {
   /**
-   * Module Description...
-   *
-   * @type {Object} module-name
-   *
-   * @copyright 2021 Gateweb
-   * @author Sean Lin <sean.hyl@gmail.com>
-   *
-   * @NApiVersion 2.0
-   * @NModuleScope Public
+     * Module Description...
+     *
+     * @type {Object} module-name
+     *
+     * @copyright 2021 Gateweb
+     * @author Sean Lin <sean.hyl@gmail.com>
+     *
+     * @NApiVersion 2.0
+     * @NModuleScope Public
 
-   */
+     */
   var exports = {}
   var recordId = 'customrecord_gw_business_entity'
   var fieldConfig = {
@@ -149,6 +149,11 @@ define(['../../library/ramda.min'], function (ramda) {
       id: 'custrecord_gw_be_is_non_value_added',
       sourceField: '',
       outputField: 'isNonValueAdded',
+    },
+    custrecord_gw_be_contact: {
+      id: 'custrecord_gw_be_contact',
+      sourceField: '',
+      outputField: 'contactEmployee',
     },
   }
 

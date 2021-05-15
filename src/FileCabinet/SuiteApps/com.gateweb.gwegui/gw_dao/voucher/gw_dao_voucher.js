@@ -1,6 +1,7 @@
 define([
   'N/record',
   '../migType/gw_dao_mig_type_21',
+  '../busEnt/gw_dao_business_entity_21',
   './gw_service_map_egui_voucher',
   './gw_service_map_voucher_egui',
   './gw_dao_voucher_main_fields',
@@ -10,6 +11,7 @@ define([
 ], (
   record,
   gwMigTypeDao,
+  gwBusinessEntityDao,
   gwEguiVoucherMapper,
   gwVoucherEguiMapper,
   mainFields,
@@ -18,17 +20,17 @@ define([
   ramda
 ) => {
   /**
-   * Module Description...
-   *
-   * @type {Object} module-name
-   *
-   * @copyright 2021 Gateweb
-   * @author Sean Lin <sean.hyl@gmail.com>
-   *
-   * @NApiVersion 2.1
-   * @NModuleScope Public
+     * Module Description...
+     *
+     * @type {Object} module-name
+     *
+     * @copyright 2021 Gateweb
+     * @author Sean Lin <sean.hyl@gmail.com>
+     *
+     * @NApiVersion 2.1
+     * @NModuleScope Public
 
-   */
+     */
 
   function getDateStr(dateStr) {
     var date = new Date(dateStr)
@@ -49,6 +51,8 @@ define([
       mainObj['custrecord_gw_voucher_sales_tax_apply'] === 'T'
     mainObj['custrecord_gw_tax_rate'] =
       parseFloat(mainObj['custrecord_gw_tax_rate']) * 100
+    mainObj['custrecord_gw_dm_seller_profile'] =
+      mainObj['custrecord_gw_dm_seller_profile'].id
     mainObj['lines'] = ramda.map((detail) => {
       detail['name'] = 'VoucherDetailRecord'
       detail['custrecord_gw_dtl_voucher_type'] =
@@ -116,6 +120,7 @@ define([
     log.debug({ title: 'UpdateEguiObj', details: egui })
     egui.migTypeOption = gwMigTypeDao.getById(egui.migTypeOption.value)
     egui.taxRate = parseFloat(egui.taxRate) / 100
+    egui.sellerProfile = gwBusinessEntityDao.getById(egui.sellerProfile.value)
     return egui
   }
 

@@ -248,8 +248,8 @@
                                                                             <td colspan="2" style="padding: 0 0 0 27px;">${guiLine.itemName}</td>
                                                                         </tr>
                                                                         <tr style="border-left:1px solid #000000;border-right:1px solid #000000;">
-                                                                            <td colspan="1" style="padding: 0 0 0 0;">　　${eguiLine.unitPrice} * ${eguiLine.quantity}</td>
-                                                                            <td colspan="1" style="padding: 0 0 0 0;">　${eguiLine.salesAmt}</td>
+                                                                            <td colspan="1" style="padding: 0 0 0 0;">　　${guiLine.unitPrice} * ${guiLine.quantity}</td>
+                                                                            <td colspan="1" style="padding: 0 0 0 0;">　${guiLine.salesAmt}</td>
                                                                         </tr>
                                                                         </#list>
                                                                         <tr style="border-left:1px solid #000000;border-right:1px solid #000000;border-bottom:1px solid #000000;">

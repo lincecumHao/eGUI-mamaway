@@ -1,6 +1,5 @@
 define([
   'N/record',
-  '../gw_abstract_dao',
   './gw_record_fields',
   '../eguiBookStatus/gw_dao_egui_book_status_21',
   '../eguiBookType/gw_dao_egui_book_type_21',
@@ -8,18 +7,13 @@ define([
   '../../library/ramda.min',
 ], (
   record,
-  gwDao,
   fieldConfig,
   gwEguiBookStatusDao,
   gwBookTypeDao,
   gwSearchLib,
   ramda
 ) => {
-  class EguiBook extends gwDao.DataAccessObject {
-    getAllOptions() {
-      log.debug({ title: 'GuiBook Dao getAllOptions overwrite' })
-    }
-
+  class EguiBook {
     /**
      *
      * @param searchParams {{taxId:string, taxPeriod: string, department?: string, classification?: string, bookType?: string}}

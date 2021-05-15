@@ -1,15 +1,10 @@
 define([
-  '../gw_abstract_dao',
   './gw_record_fields',
   'N/record',
   '../../library/ramda.min',
   '../eguiBook/gw_dao_egui_book',
-], (gwDao, fieldConfig, record, ramda, gwGuiBookDao) => {
-  class EguiBookImportTask extends gwDao.DataAccessObject {
-    constructor() {
-      super(fieldConfig.recordId, fieldConfig)
-    }
-
+], (fieldConfig, record, ramda, gwGuiBookDao) => {
+  class EguiBookImportTask {
     save(recordObj) {
       var newRecord = record.create({
         type: fieldConfig.recordId,

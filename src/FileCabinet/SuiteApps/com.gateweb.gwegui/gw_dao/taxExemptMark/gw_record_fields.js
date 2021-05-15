@@ -12,6 +12,7 @@ define(['../../library/ramda.min'], function (ramda) {
 
    */
   var exports = {}
+  var recordId = 'customrecord_gw_exempt_option'
   var fieldConfig = {
     name: {
       id: 'name',
@@ -60,5 +61,6 @@ define(['../../library/ramda.min'], function (ramda) {
   })
   exports.fieldOutputMapping = fieldOutputMapping
   exports.fieldInputMapping = fieldInputMapping
+  exports.recordId = recordId
   return exports
 })

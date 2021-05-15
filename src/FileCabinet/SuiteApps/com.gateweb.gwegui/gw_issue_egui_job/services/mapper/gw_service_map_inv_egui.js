@@ -52,6 +52,7 @@ define([
     eguiMainObj['guiType'] = seller.isNonValueAdded
       ? gwGuiTypeDao.getSpecialGuiType()
       : gwGuiTypeDao.getRegularGuiType()
+    eguiMainObj['sellerProfile'] = seller
     eguiMainObj.documentDate = eguiMainObj.documentDate
       ? eguiMainObj.documentDate
       : eguiMainObj.tranDate
@@ -87,6 +88,7 @@ define([
     eguiMainObj['docFormat'] = eguiMainObj['docFormat']
       ? eguiMainObj['docFormat']
       : gwDocFormatDao.getDefaultArGuiFormat(eguiMainObj['guiType'].value)
+
     log.debug({ title: 'eguiMainObj', details: eguiMainObj })
     return eguiMainObj
   }

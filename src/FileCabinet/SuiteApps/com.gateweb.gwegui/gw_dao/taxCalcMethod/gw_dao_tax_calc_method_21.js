@@ -14,9 +14,6 @@ define(['../gw_abstract_dao', './gw_record_fields'], function (
    * @NModuleScope Public
 
    */
-  var exports = {}
-  var recordTypeId = 'customrecord_gw_tax_calc_method_option'
-  var allOptions = []
   class TaxCalculationMethod extends gwDao.DataAccessObject {
     constructor() {
       super(fieldConfig.recordId, fieldConfig)
