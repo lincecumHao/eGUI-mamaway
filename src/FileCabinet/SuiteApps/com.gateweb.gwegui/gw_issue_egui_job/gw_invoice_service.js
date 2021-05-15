@@ -66,9 +66,36 @@ define([
     return invMainObj
   }
 
-  function EguiIssued(eguiInfo) {}
+  function lockInvoice(invId) {
+    var updateValues = {}
+    updateValues[
+      transSearchFields.fields.custbody_gw_lock_transaction.id
+    ] = true
+    record.submitFields({
+      type: record.Type.INVOICE,
+      id: invId,
+      values: updateValues,
+    })
+  }
+
+  function unlockInvoice(invId) {
+    var updateValues = {}
+    updateValues[
+      transSearchFields.fields.custbody_gw_lock_transaction.id
+    ] = false
+    record.submitFields({
+      type: record.Type.INVOICE,
+      id: invId,
+      values: updateValues,
+    })
+  }
+
+  function eguiIssued(eguiObj, voucherId) {}
 
   exports.getInvoiceToIssueEguiSearch = getInvoiceToIssueEguiSearch
   exports.composeInvObj = composeInvObj
+  exports.lockInvoice = lockInvoice
+  exports.unlockInvoice = unlockInvoice
+  exports.eguiIssued = eguiIssued
   return exports
 })

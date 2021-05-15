@@ -1,17 +1,18 @@
 define(['../../library/ramda.min'], (ramda) => {
   /**
-         * Module Description...
-         *
-         * @type {Object} module-name
-         *
-         * @copyright 2021 Gateweb
-         * @author Sean Lin <sean.hyl@gmail.com>
-         *
-         * @NApiVersion 2.1
-         * @NModuleScope Public
+   * Module Description...
+   *
+   * @type {Object} module-name
+   *
+   * @copyright 2021 Gateweb
+   * @author Sean Lin <sean.hyl@gmail.com>
+   *
+   * @NApiVersion 2.1
+   * @NModuleScope Public
 
-         */
+   */
   let exports = {}
+
   function convertFromFields(origObj, fieldObj, targetObj) {
     if (fieldObj.sourceField) {
       targetObj[fieldObj.id] = getFieldValues(origObj, fieldObj.sourceField)
@@ -21,7 +22,7 @@ define(['../../library/ramda.min'], (ramda) => {
 
   function convertToFields(origObj, fieldObj, targetObj) {
     if (fieldObj.outputField) {
-      targetObj[fieldObj.id] = getFieldValues(origObj, fieldObj.outputField)
+      targetObj[fieldObj.outputField] = getFieldValues(origObj, fieldObj.id)
     }
     return targetObj
   }
@@ -68,7 +69,7 @@ define(['../../library/ramda.min'], (ramda) => {
     mapTo(fromObj, fieldConfig) {
       return ramda.reduce(
         function (result, fieldId) {
-          return convertFields(fromObj, fieldConfig.fields[fieldId], result)
+          return convertToFields(fromObj, fieldConfig.fields[fieldId], result)
         },
         {},
         Object.keys(fieldConfig.fieldOutputMapping)

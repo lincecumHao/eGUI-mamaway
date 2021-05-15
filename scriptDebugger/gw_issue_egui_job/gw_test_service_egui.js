@@ -285,8 +285,8 @@ require(['SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/gw_egui_service'], (
       },
     ],
   }
-  const eGuiService = new gwEguiService(invoice)
-  var result = eGuiService.issueEgui()
+  const eGuiService = new gwEguiService()
+  var result = eGuiService.uploadEgui(1302)
   log.debug({ title: 'result', details: result })
   log.debug({ title: 'Execution end' })
 })

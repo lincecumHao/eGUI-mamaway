@@ -83,19 +83,24 @@ define([
    */
   function reduce(context) {
     log.audit({ title: '[reduce] Processing Key:', details: context.key })
-
-    var searchResults = context.values.map((value) => {
-      return JSON.parse(value)
-    })
-    var invoiceObj = gwInvoiceService.composeInvObj(searchResults)
-    log.debug({ title: 'reduce invoiceObj', details: invoiceObj })
-    var eguiService = new gwEguiService(invoiceObj)
-    log.debug({ title: 'reduce eguiObj', details: eguiService.getEgui() })
-    var voucherId = eguiService.issueEgui()
-    log.debug({ title: 'reduce voucherId', details: voucherId })
-    context.write({
-      key: voucherId,
-    })
+    try {
+      var searchResults = context.values.map((value) => {
+        return JSON.parse(value)
+      })
+      gwInvoiceService.lockInvoice(context.key)
+      var invoiceObj = gwInvoiceService.composeInvObj(searchResults)
+      log.debug({ title: 'reduce invoiceObj', details: invoiceObj })
+      var eguiService = new gwEguiService(invoiceObj)
+      log.debug({ title: 'reduce eguiObj', details: eguiService.getEgui() })
+      var voucherId = eguiService.issueEgui()
+      log.debug({ title: 'reduce voucherId', details: voucherId })
+      context.write({
+        key: voucherId,
+      })
+    } catch (e) {
+      gwInvoiceService.unlockInvoice(context.key)
+      throw e
+    }
 
     // TODO
   }

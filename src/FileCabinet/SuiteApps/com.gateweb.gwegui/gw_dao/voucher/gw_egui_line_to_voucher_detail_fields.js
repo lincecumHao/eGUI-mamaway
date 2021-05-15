@@ -141,7 +141,7 @@ define(['../../library/ramda.min'], function (ramda) {
     custrecord_gw_ns_document_id: {
       id: 'custrecord_gw_ns_document_id',
       sourceField: 'tranInternalId',
-      outputField: 'tranInternalId',
+      outputField: '',
     },
     custrecord_gw_ns_document_number: {
       id: 'custrecord_gw_ns_document_number',
@@ -150,8 +150,8 @@ define(['../../library/ramda.min'], function (ramda) {
     },
     custrecord_gw_ns_document_apply_id: {
       id: 'custrecord_gw_ns_document_apply_id',
-      sourceField: '',
-      outputField: '',
+      sourceField: 'tranInternalId',
+      outputField: 'tranInternalId',
     },
     custrecord_gw_ns_document_item_id: {
       id: 'custrecord_gw_ns_document_item_id',
@@ -176,7 +176,7 @@ define(['../../library/ramda.min'], function (ramda) {
     custrecord_gw_dtl_voucher_apply_period: {
       id: 'custrecord_gw_dtl_voucher_apply_period',
       sourceField: '',
-      outputField: '',
+      outputField: 'applyPeriod',
     },
   }
 

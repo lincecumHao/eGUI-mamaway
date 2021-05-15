@@ -153,6 +153,7 @@ define([
       lineSumTotalAmt: 0,
       taxType: [],
       taxRate: [],
+      transactions: [],
     }
     var taxTypeCalculateRoute = {
       1: 'lineSumSalesAmt',
@@ -161,6 +162,7 @@ define([
     }
     var summaryResult = ramda.reduce(
       (result, line) => {
+        log.debug({ title: 'summaryResult line', details: line })
         var summaryFieldId = taxTypeCalculateRoute[line['taxType'].value]
         result[summaryFieldId] += parseFloat(line['salesAmt'])
         result['lineSumTaxAmtAmt'] += parseFloat(line['taxAmt'])
@@ -171,6 +173,9 @@ define([
 
         if (result['taxRate'].indexOf(parseFloat(line['taxRate'])) === -1) {
           result['taxRate'].push(parseFloat(line['taxRate']))
+        }
+        if (line['tranInternalId']) {
+          result['transactions'].push(line['tranInternalId'])
         }
         return result
       },
@@ -250,7 +255,7 @@ define([
     eguiMainObj['totalAmt'] = isCalculateByNs()
       ? Math.round(nsTotalAmt)
       : Math.round(totalAmt)
-
+    eguiMainObj['transactions'] = ramda.uniq(lineSummary['transactions'])
     return eguiMainObj
   }
 
@@ -267,7 +272,7 @@ define([
       this.invoice = invObj
     }
 
-    transform(action) {
+    transform() {
       var eguiMain = gwObjectMappingUtil.mapFrom(this.invoice, mainFields)
       var lines = transformLines(this.invoice.lines)
       eguiMain = updateBodyValues(eguiMain)

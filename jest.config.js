@@ -27,16 +27,6 @@ module.exports = SuiteCloudJestConfiguration.build({
         '<rootDir>/src/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_dao/assignLog/gw_record_fields',
     },
     {
-      module: 'eguiTransformService',
-      path:
-        '<rootDir>/src/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/gw_transform_egui_service',
-    },
-    {
-      module: 'voucherRepo',
-      path:
-        '<rootDir>/src/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/gw_repo_voucher',
-    },
-    {
       module: 'gwEguiConfigDao',
       path:
         '<rootDir>/src/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_dao/settings/gw_dao_egui_config_21',
@@ -107,9 +97,19 @@ module.exports = SuiteCloudJestConfiguration.build({
         '<rootDir>/src/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/services/mapper/gw_service_map_inv_egui',
     },
     {
-      module: 'InvToGuiMapper',
+      module: 'mapUtil',
       path:
-        '<rootDir>/src/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/services/mapper/gw_service_map_inv_egui_instance',
+        '<rootDir>/src/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/services/gw_mapping_util',
+    },
+    {
+      module: 'voucherMainFields',
+      path:
+        '<rootDir>/src/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_dao/voucher/gw_dao_voucher_main_fields',
+    },
+    {
+      module: 'voucherDetailFields',
+      path:
+        '<rootDir>/src/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_dao/voucher/gw_dao_voucher_detail_fields',
     },
   ],
 })

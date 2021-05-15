@@ -1,7 +1,7 @@
 define([
   'N/record',
   'N/format',
-  '../../library/gw_lib_search',
+  '../src/FileCabinet/SuiteApps/com.gateweb.gwegui/library/gw_lib_search',
   './gw_dao_voucher_main_fields',
   './gw_dao_voucher_detail_fields',
   '../docFormat/gw_dao_doc_format_options',

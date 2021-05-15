@@ -322,6 +322,16 @@ define(['../../library/ramda.min'], function (ramda) {
       sourceField: 'needUploadMig',
       outputField: 'needUploadMig',
     },
+    custrecord_gw_ns_transaction: {
+      id: 'custrecord_gw_ns_transaction',
+      sourceField: 'transactions',
+      outputField: '',
+    },
+    custrecord_gw_dm_mig_type: {
+      id: 'custrecord_gw_dm_mig_type',
+      sourceField: 'migType.id',
+      outputField: 'migTypeOption',
+    },
   }
 
   var fieldInputMapping = ramda.reduce(
