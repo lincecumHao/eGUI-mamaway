@@ -325,7 +325,7 @@ define(['../../library/ramda.min'], function (ramda) {
     custrecord_gw_ns_transaction: {
       id: 'custrecord_gw_ns_transaction',
       sourceField: 'transactions',
-      outputField: '',
+      outputField: 'transactions',
     },
     custrecord_gw_dm_mig_type: {
       id: 'custrecord_gw_dm_mig_type',

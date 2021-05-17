@@ -1,6 +1,7 @@
 define([
   '../library/ramda.min',
   '../gw_dao/voucher/gw_dao_voucher',
+  '../gw_dao/uploadLog/gw_dao_xml_upload_log',
   '../gw_dao/assignLog/gw_dao_assign_log_21',
   './services/mapper/gw_service_map_inv_egui',
   './gw_egui_book_service',
@@ -10,6 +11,7 @@ define([
 ], (
   ramda,
   gwVoucherDao,
+  gwUploadLogDao,
   gwAssignLogDao,
   gwInvToGuiMapper,
   gwEguiBookService,
@@ -79,6 +81,7 @@ define([
       }
 
       eguiObj.randomNumber = getRandomNumber()
+      eguiObj.name = eguiObj.documentNumber
       this.egui = eguiObj
       var voucherId = gwVoucherDao.saveEguiToRecord(this.egui)
       gwInvoiceService.eguiIssued(eguiObj, voucherId)
@@ -93,9 +96,9 @@ define([
       log.debug({ title: 'xmlString', details: xmlString })
       var result = gwEguiUploadService.sendToGw(xmlString, filename)
       log.debug({ title: 'result', details: result })
+      gwVoucherDao.eguiUploaded(voucherId, result)
       if (result.code === 200) {
-        // gwVoucherDao.eguiUploaded(voucherId, result)
-      } else {
+        gwUploadLogDao.eguiUploaded(eguiObj, voucherId, xmlString)
       }
       return result
     }

@@ -167,7 +167,21 @@ define([
       return id
     }
 
-    eguiUploaded(voucherId, result) {}
+    eguiUploaded(voucherId, result) {
+      var updateValue = {}
+      var isSuccess = result.code === 200
+      updateValue[
+        mainFields.fields.custrecord_gw_voucher_upload_status.id
+      ] = isSuccess ? 'P' : 'E'
+      updateValue[
+        mainFields.fields.custrecord_gw_uploadstatus_messag.id
+      ] = isSuccess ? result.code : result.body
+      record.submitFields({
+        type: 'customrecord_gw_voucher_main',
+        id: voucherId,
+        values: updateValue,
+      })
+    }
 
     allowanceUploaded(voucherId) {}
   }

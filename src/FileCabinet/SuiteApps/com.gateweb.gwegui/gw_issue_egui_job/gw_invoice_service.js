@@ -90,12 +90,37 @@ define([
     })
   }
 
-  function eguiIssued(eguiObj, voucherId) {}
+  function eguiIssued(eguiObj, voucherId) {
+    log.debug({ title: 'eguiIssued eguiObj', details: eguiObj })
+
+    var updateValues = {}
+    updateValues[transSearchFields.fields.custbody_gw_gui_num_start.id] =
+      eguiObj.documentNumber
+    updateValues[transSearchFields.fields.custbody_gw_gui_num_end.id] =
+      eguiObj.documentNumber
+    record.submitFields({
+      type: record.Type.INVOICE,
+      id: eguiObj.internalId,
+      values: updateValues,
+    })
+  }
+
+  function eguiIssueFailed(eguiObj, voucherId) {
+    log.debug({ title: 'eguiIssueFailed eguiObj', details: eguiObj })
+    // var updateValues = {}
+    // updateValues[transSearchFields.fields] = false
+    // record.submitFields({
+    //   type: record.Type.INVOICE,
+    //   id: invId,
+    //   values: updateValues,
+    // })
+  }
 
   exports.getInvoiceToIssueEguiSearch = getInvoiceToIssueEguiSearch
   exports.composeInvObj = composeInvObj
   exports.lockInvoice = lockInvoice
   exports.unlockInvoice = unlockInvoice
   exports.eguiIssued = eguiIssued
+  exports.eguiIssueFailed = eguiIssueFailed
   return exports
 })

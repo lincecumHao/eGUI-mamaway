@@ -94,6 +94,8 @@ define([
       log.debug({ title: 'reduce eguiObj', details: eguiService.getEgui() })
       var voucherId = eguiService.issueEgui()
       log.debug({ title: 'reduce voucherId', details: voucherId })
+      var uploadEguiResult = eguiService.uploadEgui(voucherId)
+      log.debug({ title: 'eguiUploadResult', details: uploadEguiResult })
       context.write({
         key: voucherId,
       })
