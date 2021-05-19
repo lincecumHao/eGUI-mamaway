@@ -683,6 +683,16 @@ define([
       displayType: serverWidget.FieldDisplayType.HIDDEN,
     })
     //////////////////////////////////////////////////////////////////////////////////////////
+    //BAN
+    var _hidden_business_no = form.addField({
+      id: 'selected_business_no',
+      type: serverWidget.FieldType.TEXT,
+      label: 'HIDDEN',
+    })
+    _hidden_business_no.updateDisplayType({
+      displayType: serverWidget.FieldDisplayType.HIDDEN,
+    })
+    _hidden_business_no.defaultValue = _selected_business_no
     //發票List
     var _hiddeninvoicelistld = form.addField({
       id: 'invoice_hiddent_listid',
@@ -693,7 +703,6 @@ define([
       displayType: serverWidget.FieldDisplayType.HIDDEN,
     })
     _hiddeninvoicelistld.defaultValue = _selected_invoice_Id
-
     //////////////////////////////////////////////////////////////////////////////////////////
 
     /////////////////////////////////////////////////////////////////////////////////////////
