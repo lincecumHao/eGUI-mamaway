@@ -189,30 +189,64 @@ define([
     return _taxObj
   }
 
+  
+  //取得賣方公司資料
+  function getSellerInfo(businessNo) {
+    var _companyObj
+    try {
+		 var _businessSearch = search
+				  .create({
+					type: 'customrecord_gw_business_entity',
+					columns: ['custrecord_gw_be_tax_id_number', 'custrecord_gw_be_gui_title', 'custrecord_gw_be_business_address', 'custrecord_gw_be_contact_email'],
+					filters: ['custrecord_gw_be_tax_id_number', 'is', businessNo]
+				  })
+				  .run()
+				  .each(function (result) {
+					var _internalid = result.id
+
+					var _tax_id_number = result.getValue({
+					  name: 'custrecord_gw_be_tax_id_number',
+					})
+					var _be_gui_title = result.getValue({
+					  name: 'custrecord_gw_be_gui_title',
+					})
+					var _business_address = result.getValue({
+					  name: 'custrecord_gw_be_business_address',
+					})
+					var _contact_email = result.getValue({
+					  name: 'custrecord_gw_be_contact_email',
+					})
+					
+					_companyObj = {
+						'tax_id_number':_tax_id_number,
+						'be_gui_title':_be_gui_title,
+						'business_address':_business_address,
+						'contact_email':_contact_email
+					}
+ 
+					return true
+				  }) 
+	  
+       
+    } catch (e) {
+      log.error(e.name, e.message)
+    }
+
+    return _companyObj
+  }
   //顯示畫面
-  function createFormHeader(form) {
-    /////////////////////////////////////////////////////////////
-    //載入公司資料
-    var _companyInfo = config.load({
-      type: config.Type.COMPANY_INFORMATION,
-    })
-    var _taxid = _companyInfo.getValue({
-      fieldId: 'taxid',
-    })
-    var _companyname = _companyInfo.getValue({
-      fieldId: 'companyname',
-    })
-    var _mainaddress_text = _companyInfo.getValue({
-      fieldId: 'mainaddress_text',
-    })
+  function createFormHeader(apply_business_no, form) {
+	/////////////////////////////////////////////////////////////
+    //load company information
+	var _seller_obj = getSellerInfo(apply_business_no) 
+    var _taxid = _seller_obj.tax_id_number
+    var _companyname = _seller_obj.be_gui_title
+    var _mainaddress_text = _seller_obj.business_address
     //暫借欄位做統編
-    var _ban = _companyInfo.getValue({
-      fieldId: 'employerid',
-    })
-    var _legalname = _companyInfo.getValue({
-      fieldId: 'legalname',
-    })
-    /////////////////////////////////////////////////////////////
+    var _ban = _taxid
+    var _legalname = _companyname
+    ////////////////////////////////////////////////////////////////////////////////////////////
+     /////////////////////////////////////////////////////////////
     var _row01_fieldgroupid = form.addFieldGroup({
       id: 'row01_fieldgroupid',
       label: '憑證資訊',
@@ -1344,6 +1378,8 @@ define([
   }
 
   function onRequest(context) {
+	var _selected_business_no = context.request.parameters.custpage_businessno
+	  log.debug('_selected_business_no', '_selected_business_no=' + _selected_business_no)
     var _select_cash_sale_id = context.request.parameters.select_cash_sale_id
 
     ///////////////////////////////////////////////////////////////////////////////////////////
@@ -1374,7 +1410,7 @@ define([
     //////////////////////////////////////////////////////////////////////////////////////////
     loadAllTaxInformation()
     /////////////////////////////////////////////////////////////////////////////////////////
-    createFormHeader(form)
+    createFormHeader(_selected_business_no, form)
 
     if (_select_cash_sale_id.length != 0) {
       createCashSaleDetails(form, _select_cash_sale_id)
