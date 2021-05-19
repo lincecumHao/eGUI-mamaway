@@ -1,21 +1,17 @@
 define([
   '../library/ramda.min',
   '../gw_dao/voucher/gw_dao_voucher',
-  '../gw_dao/assignLog/gw_dao_assign_log_21',
-  './services/mapper/gw_service_map_inv_egui',
-  './gw_egui_book_service',
+  './services/mapper/gw_service_map_cm_allowance',
   '../gw_dao/migType/gw_dao_mig_type_21',
-  './services/upload/gw_service_upload_egui',
-  './gw_invoice_service',
+  './services/upload/gw_service_upload_allowance',
+  './gw_credit_memo_service',
 ], (
   ramda,
   gwVoucherDao,
-  gwAssignLogDao,
-  gwInvToGuiMapper,
-  gwEguiBookService,
+  gwCmAllowanceMapper,
   gwMigTypeDao,
-  gwEguiUploadService,
-  gwInvoiceService
+  gwAllowanceUploadService,
+  gwCreditMemoService
 ) => {
   /**
    * Module Description...
@@ -45,63 +41,62 @@ define([
     return result.toString()
   }
 
-  class EGuiService {
-    constructor(invObj) {
-      if (invObj) {
-        this.invoice = invObj
-        this.egui = new gwInvToGuiMapper(this.invoice).transform()
+  function getAllowanceNumber() {
+    var timestamp = '20210518081205'
+    var deductEguiNum = 'EH12345678'
+    return `ALW${timestamp}${deductEguiNum}`
+  }
+
+  class AllowanceService {
+    constructor(cmObj) {
+      if (cmObj) {
+        this.creditMemo = cmObj
+        this.allowance = new gwCmAllowanceMapper(this.creditMemo).transform()
       }
     }
 
-    getEgui() {
-      return this.egui
+    getAllowance() {
+      return this.allowance
     }
 
-    issueEgui() {
-      return this.createEgui()
+    issueAllowance() {
+      return this.createAllowance()
     }
 
-    createEgui() {
-      var eguiObj = JSON.parse(JSON.stringify(this.egui))
-      eguiObj['migType'] = gwMigTypeDao.getIssueEguiMigType(
+    createAllowance() {
+      var allowanceObj = JSON.parse(JSON.stringify(this.allowance))
+      allowanceObj['migType'] = gwMigTypeDao.getIssueAllowanceMigType(
         gwMigTypeDao.businessTranTypeEnum.B2C
       )
-      if (!eguiObj.documentNumber) {
-        eguiObj.documentNumber = gwEguiBookService.getNewEGuiNumber(
-          eguiObj.guiType.value,
-          eguiObj.sellerTaxId,
-          '',
-          '',
-          eguiObj.documentPeriod,
-          eguiObj.documentDate,
-          1
-        )[0]
-      }
-
-      eguiObj.randomNumber = getRandomNumber()
-      this.egui = eguiObj
-      var voucherId = gwVoucherDao.saveEguiToRecord(this.egui)
-      gwInvoiceService.eguiIssued(eguiObj, voucherId)
+      allowanceObj.documentNumber = getAllowanceNumber()
+      allowanceObj.randomNumber = getRandomNumber()
+      this.allowance = allowanceObj
+      var voucherId = gwVoucherDao.saveAllowanceToRecord(this.allowance)
+      gwCreditMemoService.cmIssued(allowanceObj, voucherId)
       return voucherId
     }
 
-    uploadEgui(voucherId) {
-      var eguiObj = gwVoucherDao.searchVoucherByIds([voucherId])[0]
-      log.debug({ title: 'eguiService uploadEgui eguiObj', details: eguiObj })
-      var filename = `${eguiObj.migTypeOption.migType}-${eguiObj.documentNumber}-${voucherId}.xml`
-      var xmlString = gwEguiUploadService.getXmlString(eguiObj)
-      log.debug({ title: 'xmlString', details: xmlString })
-      var result = gwEguiUploadService.sendToGw(xmlString, filename)
-      log.debug({ title: 'result', details: result })
-      if (result.code === 200) {
-        // gwVoucherDao.eguiUploaded(voucherId, result)
-      } else {
-      }
-      return result
-    }
+    // Not done in this service
+    // uploadAllowance(voucherId) {
+    //   var allowanceObj = gwVoucherDao.getAllowanceByVoucherId(voucherId)
+    //   log.debug({
+    //     title: 'allowanceService uploadAllowance allowanceObj',
+    //     details: allowanceObj,
+    //   })
+    //   var filename = `${allowanceObj.migTypeOption.migType}-${allowanceObj.documentNumber}-${voucherId}.xml`
+    //   var xmlString = gwAllowanceUploadService.getXmlString(allowanceObj)
+    //   log.debug({ title: 'xmlString', details: xmlString })
+    //   var result = gwAllowanceUploadService.sendToGw(xmlString, filename)
+    //   log.debug({ title: 'result', details: result })
+    //   if (result.code === 200) {
+    //     gwVoucherDao.eguiUploaded(voucherId, result)
+    // } else {
+    // }
+    // return result
+    // }
 
     getFromRecord(recordId) {}
   }
 
-  return EGuiService
+  return AllowanceService
 })

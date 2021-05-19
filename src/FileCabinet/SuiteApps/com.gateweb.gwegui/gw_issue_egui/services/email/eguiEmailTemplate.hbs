@@ -1,0 +1,191 @@
+<html>
+    <body>
+        <mj-section>
+            <mj-column>
+
+                <mj-text font-weight="bold" align="center" font-size="20px" color="#1a202c" font-family="helvetica">電子發票已開立</mj-text>
+                <mj-text font-weight="bold" align="center" font-size="14px" color="#bf0d32" font-family="helvetica">本通知信是由「關網資訊 雲端電子發票系統」自動產生與發送，請勿直接回覆!</mj-text>
+                <mj-text font-weight="bold" align="left" font-size="14px" color="#3d5670" font-family="helvetica">請注意 : </mj-text>
+
+                <mj-text font-weight="bold" font-size="14px" color="#3d5670" font-family="helvetica" line-height="18px" letter-spacing="0.8px">
+                    <mj-list padding="0px 0px 0px 0px">
+                        <ol>
+                            <li style="padding: 0 0 5px 0;">若有發票內容相關疑問，請洽開立此電子發票之<span style="color:#bf0d32">{{accountingDocument.sellerName}}</span> {{#ifSellerTelephoneNumber accountingDocument.sellerTelephoneNumber}} 。聯絡電話：
+                                <span style="color:#bf0d32">{{accountingDocument.sellerTelephoneNumber}}</span>。{{/ifSellerTelephoneNumber}}</li>
+
+                            <li style="padding: 0 0 5px 0;">若您為營業人：附件為<span style="color:#bf0d32">{{accountingDocument.sellerName}}</span>經由關網資訊雲端電子發票系統所開立、產生、寄送之電子發票會計憑證圖檔。</li>
+                            <li style="padding: 0 0 5px 0;">若您為消費者，本信件<span style="color:#bf0d32">無附送</span>電子發票會計憑證圖檔。</li>
+                        </ol>
+                    </mj-list>
+                </mj-text>
+
+                <mj-divider padding-bottom="0px" border-style="solid" border-color="#3d5670" border-width="1.9px"></mj-divider>
+                <mj-text font-weight="bold" font-size="14px" color="#3d5670" font-family="helvetica">
+                    感謝您對<span style="color:#bf0d32">{{accountingDocument.sellerName}}</span>的支持與愛護。
+                </mj-text>
+                <mj-text font-weight="bold" font-size="14px" color="#3d5670" font-family="helvetica">
+                    您的電子發票已開立完成，相關資訊如下 :
+                </mj-text>
+                <mj-text font-weight="bold" font-size="14px" color="#3d5670" font-family="helvetica">
+                    發票號碼 : {{accountingDocument.invoiceNumber}}</mj-text>
+                <mj-text font-weight="bold" font-size="14px" color="#3d5670" font-family="helvetica">
+                    開立日期 : {{accountingDocument.invoiceDate}}</mj-text>
+                {{#ifRandomNumber accountingDocument.randomNumber}}
+                    <mj-text font-weight="bold" font-size="14px" color="#3d5670" font-family="helvetica">
+                        發票隨機碼 : {{accountingDocument.randomNumber}}</mj-text>
+                {{/ifRandomNumber}}
+                <mj-text font-weight="bold" font-size="14px" color="#3d5670" font-family="helvetica">
+                    消費金額 : {{accountingDocument.totalAmount}}</mj-text>
+
+                {{#ifCarrierId1 accountingDocument.carrierType}}
+                    <mj-text font-weight="bold" font-size="14px" color="#3d5670" font-family="helvetica">
+                        載具代碼 : {{accountingDocument.recipient}}</mj-text>
+                {{/ifCarrierId1}} {{#ifVehicle accountingDocument.buyerIdentifier accountingDocument.carrierType}}
+                <mj-button font-family="Helvetica" background-color="#2a2d30" color="white" href="{{accountingDocument.searchApp}}{{accountingDocument.path}}{{accountingDocument.token}}">
+                    檢視發票
+                </mj-button>
+            {{/ifVehicle}}
+
+
+                <mj-divider padding-bottom="0px" border-style="solid" border-color="#3d5670" border-width="1.9px"></mj-divider>
+
+            </mj-column>
+
+        </mj-section>
+
+        <mj-section>
+            <mj-column>
+
+                <mj-table width="280px" width="50%" align="center">
+                    <tr style="border-left:1px solid #000000;
+                     border-right:1px solid #000000;
+                     border-top:1px solid #000000;
+                     ">
+                        <td colspan="2" style="padding: 10px 0 0 0;" align="center">
+
+                        </td>
+                    </tr>
+                    <tr style="border-left:1px solid #000000;
+                     border-right:1px solid #000000;">
+                        <td colspan="2" style="padding: 5px 0 5px 0;font-size:19.5pt;" align="center">發票開立通知</td>
+                    </tr>
+
+                    <tr style="border-left:1px solid #000000;
+                     border-right:1px solid #000000;">
+                        <td colspan="2" style="padding: 0 0 0 0;color:#D70F64;font-weight:bold;" align="center">*非正式發票，不可兌獎*</td>
+                    </tr>
+
+                    <tr style="border-left:1px solid #000000;
+                     border-right:1px solid #000000;">
+                        <td colspan="2" style="padding: 5px 0 5px 0;font-size:19.5pt" align="center">{{accountingDocument.formatDate}}</td>
+                    </tr>
+                    <tr style="border-left:1px solid #000000;
+                     border-right:1px solid #000000;">
+                        <td colspan="2">　</td>
+                    </tr>
+                    <tr style="border-left:1px solid #000000;
+                     border-right:1px solid #000000;">
+                        <td colspan="2" style="padding: 0 0 0 0;font-size:19.5pt" align="center">{{accountingDocument.formatNumber}}</td>
+                    </tr>
+                    <tr style="border-left:1px solid #000000;
+                     border-right:1px solid #000000;">
+                        <td colspan="2">　</td>
+                    </tr>
+                    <tr style="border-left:1px solid #000000;
+                     border-right:1px solid #000000;">
+                        <td colspan="2" style="padding: 0 0 0 0;">　　{{accountingDocument.formatDate2}} {{accountingDocument.invoiceTime}}</td>
+                    </tr>
+                    <tr style="border-left:1px solid #000000;
+                     border-right:1px solid #000000;">
+                        <td colspan="1" style="padding: 0 0 0 0;width:50%;">　　隨機碼 {{accountingDocument.randomNumber}}</td>
+                        <td colspan="1" style="padding: 0 0 0 0;width:50%;">　總計 {{accountingDocument.totalAmount}}</td>
+                    </tr>
+                    <tr style="border-left:1px solid #000000;
+                     border-right:1px solid #000000;">
+                        <td colspan="1" style="padding: 0 0 10px 0;width:50%;">　　賣方 {{accountingDocument.sellerIdentifier}}</td>
+                        <td colspan="1" style="padding: 0 0 10px 0;width:50%;">　{{#ifnoteq accountingDocument.buyerIdentifier "0000000000"}}買方 {{accountingDocument.buyerIdentifier}}{{/ifnoteq }}</td>
+                    </tr>
+                    <tr style="border-left:1px solid #000000;
+                      border-top:1px; border-top:1px dashed #000000;
+                     border-right:1px solid #000000;">
+                        <td colspan="2" style="padding: 10px 0 0 0;width:50%;font-size:19.5pt;" align="center">交易明細</td>
+                    </tr>
+                    <tr style="border-left:1px solid #000000;
+                     border-right:1px solid #000000;">
+                        <td colspan="2" style="padding: 0 20px 0 35px;width:50%;font-size:19.5pt;">&nbsp;</td>
+                    </tr>
+                    <tr style="border-left:1px solid #000000;
+                     border-right:1px solid #000000;">
+                        <td colspan="2" style="padding: 0 0 0 0;">　　品名</td>
+                    </tr>
+                    <tr style="border-left:1px solid #000000;
+                     border-right:1px solid #000000;">
+                        <td colspan="1" style="padding: 0 0 0 0;">　　單價 * 數量</td>
+                        <td colspan="1" style="padding: 0 0 0 0;">　小計</td>
+                    </tr>
+                    {{#each accountingDocument.details}}
+                        <tr style="border-left:1px solid #000000;
+                     border-right:1px solid #000000;">
+                            <td colspan="2" style="padding: 0 0 0 27px;">{{this.description}}</td>
+                        </tr>
+                        <tr style="border-left:1px solid #000000;
+                     border-right:1px solid #000000;">
+                            <td colspan="1" style="padding: 0 0 0 0;">　　${{this.unitPrice}} * {{this.quantity}}</td>
+                            <td colspan="1" style="padding: 0 0 0 0;">　${{this.amount}}</td>
+                        </tr>
+                    {{/each}}
+                    <tr style="border-left:1px solid #000000;
+                     border-right:1px solid #000000;
+                         border-bottom:1px solid #000000;
+                      ">
+                        <td colspan="2">　</td>
+                    </tr>
+                </mj-table>
+
+            </mj-column>
+
+        </mj-section>
+        <mj-section>
+            <mj-column>
+                <mj-divider padding-bottom="0px" border-style="solid" border-color="#3d5670" border-width="1.9px"></mj-divider>
+
+                <mj-text font-weight="bold" align="left" font-size="14px" color="#3d5670" font-family="helvetica">補充說明 : </mj-text>
+
+                <mj-text font-weight="bold" font-size="14px" color="#3d5670" font-family="helvetica" line-height="18px" letter-spacing="0.8px">
+                    <mj-list padding="0px 0px 0px 0px">
+                        <ol>
+                            <li style="padding: 0 0 5px 0;">若您為一般消費者，營業人開立電子發票的48小時後，您可於<a style="text-decoration: none;color:#0c359c;" href="https://www.einvoice.nat.gov.tw/APCONSUMER/BTC601W">「財政部電子發票平台 電子發票全民稽核」</a>頁面查詢本張電子發票。</li>
+                            <li style="padding: 0 0 5px 0;">若您為營業人，且發票圖檔為雙QR Code圖樣(格式一)，可自行登入「財政部電子發票平台」下載電子發票會計憑證，請至 "營業人功能選單 \ 營業人發票作業-B2C \ 存證資料查詢-B2C \ 會計憑證下載" 查詢後，即可下載電子發票會計憑證。</li>
+                            <li style="padding: 0 0 5px 0;">若您為營業人，且發票圖檔為A4圖樣(格式二)，可自行登入「財政部電子發票平台」下載電子發票會計憑證，請至 "營業人功能選單 \ 存證資料查詢-B2B \ 加值中心上傳 \ 進項發票查詢及列印" 查詢後，即可下載電子發票會計憑證。</li>
+
+                        </ol>
+                    </mj-list>
+                </mj-text>
+
+                <mj-divider padding-bottom="0px" border-style="solid" border-color="#3d5670" border-width="1.9px"></mj-divider>
+                <mj-text font-weight="bold" align="left" font-size="14px" color="#3d5670" font-family="helvetica">關於我們 : </mj-text>
+                <mj-text font-weight="bold" align="left" font-size="14px" color="#3d5670" font-family="helvetica">若貴公司也有開立電子發票的需求。</mj-text>
+                <mj-text font-weight="bold" align="left" font-size="14px" color="#3d5670" font-family="helvetica">歡迎造訪我們的官方網站「<a style="text-decoration: none;color:#0c359c;" href="http://www.gateweb.com.tw">關網資訊股份有限公司</a>」，或直接來電洽詢，謝謝！</mj-text>
+                <mj-text font-weight="bold" align="left" font-size="14px" color="#3d5670" font-family="helvetica">關網業務服務專線：(02) 7750-5070。</mj-text>
+                <mj-text font-weight="bold" align="left" font-size="14px" color="#3d5670" font-family="helvetica">最適合中小企業的雲端電子發票</mj-text>
+                <mj-text font-weight="bold" align="right" font-size="14px" color="#3d5670" font-family="helvetica">關網資訊股份有限公司 敬上</mj-text>
+                <mj-text font-size="14px" color="#3d5670" font-family="helvetica" font-weight="bold">
+                    follow us :
+                </mj-text>
+                <mj-social icon-size="45px" border-radius="10px" inner-padding="18px">
+                    <mj-social-element src="https://upload.cc/i1/2020/07/15/Lm6fsS.png" href="mailto:cs@gateweb.com.tw" />
+                    <mj-social-element src="https://upload.cc/i1/2020/07/15/JDKmqZ.png" href="https://www.gateweb.com.tw/" />
+                    <mj-social-element name="facebook-noshare" href="https://www.facebook.com/gateweb888/" />
+                </mj-social>
+            </mj-column>
+
+        </mj-section>
+
+        <mj-section>
+            <mj-column>
+
+
+            </mj-column>
+        </mj-section>
+    </body>
+</html>

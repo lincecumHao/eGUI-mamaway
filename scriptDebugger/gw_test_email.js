@@ -1,10 +1,7 @@
 require([
-  'SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/services/email/gw_service_egui_email',
-  'SuiteApps/com.gateweb.gwegui/gw_dao/voucher/gw_dao_voucher',
-], (gwEmailService, gwVoucherDao) => {
-  var eguiObj = gwVoucherDao.searchVoucherByIds([1302])
-  log.debug({ title: 'eguiObj', details: eguiObj })
-  var result = gwEmailService.send('debuggerTest Email', eguiObj[0])
+  'SuiteApps/com.gateweb.gwegui/gw_issue_egui/services/email/gw_service_egui_email',
+], (gwEmailService) => {
+  var result = gwEmailService.sendByVoucherId('debuggerTest Email', 2102)
   log.debug({ title: 'result', details: result })
   log.debug({ title: 'Execution end' })
 })

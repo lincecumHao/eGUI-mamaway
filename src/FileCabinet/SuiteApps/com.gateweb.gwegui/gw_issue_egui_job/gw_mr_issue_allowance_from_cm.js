@@ -2,9 +2,9 @@ define([
   'N/runtime',
   'N/error',
   '../library/ramda.min',
-  './gw_invoice_service',
-  './gw_egui_service',
-], (runtime, error, ramda, gwInvoiceService, gwEguiService) => {
+  './gw_credit_memo_service',
+  './gw_allowance_service',
+], (runtime, error, ramda, gwCmService, gwAllowanceService) => {
   /**
    * Module Description...
    *
@@ -39,7 +39,7 @@ define([
    */
   function getInputData(context) {
     log.audit({ title: 'Start ...' })
-    return gwInvoiceService.getInvoiceToIssueEguiSearch()
+    return gwCmService.getCreditMemoToIssueAllowanceSearch()
   }
 
   /**
@@ -83,32 +83,27 @@ define([
    */
   function reduce(context) {
     log.audit({ title: '[reduce] Processing Key:', details: context.key })
-    var voucherId = 0
     try {
       var searchResults = context.values.map((value) => {
         return JSON.parse(value)
       })
-      gwInvoiceService.lockInvoice(context.key)
-      var invoiceObj = gwInvoiceService.composeInvObj(searchResults)
-      log.debug({ title: 'reduce invoiceObj', details: invoiceObj })
-      var eguiService = new gwEguiService(invoiceObj)
-      log.debug({ title: 'reduce eguiObj', details: eguiService.getEgui() })
-      voucherId = eguiService.issueEgui()
+      gwCmService.lockCreditMemo(context.key)
+      var cmObj = gwCmService.composeCmObj(searchResults)
+      log.debug({ title: 'reduce cmObj', details: cmObj })
+      var allowanceService = new gwAllowanceService(cmObj)
+      log.debug({
+        title: 'reduce cmObj',
+        details: allowanceService.getAllowance(),
+      })
+      var voucherId = allowanceService.issueAllowance()
       log.debug({ title: 'reduce voucherId', details: voucherId })
+      context.write({
+        key: voucherId,
+      })
     } catch (e) {
-      voucherId = 0
-      gwInvoiceService.unlockInvoice(context.key)
-
+      gwCmService.unlockCreditMemo(context.key)
       throw e
     }
-    if (voucherId) {
-      var uploadEguiResult = eguiService.uploadEgui(voucherId)
-      log.debug({ title: 'eguiUploadResult', details: uploadEguiResult })
-    }
-    context.write({
-      key: voucherId,
-    })
-
     // TODO
   }
 

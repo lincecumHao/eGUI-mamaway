@@ -12,6 +12,11 @@ define(['../gw_abstract_dao', './gw_record_fields'], (gwDao, fieldConfig) => {
         return this.getByValueAndMofCode(37)
       }
     }
+
+    getDefaultArAllowanceFormat() {
+      return this.getByValueAndMofCode(33)
+    }
+
     getByValueAndMofCode(value, mofCode) {
       if (!mofCode) {
         mofCode = '00'

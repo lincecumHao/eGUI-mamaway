@@ -73,8 +73,8 @@ define(['../../../../library/ramda.min'], function (ramda) {
       sourceField: 'custbody_gw_gui_title',
       outputField: '',
     },
-    guiMemo: {
-      id: 'guiMemo',
+    allowanceMemo: {
+      id: 'allowanceMemo',
       sourceField: 'custbody_gw_gui_main_memo',
       outputField: '',
     },
@@ -148,13 +148,13 @@ define(['../../../../library/ramda.min'], function (ramda) {
       sourceField: 'custbody_gw_lock_transaction',
       outputField: '',
     },
-    isNotUploadEGui: {
-      id: 'isNotUploadEGui',
+    isNotUpload: {
+      id: 'isNotUpload',
       sourceField: 'custbody_gw_gui_not_upload',
       outputField: '',
     },
-    isIssueEgui: {
-      id: 'isIssueEgui',
+    isIssue: {
+      id: 'isIssue',
       sourceField: 'custbody_gw_is_issue_egui',
       outputField: '',
     },
@@ -178,44 +178,14 @@ define(['../../../../library/ramda.min'], function (ramda) {
       sourceField: 'custbody_gw_gui_num_end',
       outputField: '',
     },
-    eguiMainMemo: {
-      id: 'eguiMainMemo',
+    allowanceMainMemo: {
+      id: 'allowanceMainMemo',
       sourceField: 'custbody_gw_gui_main_memo',
       outputField: '',
     },
     cmDeductList: {
       id: 'cmDeductList',
       sourceField: 'custbody_gw_creditmemo_deduction_list',
-      outputField: '',
-    },
-    isDonate: {
-      id: 'isDonate',
-      sourceField: 'custbody_gw_gui_donation_mark',
-      outputField: '',
-    },
-    donationCode: {
-      id: 'donationCode',
-      sourceField: 'custbody_gw_gui_donation_code',
-      outputField: '',
-    },
-    carrierTypeId: {
-      id: 'carrierType',
-      sourceField: 'custbody_gw_gui_carrier_type.value',
-      outputField: '',
-    },
-    carrierType: {
-      id: 'carrierType',
-      sourceField: 'custbody_gw_gui_carrier_type.text',
-      outputField: '',
-    },
-    carrierId1: {
-      id: 'carrierId1',
-      sourceField: 'custbody_gw_gui_carrier_id_1',
-      outputField: '',
-    },
-    carrierId2: {
-      id: 'carrierId2',
-      sourceField: 'custbody_gw_gui_carrier_id_2',
       outputField: '',
     },
     taxApplyPeriod: {

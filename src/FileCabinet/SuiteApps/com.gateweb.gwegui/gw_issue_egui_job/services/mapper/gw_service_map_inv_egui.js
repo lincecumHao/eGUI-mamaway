@@ -88,7 +88,7 @@ define([
     eguiMainObj['docFormat'] = eguiMainObj['docFormat']
       ? eguiMainObj['docFormat']
       : gwDocFormatDao.getDefaultArGuiFormat(eguiMainObj['guiType'].value)
-
+    eguiMainObj['isTransactionLocked'] = 'T'
     log.debug({ title: 'eguiMainObj', details: eguiMainObj })
     return eguiMainObj
   }

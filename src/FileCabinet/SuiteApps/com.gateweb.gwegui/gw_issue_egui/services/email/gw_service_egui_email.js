@@ -7,19 +7,18 @@ define([
   '../../../gw_dao/voucher/gw_dao_voucher',
 ], (runtime, file, render, email, ramda, gwVoucherDao) => {
   /**
-     * Module Description...
-     *
-     * @type {Object} module-name
-     *
-     * @copyright 2021 Gateweb
-     * @author Sean Lin <sean.hyl@gmail.com>
-     *
-     * @NApiVersion 2.1
-     * @NModuleScope Public
+   * Module Description...
+   *
+   * @type {Object} module-name
+   *
+   * @copyright 2021 Gateweb
+   * @author Sean Lin <sean.hyl@gmail.com>
+   *
+   * @NApiVersion 2.1
+   * @NModuleScope Public
 
-     */
-  var debuggerPath =
-    'SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/services/email'
+   */
+  var debuggerPath = 'SuiteApps/com.gateweb.gwegui/gw_issue_egui/services/email'
 
   function isInDebuggerMode() {
     return runtime.executionContext === runtime.ContextType.DEBUGGER

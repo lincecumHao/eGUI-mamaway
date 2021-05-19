@@ -82,11 +82,6 @@ define([], () => {
     })
 
     record.setValue({
-      fieldId: 'custbody_gw_creditmemo_deduction_list',
-      value: '',
-    })
-
-    record.setValue({
       fieldId: 'custbody_gw_gui_num_start',
       value: '',
     })

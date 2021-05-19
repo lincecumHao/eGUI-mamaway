@@ -20,7 +20,7 @@ define([
    */
   function getXmlTemplateFilePath(migTypeObj) {
     var fileName = migTypeObj.xmlFileName
-    var folder = '../../gw_mig_xml/'
+    var folder = '../gw_mig_xml/'
     if (runtime.executionContext === runtime.ContextType.DEBUGGER) {
       folder = 'SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/gw_mig_xml/'
     }
@@ -40,24 +40,24 @@ define([
     }
   }
 
-  class EguiUploadService {
-    getXmlString(eguiObj) {
-      log.debug({ title: 'Upload Service eguiObj', details: eguiObj })
+  class AllowanceUploadService {
+    getXmlString(allowanceObj) {
+      log.debug({ title: 'Upload Service allowanceObj', details: allowanceObj })
       var xmlTmplFile = file.load({
-        id: getXmlTemplateFilePath(eguiObj.migTypeOption),
+        id: getXmlTemplateFilePath(allowanceObj.migTypeOption),
       })
       var xmlRenderer = render.create()
       xmlRenderer.templateContent = xmlTmplFile.getContents()
       xmlRenderer.addCustomDataSource({
         format: render.DataSource.OBJECT,
-        alias: 'guiData',
-        data: eguiObj,
+        alias: 'allowanceData',
+        data: allowanceObj,
       })
       return xmlRenderer.renderAsString()
     }
 
-    uploadEgui(eguiObj) {
-      var xml = this.getXmlString(eguiObj)
+    uploadEgui(allowanceObj) {
+      var xml = this.getXmlString(allowanceObj)
       return this.sendToGw(xml)
     }
 
@@ -77,7 +77,7 @@ define([
         gw_ns_auth:
           'lVM3wFlV0bMNi0/lNq/PV/0JTbxLQN03ldmd6T/6rkQhfOUZZbV/1aT1Q9UUTh7PcHnghZjsgtiCsy41fi1TnWlR6UC+AVTg36NDMni5LfaR/7uDPXAgOyhHlb8Y3NHmrjtq2hRf9hO1/f58LLltmFtnVJFAzNazeX839lXSQA0=',
       }
-      log.debug({ title: 'uploadGuiXml headers', details: headers })
+      log.debug({ title: 'uploadAllowanceXml headers', details: headers })
       var response = https.post({
         url: url,
         body: xmlString,
@@ -87,11 +87,14 @@ define([
       if (response.code !== 200) {
         responseObj.body = 'Error Occurs: ' + response.body
       }
-      log.debug({ title: 'uploadGuiXml responseCode', details: responseObj })
+      log.debug({
+        title: 'uploadAllowanceXml responseCode',
+        details: responseObj,
+      })
 
       return responseObj
     }
   }
 
-  return new EguiUploadService()
+  return new AllowanceUploadService()
 })

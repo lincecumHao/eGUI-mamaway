@@ -51,6 +51,14 @@ define([
       )
     }
 
+    getIssueAllowanceMigType(businessType) {
+      return this.getByBusinessTypeAndDocType(
+        this.eguiActionEnum.ISSUE,
+        businessType,
+        this.eguiTypeEnum.EGUI
+      )
+    }
+
     getIssueEguiExchangeMigType() {
       return this.getByBusinessTypeAndDocType(
         this.eguiActionEnum.ISSUE,

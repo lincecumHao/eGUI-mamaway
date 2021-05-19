@@ -687,7 +687,7 @@
             <maxlength></maxlength>
             <maxvalue></maxvalue>
             <minvalue></minvalue>
-            <onparentdelete>NO_ACTION</onparentdelete>
+            <onparentdelete>SET_NULL</onparentdelete>
             <parentsubtab></parentsubtab>
             <rolerestrict>F</rolerestrict>
             <searchcomparefield></searchcomparefield>

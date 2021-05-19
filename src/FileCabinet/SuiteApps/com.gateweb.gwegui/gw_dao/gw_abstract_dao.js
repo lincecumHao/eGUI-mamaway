@@ -3,17 +3,17 @@ define(['../library/gw_lib_search', 'N/runtime'], function (
   runtime
 ) {
   /**
-     * Module Description...
-     *
-     * @type {Object} module-name
-     *
-     * @copyright 2021 Gateweb
-     * @author Sean Lin <sean.hyl@gmail.com>
-     *
-     * @NApiVersion 2.1
-     * @NModuleScope Public
+   * Module Description...
+   *
+   * @type {Object} module-name
+   *
+   * @copyright 2021 Gateweb
+   * @author Sean Lin <sean.hyl@gmail.com>
+   *
+   * @NApiVersion 2.1
+   * @NModuleScope Public
 
-     */
+   */
   var exports = {}
 
   class UserSessionService {

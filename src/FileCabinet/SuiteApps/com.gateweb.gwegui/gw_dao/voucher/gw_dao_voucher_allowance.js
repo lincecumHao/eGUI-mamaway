@@ -45,41 +45,6 @@ define([
     )
   }
 
-  function updateEguiVoucherRecordObj(voucherMain, voucherDetail) {
-    var mainObj = JSON.parse(JSON.stringify(voucherMain))
-    mainObj['name'] = mainObj['custrecord_gw_voucher_number']
-    mainObj['custrecord_gw_voucher_date'] = getDateStr(
-      mainObj['custrecord_gw_voucher_date']
-    )
-    mainObj['custrecord_gw_voucher_sales_tax_apply'] =
-      mainObj['custrecord_gw_voucher_sales_tax_apply'] === 'T'
-    mainObj['custrecord_gw_tax_rate'] =
-      parseFloat(mainObj['custrecord_gw_tax_rate']) * 100
-    mainObj['custrecord_gw_dm_seller_profile'] =
-      mainObj['custrecord_gw_dm_seller_profile'].id
-    mainObj['custrecord_gw_lock_transaction'] = true
-    mainObj['custrecord_gw_is_completed_detail'] = true
-    mainObj['lines'] = ramda.map((detail) => {
-      detail['name'] = 'VoucherDetailRecord'
-      detail['custrecord_gw_dtl_voucher_type'] =
-        mainObj['custrecord_gw_voucher_type']
-      detail['custrecord_gw_dtl_item_tax_rate'] =
-        parseFloat(detail['custrecord_gw_dtl_item_tax_rate']) * 100
-      detail['custrecord_gw_dtl_voucher_apply_period'] =
-        mainObj['custrecord_voucher_sale_tax_apply_period']
-      // detail['custrecord_gw_dtl_voucher_number']
-      detail['custrecord_gw_dtl_voucher_date'] =
-        mainObj['custrecord_gw_voucher_date']
-      detail['custrecord_gw_dtl_voucher_time'] =
-        mainObj['custrecord_gw_voucher_time']
-      detail['custrecord_gw_dtl_voucher_yearmonth'] =
-        mainObj['custrecord_gw_voucher_yearmonth']
-      return detail
-    }, voucherDetail)
-    log.debug({ title: 'mainObj lines', details: mainObj['lines'] })
-    return mainObj
-  }
-
   function updateAllowanceVoucherRecordObj(voucherMain, voucherDetail) {
     var mainObj = JSON.parse(JSON.stringify(voucherMain))
     mainObj['name'] = mainObj['custrecord_gw_voucher_number']

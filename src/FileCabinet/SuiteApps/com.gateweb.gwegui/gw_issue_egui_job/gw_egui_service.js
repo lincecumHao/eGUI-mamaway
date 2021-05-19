@@ -81,7 +81,6 @@ define([
       }
 
       eguiObj.randomNumber = getRandomNumber()
-      eguiObj.name = eguiObj.documentNumber
       this.egui = eguiObj
       var voucherId = gwVoucherDao.saveEguiToRecord(this.egui)
       gwInvoiceService.eguiIssued(eguiObj, voucherId)
@@ -89,7 +88,7 @@ define([
     }
 
     uploadEgui(voucherId) {
-      var eguiObj = gwVoucherDao.searchVoucherByIds([voucherId])[0]
+      var eguiObj = gwVoucherDao.getGuiByVoucherId(voucherId)
       log.debug({ title: 'eguiService uploadEgui eguiObj', details: eguiObj })
       var filename = `${eguiObj.migTypeOption.migType}-${eguiObj.documentNumber}-${voucherId}.xml`
       var xmlString = gwEguiUploadService.getXmlString(eguiObj)

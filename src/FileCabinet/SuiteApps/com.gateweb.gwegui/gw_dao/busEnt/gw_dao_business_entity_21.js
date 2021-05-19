@@ -50,6 +50,11 @@ define([
       })[0]
     }
 
+    /**
+     *
+     * @param subsidiaryId {string}
+     * @returns {*}
+     */
     getBySubsidiary(subsidiaryId) {
       return this.allOptions.filter(function (recordObj) {
         return (
