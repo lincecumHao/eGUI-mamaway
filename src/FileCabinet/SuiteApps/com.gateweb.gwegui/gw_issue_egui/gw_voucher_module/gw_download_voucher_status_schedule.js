@@ -733,6 +733,20 @@ define([
                 }
               }
             }
+			///////////////////////////////////////////////////////////////////////////////////////////
+			if (_upload_mig_type=='C0401' && (_status == 'C' || _status == 'E')) {//發票 
+			    var _email_sublect = '發票開立通知'
+				if (_status == 'C') {
+					_email_sublect += '-開立成功'
+				} else if (_status == 'E') {
+					_email_sublect += '-開立失敗'
+				}
+				
+				log.debug('email result :', 'start mail')
+				var result = gwEmailService.sendByVoucherId(_email_sublect, parseInt(_applyId))
+				log.debug('email result :', result)			
+			} 
+			///////////////////////////////////////////////////////////////////////////////////////////
           }
         }
       }
