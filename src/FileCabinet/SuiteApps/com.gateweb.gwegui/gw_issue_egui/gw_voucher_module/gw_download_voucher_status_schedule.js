@@ -13,6 +13,7 @@ define([
   '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_invoice_utility',
   '../gw_common_utility/gw_common_configure',
+  '../services/email/gw_service_egui_email',
 ], function (
   runtime,
   config,
@@ -22,7 +23,8 @@ define([
   dateutility,
   stringutility,
   invoiceutility,
-  gwconfigure
+  gwconfigure,
+  gwEmailService
 ) {
   var _voucher_main_record = gwconfigure.getGwVoucherMainRecord()
   var _gw_voucher_main_search_id = gwconfigure.getGwVoucherMainSearchId()
