@@ -60,11 +60,12 @@ define([
 
     sendByVoucherId(subject, voucherId) {
       var eguiObj = gwVoucherDao.getGuiByVoucherId(voucherId)
-      this.send(subject, eguiObj)
+      return this.send(subject, eguiObj)
     }
 
     send(subject, eguiObj) {
       var eguiObjUpdated = updateEguiObj(eguiObj)
+      log.debug({ title: 'send email eguiObjUpdated', details: eguiObjUpdated })
       var buyerEmail = eguiObjUpdated.buyerEmail || 'se10@gateweb.com.tw'
       var emailContent = this.getEmailBody(eguiObjUpdated)
       return email.send({

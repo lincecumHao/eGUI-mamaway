@@ -24,17 +24,17 @@ define([
   gwVoucherAllowanceMapper
 ) => {
   /**
-     * Module Description...
-     *
-     * @type {Object} module-name
-     *
-     * @copyright 2021 Gateweb
-     * @author Sean Lin <sean.hyl@gmail.com>
-     *
-     * @NApiVersion 2.1
-     * @NModuleScope Public
+   * Module Description...
+   *
+   * @type {Object} module-name
+   *
+   * @copyright 2021 Gateweb
+   * @author Sean Lin <sean.hyl@gmail.com>
+   *
+   * @NApiVersion 2.1
+   * @NModuleScope Public
 
-     */
+   */
 
   function getDateStr(dateStr) {
     var date = new Date(dateStr)
@@ -158,10 +158,10 @@ define([
 
   function updateEguiObj(eguiObj) {
     var egui = JSON.parse(JSON.stringify(eguiObj))
-    log.debug({ title: 'UpdateEguiObj', details: egui })
     egui.migTypeOption = gwMigTypeDao.getById(egui.migTypeOption.value)
     egui.taxRate = parseFloat(egui.taxRate) / 100
     egui.sellerProfile = gwBusinessEntityDao.getByTaxId(egui.sellerTaxId)
+    log.debug({ title: 'UpdateEguiObj', details: egui })
     return egui
   }
 
