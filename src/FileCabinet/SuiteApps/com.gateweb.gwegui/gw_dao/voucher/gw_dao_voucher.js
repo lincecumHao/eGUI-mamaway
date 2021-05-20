@@ -161,7 +161,7 @@ define([
     log.debug({ title: 'UpdateEguiObj', details: egui })
     egui.migTypeOption = gwMigTypeDao.getById(egui.migTypeOption.value)
     egui.taxRate = parseFloat(egui.taxRate) / 100
-    egui.sellerProfile = gwBusinessEntityDao.getById(egui.sellerProfile.value)
+    egui.sellerProfile = gwBusinessEntityDao.getByTaxId(egui.sellerTaxId)
     return egui
   }
 
