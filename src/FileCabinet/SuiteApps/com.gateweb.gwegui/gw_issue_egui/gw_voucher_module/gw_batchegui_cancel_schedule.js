@@ -181,8 +181,8 @@ define([
         _xml += '<InvoiceDate>' + voucher_date + '</InvoiceDate>'
         _xml += '<BuyerId>' + buyer + '</BuyerId>'
         _xml += '<SellerId>' + seller + '</SellerId>'
-        _xml += '<CancelDate>' + getCompanyLocatDate() + '</CancelDate>'
-        _xml += '<CancelTime>' + getCompanyLocatTime() + '</CancelTime>'
+        _xml += '<CancelDate>' + dateutility.getCompanyLocatDate() + '</CancelDate>'
+        _xml += '<CancelTime>' + dateutility.getCompanyLocatTime() + '</CancelTime>'
         _xml += '<CancelReason>' + reason + '</CancelReason>'
         if (mig_type == 'B2BE') {
           _xml += '<Remark>' + remark + '</Remark>'
@@ -205,8 +205,8 @@ define([
         _xml += '<AllowanceDate>' + voucher_date + '</AllowanceDate>'
         _xml += '<BuyerId>' + buyer + '</BuyerId>'
         _xml += '<SellerId>' + seller + '</SellerId>'
-        _xml += '<CancelDate>' + getCompanyLocatDate() + '</CancelDate>'
-        _xml += '<CancelTime>' + getCompanyLocatTime() + '</CancelTime>'
+        _xml += '<CancelDate>' + dateutility.getCompanyLocatDate() + '</CancelDate>'
+        _xml += '<CancelTime>' + dateutility.getCompanyLocatTime() + '</CancelTime>'
         _xml += '<CancelReason>' + reason + '</CancelReason>'
         _xml += '</CancelAllowance>'
       }

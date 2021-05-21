@@ -1749,7 +1749,8 @@ define([
     var _mainRecordId
     try {
       //var _documentDate = getCompanyLocatDate();
-      var _documentTime = getCompanyLocatTime()
+      //var _documentTime = getCompanyLocatTime()
+	  var _documentTime = dateutility.getCompanyLocatTime();
       //var _year_month   = getTaxYearMonth();
 
       var trandate = jsonObj.trandate
