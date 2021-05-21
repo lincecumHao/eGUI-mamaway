@@ -260,6 +260,27 @@ define([
 
   //取得時間=09:10:25
   function getCompanyLocatTime() {
+    var _date = new Date()
+
+    var _hours = _date.getHours()
+    if (_hours < 10) {
+      _hours = '0' + _hours
+    }
+    var _minutes = _date.getMinutes()
+    if (_minutes < 10) {
+      _minutes = '0' + _minutes
+    }
+    var _seconds = _date.getSeconds()
+    if (_seconds < 10) {
+      _seconds = '0' + _seconds
+    }
+
+    var _time = _hours + ':' + _minutes + ':' + _seconds
+
+    return _time
+  }
+  
+  function getCompanyLocatTime_CANCEL() {
     var _dateString = getLocalDate()
     var _time = _dateString.slice(11, 20).replace('/', '')
     var _ary = _time.split(':')
