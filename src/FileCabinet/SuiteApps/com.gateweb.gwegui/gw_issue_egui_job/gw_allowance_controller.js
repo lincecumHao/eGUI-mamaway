@@ -23,7 +23,7 @@ define(['./gw_credit_memo_service', './gw_allowance_service'], (
     var allowanceService = new gwAllowanceService(cmObj)
     log.debug({
       title: 'allowanceObj',
-      details: allowanceService.getAllowance(),
+      details: allowanceService.getAllowance()
     })
     // var voucherId = allowanceService.issueAllowance()
     // log.debug({ title: 'reduce voucherId', details: voucherId })
