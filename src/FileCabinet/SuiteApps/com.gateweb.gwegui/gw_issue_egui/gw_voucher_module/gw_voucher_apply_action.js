@@ -406,19 +406,21 @@ define([
 
         //3.直接作廢 Transaction-Voided 單據
         if (_ns_document_type != 'SALE_ORDER') {
-          var _unLockRecordTypeID = record.Type.INVOICE
+          var _unLockRecordTypeID = transaction.Type.INVOICE
           if (_ns_document_type == 'INVOICE') {
-            _unLockRecordTypeID = record.Type.INVOICE
+            _unLockRecordTypeID = transaction.Type.INVOICE
           } else if (_ns_document_type == 'CREDITMEMO') {
-            _unLockRecordTypeID = record.Type.CREDIT_MEMO
+            _unLockRecordTypeID = transaction.Type.CREDIT_MEMO
           } else if (_ns_document_type == 'CUSTOMER_DEPOSIT') {
-            _unLockRecordTypeID = record.Type.CUSTOMER_DEPOSIT
+            _unLockRecordTypeID = transaction.Type.CUSTOMER_DEPOSIT
           } else if (_ns_document_type == 'CASH_SALE') {
-            _unLockRecordTypeID = record.Type.CASH_SALE
+            _unLockRecordTypeID = transaction.Type.CASH_SALE
           }
           log.debug(
             'transaction ',
-            '_ns_document_type=' +
+            '_unLockRecordTypeID=' +
+              _unLockRecordTypeID +
+			  ',_ns_document_type=' +
               _ns_document_type +
               ' ,_ns_document_apply_id=' +
               _ns_document_apply_id
