@@ -4,7 +4,7 @@ define([
   '../vo/gw_ap_doc_fields',
   './gw_cs_ap_sublist_display',
   './gw_cs_lib_ap_doc_sublist_fields_change',
-  './gw_cs_lib_ap_doc_sublist_validate_fields',
+  './gw_cs_lib_ap_doc_sublist_validate_fields'
 ], function (
   message,
   dialog,
@@ -59,6 +59,8 @@ define([
     var fieldRoute = {}
     fieldRoute[apDocFields.fields.docType.id] =
       fieldChangeLib.documentTypeChanged
+    fieldRoute[apDocFields.fields.guiDate.id] =
+      fieldChangeLib.documentIssueDateChanged
     fieldRoute[apDocFields.fields.salesAmt.id] = fieldChangeLib.salesAmtChanged
     fieldRoute[apDocFields.fields.taxAmt.id] = fieldChangeLib.taxAmtChanged
     fieldRoute[apDocFields.fields.taxType.id] = fieldChangeLib.taxTypeChanged
@@ -153,15 +155,15 @@ define([
     fieldChangeLib.setCurrentContext(context)
     var docType = context.currentRecord.getCurrentSublistValue({
       sublistId: context.sublistId,
-      fieldId: apDocFields.fields.docType.id,
+      fieldId: apDocFields.fields.docType.id
     })
     var taxType = context.currentRecord.getCurrentSublistValue({
       sublistId: context.sublistId,
-      fieldId: apDocFields.fields.taxType.id,
+      fieldId: apDocFields.fields.taxType.id
     })
     var consolidationMark = context.currentRecord.getCurrentSublistValue({
       sublistId: context.sublistId,
-      fieldId: apDocFields.fields.consolidationMark.id,
+      fieldId: apDocFields.fields.consolidationMark.id
     })
 
     if (docType) {
@@ -181,14 +183,14 @@ define([
       var fieldDefObj = apDocFields.fields[fieldName]
       var value = context.currentRecord.getCurrentSublistValue({
         sublistId: context.sublistId,
-        fieldId: fieldDefObj.id,
+        fieldId: fieldDefObj.id
       })
       recordData[fieldDefObj.id] = value
     })
     var internalId =
       context.currentRecord.getCurrentSublistValue({
         sublistId: context.sublistId,
-        fieldId: 'id',
+        fieldId: 'id'
       }) || 0
     recordData.id = internalId
     // console.log('internalId', internalId)
@@ -256,7 +258,7 @@ define([
     })
     var options = {
       title: title,
-      message: messageText,
+      message: messageText
     }
 
     function success(result) {

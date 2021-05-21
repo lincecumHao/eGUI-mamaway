@@ -148,7 +148,7 @@
             <isformula>F</isformula>
             <ismandatory>F</ismandatory>
             <isparent>F</isparent>
-            <label>申報期別</label>
+            <label>憑證期別</label>
             <linktext></linktext>
             <maxlength>6</maxlength>
             <maxvalue></maxvalue>
@@ -160,6 +160,45 @@
             <searchdefault></searchdefault>
             <searchlevel>2</searchlevel>
             <selectrecordtype></selectrecordtype>
+            <showinlist>T</showinlist>
+            <sourcefilterby></sourcefilterby>
+            <sourcefrom></sourcefrom>
+            <sourcelist></sourcelist>
+            <storevalue>T</storevalue>
+            <subtab></subtab>
+        </customrecordcustomfield>
+        <customrecordcustomfield scriptid="custrecord_gw_ap_doc_apply_period">
+            <accesslevel>2</accesslevel>
+            <allowquickadd>F</allowquickadd>
+            <applyformatting>F</applyformatting>
+            <checkspelling>F</checkspelling>
+            <defaultchecked>F</defaultchecked>
+            <defaultselection></defaultselection>
+            <defaultvalue></defaultvalue>
+            <description></description>
+            <displayheight></displayheight>
+            <displaytype>NORMAL</displaytype>
+            <displaywidth></displaywidth>
+            <dynamicdefault></dynamicdefault>
+            <encryptatrest>F</encryptatrest>
+            <fieldtype>SELECT</fieldtype>
+            <globalsearch>F</globalsearch>
+            <help></help>
+            <isformula>F</isformula>
+            <ismandatory>F</ismandatory>
+            <isparent>T</isparent>
+            <label>申報期別</label>
+            <linktext></linktext>
+            <maxlength></maxlength>
+            <maxvalue></maxvalue>
+            <minvalue></minvalue>
+            <onparentdelete>NO_ACTION</onparentdelete>
+            <parentsubtab></parentsubtab>
+            <rolerestrict>F</rolerestrict>
+            <searchcomparefield></searchcomparefield>
+            <searchdefault></searchdefault>
+            <searchlevel>2</searchlevel>
+            <selectrecordtype>[scriptid=customrecord_gw_apply_period_options]</selectrecordtype>
             <showinlist>T</showinlist>
             <sourcefilterby></sourcefilterby>
             <sourcefrom></sourcefrom>
@@ -1247,45 +1286,6 @@
                     <fldfilterval></fldfilterval>
                 </customfieldfilter>
             </customfieldfilters>
-        </customrecordcustomfield>
-        <customrecordcustomfield scriptid="custrecord_gw_ap_doc_apply_period">
-            <accesslevel>2</accesslevel>
-            <allowquickadd>F</allowquickadd>
-            <applyformatting>F</applyformatting>
-            <checkspelling>F</checkspelling>
-            <defaultchecked>F</defaultchecked>
-            <defaultselection></defaultselection>
-            <defaultvalue></defaultvalue>
-            <description></description>
-            <displayheight></displayheight>
-            <displaytype>NORMAL</displaytype>
-            <displaywidth></displaywidth>
-            <dynamicdefault></dynamicdefault>
-            <encryptatrest>F</encryptatrest>
-            <fieldtype>SELECT</fieldtype>
-            <globalsearch>F</globalsearch>
-            <help></help>
-            <isformula>F</isformula>
-            <ismandatory>F</ismandatory>
-            <isparent>T</isparent>
-            <label>期別</label>
-            <linktext></linktext>
-            <maxlength></maxlength>
-            <maxvalue></maxvalue>
-            <minvalue></minvalue>
-            <onparentdelete>NO_ACTION</onparentdelete>
-            <parentsubtab></parentsubtab>
-            <rolerestrict>F</rolerestrict>
-            <searchcomparefield></searchcomparefield>
-            <searchdefault></searchdefault>
-            <searchlevel>2</searchlevel>
-            <selectrecordtype>[scriptid=customrecord_gw_apply_period_options]</selectrecordtype>
-            <showinlist>T</showinlist>
-            <sourcefilterby></sourcefilterby>
-            <sourcefrom></sourcefrom>
-            <sourcelist></sourcelist>
-            <storevalue>T</storevalue>
-            <subtab></subtab>
         </customrecordcustomfield>
     </customrecordcustomfields>
 </customrecordtype>

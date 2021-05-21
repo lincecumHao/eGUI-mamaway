@@ -9,7 +9,7 @@ define([
   '../../library/gw_lib_search',
   '../../library/ramda.min',
   './gw_service_map_allowance_voucher',
-  './gw_service_map_voucher_allowance',
+  './gw_service_map_voucher_allowance'
 ], (
   record,
   gwMigTypeDao,
@@ -119,7 +119,7 @@ define([
     var recordTypeId = 'customrecord_gw_voucher_main'
     var newRecord = record.create({
       type: recordTypeId,
-      isDynamic: true,
+      isDynamic: true
     })
     Object.keys(voucherObj).forEach(function (fieldId) {
       if (fieldId !== 'lines') {
@@ -130,7 +130,7 @@ define([
         }
         newRecord.setValue({
           fieldId: fieldId,
-          value: fieldValue,
+          value: fieldValue
         })
       }
     })
@@ -140,17 +140,17 @@ define([
     var sublistId = mainFields.sublists.detail
     voucherObj.lines.forEach(function (lineObj) {
       newRecord.selectNewLine({
-        sublistId: sublistId,
+        sublistId: sublistId
       })
       Object.keys(lineObj).forEach(function (sublistFieldId) {
         newRecord.setCurrentSublistValue({
           sublistId: sublistId,
           fieldId: sublistFieldId,
-          value: lineObj[sublistFieldId],
+          value: lineObj[sublistFieldId]
         })
       })
       newRecord.commitLine({
-        sublistId: sublistId,
+        sublistId: sublistId
       })
     })
     return newRecord.save()
@@ -260,7 +260,7 @@ define([
       record.submitFields({
         type: 'customrecord_gw_voucher_main',
         id: voucherId,
-        values: updateValue,
+        values: updateValue
       })
     }
 

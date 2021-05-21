@@ -1,4 +1,8 @@
-define(['N/https', 'N/config'], (https, config) => {
+define([
+  'N/https',
+  'N/config',
+  '../../gw_dao/busEnt/gw_dao_business_entity_21'
+], (https, config, gwBusinessEntityDao) => {
   /**
    * Module Description...
    *
@@ -28,7 +32,7 @@ define(['N/https', 'N/config'], (https, config) => {
 
     const eventRouter = {
       [https.Method.GET]: onGet,
-      [https.Method.POST]: onPost,
+      [https.Method.POST]: onPost
     }
 
     try {
@@ -51,43 +55,44 @@ define(['N/https', 'N/config'], (https, config) => {
    */
   function onGet(context) {
     // TODO
-    var subsidiary = context.request.parameters['subsidiary']
-    var buyerInfo = getBuyer(subsidiary)
-    context.response.write({ output: JSON.stringify(buyerInfo) })
+    context.response.write({
+      output: JSON.stringify(
+        gwBusinessEntityDao.getBySubsidiary(
+          context.request.parameters['subsidiary']
+        )
+      )
+    })
   }
 
   function getBuyer(subsidiary) {
-    if (!subsidiary) {
-      subsidiary = 1
-    }
-    var buyerFromNS = getBuyerFromNs()
-    var buyerFromBuInfo = getBuyerFromBuInfo(subsidiary)
-    if (buyerFromBuInfo && buyerFromBuInfo.buyerTaxId) {
-      return buyerFromBuInfo
-    }
-    return buyerFromNS
+    // if (!subsidiary) {
+    //   subsidiary = 1
+    // }
+    // var buyerFromNS = getBuyerFromNs()
+    // var buyerFromBuInfo = getBuyerFromBuInfo(subsidiary)
+    // if (buyerFromBuInfo && buyerFromBuInfo.buyerTaxId) {
+    //   return buyerFromBuInfo
+    // }
+    // return buyerFromNS
   }
 
   function getBuyerFromBuInfo(subsidiary) {
-    return {
-      buyerTaxId: '',
-      buyerName: '',
-    }
+    return gwBusinessEntityDao.getBySubsidiary(subsidiary)
   }
 
   function getBuyerFromNs() {
     var companyInfo = config.load({
-      type: config.Type.COMPANY_INFORMATION,
+      type: config.Type.COMPANY_INFORMATION
     })
     var legalName = companyInfo.getValue({
-      fieldId: 'legalname',
+      fieldId: 'legalname'
     })
     var taxId = companyInfo.getValue({
-      fieldId: 'employerid',
+      fieldId: 'employerid'
     })
     return {
       buyerTaxId: taxId,
-      buyerName: legalName,
+      buyerName: legalName
     }
   }
 

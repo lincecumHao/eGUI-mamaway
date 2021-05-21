@@ -2,7 +2,7 @@ define([
   './moment-with-locales',
   'N/record',
   './gw_lib_search',
-  './gw_lib_wrapper',
+  './gw_lib_wrapper'
 ], function (moment, record, GwSearch, wrapperLib) {
   /**
    * Module Description...
@@ -80,7 +80,7 @@ define([
       'custrecord_gw_apply_period_value',
       'custrecord_gw_apply_period_text',
       'custrecord_gw_apply_period_year',
-      'custrecord_gw_apply_period_month',
+      'custrecord_gw_apply_period_month'
     ]
     var result = GwSearch.search(applyPeriodRecordTypeId, columns)
     allOptions = result.map(function (recordObj) {
@@ -89,7 +89,7 @@ define([
         value: recordObj['custrecord_gw_apply_period_value'],
         text: recordObj['custrecord_gw_apply_period_text'],
         year: parseInt(recordObj['custrecord_gw_apply_period_year']),
-        month: parseInt(recordObj['custrecord_gw_apply_period_month']),
+        month: parseInt(recordObj['custrecord_gw_apply_period_month'])
       }
     })
   }
@@ -108,7 +108,7 @@ define([
     applyPeriodNsRecord = record.load({
       type: applyPeriodRecordTypeId,
       id: id,
-      isDynamic: false,
+      isDynamic: false
     })
     return applyPeriodNsRecord
   }

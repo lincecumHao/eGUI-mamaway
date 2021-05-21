@@ -11,7 +11,7 @@ define([
   '../application/gw_service_ap_doc_status_options',
   '../application/moment-with-locales',
   '../application/gw_service_ap_doc_apply_period',
-  '../application/gw_lib_wrapper',
+  '../application/gw_lib_wrapper'
 ], function (
   search,
   runtime,
@@ -96,11 +96,14 @@ define([
       setConsolidateMarkToA()
       // consolidationMarkChanged(context)
     }
+
+    var subsidiary = context.currentRecord.getValue({
+      fieldId: 'subsidiary'
+    })
     setDocStatus()
-    setApplyPeriodValue()
-    setApplyPeriodSelectValue()
+    setApplyPeriod()
     setCurrency()
-    setBuyer()
+    setBuyer(subsidiary)
     setSeller()
     clearDisabledFieldsContent(docTypeCode)
     var taxType = getNumberSublistFieldValue(apDocFields.fields.taxType.id)
@@ -110,8 +113,7 @@ define([
   }
 
   var setDocStatus = setDocStatusCore
-  var setApplyPeriodValue = setApplyPeriodValueCore
-  var setApplyPeriodSelectValue = setApplyPeriodSelectValueCore
+  var setApplyPeriod = setApplyPeriodCore
   var setCurrency = setCurrencyCore
   var setBuyer = setBuyerCore
   var setSeller = setSellerCore
@@ -127,26 +129,13 @@ define([
     }
   }
 
-  function setApplyPeriodValueCore() {
+  function setApplyPeriodCore() {
     var currentApplyPeriodValue = getCurrencySublistFieldValue(
       apDocFields.fields.applyPeriod.id
     )
     if (!currentApplyPeriodValue || currentApplyPeriodValue === '') {
-      setSublistValue(
-        apDocFields.fields.applyPeriod.id,
-        applyPeriodService.convertToApplyPeriod(moment())
-      )
-    }
-  }
-
-  function setApplyPeriodSelectValueCore() {
-    var currentApplyPeriodValue = getCurrencySublistFieldValue(
-      apDocFields.fields.applyPeriod.id
-    )
-    if (currentApplyPeriodValue) {
-      var applyPeriodRecord = applyPeriodService.getRecordByValue(
-        currentApplyPeriodValue
-      )
+      var applyPeriod = applyPeriodService.convertGuiPeriod(moment())
+      var applyPeriodRecord = applyPeriodService.getRecordByValue(applyPeriod)
       setSublistValue(
         apDocFields.fields.applyPeriodSelect.id,
         applyPeriodRecord.id
@@ -154,22 +143,23 @@ define([
     }
   }
 
-  function setBuyerCore() {
+  function setBuyerCore(subsidiary) {
+    console.log('setBuyerCore subsidiary', subsidiary)
     var buyerTaxId = getSublistValue(apDocFields.fields.buyerTaxId.id)
     var buyerName = getSublistValue(apDocFields.fields.buyerName.id)
-    var subsidiary = runtime.getCurrentUser().subsidiary
     var buyerInfo = getBuyer(subsidiary)
+    console.log('setBuyerCore buyerInfo', buyerInfo)
     if (
       isStringEmptyOrNull(buyerTaxId) &&
-      !isStringEmptyOrNull(buyerInfo.buyerTaxId)
+      !isStringEmptyOrNull(buyerInfo.taxId)
     ) {
-      setSublistValue(apDocFields.fields.buyerTaxId.id, buyerInfo.buyerTaxId)
+      setSublistValue(apDocFields.fields.buyerTaxId.id, buyerInfo.taxId)
     }
     if (
       isStringEmptyOrNull(buyerName) &&
-      !isStringEmptyOrNull(buyerInfo.buyerName)
+      !isStringEmptyOrNull(buyerInfo.title)
     ) {
-      setSublistValue(apDocFields.fields.buyerName.id, buyerInfo.buyerName)
+      setSublistValue(apDocFields.fields.buyerName.id, buyerInfo.title)
     }
   }
 
@@ -185,10 +175,10 @@ define([
       deploymentId: 'customdeploy_gw_sl_business_info_data',
       scriptId: 'customscript_gw_sl_business_info_data',
       params: { subsidiary: subsidiary },
-      returnExternalUrl: false,
+      returnExternalUrl: false
     })
     var buyerInfoResponse = https.get({
-      url: buyerInfoUrl,
+      url: buyerInfoUrl
     })
     var buyerInfo = JSON.parse(buyerInfoResponse.body)
     return buyerInfo
@@ -216,14 +206,12 @@ define([
 
   function getSeller() {
     var sellerId = currentTransactionRecord.getValue({
-      fieldId: 'entity',
+      fieldId: 'entity'
     })
     var seller = {}
     var columnMapper = {
       custentity_gw_tax_id_number: 'sellerTaxId',
-      custentity_gw_gui_title: 'sellerName',
-      custentity_tcm_gui_name: 'tcmSellerTaxId',
-      custentity_tcm_legalname: 'tcmSellerName',
+      custentity_gw_gui_title: 'sellerName'
     }
     Object.keys(columnMapper).forEach(function (columnId) {
       var outputAttr = columnMapper[columnId]
@@ -233,7 +221,7 @@ define([
       var sellerInfo = search.lookupFields({
         type: search.Type.VENDOR,
         id: sellerId,
-        columns: Object.keys(columnMapper),
+        columns: Object.keys(columnMapper)
       })
       Object.keys(columnMapper).forEach(function (columnId) {
         var outputAttr = columnMapper[columnId]
@@ -256,6 +244,44 @@ define([
 
   function clearDisabledFieldsContentCore(docTypeCode) {
     sublistDisplay.clearDisabledFieldsContent(docTypeCode)
+  }
+
+  /**
+   * <code>salesAmtChanged</code> event handler
+   *
+   * @gov XXX
+   *
+   * @param context
+   *    {Object}
+   * @param context.currentRecord
+   *    {record} The current record the user is manipulating in the UI
+   * @param context.sublistId
+   *    {string} The internal ID of the sublist.
+   * @param context.fieldId
+   *    {string} The internal ID of the field that was changed.
+   * @param [context.lineNum=undefined]
+   *    {string} The index of the line if the field is in a sublist or
+   *      matrix.
+   * @param [context.columnNum=undefined]
+   *    {string} The index of the column if the field is in a matrix.
+   *
+   * @return {void}
+   *
+   * @static
+   * @function documentIssueDateChanged
+   */
+  function documentIssueDateChanged(context) {
+    setDocPeriod()
+  }
+
+  var setDocPeriod = setDocPeriodCore
+
+  function setDocPeriodCore() {
+    var docIssueDate = getSublistValue(apDocFields.fields.guiDate.id)
+    console.log('setDocPeriodCore docIssueDate', docIssueDate)
+    var fieldValue = applyPeriodService.convertGuiPeriod(docIssueDate)
+    console.log('setDocPeriodCore fieldValue', fieldValue)
+    setSublistValue(apDocFields.fields.applyPeriod.id, fieldValue)
   }
 
   /**
@@ -510,7 +536,7 @@ define([
    * @function salesAmtChanged
    */
   function applyPeriodChanged(context) {
-    setApplyPeriodSelectValue()
+    setApplyPeriod()
   }
 
   // Common Functions
@@ -539,21 +565,21 @@ define([
   function dateTimeWrapper(func) {
     return function () {
       var value = func.apply(this, arguments)
-      return parseFloat(value) || 0
+      return value
     }
   }
 
   function getSublistValue(fieldId) {
     return currentTransactionRecord.getCurrentSublistValue({
       sublistId: apSublistId,
-      fieldId: fieldId,
+      fieldId: fieldId
     })
   }
 
   function getSublistField(fieldId) {
     return currentTransactionRecord.getCurrentSublistField({
       sublistId: apSublistId,
-      fieldId: fieldId,
+      fieldId: fieldId
     })
   }
 
@@ -561,7 +587,7 @@ define([
     currentTransactionRecord.setCurrentSublistValue({
       sublistId: apSublistId,
       fieldId: fieldId,
-      value: value,
+      value: value
     })
   }
 
@@ -570,6 +596,7 @@ define([
   exports.salesAmtChanged = salesAmtChanged
   exports.taxAmtChanged = taxAmtChanged
   exports.documentTypeChanged = documentTypeChanged
+  exports.documentIssueDateChanged = documentIssueDateChanged
   exports.consolidationMarkChanged = consolidationMarkChanged
   exports.taxTypeChanged = taxTypeChanged
   exports.applyPeriodChanged = applyPeriodChanged
