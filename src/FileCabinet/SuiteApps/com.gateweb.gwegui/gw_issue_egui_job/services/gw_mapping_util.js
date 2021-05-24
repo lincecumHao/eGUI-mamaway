@@ -17,6 +17,7 @@ define(['../../library/ramda.min'], (ramda) => {
     if (fieldObj.sourceField) {
       targetObj[fieldObj.id] = getFieldValues(origObj, fieldObj.sourceField)
     }
+
     return targetObj
   }
 

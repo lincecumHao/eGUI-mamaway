@@ -3,7 +3,7 @@ define([
   'N/error',
   '../library/ramda.min',
   './gw_credit_memo_service',
-  './gw_allowance_service',
+  './gw_allowance_service'
 ], (runtime, error, ramda, gwCmService, gwAllowanceService) => {
   /**
    * Module Description...
@@ -62,7 +62,7 @@ define([
     log.debug({ title: 'map stage searchResult', details: searchResult })
     context.write({
       key: searchResult.id,
-      value: searchResult.values,
+      value: searchResult.values
     })
   }
 
@@ -93,12 +93,12 @@ define([
       var allowanceService = new gwAllowanceService(cmObj)
       log.debug({
         title: 'reduce cmObj',
-        details: allowanceService.getAllowance(),
+        details: allowanceService.getAllowance()
       })
       var voucherId = allowanceService.issueAllowance()
       log.debug({ title: 'reduce voucherId', details: voucherId })
       context.write({
-        key: voucherId,
+        key: voucherId
       })
     } catch (e) {
       gwCmService.unlockCreditMemo(context.key)
@@ -141,7 +141,7 @@ define([
       var yields = summary.yields
       log.debug({
         title: `Summary for M/R script: ${runtime.getCurrentScript().id}`,
-        details: `time: ${seconds} seconds, usage: ${usage}, yields: ${yields}`,
+        details: `time: ${seconds} seconds, usage: ${usage}, yields: ${yields}`
       })
     } catch (e) {}
   }
@@ -162,7 +162,7 @@ define([
       errors.push(
         error.create({
           name: 'INPUT_STAGE_FAILED',
-          message: inputSummary.error,
+          message: inputSummary.error
         })
       )
     }
@@ -171,7 +171,7 @@ define([
       errors.push(
         error.create({
           name: 'MAP_STAGE_FAILED',
-          message: `Failure on key ${k}, message: ${e}`,
+          message: `Failure on key ${k}, message: ${e}`
         })
       )
     )
@@ -179,7 +179,7 @@ define([
       errors.push(
         error.create({
           name: 'REDUCE_STAGE_FAILED',
-          message: `Failure on key ${k}, message: ${e}`,
+          message: `Failure on key ${k}, message: ${e}`
         })
       )
     )

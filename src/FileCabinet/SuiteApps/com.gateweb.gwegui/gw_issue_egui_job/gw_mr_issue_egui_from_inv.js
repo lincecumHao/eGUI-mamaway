@@ -3,7 +3,7 @@ define([
   'N/error',
   '../library/ramda.min',
   './gw_invoice_service',
-  './gw_egui_service',
+  './gw_egui_service'
 ], (runtime, error, ramda, gwInvoiceService, gwEguiService) => {
   /**
    * Module Description...
@@ -62,7 +62,7 @@ define([
     log.debug({ title: 'map stage searchResult', details: searchResult })
     context.write({
       key: searchResult.id,
-      value: searchResult.values,
+      value: searchResult.values
     })
   }
 
@@ -106,7 +106,7 @@ define([
       log.debug({ title: 'eguiUploadResult', details: uploadEguiResult })
     }
     context.write({
-      key: voucherId,
+      key: voucherId
     })
 
     // TODO
@@ -146,7 +146,7 @@ define([
       var yields = summary.yields
       log.debug({
         title: `Summary for M/R script: ${runtime.getCurrentScript().id}`,
-        details: `time: ${seconds} seconds, usage: ${usage}, yields: ${yields}`,
+        details: `time: ${seconds} seconds, usage: ${usage}, yields: ${yields}`
       })
     } catch (e) {}
   }
@@ -167,7 +167,7 @@ define([
       errors.push(
         error.create({
           name: 'INPUT_STAGE_FAILED',
-          message: inputSummary.error,
+          message: inputSummary.error
         })
       )
     }
@@ -176,7 +176,7 @@ define([
       errors.push(
         error.create({
           name: 'MAP_STAGE_FAILED',
-          message: `Failure on key ${k}, message: ${e}`,
+          message: `Failure on key ${k}, message: ${e}`
         })
       )
     )
@@ -184,7 +184,7 @@ define([
       errors.push(
         error.create({
           name: 'REDUCE_STAGE_FAILED',
-          message: `Failure on key ${k}, message: ${e}`,
+          message: `Failure on key ${k}, message: ${e}`
         })
       )
     )

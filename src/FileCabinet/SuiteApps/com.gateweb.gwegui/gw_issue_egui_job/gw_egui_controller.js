@@ -15,6 +15,7 @@ define(['./gw_invoice_service', './gw_egui_service'], (
 
      */
   let exports = {}
+
   function issueEguiFromInv(searchResults, cmId) {
     try {
       gwInvoiceService.lockInvoice(cmId)
@@ -27,7 +28,7 @@ define(['./gw_invoice_service', './gw_egui_service'], (
       var uploadEguiResult = eguiService.uploadEgui(voucherId)
       log.debug({ title: 'eguiUploadResult', details: uploadEguiResult })
       context.write({
-        key: voucherId,
+        key: voucherId
       })
     } catch (e) {
       gwInvoiceService.unlockInvoice(context.key)

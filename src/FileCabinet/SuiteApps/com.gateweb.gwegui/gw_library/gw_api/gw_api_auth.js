@@ -28,7 +28,7 @@ define(['N/runtime'], (runtime) => {
     //   printerkey: printerKey,
     // }
     return {
-      gw_ns_auth: generateToken(companyName, companyGui, printerKey),
+      gw_ns_auth: generateToken(companyName, companyGui, printerKey)
     }
     // return output
   }

@@ -3,7 +3,7 @@ define([
   './gw_api_auth',
   'N/encode',
   '../gw_config_service',
-  '../../gw_dao/settings/gw_dao_egui_config_21',
+  '../../gw_dao/settings/gw_dao_egui_config_21'
 ], (https, GwApiAuth, encode, GwConfigService, gwConfigDao) => {
   /**
    * Module Description...
@@ -21,14 +21,14 @@ define([
 
   var documentType = {
     INVOICE: 'invoice',
-    ALLOWANCE: 'allowance',
+    ALLOWANCE: 'allowance'
   }
 
   function getHeaders() {
     var headers = {
       Accept:
         'text/html, application/json, application/xhtml+xml, application/xml;q=0.9, image/webp, */*;q=0.8, application/pdf',
-      'Accept-Language': 'en-us',
+      'Accept-Language': 'en-us'
     }
     log.debug({ title: 'getHeaders headers', details: headers })
     return headers
@@ -39,7 +39,7 @@ define([
     var baseUrl = gwConfigDao.getConfig().downloadBaseUrl
     var typeUrlMap = {
       invoice: '/api/v1/pdf/invoice',
-      allowance: '/api/v1/pdf/allowance',
+      allowance: '/api/v1/pdf/allowance'
     }
     if (!type) type = 'invoice'
     return `${baseUrl}${typeUrlMap[type.toLowerCase()]}`
@@ -50,7 +50,7 @@ define([
     var baseUrl = gwConfigDao.getConfig().printBaseUrl
     var typeUrlMap = {
       invoice: '/api/v1/print/invoice',
-      allowance: '/api/v1/print/allowance',
+      allowance: '/api/v1/print/allowance'
     }
     if (!type) type = 'invoice'
     return `${baseUrl}${typeUrlMap[type.toLowerCase()]}`
@@ -60,7 +60,7 @@ define([
     log.debug({ title: 'getGuiStatue', details: filename })
     var responseObj = {
       code: 0,
-      body: '',
+      body: ''
     }
     // var turnkeyBaseUrl = GwConfigService.getTurnkeyBaseUrl()
     var turnkeyBaseUrl = gwConfigDao.getConfig().turkeyBaseUrl
@@ -74,13 +74,13 @@ define([
     log.debug({ title: 'getGuiStatus headers', details: headers })
     var response = https.get({
       url: url,
-      headers: headers,
+      headers: headers
     })
     log.debug({ title: 'getGuiStatus response success' })
     responseObj.code = response.code
     log.debug({
       title: 'getGuiStatus response code',
-      details: responseObj.code,
+      details: responseObj.code
     })
     responseObj.body = JSON.parse(response.body)
     log.debug({ title: 'getGuiStatus response body', details: responseObj })
@@ -90,7 +90,7 @@ define([
   function uploadGuiXml(xmlString, filename) {
     var responseObj = {
       code: 0,
-      body: '',
+      body: ''
     }
     var filenameParts = getFilenameParts(filename)
     // var turnkeyBaseUrl = GwConfigService.getTurnkeyBaseUrl()
@@ -105,7 +105,7 @@ define([
       url: url,
       body: xmlString,
       // body: postBody,
-      headers: headers,
+      headers: headers
     })
     responseObj.code = response.code
     if (response.code !== 200) {
@@ -124,7 +124,7 @@ define([
       input: regExGroupResult[0], // Original input
       filename: regExGroupResult[1], // Filename without extension
       migType: regExGroupResult[2], // Mig type
-      extension: regExGroupResult[4], // file extension
+      extension: regExGroupResult[4] // file extension
     }
     return resultObj
   }
@@ -140,7 +140,7 @@ define([
       success: true,
       code: 0,
       body: '',
-      error: '',
+      error: ''
     }
     var requestUrl = getDownloadUrl(xmlFileObj.docType)
     log.debug({ title: 'getEGuiPdf requestUrl', details: requestUrl })
@@ -152,7 +152,7 @@ define([
       let response = https.post({
         url: requestUrl,
         body: JSON.stringify(postBody),
-        headers: header,
+        headers: header
       })
       responseObj.code = response.code
       responseObj.body = response.body
@@ -177,7 +177,7 @@ define([
       success: true,
       code: 0,
       body: '',
-      error: '',
+      error: ''
     }
     var requestUrl = getPrintUrl(xmlFileObj.docType)
     log.debug({ title: 'printEGui requestUrl', details: requestUrl })
@@ -189,7 +189,7 @@ define([
       let response = https.post({
         url: requestUrl,
         body: JSON.stringify(postBody),
-        headers: header,
+        headers: header
       })
       responseObj.code = response.code
       responseObj.body = response.body
@@ -216,7 +216,7 @@ define([
     var xmlStringBase64 = encode.convert({
       string: xmlFileObject.xml,
       inputEncoding: encode.Encoding.UTF_8,
-      outputEncoding: encode.Encoding.BASE_64,
+      outputEncoding: encode.Encoding.BASE_64
     })
     var body = {
       url: '',
@@ -225,7 +225,7 @@ define([
         filename: xmlFileObject.filename,
         checksum: '',
         documentStatus: xmlFileObject.docStatus || 2, //2: Issue, 3: cancel, 4: void, 5:reject
-        extramemo: xmlFileObject.extramemo || '',
+        extramemo: xmlFileObject.extramemo || ''
       },
       attribute: {
         // FOR PRINT
@@ -243,8 +243,8 @@ define([
         // GENERAL ACLAS WINPOS POSIFLEX
         reprint: xmlFileObject.reprint,
         // is upload document upload
-        uploadDocument: xmlFileObject.uploadDocument,
-      },
+        uploadDocument: xmlFileObject.uploadDocument
+      }
     }
     if (printerSetting) {
       body.attribute.printerName = printerSetting.name

@@ -4,7 +4,7 @@ define([
   '../../gw_dao/voucher/gw_service_map_voucher_egui',
   '../../gw_dao/voucher/gw_dao_voucher_main_fields',
   '../../gw_dao/voucher/gw_dao_voucher_detail_fields',
-  '../../gw_dao/voucher/gw_dao_voucher',
+  '../../gw_dao/voucher/gw_dao_voucher'
 ], (
   ramda,
   gwEguiVoucherMapper,

@@ -2,7 +2,7 @@ define([
   '../library/ramda.min',
   '../library/gw_date_util',
   '../gw_dao/assignLog/gw_dao_assign_log_21',
-  '../gw_dao/assignLog/gw_record_fields',
+  '../gw_dao/assignLog/gw_record_fields'
 ], (ramda, gwDateUtil, gwAssignLogDao, gwAssignLogFields) => {
   /**
    * Module Description...
@@ -66,7 +66,7 @@ define([
         yearMonth: year_month,
         guiType: invoice_type,
         statusId: ['11', '12'],
-        eguiFormatValue: '35',
+        eguiFormatValue: '35'
       }
       log.debug({ title: 'params', details: params })
 

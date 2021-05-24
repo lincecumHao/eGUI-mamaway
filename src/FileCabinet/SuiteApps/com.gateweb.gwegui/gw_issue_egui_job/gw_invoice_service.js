@@ -2,7 +2,7 @@ define([
   'N/record',
   'N/search',
   '../library/ramda.min',
-  '../gw_dao/transactionSearch/gw_transaction_fields',
+  '../gw_dao/transactionSearch/gw_transaction_fields'
 ], (record, search, ramda, transSearchFields) => {
   /**
    * Module Description...
@@ -40,7 +40,7 @@ define([
     return search.create({
       type: search.Type.INVOICE,
       filters: searchFilters,
-      columns: searchColumns,
+      columns: searchColumns
     })
   }
 
@@ -74,7 +74,7 @@ define([
     record.submitFields({
       type: record.Type.INVOICE,
       id: invId,
-      values: updateValues,
+      values: updateValues
     })
   }
 
@@ -86,7 +86,7 @@ define([
     record.submitFields({
       type: record.Type.INVOICE,
       id: invId,
-      values: updateValues,
+      values: updateValues
     })
   }
 
@@ -101,7 +101,7 @@ define([
     record.submitFields({
       type: record.Type.INVOICE,
       id: eguiObj.internalId,
-      values: updateValues,
+      values: updateValues
     })
   }
 

@@ -4,7 +4,7 @@ define([
   'N/runtime',
   'N/https',
   '../../../gw_dao/voucher/gw_dao_voucher',
-  '../../../gw_dao/settings/gw_dao_egui_config_21',
+  '../../../gw_dao/settings/gw_dao_egui_config_21'
 ], (file, render, runtime, https, gwVoucherDao, gwSystemConfig) => {
   /**
    * Module Description...
@@ -36,7 +36,7 @@ define([
       input: regExGroupResult[0], // Original input
       filename: regExGroupResult[1], // Filename without extension
       migType: regExGroupResult[2], // Mig type
-      extension: regExGroupResult[4], // file extension
+      extension: regExGroupResult[4] // file extension
     }
   }
 
@@ -44,14 +44,14 @@ define([
     getXmlString(eguiObj) {
       log.debug({ title: 'Upload Service eguiObj', details: eguiObj })
       var xmlTmplFile = file.load({
-        id: getXmlTemplateFilePath(eguiObj.migTypeOption),
+        id: getXmlTemplateFilePath(eguiObj.migTypeOption)
       })
       var xmlRenderer = render.create()
       xmlRenderer.templateContent = xmlTmplFile.getContents()
       xmlRenderer.addCustomDataSource({
         format: render.DataSource.OBJECT,
         alias: 'guiData',
-        data: eguiObj,
+        data: eguiObj
       })
       return xmlRenderer.renderAsString()
     }
@@ -65,7 +65,7 @@ define([
       var systemConfig = gwSystemConfig.getConfig()
       var responseObj = {
         code: 0,
-        body: '',
+        body: ''
       }
       var filenameParts = getFilenameParts(filename)
       var turnkeyBaseUrl = systemConfig.turkeyBaseUrl
@@ -75,13 +75,13 @@ define([
           'text/html, application/json, application/xhtml+xml, application/xml;q=0.9, image/webp, */*;q=0.8, application/pdf',
         'Accept-Language': 'en-us',
         gw_ns_auth:
-          'lVM3wFlV0bMNi0/lNq/PV/0JTbxLQN03ldmd6T/6rkQhfOUZZbV/1aT1Q9UUTh7PcHnghZjsgtiCsy41fi1TnWlR6UC+AVTg36NDMni5LfaR/7uDPXAgOyhHlb8Y3NHmrjtq2hRf9hO1/f58LLltmFtnVJFAzNazeX839lXSQA0=',
+          'lVM3wFlV0bMNi0/lNq/PV/0JTbxLQN03ldmd6T/6rkQhfOUZZbV/1aT1Q9UUTh7PcHnghZjsgtiCsy41fi1TnWlR6UC+AVTg36NDMni5LfaR/7uDPXAgOyhHlb8Y3NHmrjtq2hRf9hO1/f58LLltmFtnVJFAzNazeX839lXSQA0='
       }
       log.debug({ title: 'uploadGuiXml headers', details: headers })
       var response = https.post({
         url: url,
         body: xmlString,
-        headers: headers,
+        headers: headers
       })
       responseObj.code = response.code
       if (response.code !== 200) {

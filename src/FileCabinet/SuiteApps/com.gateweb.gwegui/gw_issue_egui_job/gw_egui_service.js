@@ -7,7 +7,7 @@ define([
   './gw_egui_book_service',
   '../gw_dao/migType/gw_dao_mig_type_21',
   './services/upload/gw_service_upload_egui',
-  './gw_invoice_service',
+  './gw_invoice_service'
 ], (
   ramda,
   gwVoucherDao,
@@ -35,7 +35,7 @@ define([
   const documentAction = {
     ISSUE: 'ISSUE',
     CANCEL: 'CANCEL',
-    VOID: 'VOID',
+    VOID: 'VOID'
   }
 
   function getRandomNumber() {
