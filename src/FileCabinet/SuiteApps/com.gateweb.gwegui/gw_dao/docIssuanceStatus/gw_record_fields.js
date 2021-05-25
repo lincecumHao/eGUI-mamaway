@@ -12,27 +12,28 @@ define(['../../library/ramda.min'], function (ramda) {
 
    */
   var exports = {}
+  var recordId = 'customrecord_gw_ed_issuance_status'
   var fieldConfig = {
     name: {
       id: 'name',
       sourceField: '',
-      outputField: 'name',
+      outputField: 'name'
     },
     custrecord_gw_eds_text: {
       id: 'custrecord_gw_edis_text',
       sourceField: '',
-      outputField: 'value',
+      outputField: 'value'
     },
     custrecord_gw_eds_value: {
       id: 'custrecord_gw_edis_value',
       sourceField: '',
-      outputField: 'text',
+      outputField: 'text'
     },
     custrecord_gw_eds_status_code: {
       id: 'custrecord_gw_edis_code',
       sourceField: '',
-      outputField: 'statusCode',
-    },
+      outputField: 'statusCode'
+    }
   }
 
   var fieldInputMapping = ramda.reduce(
@@ -65,5 +66,6 @@ define(['../../library/ramda.min'], function (ramda) {
   })
   exports.fieldOutputMapping = fieldOutputMapping
   exports.fieldInputMapping = fieldInputMapping
+  exports.recordId = recordId
   return exports
 })

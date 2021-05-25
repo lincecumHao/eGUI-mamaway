@@ -5,8 +5,7 @@
     <notifyadmins>F</notifyadmins>
     <notifyemails></notifyemails>
     <notifyowner>T</notifyowner>
-    <scriptfile>[/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_batchegui_genandxml_schedule.js]
-    </scriptfile>
+    <scriptfile>[/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_batchegui_genandxml_schedule.js]</scriptfile>
     <scriptdeployments>
         <scriptdeployment scriptid="customdeploy_gw_batch_voucher_schedule">
             <isdeployed>T</isdeployed>

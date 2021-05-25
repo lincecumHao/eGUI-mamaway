@@ -1,7 +1,7 @@
 define([
   '../gw_abstract_dao',
   './gw_record_fields',
-  '../../library/ramda.min',
+  '../../library/ramda.min'
 ], (gwDao, fieldConfig, ramda) => {
   class TaxType extends gwDao.DataAccessObject {
     constructor() {
@@ -34,13 +34,13 @@ define([
     }
 
     getTaxTypeByCsvValue(csvValue) {
-      return this.allOptions.filter(function (option) {
+      return this.getAll().filter(function (option) {
         return option.csvValue.split(',').indexOf(csvValue) > -1
       })[0]
     }
 
     getTaxTypeByTaxCode(taxCode) {
-      return this.allOptions.filter(function (option) {
+      return this.getAll().filter(function (option) {
         if (option.taxCodes) {
           return (
             option.taxCodes.value.split(',').indexOf(taxCode.toString()) > -1

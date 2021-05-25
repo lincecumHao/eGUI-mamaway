@@ -5,10 +5,10 @@ define(['N/config', '../gw_abstract_dao', './gw_record_fields'], (
 ) => {
   function getAccountId() {
     var companyInfo = config.load({
-      type: config.Type.COMPANY_INFORMATION,
+      type: config.Type.COMPANY_INFORMATION
     })
     return companyInfo.getValue({
-      fieldId: 'companyid',
+      fieldId: 'companyid'
     })
   }
 
@@ -19,7 +19,7 @@ define(['N/config', '../gw_abstract_dao', './gw_record_fields'], (
 
     getConfig() {
       var accountId = getAccountId()
-      return this.allOptions.filter(function (option) {
+      return this.getAll().filter(function (option) {
         return option.nsAcctId.toString() === accountId.toString()
       })[0]
     }

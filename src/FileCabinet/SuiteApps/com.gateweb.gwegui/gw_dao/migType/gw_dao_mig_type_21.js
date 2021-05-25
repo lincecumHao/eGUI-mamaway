@@ -1,7 +1,7 @@
 define([
   '../gw_abstract_dao',
   './gw_record_fields',
-  '../../library/ramda.min',
+  '../../library/ramda.min'
 ], (gwDao, fieldConfig, ramda) => {
   /**
    * Module Description...
@@ -23,7 +23,7 @@ define([
       this.businessTranTypeEnum = {
         B2C: 'B2C',
         B2B: 'B2BS',
-        B2B_Exchange: 'B2BE',
+        B2B_Exchange: 'B2BE'
       }
     }
 
@@ -40,7 +40,7 @@ define([
             fieldConfig.fields.custrecord_gw_mt_action_mode.outputField
           ].toUpperCase() === action.toUpperCase()
         )
-      }, this.allOptions)[0]
+      }, this.getAll())[0]
     }
 
     getIssueEguiMigType(businessType) {

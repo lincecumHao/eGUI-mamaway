@@ -1,7 +1,7 @@
 define([
   '../gw_abstract_dao',
   './gw_record_fields',
-  '../consolidatePaymentCode/gw_dao_consolidate_payment_code_21',
+  '../consolidatePaymentCode/gw_dao_consolidate_payment_code_21'
 ], function (gwDao, fieldConfig, gwDaoConsolidatePaymentCode) {
   /**
    * Module Description...
@@ -38,8 +38,24 @@ define([
       return this.allOptions
     }
 
+    getAll() {
+      this.allOptions = super.getAll().map(function (optionObject) {
+        var consolidateFieldId =
+          fieldConfig.fields.custrecord_gw_be_conso_payment_code.outputField
+        if (optionObject[consolidateFieldId]) {
+          optionObject[
+            consolidateFieldId
+          ] = gwDaoConsolidatePaymentCode.getById(
+            optionObject[consolidateFieldId].value
+          )
+        }
+        return optionObject
+      })
+      return this.allOptions
+    }
+
     getByAccountSubsidiary(account, subsidiary) {
-      return this.allOptions.filter(function (recordObj) {
+      return this.getAll().filter(function (recordObj) {
         return (
           recordObj[fieldConfig.fields.custrecord_gw_be_ns_id.outputField] ===
             account &&
@@ -56,7 +72,7 @@ define([
      * @returns {*}
      */
     getBySubsidiary(subsidiaryId) {
-      return this.allOptions.filter(function (recordObj) {
+      return this.getAll().filter(function (recordObj) {
         return (
           recordObj[
             fieldConfig.fields.custrecord_gw_be_ns_subsidiary.outputField
@@ -66,7 +82,7 @@ define([
     }
 
     getByTaxId(taxId) {
-      return this.allOptions.filter(function (recordObj) {
+      return this.getAll().filter(function (recordObj) {
         return (
           recordObj[
             fieldConfig.fields.custrecord_gw_be_tax_id_number.outputField

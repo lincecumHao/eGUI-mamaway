@@ -20,13 +20,13 @@ define(['../gw_abstract_dao', './gw_record_fields'], function (
     }
 
     getByStatusCode(statusCode) {
-      return this.allOptions.filter(function (option) {
+      return this.getAll().filter(function (option) {
         return option.statusCode.toString() === statusCode.toString()
       })[0]
     }
 
     getByName(name) {
-      return this.allOptions.filter(function (option) {
+      return this.getAll().filter(function (option) {
         return option.name === name
       })[0]
     }

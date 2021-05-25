@@ -21,7 +21,7 @@ define(['../gw_abstract_dao', './gw_record_fields'], (gwDao, fieldConfig) => {
       if (!mofCode) {
         mofCode = '00'
       }
-      return this.allOptions.filter(function (option) {
+      return this.getAll().filter(function (option) {
         return (
           parseInt(option.value) === parseInt(value) &&
           mofCode === option.mofCode

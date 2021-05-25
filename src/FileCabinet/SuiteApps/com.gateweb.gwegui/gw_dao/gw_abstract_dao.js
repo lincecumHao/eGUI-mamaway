@@ -17,9 +17,7 @@ define(['../library/gw_lib_search', 'N/runtime'], function (
   var exports = {}
 
   class UserSessionService {
-    constructor() {
-      this.currentSession = runtime.getCurrentSession()
-    }
+    constructor() {}
 
     isRecordRefreshRequired(recordId) {
       return (
@@ -44,10 +42,11 @@ define(['../library/gw_lib_search', 'N/runtime'], function (
     }
 
     addRefreshRecordId(recordId) {
-      this.set(
-        'refresh',
-        JSON.stringify(this.getRefreshedRequiredRecordList().push(recordId))
-      )
+      var currentCachedValue = this.getRefreshedRequiredRecordList()
+      if (currentCachedValue.indexOf(recordId) === -1) {
+        currentCachedValue.push(recordId)
+        this.set('refresh', JSON.stringify(currentCachedValue))
+      }
     }
 
     recordRefreshed(recordId, value) {
@@ -59,13 +58,13 @@ define(['../library/gw_lib_search', 'N/runtime'], function (
     }
 
     set(key, value) {
-      this.currentSession.set({ name: key, value: value })
+      runtime.getCurrentSession().set({ name: key, value: value })
     }
 
     get(key, defaultValue) {
       var cachedValue = JSON.parse(
-        this.currentSession.get({
-          name: key,
+        runtime.getCurrentSession().get({
+          name: key
         })
       )
       if (!cachedValue && defaultValue) {
@@ -82,9 +81,6 @@ define(['../library/gw_lib_search', 'N/runtime'], function (
     constructor(recordTypeId, fieldConfig) {
       this.fieldConfig = fieldConfig
       this.recordTypeId = recordTypeId
-      this.allOptions = sessionService.isRecordRefreshRequired(recordTypeId)
-        ? sessionService.recordRefreshed(recordTypeId, this.getAllOptions())
-        : sessionService.getCachedRecordValue(recordTypeId)
     }
 
     getAllOptions() {
@@ -105,23 +101,31 @@ define(['../library/gw_lib_search', 'N/runtime'], function (
     }
 
     getAll() {
+      this.allOptions = sessionService.isRecordRefreshRequired(
+        this.recordTypeId
+      )
+        ? sessionService.recordRefreshed(
+            this.recordTypeId,
+            this.getAllOptions()
+          )
+        : sessionService.getCachedRecordValue(this.recordTypeId)
       return this.allOptions
     }
 
     getById(id) {
-      return this.allOptions.filter(function (option) {
+      return this.getAll().filter(function (option) {
         return parseInt(option.id) === parseInt(id)
       })[0]
     }
 
     getByValue(value) {
-      return this.allOptions.filter(function (option) {
+      return this.getAll().filter(function (option) {
         return option.value.toString() === value.toString()
       })[0]
     }
 
     getByText(text) {
-      return this.allOptions.filter(function (option) {
+      return this.getAll().filter(function (option) {
         return option.text.toString() === text.toString()
       })[0]
     }
