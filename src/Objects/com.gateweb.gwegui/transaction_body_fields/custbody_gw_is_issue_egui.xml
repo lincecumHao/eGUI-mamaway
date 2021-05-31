@@ -24,7 +24,7 @@
     <isformula>F</isformula>
     <ismandatory>F</ismandatory>
     <isparent>F</isparent>
-    <label>是否開立發票</label>
+    <label>開立發票</label>
     <linktext></linktext>
     <maxlength></maxlength>
     <maxvalue></maxvalue>
