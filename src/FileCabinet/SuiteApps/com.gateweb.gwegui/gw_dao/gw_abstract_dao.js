@@ -1,6 +1,6 @@
-define(['../library/gw_lib_search', 'N/runtime'], function (
+define(['../library/gw_lib_search', './gw_dao_cache'], function (
   searchLib,
-  runtime
+  dataCacheService
 ) {
   /**
    * Module Description...
@@ -16,71 +16,14 @@ define(['../library/gw_lib_search', 'N/runtime'], function (
    */
   var exports = {}
 
-  class UserSessionService {
-    constructor() {}
-
-    isRecordRefreshRequired(recordId) {
-      return (
-        !this.getCachedRecordValue(recordId) ||
-        this.getRefreshedRequiredRecordList().indexOf(recordId) > -1
-      )
-    }
-
-    getRefreshedRequiredRecordList() {
-      return this.get('refresh', [])
-    }
-
-    getCachedRecordValue(recordId) {
-      return this.get(recordId)
-    }
-
-    getCachedRecord(recordId, func) {
-      if (this.isRecordRefreshRequired(recordId)) {
-        this.recordRefreshed(recordId, func.apply(this, arguments))
-      }
-      return this.get(recordId)
-    }
-
-    addRefreshRecordId(recordId) {
-      var currentCachedValue = this.getRefreshedRequiredRecordList()
-      if (currentCachedValue.indexOf(recordId) === -1) {
-        currentCachedValue.push(recordId)
-        this.set('refresh', JSON.stringify(currentCachedValue))
-      }
-    }
-
-    recordRefreshed(recordId, value) {
-      this.set(recordId, JSON.stringify(value))
-      var refreshList = this.getRefreshedRequiredRecordList()
-      refreshList.splice(refreshList.indexOf(recordId), 1)
-      this.set('refresh', JSON.stringify(refreshList))
-      return value
-    }
-
-    set(key, value) {
-      runtime.getCurrentSession().set({ name: key, value: value })
-    }
-
-    get(key, defaultValue) {
-      var cachedValue = JSON.parse(
-        runtime.getCurrentSession().get({
-          name: key
-        })
-      )
-      if (!cachedValue && defaultValue) {
-        this.set(key, JSON.stringify(defaultValue))
-        return defaultValue
-      }
-      return cachedValue
-    }
-  }
-
-  var sessionService = new UserSessionService()
-
   class DataAccessObject {
     constructor(recordTypeId, fieldConfig) {
       this.fieldConfig = fieldConfig
       this.recordTypeId = recordTypeId
+      this.cacheService = new dataCacheService(
+        this.recordTypeId,
+        this.fieldConfig
+      )
     }
 
     getAllOptions() {
@@ -101,14 +44,9 @@ define(['../library/gw_lib_search', 'N/runtime'], function (
     }
 
     getAll() {
-      this.allOptions = sessionService.isRecordRefreshRequired(
-        this.recordTypeId
-      )
-        ? sessionService.recordRefreshed(
-            this.recordTypeId,
-            this.getAllOptions()
-          )
-        : sessionService.getCachedRecordValue(this.recordTypeId)
+      this.allOptions = this.cacheService.get()
+        ? this.cacheService.get()
+        : this.cacheService.set(this.getAllOptions())
       return this.allOptions
     }
 
