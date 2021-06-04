@@ -13,7 +13,8 @@ define([
   '../gw_common_utility/gw_common_date_utility',
   '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_search_utility',
-  '../gw_common_utility/gw_common_configure',
+  '../gw_common_utility/gw_common_configure',  
+  '../../gw_dao/taxType/gw_dao_tax_type_21',
 ], function (
   config,
   serverWidget,
@@ -24,7 +25,8 @@ define([
   dateutility,
   stringutility,
   searchutility,
-  gwconfigure
+  gwconfigure, 
+  taxyype21
 ) {
   var _numericToFixed = gwconfigure.getGwNumericToFixed() //小數點位數
   var _invoiceActionScriptId = gwconfigure.getGwInvoiceActionScriptId()
@@ -113,6 +115,49 @@ define([
 
   function loadAllTaxInformation() {
     try {
+	  var _all_tax_types = taxyype21.getAll()
+	  log.debug('get all_tax_types', JSON.stringify(_all_tax_types))
+ 
+	  for (var i=0; i<_all_tax_types.length; i++) {
+		   var _tax_json_obj = _all_tax_types[i]
+		   var _ns_tax_json_obj = _tax_json_obj.taxCodes
+		   log.debug('get _ns_tax_json_obj', JSON.stringify(_ns_tax_json_obj))
+		   var _netsuite_id_value = ''
+		   var _netsuite_id_text = ''
+		   if (_ns_tax_json_obj.length != 0) {
+              _netsuite_id_value = _ns_tax_json_obj.value //111;
+              _netsuite_id_text = _ns_tax_json_obj.text //Jul 2020;
+           }
+		   
+		   var _obj = {
+			  voucher_property_id: _tax_json_obj.name, //TAX_WITH_TAX
+			  voucher_property_value: _tax_json_obj.value, //1
+			  voucher_property_note: _tax_json_obj.text, //應稅
+			  netsuite_id_value: _netsuite_id_value, //8(NS internalID)
+			  netsuite_id_text: _netsuite_id_text,   //VAT_TW TAX 5%-TW(NS Text)
+		   }
+
+		   _taxObjAry.push(_obj)
+		   
+	  } 
+    } catch (e) {
+      log.error(e.name, e.message)
+    }
+  }
+  
+  function loadAllTaxInformation_BAK() {
+    try {
+	  var _all_tax_types = taxyype21.getAll()
+	  log.debug('get all_tax_types', JSON.stringify(_all_tax_types))
+	  for (let i in myObj.cars) {
+           x += myObj.cars[i];
+      }
+	  for (var i=0; i<_all_tax_types.length; i++) {
+		   var _tax_json_obj = _all_tax_types[i]
+		   
+	  }
+	   
+	  
       var _group_type = 'TAX_TYPE'
       var _mySearch = search.create({
         type: _gw_voucher_properties,
