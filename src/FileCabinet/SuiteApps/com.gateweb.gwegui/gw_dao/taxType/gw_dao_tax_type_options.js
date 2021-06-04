@@ -17,18 +17,18 @@ define(['N/record', '../../library/gw_lib_search'], function (
   var exports = {}
 
   var allOptions = []
-  var recordTypeId = 'customrecord_gw_tax_type_option'
+  var recordTypeId = 'customrecord_gw_ap_doc_tax_type_option'
   var columns = [
-    'custrecord_gw_tax_type_value',
-    'custrecord_gw_tax_type_text',
-    'custrecord_gw_tax_type_csv_value',
-    'custrecord_gw_tax_type_tax_code',
+    'custrecord_gw_ap_doc_tax_type_value',
+    'custrecord_gw_ap_doc_tax_type_text',
+    'custrecord_gw_ap_doc_tax_type_csv_value',
+    'custrecord_gw_tax_type_tax_code'
   ]
   var columnMap = {
-    custrecord_gw_tax_type_value: 'value',
-    custrecord_gw_tax_type_text: 'text',
-    custrecord_gw_tax_type_csv_value: 'csvValue',
-    custrecord_gw_tax_type_tax_code: 'taxCodes',
+    custrecord_gw_ap_doc_tax_type_value: 'value',
+    custrecord_gw_ap_doc_tax_type_text: 'text',
+    custrecord_gw_ap_doc_tax_type_csv_value: 'csvValue',
+    custrecord_gw_tax_type_tax_code: 'taxCodes'
   }
 
   function constructorWrapper(func) {
