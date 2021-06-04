@@ -24,15 +24,7 @@ define(['N/cache'], (cache) => {
     }
 
     get() {
-      log.debug({
-        title: 'getCacheData recordType',
-        details: this.recordTypeId
-      })
-      var cachedValue = JSON.parse(
-        this.getCacheObj().get({ key: this.recordTypeId })
-      )
-      log.debug({ title: 'get cached data cachedValue', details: cachedValue })
-      return cachedValue
+      return JSON.parse(this.getCacheObj().get({ key: this.recordTypeId }))
     }
 
     getCacheObj() {
