@@ -56,9 +56,7 @@ define([
   var _invoice_hiddent_listid = 'custpage_invoice_hiddent_listid'
   var _creditmemo_hiddent_listid = 'custpage_creditmemo_hiddent_listid'
   var _deduction_egui_number_field = 'custbody_gw_creditmemo_deduction_list'
-
-  var _gw_voucher_properties = gwconfigure.getGwVoucherProperties() //設定檔
-
+ 
   var _defaultAssignLogType = 'TYPE_1'
 
   var _default_upload_status = 'A' //A->P->C,E

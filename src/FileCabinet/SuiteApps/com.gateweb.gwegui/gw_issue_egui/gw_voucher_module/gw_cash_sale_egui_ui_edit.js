@@ -13,6 +13,7 @@ define([
   '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_search_utility',
   '../gw_common_utility/gw_common_configure',
+  '../../gw_dao/taxType/gw_dao_tax_type_21',
 ], function (
   config,
   serverWidget,
@@ -21,13 +22,13 @@ define([
   dateutility,
   stringutility,
   searchutility,
-  gwconfigure
+  gwconfigure,
+  taxyype21
 ) {
   var _numericToFixed = gwconfigure.getGwNumericToFixed() //小數點位數
   var _invoiceActionScriptId = gwconfigure.getGwInvoiceActionScriptId()
   var _invoiceActionDeploymentId = gwconfigure.getGwInvoiceActionDeploymentId()
-
-  var _gw_voucher_properties = gwconfigure.getGwVoucherProperties() //設定檔
+ 
   //部門代碼
   var _default_department_id = ''
 
@@ -118,56 +119,36 @@ define([
 
   function loadAllTaxInformation() {
     try {
-      var _group_type = 'TAX_TYPE'
-      var _mySearch = search.create({
-        type: _gw_voucher_properties,
-        columns: [
-          search.createColumn({ name: 'custrecord_gw_voucher_property_id' }), //TAX_WITH_TAX
-          search.createColumn({ name: 'custrecord_gw_voucher_property_value' }), //1
-          search.createColumn({ name: 'custrecord_gw_voucher_property_note' }), //應稅
-          search.createColumn({ name: 'custrecord_gw_netsuite_id_value' }), //8
-          search.createColumn({ name: 'custrecord_gw_netsuite_id_text' }), //VAT_TW TAX 5%-TW
-        ],
-      })
+	  var _all_tax_types = taxyype21.getAll()
+	  log.debug('get all_tax_types', JSON.stringify(_all_tax_types))
+ 
+	  for (var i=0; i<_all_tax_types.length; i++) {
+		   var _tax_json_obj = _all_tax_types[i]
+		   var _ns_tax_json_obj = _tax_json_obj.taxCodes
+		   log.debug('get _ns_tax_json_obj', JSON.stringify(_ns_tax_json_obj))
+		   var _netsuite_id_value = ''
+		   var _netsuite_id_text = ''
+		   if (_ns_tax_json_obj.length != 0) {
+              _netsuite_id_value = _ns_tax_json_obj.value //111;
+              _netsuite_id_text = _ns_tax_json_obj.text //Jul 2020;
+           }
+		   
+		   var _obj = {
+			  voucher_property_id: _tax_json_obj.name, //TAX_WITH_TAX
+			  voucher_property_value: _tax_json_obj.value, //1
+			  voucher_property_note: _tax_json_obj.text, //應稅
+			  netsuite_id_value: _netsuite_id_value, //8(NS internalID)
+			  netsuite_id_text: _netsuite_id_text,   //VAT_TW TAX 5%-TW(NS Text)
+		   }
 
-      var _filterArray = []
-      _filterArray.push(['custrecord_gw_voucher_group_type', 'is', _group_type])
-      _mySearch.filterExpression = _filterArray
-      _mySearch.run().each(function (result) {
-        var internalid = result.id
-
-        var _voucher_property_id = result.getValue({
-          name: 'custrecord_gw_voucher_property_id',
-        })
-        var _voucher_property_value = result.getValue({
-          name: 'custrecord_gw_voucher_property_value',
-        })
-        var _voucher_property_note = result.getValue({
-          name: 'custrecord_gw_voucher_property_note',
-        })
-        var _netsuite_id_value = result.getValue({
-          name: 'custrecord_gw_netsuite_id_value',
-        })
-        var _netsuite_id_text = result.getValue({
-          name: 'custrecord_gw_netsuite_id_text',
-        })
-
-        var _obj = {
-          voucher_property_id: _voucher_property_id,
-          voucher_property_value: _voucher_property_value,
-          voucher_property_note: _voucher_property_note,
-          netsuite_id_value: _netsuite_id_value,
-          netsuite_id_text: _netsuite_id_text,
-        }
-
-        _taxObjAry.push(_obj)
-        return true
-      })
+		   _taxObjAry.push(_obj)
+		   
+	  } 
     } catch (e) {
-      log.debug(e.name, e.message)
+      log.error(e.name, e.message)
     }
   }
-
+   
   //取得稅別資料
   function getTaxInformation(netsuiteId) {
     var _taxObj

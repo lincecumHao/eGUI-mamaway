@@ -144,70 +144,7 @@ define([
       log.error(e.name, e.message)
     }
   }
-  
-  function loadAllTaxInformation_BAK() {
-    try {
-	  var _all_tax_types = taxyype21.getAll()
-	  log.debug('get all_tax_types', JSON.stringify(_all_tax_types))
-	  for (let i in myObj.cars) {
-           x += myObj.cars[i];
-      }
-	  for (var i=0; i<_all_tax_types.length; i++) {
-		   var _tax_json_obj = _all_tax_types[i]
-		   
-	  }
-	   
-	  
-      var _group_type = 'TAX_TYPE'
-      var _mySearch = search.create({
-        type: _gw_voucher_properties,
-        columns: [
-          search.createColumn({ name: 'custrecord_gw_voucher_property_id' }), //TAX_WITH_TAX
-          search.createColumn({ name: 'custrecord_gw_voucher_property_value' }), //1
-          search.createColumn({ name: 'custrecord_gw_voucher_property_note' }), //應稅
-          search.createColumn({ name: 'custrecord_gw_netsuite_id_value' }), //8
-          search.createColumn({ name: 'custrecord_gw_netsuite_id_text' }), //VAT_TW TAX 5%-TW
-        ],
-      })
-
-      var _filterArray = []
-      _filterArray.push(['custrecord_gw_voucher_group_type', 'is', _group_type])
-      _mySearch.filterExpression = _filterArray
-      _mySearch.run().each(function (result) {
-        var internalid = result.id
-
-        var _voucher_property_id = result.getValue({
-          name: 'custrecord_gw_voucher_property_id',
-        })
-        var _voucher_property_value = result.getValue({
-          name: 'custrecord_gw_voucher_property_value',
-        })
-        var _voucher_property_note = result.getValue({
-          name: 'custrecord_gw_voucher_property_note',
-        })
-        var _netsuite_id_value = result.getValue({
-          name: 'custrecord_gw_netsuite_id_value',
-        })
-        var _netsuite_id_text = result.getValue({
-          name: 'custrecord_gw_netsuite_id_text',
-        })
-
-        var _obj = {
-          voucher_property_id: _voucher_property_id,
-          voucher_property_value: _voucher_property_value,
-          voucher_property_note: _voucher_property_note,
-          netsuite_id_value: _netsuite_id_value,
-          netsuite_id_text: _netsuite_id_text,
-        }
-
-        _taxObjAry.push(_obj)
-        return true
-      })
-    } catch (e) {
-      log.error(e.name, e.message)
-    }
-  }
-
+   
   //取得稅別資料
   function getTaxInformation(netsuiteId) {
     var _taxObj
