@@ -834,6 +834,8 @@ define([
   var _taxObjAry = []
 
   function loadAllTaxInformation() {
+	_taxObjAry = invoiceutility.loadAllTaxInformation()
+	/**
     try {		  
       var _mySearch = search.create({
         type: 'customrecord_gw_ap_doc_tax_type_option',
@@ -879,6 +881,8 @@ define([
     } catch (e) {
       log.debug(e.name, e.message)
     }
+	*/
+	
   }
     
   //取得稅別資料
