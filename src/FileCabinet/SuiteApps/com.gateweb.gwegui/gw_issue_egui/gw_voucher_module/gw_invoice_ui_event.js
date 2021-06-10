@@ -4282,6 +4282,10 @@ define([
           name: 'custrecord_gw_assignlog_startno',
           summary: search.Summary.COUNT,
         }),
+		search.createColumn({
+          name: 'custrecord_gw_last_invoice_date',
+          summary: search.Summary.MAX,
+        }),
         search.createColumn({
           name: 'custrecord_gw_assignlog_usedcount',
           summary: search.Summary.SUM,
@@ -4328,14 +4332,16 @@ define([
     }
     _filterArray.push('and')
     _filterArray.push(['custrecord_gw_assignlog_yearmonth', 'is', year_month])
-
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
     _filterArray.push('and')
     _filterArray.push([
       'custrecord_gw_last_invoice_date',
       search.Operator.LESSTHANOREQUALTO,
       parseInt(_voucher_date),
     ])
-
+	*/
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
     _filterArray.push('and')
     //_filterArray.push([['custrecord_gw_assignlog_status','is', '11'],'or',['custrecord_gw_assignlog_status','is', '12']]);
     if (assignLogType !== 'NONE') {
@@ -4367,6 +4373,15 @@ define([
           summary: search.Summary.COUNT,
         })
       )
+	  //
+	  var _lastInvoiceDate = result.getValue({
+        name: 'custrecord_gw_last_invoice_date',
+        summary: search.Summary.MAX,
+      })
+	   
+	  if (parseInt(_voucher_date) < parseInt(_lastInvoiceDate)) {
+		  _noCount = 0;
+	  }
 
       var _usedCount = parseInt(
         result.getValue({

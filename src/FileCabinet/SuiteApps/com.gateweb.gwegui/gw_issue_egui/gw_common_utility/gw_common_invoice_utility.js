@@ -259,6 +259,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
         search.createColumn({ name: 'custrecord_gw_assignlog_startno' }),
         search.createColumn({ name: 'custrecord_gw_assignlog_endno' }),
         search.createColumn({ name: 'custrecord_gw_assignlog_yearmonth' }),
+		search.createColumn({ name: 'custrecord_gw_last_invoice_date' }),
         search.createColumn({
           name: 'custrecord_gw_assignlog_status',
           sort: search.Sort.DESC,
@@ -328,9 +329,10 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
     ])
 
     //檢查日期資料(申請日期要大於字軌日期)
-    _filterArray.push('and')
+    //_filterArray.push('and')
     //_filterArray.push(['custrecord_gw_last_invoice_date',search.Operator.LESSTHANOREQUALTO, parseInt(voucher_date)]);
-    _filterArray.push([
+    /**
+	_filterArray.push([
       [
         'custrecord_gw_last_invoice_date',
         search.Operator.LESSTHANOREQUALTO,
@@ -339,7 +341,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
       'or',
       ['custrecord_gw_last_invoice_date', search.Operator.EQUALTO, 0],
     ])
-
+    */
     _filterArray.push('and')
     if (assignLogType !== 'NONE') {
       _filterArray.push([
@@ -363,110 +365,116 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
     })
 
     for (var i = 0; i < _assignLogSearchResult.length; i++) {
-      var _internalid = _assignLogSearchResult[i].id
-
-      var _status = _assignLogSearchResult[i].getValue({
-        name: 'custrecord_gw_assignlog_status',
+      var _internalid = _assignLogSearchResult[i].id	  
+	  //alert('_assignLogSearchResult[i]='+JSON.stringify(_assignLogSearchResult[i]));
+	  var _lastInvoiceDate = _assignLogSearchResult[i].getValue({
+        name: 'custrecord_gw_last_invoice_date',
       })
-      var _startNo = _assignLogSearchResult[i].getValue({
-        name: 'custrecord_gw_assignlog_startno',
-      })
-      _startNo = padding('' + _startNo, 8)
+	 
+	  if (parseInt(voucher_date) >= parseInt(_lastInvoiceDate)) {
+		  var _status = _assignLogSearchResult[i].getValue({
+			name: 'custrecord_gw_assignlog_status',
+		  })
+		  var _startNo = _assignLogSearchResult[i].getValue({
+			name: 'custrecord_gw_assignlog_startno',
+		  })
+		  _startNo = padding('' + _startNo, 8)
 
-      var _lastinvnumbe = _assignLogSearchResult[i].getValue({
-        name: 'custrecord_gw_assignlog_lastinvnumbe',
-      })
-      var _invoiceTrack = _assignLogSearchResult[i].getValue({
-        name: 'custrecord_gw_assignlog_invoicetrack',
-      })
+		  var _lastinvnumbe = _assignLogSearchResult[i].getValue({
+			name: 'custrecord_gw_assignlog_lastinvnumbe',
+		  })
+		  var _invoiceTrack = _assignLogSearchResult[i].getValue({
+			name: 'custrecord_gw_assignlog_invoicetrack',
+		  })
 
-      var _assignLogRecord = record.load({
-        type: _assignLogRecordId,
-        id: _internalid,
-        isDynamic: true,
-      })
+		  var _assignLogRecord = record.load({
+			type: _assignLogRecordId,
+			id: _internalid,
+			isDynamic: true,
+		  })
 
-      if (parseInt(_status) === 11 || parseInt(_status) === 21) {
-        //新字軌
-        var _assignlog_lastinvnumbe = _startNo
-        if (parseInt(_status) === 11) {
-          _assignLogRecord.setValue({
-            fieldId: 'custrecord_gw_assignlog_status',
-            value: '12',
-          })
-        } else if (parseInt(_status) === 21) {
-          _assignLogRecord.setValue({
-            fieldId: 'custrecord_gw_assignlog_status',
-            value: '22',
-          })
-        }
-        _assignLogRecord.setValue({
-          fieldId: 'custrecord_gw_assignlog_lastinvnumbe',
-          value: _assignlog_lastinvnumbe,
-        })
-        _assignLogRecord.setValue({
-          fieldId: 'custrecord_gw_assignlog_usedcount',
-          value: '1',
-        })
-        _assignLogRecord.setValue({
-          fieldId: 'custrecord_gw_last_invoice_date',
-          value: voucher_date,
-        })
+		  if (parseInt(_status) === 11 || parseInt(_status) === 21) {
+			//新字軌
+			var _assignlog_lastinvnumbe = _startNo
+			if (parseInt(_status) === 11) {
+			  _assignLogRecord.setValue({
+				fieldId: 'custrecord_gw_assignlog_status',
+				value: '12',
+			  })
+			} else if (parseInt(_status) === 21) {
+			  _assignLogRecord.setValue({
+				fieldId: 'custrecord_gw_assignlog_status',
+				value: '22',
+			  })
+			}
+			_assignLogRecord.setValue({
+			  fieldId: 'custrecord_gw_assignlog_lastinvnumbe',
+			  value: _assignlog_lastinvnumbe,
+			})
+			_assignLogRecord.setValue({
+			  fieldId: 'custrecord_gw_assignlog_usedcount',
+			  value: '1',
+			})
+			_assignLogRecord.setValue({
+			  fieldId: 'custrecord_gw_last_invoice_date',
+			  value: voucher_date,
+			})
 
-        try {
-          var callId = _assignLogRecord.save()
-        } catch (e) {
-          console.log(e.name + ':' + e.message)
-        }
+			try {
+			  var callId = _assignLogRecord.save()
+			} catch (e) {
+			  console.log(e.name + ':' + e.message)
+			}
 
-        _resultNumber = _invoiceTrack + _assignlog_lastinvnumbe
-      } else if (parseInt(_status) === 12 || parseInt(_status) === 22) {
-        //使用中
-        var _assignlog_usedcount = _assignLogRecord.getValue({
-          fieldId: 'custrecord_gw_assignlog_usedcount',
-        })
-        _assignlog_usedcount = parseInt(_assignlog_usedcount) + 1
-        _assignLogRecord.setValue({
-          fieldId: 'custrecord_gw_assignlog_usedcount',
-          value: _assignlog_usedcount,
-        })
+			_resultNumber = _invoiceTrack + _assignlog_lastinvnumbe
+		  } else if (parseInt(_status) === 12 || parseInt(_status) === 22) {
+			//使用中
+			var _assignlog_usedcount = _assignLogRecord.getValue({
+			  fieldId: 'custrecord_gw_assignlog_usedcount',
+			})
+			_assignlog_usedcount = parseInt(_assignlog_usedcount) + 1
+			_assignLogRecord.setValue({
+			  fieldId: 'custrecord_gw_assignlog_usedcount',
+			  value: _assignlog_usedcount,
+			})
 
-        var _assignlog_lastinvnumbe = _assignLogRecord.getValue({
-          fieldId: 'custrecord_gw_assignlog_lastinvnumbe',
-        })
+			var _assignlog_lastinvnumbe = _assignLogRecord.getValue({
+			  fieldId: 'custrecord_gw_assignlog_lastinvnumbe',
+			})
 
-        _assignlog_lastinvnumbe = add(_assignlog_lastinvnumbe, '1')
-        _assignLogRecord.setValue({
-          fieldId: 'custrecord_gw_assignlog_lastinvnumbe',
-          value: _assignlog_lastinvnumbe,
-        })
-        _assignLogRecord.setValue({
-          fieldId: 'custrecord_gw_last_invoice_date',
-          value: voucher_date,
-        })
+			_assignlog_lastinvnumbe = add(_assignlog_lastinvnumbe, '1')
+			_assignLogRecord.setValue({
+			  fieldId: 'custrecord_gw_assignlog_lastinvnumbe',
+			  value: _assignlog_lastinvnumbe,
+			})
+			_assignLogRecord.setValue({
+			  fieldId: 'custrecord_gw_last_invoice_date',
+			  value: voucher_date,
+			})
 
-        _resultNumber = _invoiceTrack + _assignlog_lastinvnumbe
+			_resultNumber = _invoiceTrack + _assignlog_lastinvnumbe
 
-        if (parseInt(_assignlog_usedcount) == 50) {
-          if (parseInt(_status) === 12) {
-            _assignLogRecord.setValue({
-              fieldId: 'custrecord_gw_assignlog_status',
-              value: '13',
-            })
-          } else if (parseInt(_status) === 22) {
-            _assignLogRecord.setValue({
-              fieldId: 'custrecord_gw_assignlog_status',
-              value: '33',
-            })
-          }
-        }
+			if (parseInt(_assignlog_usedcount) == 50) {
+			  if (parseInt(_status) === 12) {
+				_assignLogRecord.setValue({
+				  fieldId: 'custrecord_gw_assignlog_status',
+				  value: '13',
+				})
+			  } else if (parseInt(_status) === 22) {
+				_assignLogRecord.setValue({
+				  fieldId: 'custrecord_gw_assignlog_status',
+				  value: '33',
+				})
+			  }
+			}
 
-        try {
-          var callId = _assignLogRecord.save()
-        } catch (e) {
-          log.debug(e.name, e.message)
-        }
-      }
+			try {
+			  var callId = _assignLogRecord.save()
+			} catch (e) {
+			  log.debug(e.name, e.message)
+			}
+		  } 
+	  }
     }
     //alert('_resultNumber='+_resultNumber);
     return _resultNumber
