@@ -1,4 +1,4 @@
-define(['N/runtime', 'N/currentRecord', 'N/url', '../gw_common_utility/gw_common_invoice_utility'], function (runtime, currentRecord, url, invoiceutility) {
+define(['N/runtime', 'N/currentRecord', 'N/record', 'N/url', '../gw_common_utility/gw_common_invoice_utility'], function (runtime, currentRecord, record, url, invoiceutility) {
   /**
    * @NApiVersion 2.0
    * @NScriptType ClientScript
@@ -21,8 +21,17 @@ define(['N/runtime', 'N/currentRecord', 'N/url', '../gw_common_utility/gw_common
       try {
 		  
 		var _user_obj        = runtime.getCurrentUser()
-	    var _user_subsidiary = _user_obj.subsidiary
-    	var _selected_business_no = getBusinessNoBySubsidiary(_user_subsidiary)
+		var _cash_sale_record = record.load({
+		  type: record.Type.CASH_SALE,
+		  id: _internalId,
+		  isDynamic: true,
+		})
+		var _subsidiary = _cash_sale_record.getValue({
+		  fieldId: 'subsidiary',
+		})		
+		
+	    //var _user_subsidiary = _user_obj.subsidiary
+    	var _selected_business_no = getBusinessNoBySubsidiary(_subsidiary)
 		
         var params = {
 		  custpage_businessno :_selected_business_no,

@@ -1,4 +1,4 @@
-define(['N/runtime', 'N/currentRecord', 'N/url', '../gw_common_utility/gw_common_invoice_utility'], function (runtime, currentRecord, url, invoiceutility) {
+define(['N/runtime', 'N/currentRecord', 'N/record', 'N/url', '../gw_common_utility/gw_common_invoice_utility'], function (runtime, currentRecord, record, url, invoiceutility) {
   /**
    * @NApiVersion 2.0
    * @NScriptType ClientScript
@@ -20,8 +20,18 @@ define(['N/runtime', 'N/currentRecord', 'N/url', '../gw_common_utility/gw_common
     if (_internalId != 0) {
       try {
 	    var _user_obj        = runtime.getCurrentUser()
-	    var _user_subsidiary = _user_obj.subsidiary
-    	var _selected_business_no = getBusinessNoBySubsidiary(_user_subsidiary)
+		//Get Invoice subsidiary
+		var _invoice_record = record.load({
+		  type: record.Type.INVOICE,
+		  id: _internalId,
+		  isDynamic: true,
+		})
+		var _subsidiary = _invoice_record.getValue({
+		  fieldId: 'subsidiary',
+		})		
+	    //var _user_subsidiary = _user_obj.subsidiary		
+		
+    	var _selected_business_no = getBusinessNoBySubsidiary(_subsidiary)
     	
         var _invoice_hiddent_listid = '-1,' + _internalId
         var _creditmemo_hiddent_listid = ''
@@ -48,8 +58,18 @@ define(['N/runtime', 'N/currentRecord', 'N/url', '../gw_common_utility/gw_common
     if (_internalId != 0) {
       try {
     	var _user_obj        = runtime.getCurrentUser()
-  	    var _user_subsidiary = _user_obj.subsidiary
-      	var _selected_business_no = getBusinessNoBySubsidiary(_user_subsidiary)
+		
+		var _invoice_record = record.load({
+		  type: record.Type.CREDIT_MEMO,
+		  id: _internalId,
+		  isDynamic: true,
+		})
+		var _subsidiary = _invoice_record.getValue({
+		  fieldId: 'subsidiary',
+		})		
+		
+  	    //var _user_subsidiary = _user_obj.subsidiary
+      	var _selected_business_no = getBusinessNoBySubsidiary(_subsidiary)
       	
         var _invoice_hiddent_listid = ''
         var _creditmemo_hiddent_listid = '-1,' + _internalId
