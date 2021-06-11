@@ -200,8 +200,8 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
   //取得折讓單號碼
   function getAllowanceNumber(date) {
     var _randomNumber = randomWord(true, 5, 5)
-
-    var _allowanceNumber = 'TCM' + date + _randomNumber
+    var _pre = 'SHO';
+    var _allowanceNumber = _pre + date + _randomNumber
     return _allowanceNumber
   }
 
