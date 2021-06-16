@@ -1,4 +1,4 @@
-define(['N/record'], function (record) {
+define(['N/runtime','N/record','../gw_common_utility/gw_common_invoice_utility'], function (runtime, record, invoiceutility) {
   /**
    * @NApiVersion 2.1
    * @NScriptType UserEventScript
@@ -14,9 +14,27 @@ define(['N/record'], function (record) {
       fieldId: 'custbody_gw_lock_transaction',
     })
 
+    var _subsidiary = _current_record.getValue({
+		  fieldId: 'subsidiary',
+	})		
+	
+	var _auth = false;
+	var _user_obj    = runtime.getCurrentUser()
+	var _company_ary = invoiceutility.getBusinessEntitByUserId(_user_obj.id, _subsidiary)
+	if (_company_ary!=null) {
+    	for (var i=0; i<_company_ary.length; i++) {
+    		var _company = _company_ary[i];
+			if (parseInt(_subsidiary) == parseInt(_company.subsidiary)) {
+				_auth = true;break;
+			}    		 
+    	}
+    } 
+   
     log.debug('_lock_transaction', '_lock_transaction:' + _lock_transaction)
+	log.debug('_auth', '_auth:' + _auth)
     if (
       context.type == context.UserEventType.VIEW &&
+	  _auth == true &&
       _lock_transaction == false
     ) {
       frm.addButton({
