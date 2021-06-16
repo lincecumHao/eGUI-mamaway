@@ -1,0 +1,196 @@
+<customrecordtype scriptid="customrecord_gw_evidence_status">
+  <accesstype>NONENEEDED</accesstype>
+  <allowattachments>T</allowattachments>
+  <allowinlinedeleting>F</allowinlinedeleting>
+  <allowinlinedetaching>T</allowinlinedetaching>
+  <allowinlineediting>F</allowinlineediting>
+  <allowmobileaccess>F</allowmobileaccess>
+  <allownumberingoverride>F</allownumberingoverride>
+  <allowquickadd>T</allowquickadd>
+  <allowquicksearch>F</allowquicksearch>
+  <allowuiaccess>T</allowuiaccess>
+  <description></description>
+  <enabledle>T</enabledle>
+  <enablekeywords>T</enablekeywords>
+  <enablemailmerge>F</enablemailmerge>
+  <enablenametranslation>F</enablenametranslation>
+  <enablenumbering>F</enablenumbering>
+  <enableoptimisticlocking>T</enableoptimisticlocking>
+  <enablesystemnotes>T</enablesystemnotes>
+  <hierarchical>F</hierarchical>
+  <icon></icon>
+  <iconbuiltin>T</iconbuiltin>
+  <iconindex></iconindex>
+  <includeinsearchmenu>T</includeinsearchmenu>
+  <includename>T</includename>
+  <isinactive>F</isinactive>
+  <isordered>F</isordered>
+  <numberinginit></numberinginit>
+  <numberingmindigits></numberingmindigits>
+  <numberingprefix></numberingprefix>
+  <numberingsuffix></numberingsuffix>
+  <recordname>憑證開立狀態</recordname>
+  <showcreationdate>F</showcreationdate>
+  <showcreationdateonlist>F</showcreationdateonlist>
+  <showid>T</showid>
+  <showlastmodified>F</showlastmodified>
+  <showlastmodifiedonlist>F</showlastmodifiedonlist>
+  <shownotes>T</shownotes>
+  <showowner>F</showowner>
+  <showownerallowchange>F</showownerallowchange>
+  <showowneronlist>F</showowneronlist>
+  <customrecordcustomfields>
+    <customrecordcustomfield scriptid="custrecord_gw_evidence_status_value">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help></help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Status Code</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>T</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_gw_evidence_status_text">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help></help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Status Text</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>T</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+  </customrecordcustomfields>
+  <instances>
+    <instance scriptid="val_gw_issue_status_i">
+      <custrecord_gw_evidence_status_text>憑證未開立</custrecord_gw_evidence_status_text>
+      <custrecord_gw_evidence_status_value>I</custrecord_gw_evidence_status_value>
+      <isinactive>F</isinactive>
+      <name>憑證未開立</name>
+    </instance>
+    <instance scriptid="val_gw_issue_status_pa">
+      <custrecord_gw_evidence_status_text>憑證已開立, 未進入關網系統</custrecord_gw_evidence_status_text>
+      <custrecord_gw_evidence_status_value>PA</custrecord_gw_evidence_status_value>
+      <isinactive>F</isinactive>
+      <name>憑證已開立, 未進入關網系統</name>
+    </instance>
+    <instance scriptid="val_gw_issue_status_a">
+      <custrecord_gw_evidence_status_text>憑證已開立</custrecord_gw_evidence_status_text>
+      <custrecord_gw_evidence_status_value>A</custrecord_gw_evidence_status_value>
+      <isinactive>F</isinactive>
+      <name>憑證已開立</name>
+    </instance>
+    <instance scriptid="val_gw_issue_status_ip">
+      <custrecord_gw_evidence_status_text>憑證開立已上傳</custrecord_gw_evidence_status_text>
+      <custrecord_gw_evidence_status_value>IP</custrecord_gw_evidence_status_value>
+      <isinactive>F</isinactive>
+      <name>憑證開立已上傳</name>
+    </instance>
+    <instance scriptid="val_gw_issue_status_ic">
+      <custrecord_gw_evidence_status_text>憑證開立上傳已成功</custrecord_gw_evidence_status_text>
+      <custrecord_gw_evidence_status_value>IC</custrecord_gw_evidence_status_value>
+      <isinactive>F</isinactive>
+      <name>憑證開立上傳已成功</name>
+    </instance>
+    <instance scriptid="val_gw_issue_status_ie">
+      <custrecord_gw_evidence_status_text>憑證開立上傳已失敗</custrecord_gw_evidence_status_text>
+      <custrecord_gw_evidence_status_value>IE</custrecord_gw_evidence_status_value>
+      <isinactive>F</isinactive>
+      <name>憑證開立上傳已失敗</name>
+    </instance>
+    <instance scriptid="val_gw_issue_status_pc">
+      <custrecord_gw_evidence_status_text>憑證已作廢, 未進入關網系統</custrecord_gw_evidence_status_text>
+      <custrecord_gw_evidence_status_value>PC</custrecord_gw_evidence_status_value>
+      <isinactive>F</isinactive>
+      <name>憑證已作廢, 未進入關網系統</name>
+    </instance>
+    <instance scriptid="val_gw_issue_status_ca">
+      <custrecord_gw_evidence_status_text>憑證已作廢</custrecord_gw_evidence_status_text>
+      <custrecord_gw_evidence_status_value>CA</custrecord_gw_evidence_status_value>
+      <isinactive>F</isinactive>
+      <name>憑證已作廢</name>
+    </instance>
+    <instance scriptid="val_gw_issue_status_cp">
+      <custrecord_gw_evidence_status_text>憑證作廢已上傳</custrecord_gw_evidence_status_text>
+      <custrecord_gw_evidence_status_value>CP</custrecord_gw_evidence_status_value>
+      <isinactive>F</isinactive>
+      <name>憑證作廢已上傳</name>
+    </instance>
+    <instance scriptid="val_gw_issue_status_cc">
+      <custrecord_gw_evidence_status_text>憑證作廢上傳已成功</custrecord_gw_evidence_status_text>
+      <custrecord_gw_evidence_status_value>CC</custrecord_gw_evidence_status_value>
+      <isinactive>F</isinactive>
+      <name>憑證作廢上傳已成功</name>
+    </instance>
+    <instance scriptid="val_gw_issue_status_ce">
+      <custrecord_gw_evidence_status_text>憑證作廢上傳已失敗</custrecord_gw_evidence_status_text>
+      <custrecord_gw_evidence_status_value>CE</custrecord_gw_evidence_status_value>
+      <isinactive>F</isinactive>
+      <name>憑證作廢上傳已失敗</name>
+    </instance>
+    <instance scriptid="val_gw_issue_status_ci">
+      <custrecord_gw_evidence_status_text>憑證作廢待審核</custrecord_gw_evidence_status_text>
+      <custrecord_gw_evidence_status_value>CI</custrecord_gw_evidence_status_value>
+      <isinactive>F</isinactive>
+      <name>憑證作廢待審核</name>
+    </instance>
+  </instances>
+</customrecordtype>
