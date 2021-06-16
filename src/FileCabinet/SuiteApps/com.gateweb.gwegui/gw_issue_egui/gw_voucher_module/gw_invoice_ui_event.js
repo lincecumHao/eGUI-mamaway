@@ -2664,9 +2664,9 @@ define([
                 fieldId: 'custrecord_gw_ns_document_apply_id',
                 value: _obj.invoice_id,
               })
-              
-              _gw_ns_document_apply_id_ary.push(_obj.invoice_id);
-			  
+              if (_gw_ns_document_apply_id_ary.toString().indexOf(_obj.invoice_id)==-1) {
+                  _gw_ns_document_apply_id_ary.push(_obj.invoice_id)
+			  }
               _voucherDetailRecord.setValue({
                 fieldId: 'custrecord_gw_ns_document_number',
                 value: _obj.invoice_number,
@@ -2704,8 +2704,7 @@ define([
               values['custrecord_gw_is_completed_detail'] = true   
               values['custrecord_gw_ns_transaction'] = _gw_ns_document_apply_id_ary.toString() 
 			               
-              //alert('egui values='+JSON.stringify(values));
-              
+              //alert('egui values='+JSON.stringify(values));              
               var _id = record.submitFields({
                 type: _voucher_main_record,
                 id: _mainRecordId,
@@ -2715,7 +2714,8 @@ define([
                   ignoreMandatoryFields: true,
                 },
               })
-            } catch (e) {            	
+            } catch (e) {
+              //alert(' the eror='+e.name + ':' + e.message);            	
               console.log(e.name + ':' + e.message)
             }
           }
@@ -3411,8 +3411,10 @@ define([
                       fieldId: 'custrecord_gw_ns_document_apply_id',
                       value: _obj.invoice_id,
                     })
-                    
-                    _gw_ns_document_apply_id_ary.push(_obj.invoice_id)
+					
+                    if (_gw_ns_document_apply_id_ary.toString().indexOf(_obj.invoice_id)==-1) {
+						_gw_ns_document_apply_id_ary.push(_obj.invoice_id)
+					}
                     
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_ns_document_number',
@@ -3647,8 +3649,10 @@ define([
                   fieldId: 'custrecord_gw_ns_document_apply_id',
                   value: _obj.invoice_id,
                 })
-                
-                _gw_ns_document_apply_id_ary.push(_obj.invoice_id)
+                 
+				if (_gw_ns_document_apply_id_ary.toString().indexOf(_obj.invoice_id)==-1) {
+                  _gw_ns_document_apply_id_ary.push(_obj.invoice_id)
+			    }
                 
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_ns_document_number',
@@ -4359,7 +4363,7 @@ define([
     }
 
     _assignLogSearch.filterExpression = _filterArray
-
+    //alert('GET assign log filterArray: ' + JSON.stringify(_filterArray)); 
     var _totalCount = 0
     var _noCount = 0
     _assignLogSearch.run().each(function (result) {
