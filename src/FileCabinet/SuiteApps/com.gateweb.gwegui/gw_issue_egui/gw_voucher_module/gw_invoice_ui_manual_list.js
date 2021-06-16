@@ -403,7 +403,7 @@ define([
     //20210506 walter 增加賣方公司 List
     var _user_obj        = runtime.getCurrentUser()
     var _user_subsidiary = _user_obj.subsidiary
-    var _company_ary = invoiceutility.getSellerInfoBySubsidiary(_user_subsidiary)
+    var _company_ary = invoiceutility.getBusinessEntitByUserId(_user_obj.id, _user_subsidiary)
     if (_company_ary!=null) {
     	for (var i=0; i<_company_ary.length; i++) {
     		var _company = _company_ary[i];
