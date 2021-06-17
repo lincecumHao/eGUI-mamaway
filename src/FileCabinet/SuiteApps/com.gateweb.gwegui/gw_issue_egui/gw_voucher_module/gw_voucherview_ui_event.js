@@ -366,9 +366,15 @@ define([
               fieldId: 'custpage_item_remark',
               line: i,
             })
+			var _item_unit = _currentRecord.getSublistValue({
+              sublistId: 'invoicesublistid',
+              fieldId: 'custpage_invoice_item_unit',
+              line: i,
+            })
 
             var _item_values = {}
             _item_values['custrecord_gw_item_remark'] = _item_remark
+			_item_values['custrecord_gw_item_unit'] = _item_unit
             record.submitFields({
               type: 'customrecord_gw_voucher_details',
               id: _item_internal_id,

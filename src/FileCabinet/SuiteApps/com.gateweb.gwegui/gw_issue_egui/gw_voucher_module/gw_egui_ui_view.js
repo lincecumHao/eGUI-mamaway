@@ -645,10 +645,13 @@ define([
       label: '稅率%',
       type: serverWidget.FieldType.TEXT,
     })
-    sublist.addField({
+    var _itemUnitField = sublist.addField({
       id: 'custpage_invoice_item_unit',
       type: serverWidget.FieldType.TEXT,
       label: '單位',
+    })
+	_itemUnitField.updateDisplayType({
+      displayType: serverWidget.FieldDisplayType.ENTRY,
     })
     sublist.addField({
       id: 'custpage_unit_price',
