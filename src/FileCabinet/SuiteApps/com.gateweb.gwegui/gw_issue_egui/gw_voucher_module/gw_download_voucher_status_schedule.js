@@ -826,6 +826,8 @@ define([
   }
 
   function loadAllTaxInformation() {
+	_taxObjAry = invoiceutility.loadAllTaxInformation()
+	/**
     try {
       var _group_type = 'TAX_TYPE'
       var _mySearch = search.create({
@@ -871,10 +873,11 @@ define([
 
         _taxObjAry.push(_obj)
         return true
-      })
+      })	  
     } catch (e) {
       log.error(e.name, e.message)
     }
+	*/
   }
 
   //取得稅別資料
