@@ -89,7 +89,7 @@ define([
     ])
 
     _filterArray.push('and')
-    _filterArray.push(['custbody_gw_is_issue_egui', search.Operator.IS, false])
+    _filterArray.push(['custbody_gw_is_issue_egui', search.Operator.IS, true])
      
     if (subsidiary != '') {
 	    _filterArray.push('and')
@@ -298,7 +298,7 @@ define([
     _filterArray.push('and')
     _filterArray.push(['custbody_gw_lock_transaction', 'is', false])
     _filterArray.push('and')
-    _filterArray.push(['custbody_gw_is_issue_egui', 'is', false])
+    _filterArray.push(['custbody_gw_is_issue_egui', 'is', true])
 
     if (subsidiary != '') {
 	    _filterArray.push('and')
