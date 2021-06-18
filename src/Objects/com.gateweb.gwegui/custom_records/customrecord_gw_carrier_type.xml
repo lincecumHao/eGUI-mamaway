@@ -118,25 +118,25 @@
     </customrecordcustomfield>
   </customrecordcustomfields>
   <instances>
-    <instance scriptid="val_111472_t2411467_391">
+    <instance scriptid="val_gw_carrier_type_3j002">
       <custrecord_gw_ct_text>手機條碼</custrecord_gw_ct_text>
       <custrecord_gw_ct_value>3J0002</custrecord_gw_ct_value>
       <isinactive>F</isinactive>
       <name>手機條碼</name>
     </instance>
-    <instance scriptid="val_111473_t2411467_392">
+    <instance scriptid="val_gw_carrier_type_cq0001">
       <custrecord_gw_ct_text>自然人憑證</custrecord_gw_ct_text>
       <custrecord_gw_ct_value>CQ0001</custrecord_gw_ct_value>
       <isinactive>F</isinactive>
       <name>自然人憑證</name>
     </instance>
-    <instance scriptid="val_111473_t2411467_393">
+    <instance scriptid="val_gw_carrier_type_1k0001">
       <custrecord_gw_ct_text>悠遊卡</custrecord_gw_ct_text>
       <custrecord_gw_ct_value>1K0001</custrecord_gw_ct_value>
       <isinactive>F</isinactive>
       <name>悠遊卡</name>
     </instance>
-    <instance scriptid="val_111473_t2411467_394">
+    <instance scriptid="val_gw_carrier_type_1h0001">
       <custrecord_gw_ct_text>一卡通</custrecord_gw_ct_text>
       <custrecord_gw_ct_value>1H0001</custrecord_gw_ct_value>
       <isinactive>F</isinactive>
