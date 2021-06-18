@@ -39,5 +39,11 @@
             <linktasktype>LIST</linktasktype>
             <shortlist>F</shortlist>
         </link>
+        <link>
+            <linklabel>課稅別設定</linklabel>
+            <linkobject>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc_tax_type_option]</linkobject>
+            <linktasktype>LIST</linktasktype>
+            <shortlist>F</shortlist>
+        </link>
     </links>
 </centercategory>

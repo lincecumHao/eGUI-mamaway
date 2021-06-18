@@ -19,14 +19,14 @@
     <displaywidth></displaywidth>
     <dynamicdefault></dynamicdefault>
     <encryptatrest>F</encryptatrest>
-    <fieldtype>DATE</fieldtype>
+    <fieldtype>TEXT</fieldtype>
     <fldsizelabel></fldsizelabel>
     <globalsearch>T</globalsearch>
     <help></help>
     <isformula>F</isformula>
     <ismandatory>F</ismandatory>
     <isparent>F</isparent>
-    <label>發票申報日期</label>
+    <label>發票期別</label>
     <linktext></linktext>
     <maxlength></maxlength>
     <maxvalue></maxvalue>

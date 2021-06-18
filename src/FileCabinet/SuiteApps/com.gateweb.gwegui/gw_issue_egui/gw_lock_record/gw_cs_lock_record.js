@@ -25,7 +25,7 @@ define(['N/record', 'N/url'], function (record, url) {
       'custbody_gw_gui_address',
       'custbody_gw_gui_title',
       'custbody_gw_no_egui',
-      'custbody_gw_creditmemo_deduction_list',
+      'custbody_gw_creditmemo_deduction_list'
     ],
     sublist: {
       item: [
@@ -37,24 +37,9 @@ define(['N/record', 'N/url'], function (record, url) {
         'tax1amt', // 稅金金額（TAX AMT）
         'grossamt', // 含稅金額（GROSS AMT）
         'custcol_gw_item_memo', // 發票項目備註（發票項目備註）
-        'custcoltcm_get_x_free_qty', // @贈(量)
-        'custcol_tcm_item_cm', // 折讓隨單開立
-        'custcol_tcm_line_cm_untaxprice', // @折讓未稅單價
-        'custcol_tcm_line_cm_taxprice', // @折讓含稅單價
-        'custcol_tcm_cm_untaxamount', // 折讓未稅
-        'custcoltcm_item_discount_percent', // 折讓(%)
-        'custcol_tcm_cm_taxamount', // 折讓含稅
-        'custcol_tcm_cm_tranid', // 合約折讓單單號
-        'custcol_tcm_othercharge_arcredit', // 管理費隨單開立
-        'custcol_tcm_othercharge_untax', // @管理費未稅單價
-        'custcol_tcm_othercharge_tax', // @管理費含稅單價
-        'custcol_tcm_line_taxprice', // 含稅單價
-        'custcol_tcm_othercgarge_untaxamount', // 管理費未稅
-        'custcol_tcm_othercharge_percent', // 管理費(%)
-        'custcol_tcm_othercgarge_taxamount', // 管理費含稅
-        'custcol_tcm_othercharge_tranid', // 管理費折讓單
-      ],
-    },
+        'custcol_gw_item_unit_amt_inc_tax' // @贈(量)
+      ]
+    }
   }
 
   /**
@@ -84,7 +69,7 @@ define(['N/record', 'N/url'], function (record, url) {
     var viewUrl = url.resolveRecord({
       recordId: recordId,
       recordType: recordType,
-      isEditMode: false,
+      isEditMode: false
     })
     window.location.replace(viewUrl)
   }
@@ -93,7 +78,7 @@ define(['N/record', 'N/url'], function (record, url) {
     var lockedFieldIds = lockedFields.body
     lockedFieldIds.forEach(function (fieldId) {
       var field = currentTransRecord.getField({
-        fieldId: fieldId,
+        fieldId: fieldId
       })
       if (field) field.isDisabled = true
     })
@@ -103,14 +88,14 @@ define(['N/record', 'N/url'], function (record, url) {
     var sublistLockedFields = lockedFields.sublist
     Object.keys(sublistLockedFields).forEach(function (sublistId) {
       var currentSublist = currentTransRecord.getSublist({
-        sublistId: sublistId,
+        sublistId: sublistId
       })
       console.log('lockSublistFields sublistId')
       var lockedFieldIds = sublistLockedFields[sublistId]
       lockedFieldIds.forEach(function (fieldId) {
         console.log('lockSublistFields fieldId', fieldId)
         var column = currentSublist.getColumn({
-          fieldId: fieldId,
+          fieldId: fieldId
         })
         if (column) column.isDisabled = true
       })
@@ -120,7 +105,7 @@ define(['N/record', 'N/url'], function (record, url) {
   function isRecordLocked(record) {
     var lock_validate_field = 'custbody_gw_lock_transaction'
     var value = record.getValue({
-      fieldId: lock_validate_field,
+      fieldId: lock_validate_field
     })
     console.log('isRecordLocked value', value)
     return value
