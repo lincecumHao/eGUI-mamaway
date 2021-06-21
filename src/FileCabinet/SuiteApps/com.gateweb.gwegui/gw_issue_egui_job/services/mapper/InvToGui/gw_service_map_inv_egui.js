@@ -1,16 +1,16 @@
 define([
-  '../../../library/ramda.min',
-  '../../../library/gw_date_util',
-  '../gw_mapping_util',
-  '../../../gw_dao/settings/gw_dao_egui_config_21',
-  '../../../gw_dao/busEnt/gw_dao_business_entity_21',
-  '../../../gw_dao/guiType/gw_dao_egui_type_21',
-  '../../../gw_dao/applyPeriod/gw_dao_apply_period_21',
-  '../../../gw_dao/docFormat/gw_dao_doc_format_21',
-  '../../../gw_dao/taxCalcMethod/gw_dao_tax_calc_method_21',
-  '../../../gw_dao/taxType/gw_dao_tax_type_21',
-  '../../domain/vo/egui/gw_egui_main_fields',
-  '../../domain/vo/egui/gw_egui_line_fields',
+  '../../../../library/ramda.min',
+  '../../../../library/gw_date_util',
+  '../../gw_mapping_util',
+  '../../../../gw_dao/settings/gw_dao_egui_config_21',
+  '../../../../gw_dao/busEnt/gw_dao_business_entity_21',
+  '../../../../gw_dao/guiType/gw_dao_egui_type_21',
+  '../../../../gw_dao/applyPeriod/gw_dao_apply_period_21',
+  '../../../../gw_dao/docFormat/gw_dao_doc_format_21',
+  '../../../../gw_dao/taxCalcMethod/gw_dao_tax_calc_method_21',
+  '../../../../gw_dao/taxType/gw_dao_tax_type_21',
+  '../../../domain/vo/egui/gw_egui_main_fields',
+  '../../../domain/vo/egui/gw_egui_line_fields'
 ], (
   ramda,
   dateUtil,
@@ -43,54 +43,69 @@ define([
   function updateBodyValues(eguiMain) {
     var configuration = gwEguiConfigDao.getConfig()
     var eguiMainObj = JSON.parse(JSON.stringify(eguiMain))
-    var seller = gwBusinessEntityDao.getBySubsidiary(eguiMainObj.subsidiaryId)
-    eguiMainObj['sellerTaxId'] = seller.taxId
-    eguiMainObj['sellerName'] = seller.title
-    eguiMainObj['sellerAddress'] = `${seller.city.text}${seller.address}`
-    eguiMainObj['documentType'] = mainFields.voucherType.EGUI
-    eguiMainObj['documentTime'] = '23:59:59'
-    eguiMainObj['guiType'] = seller.isNonValueAdded
-      ? gwGuiTypeDao.getSpecialGuiType()
-      : gwGuiTypeDao.getRegularGuiType()
-    eguiMainObj['sellerProfile'] = seller
-    eguiMainObj.documentDate = eguiMainObj.documentDate
-      ? eguiMainObj.documentDate
-      : eguiMainObj.tranDate
-    eguiMainObj['documentPeriod'] = eguiMainObj.documentPeriod
-      ? eguiMainObj.documentPeriod
-      : dateUtil.getGuiPeriod(eguiMainObj.documentDate)
-    eguiMainObj['taxApplyPeriod'] = eguiMainObj['taxApplyPeriod']
-      ? eguiMainObj.taxApplyPeriod
-      : gwApplyPeriodDao.getByText(eguiMainObj.documentPeriod)
-    if (eguiMainObj['eguiNumStart']) {
-      eguiMainObj['manualGuiNumber'] = eguiMainObj.eguiNumStart
-      eguiMainObj['documentNumber'] = eguiMainObj.eguiNumStart
-      eguiMainObj.isUploadEGui = 'F'
-    }
-    eguiMainObj['taxCalculationMethod'] = eguiMainObj['taxCalculationMethod']
-      ? eguiMainObj['taxCalculationMethod']
-      : gwTaxCalculationDao.getById(configuration.taxCalcMethod.value)
+    var seller = gwBusinessEntityDao.getByTaxId(eguiMainObj.sellerTaxId)
+    eguiMainObj = updateSeller(eguiMainObj, seller)
+    eguiMainObj = updateCarrierAndDonation(eguiMainObj)
+    eguiMainObj = updateMiscFields(eguiMainObj, configuration)
+    eguiMainObj = updateGuiNumber(eguiMainObj)
+    log.debug({ title: 'eguiMainObj', details: eguiMainObj })
+    return eguiMainObj
+  }
 
-    eguiMainObj['documentStatus'] = getDocumentStatus(
-      eguiMainObj['isIssueEgui'],
-      eguiMainObj['isNotUploadEGui']
+  function updateSeller(eguiMainObj, seller) {
+    var eguiMain = JSON.parse(JSON.stringify(eguiMainObj))
+    eguiMain.sellerName = 'TestName'
+    eguiMain.sellerAddress = 'TestAddress'
+    eguiMain.guiType = gwGuiTypeDao.getRegularGuiType()
+    return eguiMain
+  }
+
+  function updateBuyer() {}
+
+  function updateGuiNumber(eguiMainObj) {
+    var eguiMain = JSON.parse(JSON.stringify(eguiMainObj))
+    eguiMain.manualGuiNumber = eguiMain.eguiNumStart
+    eguiMain.documentNumber = eguiMain.eguiNumStart
+    return eguiMain
+  }
+
+  function updateCarrierAndDonation(eguiMainObj) {
+    var eguiMain = JSON.parse(JSON.stringify(eguiMainObj))
+    eguiMain['needUploadMig'] =
+      eguiMain['isNotUploadEGui'] === 'F' ? 'ALL' : 'NONE'
+    eguiMain['printMark'] =
+      !eguiMain['carrierType'] && !eguiMain['donationCode'] ? 'Y' : 'N'
+    return eguiMain
+  }
+
+  function updateMiscFields(eguiMainObj, configuration) {
+    var eguiMain = JSON.parse(JSON.stringify(eguiMainObj))
+    eguiMain.documentType = mainFields.voucherType.EGUI
+    eguiMain.documentTime = '23:59:59'
+    eguiMain.documentDate = eguiMain.tranDate
+    eguiMain.documentPeriod = eguiMain.guiPeriod
+      ? eguiMain.guiPeriod
+      : dateUtil.getGuiPeriod(eguiMain.documentDate)
+    eguiMain.taxApplyPeriod = eguiMain.taxApplyPeriod
+      ? eguiMain.taxApplyPeriod
+      : gwApplyPeriodDao.getByText(eguiMain.documentPeriod)
+    eguiMain.taxCalculationMethod = eguiMain.taxCalculationMethod
+      ? eguiMain.taxCalculationMethod
+      : gwTaxCalculationDao.getById(configuration.taxCalcMethod.value)
+    eguiMain.documentStatus = getDocumentStatus(
+      eguiMain.isIssueEgui,
+      eguiMain.isNotUploadEGui
     )
-    eguiMainObj['documentUploadStatus'] =
-      eguiMainObj.isUploadEGui === 'F'
+    eguiMain['documentUploadStatus'] =
+      eguiMain.isUploadEGui === 'F'
         ? mainFields.uploadStatus.NOT_UPLOAD
         : mainFields.uploadStatus.PENDING_UPLOAD
 
-    eguiMainObj['needUploadMig'] =
-      eguiMainObj['isNotUploadEGui'] === 'F' ? 'ALL' : 'NONE'
-    eguiMainObj['printMark'] =
-      !eguiMainObj['carrierType'] && !eguiMainObj['donationCode'] ? 'Y' : 'N'
-
-    eguiMainObj['docFormat'] = eguiMainObj['docFormat']
-      ? eguiMainObj['docFormat']
-      : gwDocFormatDao.getDefaultArGuiFormat(eguiMainObj['guiType'].value)
-    eguiMainObj['isTransactionLocked'] = 'T'
-    log.debug({ title: 'eguiMainObj', details: eguiMainObj })
-    return eguiMainObj
+    eguiMain['docFormat'] = eguiMain['docFormat']
+      ? eguiMain['docFormat']
+      : gwDocFormatDao.getDefaultArGuiFormat(eguiMain['guiType'].value)
+    // eguiMain['isTransactionLocked'] = 'T'
+    return eguiMain
   }
 
   // TBD: more scenarios might be applicable
@@ -155,12 +170,12 @@ define([
       lineSumTotalAmt: 0,
       taxType: [],
       taxRate: [],
-      transactions: [],
+      transactions: []
     }
     var taxTypeCalculateRoute = {
       1: 'lineSumSalesAmt',
       2: 'lineSumTaxExemptedSalesAmt',
-      3: 'lineSumTaxZeroSalesAmt',
+      3: 'lineSumTaxZeroSalesAmt'
     }
     var summaryResult = ramda.reduce(
       (result, line) => {
@@ -276,10 +291,16 @@ define([
 
     transform() {
       var eguiMain = gwObjectMappingUtil.mapFrom(this.invoice, mainFields)
+      log.debug({
+        title: 'InvoiceToGuiMapper transform eguiMain',
+        details: eguiMain
+      })
       var lines = transformLines(this.invoice.lines)
+      var taxLines = transformLines(this.invoice.taxLines)
       eguiMain = updateBodyValues(eguiMain)
       lines = updateLines(lines)
       this.egui = this.calculateLinesAndMergeToMain(eguiMain, lines)
+
       return this.egui
     }
 

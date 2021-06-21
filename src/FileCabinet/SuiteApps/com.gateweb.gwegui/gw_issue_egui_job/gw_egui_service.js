@@ -3,11 +3,12 @@ define([
   '../gw_dao/voucher/gw_dao_voucher',
   '../gw_dao/uploadLog/gw_dao_xml_upload_log',
   '../gw_dao/assignLog/gw_dao_assign_log_21',
-  './services/mapper/gw_service_map_inv_egui',
+  './services/mapper/InvToGui/gw_service_map_inv_egui',
   './gw_egui_book_service',
   '../gw_dao/migType/gw_dao_mig_type_21',
   './services/upload/gw_service_upload_egui',
-  './gw_invoice_service'
+  './gw_invoice_service',
+  './services/gw_egui_factory'
 ], (
   ramda,
   gwVoucherDao,
@@ -17,7 +18,8 @@ define([
   gwEguiBookService,
   gwMigTypeDao,
   gwEguiUploadService,
-  gwInvoiceService
+  gwInvoiceService,
+  gwEguiFactory
 ) => {
   /**
    * Module Description...
@@ -51,7 +53,7 @@ define([
     constructor(invObj) {
       if (invObj) {
         this.invoice = invObj
-        this.egui = new gwInvToGuiMapper(this.invoice).transform()
+        this.egui = gwEguiFactory.generate(invObj)
       }
     }
 

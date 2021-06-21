@@ -14,17 +14,17 @@ define(['../../library/ramda.min'], (ramda) => {
   let exports = {}
 
   function convertFromFields(origObj, fieldObj, targetObj) {
-    if (fieldObj.sourceField) {
-      targetObj[fieldObj.id] = getFieldValues(origObj, fieldObj.sourceField)
-    }
-
+    targetObj[fieldObj.id] = fieldObj.sourceField
+      ? getFieldValues(origObj, fieldObj.sourceField)
+      : ''
     return targetObj
   }
 
   function convertToFields(origObj, fieldObj, targetObj) {
-    if (fieldObj.outputField) {
-      targetObj[fieldObj.outputField] = getFieldValues(origObj, fieldObj.id)
-    }
+    targetObj[fieldObj.outputField] = fieldObj.outputField
+      ? getFieldValues(origObj, fieldObj.id)
+      : ''
+
     return targetObj
   }
 

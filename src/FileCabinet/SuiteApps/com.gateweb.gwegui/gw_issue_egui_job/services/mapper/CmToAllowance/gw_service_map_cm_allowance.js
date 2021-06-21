@@ -1,16 +1,16 @@
 define([
-  '../../../library/ramda.min',
-  '../../../library/gw_date_util',
-  '../gw_mapping_util',
-  '../../domain/vo/allowance/gw_allowance_main_fields',
-  '../../domain/vo/allowance/gw_allowance_line_fields',
-  '../../../gw_dao/settings/gw_dao_egui_config_21',
-  '../../../gw_dao/busEnt/gw_dao_business_entity_21',
-  '../../../gw_dao/guiType/gw_dao_egui_type_21',
-  '../../../gw_dao/applyPeriod/gw_dao_apply_period_21',
-  '../../../gw_dao/docFormat/gw_dao_doc_format_21',
-  '../../../gw_dao/taxCalcMethod/gw_dao_tax_calc_method_21',
-  '../../../gw_dao/taxType/gw_dao_tax_type_21',
+  '../../../../library/ramda.min',
+  '../../../../library/gw_date_util',
+  '../../gw_mapping_util',
+  '../../../domain/vo/allowance/gw_allowance_main_fields',
+  '../../../domain/vo/allowance/gw_allowance_line_fields',
+  '../../../../gw_dao/settings/gw_dao_egui_config_21',
+  '../../../../gw_dao/busEnt/gw_dao_business_entity_21',
+  '../../../../gw_dao/guiType/gw_dao_egui_type_21',
+  '../../../../gw_dao/applyPeriod/gw_dao_apply_period_21',
+  '../../../../gw_dao/docFormat/gw_dao_doc_format_21',
+  '../../../../gw_dao/taxCalcMethod/gw_dao_tax_calc_method_21',
+  '../../../../gw_dao/taxType/gw_dao_tax_type_21'
 ], (
   ramda,
   dateUtil,
@@ -50,7 +50,7 @@ define([
     var allowanceMainObj = JSON.parse(JSON.stringify(allowanceMain))
     log.debug({
       title: 'updateBodyValues allowanceMain',
-      details: allowanceMainObj,
+      details: allowanceMainObj
     })
     allowanceMainObj.isNotUploadEGui = 'T'
     allowanceMainObj.isUploadEGui = 'F'
@@ -141,12 +141,12 @@ define([
       lineSumTotalAmt: 0,
       taxType: [],
       taxRate: [],
-      transactions: [],
+      transactions: []
     }
     var taxTypeCalculateRoute = {
       1: 'lineSumSalesAmt',
       2: 'lineSumTaxExemptedSalesAmt',
-      3: 'lineSumTaxZeroSalesAmt',
+      3: 'lineSumTaxZeroSalesAmt'
     }
     var summaryResult = ramda.reduce(
       (result, line) => {

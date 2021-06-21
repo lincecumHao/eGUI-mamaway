@@ -1,10 +1,10 @@
 define([
   '../library/ramda.min',
   '../gw_dao/voucher/gw_dao_voucher',
-  './services/mapper/gw_service_map_cm_allowance',
+  './services/mapper/CmToAllowance/gw_service_map_cm_allowance',
   '../gw_dao/migType/gw_dao_mig_type_21',
   './services/upload/gw_service_upload_allowance',
-  './gw_credit_memo_service',
+  './gw_credit_memo_service'
 ], (
   ramda,
   gwVoucherDao,
@@ -29,7 +29,7 @@ define([
   const documentAction = {
     ISSUE: 'ISSUE',
     CANCEL: 'CANCEL',
-    VOID: 'VOID',
+    VOID: 'VOID'
   }
 
   function getRandomNumber() {

@@ -84,31 +84,29 @@ define([
   function reduce(context) {
     log.audit({ title: '[reduce] Processing Key:', details: context.key })
     var voucherId = 0
-    try {
-      var searchResults = context.values.map((value) => {
-        return JSON.parse(value)
-      })
+    var searchResults = context.values.map((value) => {
+      return JSON.parse(value)
+    })
+    var invoiceObj = gwInvoiceService.composeInvObj(searchResults)
+    log.debug({ title: 'reduce invoiceObj', details: invoiceObj })
+    if (invoiceObj.custbody_gw_lock_transaction === 'F') {
       gwInvoiceService.lockInvoice(context.key)
-      var invoiceObj = gwInvoiceService.composeInvObj(searchResults)
-      log.debug({ title: 'reduce invoiceObj', details: invoiceObj })
-      var eguiService = new gwEguiService(invoiceObj)
-      log.debug({ title: 'reduce eguiObj', details: eguiService.getEgui() })
+    }
+    var eguiService = new gwEguiService(invoiceObj)
+    try {
       voucherId = eguiService.issueEgui()
       log.debug({ title: 'reduce voucherId', details: voucherId })
     } catch (e) {
       voucherId = 0
       gwInvoiceService.unlockInvoice(context.key)
-
       throw e
     }
-    if (voucherId) {
+    if (voucherId && eguiService.getEgui().isNotUploadEGui === 'F') {
       var uploadEguiResult = eguiService.uploadEgui(voucherId)
-      log.debug({ title: 'eguiUploadResult', details: uploadEguiResult })
     }
     context.write({
       key: voucherId
     })
-
     // TODO
   }
 

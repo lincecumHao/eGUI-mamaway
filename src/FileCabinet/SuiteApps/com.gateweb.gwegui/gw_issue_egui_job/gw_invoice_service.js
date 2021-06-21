@@ -2,8 +2,9 @@ define([
   'N/record',
   'N/search',
   '../library/ramda.min',
-  '../gw_dao/transactionSearch/gw_transaction_fields'
-], (record, search, ramda, transSearchFields) => {
+  '../gw_dao/transactionSearch/gw_transaction_fields',
+  '../gw_dao/evidenceIssueStatus/gw_dao_evidence_issue_status_21'
+], (record, search, ramda, transSearchFields, gwEvidenceIssueStatusDao) => {
   /**
    * Module Description...
    *
@@ -28,11 +29,10 @@ define([
     searchFilters.push('AND')
     searchFilters.push(['shipping', 'is', 'F'])
     searchFilters.push('AND')
-    searchFilters.push(['custbody_gw_lock_transaction', 'is', 'F'])
-    searchFilters.push('AND')
     searchFilters.push(['custbody_gw_is_issue_egui', 'is', 'T'])
     searchFilters.push('AND')
-    searchFilters.push(['custbody_gw_gui_num_start', 'isempty', ''])
+
+    searchFilters.push(getIssuedAndNotImportedEguiSubFilter())
     var searchColumns = JSON.parse(
       JSON.stringify(transSearchFields.allFieldIds)
     )
@@ -42,6 +42,51 @@ define([
       filters: searchFilters,
       columns: searchColumns
     })
+  }
+
+  function getNewIssueSubfilter() {
+    var subFilters = []
+    var unissuedStatus = gwEvidenceIssueStatusDao.getUnIssuedStatus()
+    subFilters.push(['custbody_gw_lock_transaction', 'is', 'F'])
+    subFilters.push('AND')
+    subFilters.push([
+      'custbody_gw_evidence_issue_status',
+      'is',
+      unissuedStatus.id
+    ])
+    subFilters.push('AND')
+    subFilters.push(['custbody_gw_gui_not_upload', 'is', 'F'])
+    return subFilters
+  }
+
+  function getIssuedAndNotImportedEguiSubFilter() {
+    var subFilters = []
+    var issuedAndNotImportedStatus = gwEvidenceIssueStatusDao.getIssuedAndNotTransformedStatus()
+    subFilters.push(['custbody_gw_lock_transaction', 'is', 'T'])
+    subFilters.push('AND')
+    subFilters.push([
+      'custbody_gw_evidence_issue_status',
+      'is',
+      issuedAndNotImportedStatus.id
+    ])
+    subFilters.push('AND')
+    subFilters.push(['custbody_gw_gui_not_upload', 'is', 'T'])
+    return subFilters
+  }
+
+  function getStrongBuyerSubfilter() {
+    var subFilters = []
+    var unissuedStatus = gwEvidenceIssueStatusDao.getUnIssuedStatus()
+    subFilters.push(['custbody_gw_lock_transaction', 'is', 'F'])
+    subFilters.push('AND')
+    subFilters.push([
+      'custbody_gw_evidence_issue_status',
+      'is',
+      unissuedStatus.id
+    ])
+    subFilters.push('AND')
+    subFilters.push(['custbody_gw_gui_not_upload', 'is', 'T'])
+    return subFilters
   }
 
   /**
@@ -94,10 +139,20 @@ define([
     log.debug({ title: 'eguiIssued eguiObj', details: eguiObj })
 
     var updateValues = {}
-    updateValues[transSearchFields.fields.custbody_gw_gui_num_start.id] =
-      eguiObj.documentNumber
-    updateValues[transSearchFields.fields.custbody_gw_gui_num_end.id] =
-      eguiObj.documentNumber
+    if (
+      eguiObj.gwIssueStatus.value ===
+      gwEvidenceIssueStatusDao.getUnIssuedStatus().id
+    ) {
+      updateValues[transSearchFields.fields.custbody_gw_gui_num_start.id] =
+        eguiObj.documentNumber
+      updateValues[transSearchFields.fields.custbody_gw_gui_num_end.id] =
+        eguiObj.documentNumber
+    } else {
+    }
+    updateValues[
+      transSearchFields.fields.custbody_gw_evidence_issue_status.id
+    ] = gwEvidenceIssueStatusDao.getGwIssuedStatus().id
+
     record.submitFields({
       type: record.Type.INVOICE,
       id: eguiObj.internalId,

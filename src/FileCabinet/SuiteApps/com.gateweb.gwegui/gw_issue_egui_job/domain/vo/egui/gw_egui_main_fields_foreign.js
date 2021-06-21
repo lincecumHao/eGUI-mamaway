@@ -20,7 +20,7 @@ define(['../../../../library/ramda.min'], function (ramda) {
     },
     documentDate: {
       id: 'documentDate',
-      sourceField: 'custbody_gw_gui_date',
+      sourceField: 'tranDate',
       outputField: ''
     },
     tranDate: {
@@ -53,6 +53,11 @@ define(['../../../../library/ramda.min'], function (ramda) {
       sourceField: 'transactionnumber',
       outputField: ''
     },
+    guiDate: {
+      id: 'guiDate',
+      sourceField: 'custbody_gw_gui_date',
+      outputField: ''
+    },
     buyerId: {
       id: 'buyerId',
       sourceField: 'entity.value',
@@ -80,7 +85,7 @@ define(['../../../../library/ramda.min'], function (ramda) {
     },
     nsSalesAmt: {
       id: 'nsSalesAmt',
-      sourceField: 'netamountnotax',
+      sourceField: '',
       outputField: ''
     },
     nsSalesAmtTaxZero: {
@@ -95,22 +100,52 @@ define(['../../../../library/ramda.min'], function (ramda) {
     },
     nsTaxAmt: {
       id: 'nsTaxAmt',
-      sourceField: 'taxtotal',
+      sourceField: '',
       outputField: ''
     },
     nsTotalAmt: {
       id: 'nsTotalAmt',
-      sourceField: 'total',
+      sourceField: 'fxamount',
       outputField: ''
     },
     taxType: {
       id: 'taxType',
-      sourceField: '',
+      sourceField: 'custbody_gw_gui_tax_type',
+      outputField: ''
+    },
+    salesAmt: {
+      id: 'salesAmt',
+      sourceField: 'custbody_gw_gui_sales_amt',
+      outputField: ''
+    },
+    taxExemptedSalesAmt: {
+      id: 'taxExemptedSalesAmt',
+      sourceField: 'custbody_gw_gui_sales_amt_tax_exempt',
+      outputField: ''
+    },
+    zeroTaxSalesAmt: {
+      id: 'zeroTaxSalesAmt',
+      sourceField: 'custbody_gw_gui_sales_amt_tax_zero',
+      outputField: ''
+    },
+    taxAmt: {
+      id: 'taxAmt',
+      sourceField: 'custbody_gw_gui_tax_amt',
+      outputField: ''
+    },
+    totalAmt: {
+      id: 'totalAmt',
+      sourceField: 'custbody_gw_gui_total_amt',
       outputField: ''
     },
     taxRate: {
       id: 'taxRate',
-      sourceField: '',
+      sourceField: 'custbody_gw_gui_tax_rate',
+      outputField: ''
+    },
+    taxType: {
+      id: 'taxType',
+      sourceField: 'custbody_gw_gui_tax_type',
       outputField: ''
     },
     departmentId: {
@@ -140,7 +175,7 @@ define(['../../../../library/ramda.min'], function (ramda) {
     },
     guiPeriod: {
       id: 'guiPeriod',
-      sourceField: 'custbody_gw_gui_period',
+      sourceField: 'custbody_gw_gui_tax_file_date',
       outputField: ''
     },
     isTransactionLocked: {
@@ -198,14 +233,9 @@ define(['../../../../library/ramda.min'], function (ramda) {
       sourceField: 'custbody_gw_gui_donation_code',
       outputField: ''
     },
-    carrierTypeId: {
-      id: 'carrierType',
-      sourceField: 'custbody_gw_gui_carrier_type.value',
-      outputField: ''
-    },
     carrierType: {
       id: 'carrierType',
-      sourceField: 'custbody_gw_gui_carrier_type.text',
+      sourceField: 'custbody_gw_gui_carrier_type',
       outputField: ''
     },
     carrierId1: {
@@ -283,10 +313,7 @@ define(['../../../../library/ramda.min'], function (ramda) {
   var inputMapping = (fieldConfig) => {
     return ramda.reduce(
       function (result, fieldId) {
-        var fieldObj = fieldConfig[fieldId]
-        if (fieldObj.sourceField) {
-          result[fieldId] = fieldObj.sourceField
-        }
+        result[fieldId] = fieldConfig[fieldId].sourceField
         return result
       },
       {},
@@ -297,10 +324,7 @@ define(['../../../../library/ramda.min'], function (ramda) {
   var outputMapping = (fieldConfig) => {
     return ramda.reduce(
       function (result, fieldId) {
-        var fieldObj = fieldConfig[fieldId]
-        if (fieldObj.outputField) {
-          result[fieldId] = fieldObj.outputField
-        }
+        result[fieldId] = fieldConfig[fieldId].outputField
         return result
       },
       {},

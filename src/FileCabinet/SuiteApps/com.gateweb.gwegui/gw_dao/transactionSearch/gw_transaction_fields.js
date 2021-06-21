@@ -17,725 +17,750 @@ define(['../../library/ramda.min'], function (ramda) {
     internalId: {
       id: 'internalId',
       sourceField: '',
-      outputField: 'tranInternalId',
+      outputField: 'tranInternalId'
     },
     mainline: {
       id: 'mainline',
       sourceField: '',
-      outputField: 'mainline',
+      outputField: 'mainline'
     },
     trandate: {
       id: 'trandate',
       sourceField: '',
-      outputField: 'tranDate',
+      outputField: 'tranDate'
     },
     subsidiary: {
       id: 'subsidiary',
       sourceField: '',
-      outputField: 'subsidiary',
+      outputField: 'subsidiary'
     },
     type: {
       id: 'type',
       sourceField: '',
-      outputField: 'tranType',
+      outputField: 'tranType'
     },
     entity: {
       id: 'entity',
       sourceField: '',
-      outputField: 'customer',
+      outputField: 'customer'
     },
     tranid: {
       id: 'tranid',
       sourceField: '',
-      outputField: 'tranName',
+      outputField: 'tranName'
     },
     transactionnumber: {
       id: 'transactionnumber',
       sourceField: '',
-      outputField: 'tranNum',
+      outputField: 'tranNum'
     },
     memomain: {
       id: 'memomain',
       sourceField: '',
-      outputField: 'memo',
+      outputField: 'memo'
     },
     memo: {
       id: 'memo',
       sourceField: '',
-      outputField: 'itemName',
+      outputField: 'itemName'
     },
     amount: {
       id: 'amount',
       sourceField: '',
-      outputField: 'nsTotalAmt',
+      outputField: 'nsTotalAmt'
     },
     fxamount: {
       id: 'fxamount',
       sourceField: '',
-      outputField: 'nsTotalAmtForeign',
+      outputField: 'nsTotalAmtForeign'
     },
     grossamount: {
       id: 'grossamount',
       sourceField: '',
-      outputField: 'nsGrossAmt',
+      outputField: 'nsGrossAmt'
     },
     netamountnotax: {
       id: 'netamountnotax',
       sourceField: '',
-      outputField: 'nsNetAmtNoTax',
+      outputField: 'nsNetAmtNoTax'
     },
     netamount: {
       id: 'netamount',
       sourceField: '',
-      outputField: 'nsNetAmt',
+      outputField: 'nsNetAmt'
     },
     taxamount: {
       id: 'taxamount',
       sourceField: '',
-      outputField: 'nsTaxAmt',
+      outputField: 'nsTaxAmt'
     },
     taxtotal: {
       id: 'taxtotal',
       sourceField: '',
-      outputField: 'nsTaxTotal',
+      outputField: 'nsTaxTotal'
     },
     total: {
       id: 'total',
       sourceField: '',
-      outputField: 'nsTotal',
+      outputField: 'nsTotal'
     },
 
     department: {
       id: 'department',
       sourceField: '',
-      outputField: 'department',
+      outputField: 'department'
     },
     createdby: {
       id: 'createdby',
       sourceField: '',
-      outputField: 'createdby',
+      outputField: 'createdby'
     },
     createdfrom: {
       id: 'createdfrom',
       sourceField: '',
-      outputField: 'createdfrom',
+      outputField: 'createdfrom'
     },
     class: {
       id: 'class',
       sourceField: '',
-      outputField: 'classification',
+      outputField: 'classification'
     },
     location: {
       id: 'location',
       sourceField: '',
-      outputField: 'location',
+      outputField: 'location'
     },
     itemtype: {
       id: 'itemtype',
       sourceField: '',
-      outputField: 'itemType',
+      outputField: 'itemType'
     },
     linesequencenumber: {
       id: 'linesequencenumber',
       sourceField: '',
-      outputField: 'lineSeq',
+      outputField: 'lineSeq'
     },
     line: {
       id: 'line',
       sourceField: '',
-      outputField: 'line',
+      outputField: 'line'
     },
     item: {
       id: 'item',
       sourceField: '',
-      outputField: 'item',
+      outputField: 'item'
     },
     unitabbreviation: {
       id: 'unitabbreviation',
       sourceField: '',
-      outputField: 'unit',
+      outputField: 'unit'
     },
     quantity: {
       id: 'quantity',
       sourceField: '',
-      outputField: 'quantity',
+      outputField: 'quantity'
     },
     taxcode: {
       id: 'taxcode',
       sourceField: '',
-      outputField: 'taxCode',
+      outputField: 'taxCode'
     },
     rate: {
       id: 'rate',
       sourceField: '',
-      outputField: 'unitPrice',
+      outputField: 'unitPrice'
     },
     fxrate: {
       id: 'fxrate',
       sourceField: '',
-      outputField: 'unitPrice',
+      outputField: 'unitPrice'
     },
     custcol_gw_item_unit_amt_inc_tax: {
       id: 'custcol_gw_item_unit_amt_inc_tax',
       sourceField: '',
-      outputField: 'itemRateAfterTax',
+      outputField: 'itemRateAfterTax'
     },
     custcol_gw_item_memo: {
       id: 'custcol_gw_item_memo',
       sourceField: '',
-      outputField: 'guiItemMemo',
+      outputField: 'guiItemMemo'
     },
     custbody_gw_gui_date: {
       id: 'custbody_gw_gui_date',
       sourceField: '',
-      outputField: 'guiDate',
+      outputField: 'guiDate'
     },
     custbody_gw_gui_tax_file_date: {
       id: 'custbody_gw_gui_tax_file_date',
       sourceField: '',
-      outputField: 'guiTaxFileDate',
+      outputField: 'guiTaxFileDate'
     },
     custbody_gw_lock_transaction: {
       id: 'custbody_gw_lock_transaction',
       sourceField: '',
-      outputField: 'isTransactionLocked',
+      outputField: 'isTransactionLocked'
     },
     custbody_gw_gui_not_upload: {
       id: 'custbody_gw_gui_not_upload',
       sourceField: '',
-      outputField: 'isEGuiUpload',
+      outputField: 'isEGuiUpload'
     },
     custbody_gw_is_issue_egui: {
       id: 'custbody_gw_is_issue_egui',
       sourceField: '',
-      outputField: 'isIssueEgui',
+      outputField: 'isIssueEgui'
     },
     custbody_gw_allowance_num_start: {
       id: 'custbody_gw_allowance_num_start',
       sourceField: '',
-      outputField: 'allowanceNumStart',
+      outputField: 'allowanceNumStart'
     },
     custbody_gw_allowance_num_end: {
       id: 'custbody_gw_allowance_num_end',
       sourceField: '',
-      outputField: 'allowanceNumEnd',
+      outputField: 'allowanceNumEnd'
     },
     custbody_gw_customs_export_no: {
       id: 'custbody_gw_customs_export_no',
       sourceField: '',
-      outputField: 'customExportNum',
+      outputField: 'customExportNum'
     },
     custbody_gw_customs_export_category: {
       id: 'custbody_gw_customs_export_category',
       sourceField: '',
-      outputField: 'customExportCategory',
+      outputField: 'customExportCategory'
     },
     custbody_gw_gui_address: {
       id: 'custbody_gw_gui_address',
       sourceField: '',
-      outputField: 'customerAddress',
+      outputField: 'customerAddress'
     },
     custbody_gw_gui_title: {
       id: 'custbody_gw_gui_title',
       sourceField: '',
-      outputField: 'customerName',
+      outputField: 'customerName'
     },
     custbody_gw_gui_num_start: {
       id: 'custbody_gw_gui_num_start',
       sourceField: '',
-      outputField: 'eguiNumStart',
+      outputField: 'eguiNumStart'
     },
     custbody_gw_gui_num_end: {
       id: 'custbody_gw_gui_num_end',
       sourceField: '',
-      outputField: 'eguiNumEnd',
+      outputField: 'eguiNumEnd'
     },
     custbody_gw_tax_id_number: {
       id: 'custbody_gw_tax_id_number',
       sourceField: '',
-      outputField: 'customerTaxId',
+      outputField: 'customerTaxId'
     },
     custbody_gw_customs_export_date: {
       id: 'custbody_gw_customs_export_date',
       sourceField: '',
-      outputField: 'customExportDate',
+      outputField: 'customExportDate'
     },
     custbody_gw_egui_clearance_mark: {
       id: 'custbody_gw_egui_clearance_mark',
       sourceField: '',
-      outputField: 'clearanceMark',
+      outputField: 'clearanceMark'
     },
     custbody_gw_applicable_zero_tax: {
       id: 'custbody_gw_applicable_zero_tax',
       sourceField: '',
-      outputField: 'zeroTaxMark',
+      outputField: 'zeroTaxMark'
     },
     custbody_gw_gui_main_memo: {
       id: 'custbody_gw_gui_main_memo',
       sourceField: '',
-      outputField: 'eguiMainMemo',
+      outputField: 'eguiMainMemo'
     },
     custbody_gw_gui_sales_amt_tax_exempt: {
       id: 'custbody_gw_gui_sales_amt_tax_exempt',
       sourceField: '',
-      outputField: 'taxExemptSalesAmt',
+      outputField: 'taxExemptSalesAmt'
     },
     custbody_gw_gui_sales_amt: {
       id: 'custbody_gw_gui_sales_amt',
       sourceField: '',
-      outputField: 'salesAmt',
+      outputField: 'salesAmt'
     },
     custbody_gw_gui_sales_amt_tax_zero: {
       id: 'custbody_gw_gui_sales_amt_tax_zero',
       sourceField: '',
-      outputField: 'taxZeroSalesAmt',
+      outputField: 'taxZeroSalesAmt'
     },
     custbody_gw_gui_tax_amt: {
       id: 'custbody_gw_gui_tax_amt',
       sourceField: '',
-      outputField: 'taxAmt',
+      outputField: 'taxAmt'
+    },
+    custbody_gw_gui_tax_rate: {
+      id: 'custbody_gw_gui_tax_rate',
+      sourceField: '',
+      outputField: 'taxRate'
+    },
+    custbody_gw_gui_tax_type: {
+      id: 'custbody_gw_gui_tax_type',
+      sourceField: '',
+      outputField: 'taxType'
+    },
+    custbody_gw_gui_total_amt: {
+      id: 'custbody_gw_gui_total_amt',
+      sourceField: '',
+      outputField: 'totalAmt'
     },
     custbody_gw_creditmemo_deduction_list: {
       id: 'custbody_gw_creditmemo_deduction_list',
       sourceField: '',
-      outputField: 'cmDeductList',
+      outputField: 'cmDeductList'
     },
     custbody_gw_gui_donation_code: {
       id: 'custbody_gw_gui_donation_code',
       sourceField: '',
-      outputField: 'donationCode',
+      outputField: 'donationCode'
     },
     custbody_gw_gui_donation_mark: {
       id: 'custbody_gw_gui_donation_mark',
       sourceField: '',
-      outputField: 'isDonate',
+      outputField: 'isDonate'
     },
     custbody_gw_gui_carrier_type: {
       id: 'custbody_gw_gui_carrier_type',
       sourceField: '',
-      outputField: 'carrierType',
+      outputField: 'carrierType'
     },
     custbody_gw_gui_carrier_id_1: {
       id: 'custbody_gw_gui_carrier_id_1',
       sourceField: '',
-      outputField: 'carrierId1',
+      outputField: 'carrierId1'
     },
     custbody_gw_gui_carrier_id_2: {
       id: 'custbody_gw_gui_carrier_id_2',
       sourceField: '',
-      outputField: 'carrierId2',
+      outputField: 'carrierId2'
     },
     custbody_gw_gui_apply_period: {
       id: 'custbody_gw_gui_apply_period',
       sourceField: '',
-      outputField: 'applyPeriod',
+      outputField: 'applyPeriod'
     },
     custbody_gw_gui_format: {
       id: 'custbody_gw_gui_format',
       sourceField: '',
-      outputField: 'guiFormat',
+      outputField: 'guiFormat'
     },
     custbody_gw_gui_class: {
       id: 'custbody_gw_gui_class',
       sourceField: '',
-      outputField: 'guiClass',
+      outputField: 'guiClass'
     },
     custbody_gw_gui_department: {
       id: 'custbody_gw_gui_department',
       sourceField: '',
-      outputField: 'guiDepartment',
+      outputField: 'guiDepartment'
     },
     statusref: {
       id: 'statusref',
       sourceField: '',
-      outputField: 'tranStatus',
+      outputField: 'tranStatus'
     },
+    custbody_gw_seller_tax_id: {
+      id: 'custbody_gw_seller_tax_id',
+      sourceField: '',
+      outputField: 'sellerTaxId'
+    },
+    custbody_gw_evidence_issue_status: {
+      id: 'custbody_gw_evidence_issue_status',
+      sourceField: '',
+      outputField: 'gwIssueStatus'
+    }
   }
 
   var bodyFieldConfig = {
     trandate: {
       id: 'trandate',
       sourceField: '',
-      outputField: 'tranDate',
+      outputField: 'tranDate'
     },
     subsidiary: {
       id: 'subsidiary',
       sourceField: '',
-      outputField: 'subsidiary',
+      outputField: 'subsidiary'
     },
     type: {
       id: 'type',
       sourceField: '',
-      outputField: 'tranType',
+      outputField: 'tranType'
     },
     entity: {
       id: 'entity',
       sourceField: '',
-      outputField: 'customer',
+      outputField: 'customer'
     },
     tranid: {
       id: 'tranid',
       sourceField: '',
-      outputField: 'tranName',
+      outputField: 'tranName'
     },
     transactionnumber: {
       id: 'transactionnumber',
       sourceField: '',
-      outputField: 'tranNum',
+      outputField: 'tranNum'
     },
     memomain: {
       id: 'memomain',
       sourceField: '',
-      outputField: 'memo',
+      outputField: 'memo'
     },
     memo: {
       id: 'memo',
       sourceField: '',
-      outputField: 'itemName',
+      outputField: 'itemName'
     },
     amount: {
       id: 'amount',
       sourceField: '',
-      outputField: 'nsAmt',
+      outputField: 'nsAmt'
     },
     fxamount: {
       id: 'fxamount',
       sourceField: '',
-      outputField: 'nsAmtForeign',
+      outputField: 'nsAmtForeign'
     },
     grossamount: {
       id: 'grossamount',
       sourceField: '',
-      outputField: 'nsGrossAmt',
+      outputField: 'nsGrossAmt'
     },
     netamountnotax: {
       id: 'netamountnotax',
       sourceField: '',
-      outputField: 'nsNetAmtNoTax',
+      outputField: 'nsNetAmtNoTax'
     },
     netamount: {
       id: 'netamount',
       sourceField: '',
-      outputField: 'nsNetAmt',
+      outputField: 'nsNetAmt'
     },
     taxamount: {
       id: 'taxamount',
       sourceField: '',
-      outputField: 'nsTaxAmt',
+      outputField: 'nsTaxAmt'
     },
     taxtotal: {
       id: 'taxtotal',
       sourceField: '',
-      outputField: 'nsTaxTotal',
+      outputField: 'nsTaxTotal'
     },
     total: {
       id: 'total',
       sourceField: '',
-      outputField: 'nsTotal',
+      outputField: 'nsTotal'
     },
 
     department: {
       id: 'department',
       sourceField: '',
-      outputField: 'department',
+      outputField: 'department'
     },
     createdby: {
       id: 'createdby',
       sourceField: '',
-      outputField: 'createdby',
+      outputField: 'createdby'
     },
     createdfrom: {
       id: 'createdfrom',
       sourceField: '',
-      outputField: 'createdfrom',
+      outputField: 'createdfrom'
     },
     class: {
       id: 'class',
       sourceField: '',
-      outputField: 'classification',
+      outputField: 'classification'
     },
     location: {
       id: 'location',
       sourceField: '',
-      outputField: 'location',
+      outputField: 'location'
     },
     custbody_gw_gui_date: {
       id: 'custbody_gw_gui_date',
       sourceField: '',
-      outputField: 'guiDate',
+      outputField: 'guiDate'
     },
     custbody_gw_gui_tax_file_date: {
       id: 'custbody_gw_gui_tax_file_date',
       sourceField: '',
-      outputField: 'guiTaxFileDate',
+      outputField: 'guiTaxFileDate'
     },
     custbody_gw_lock_transaction: {
       id: 'custbody_gw_lock_transaction',
       sourceField: '',
-      outputField: 'isTransactionLocked',
+      outputField: 'isTransactionLocked'
     },
     custbody_gw_gui_not_upload: {
       id: 'custbody_gw_gui_not_upload',
       sourceField: '',
-      outputField: 'isEGuiUpload',
+      outputField: 'isEGuiUpload'
     },
     custbody_gw_no_egui: {
       id: 'custbody_gw_no_egui',
       sourceField: '',
-      outputField: 'isNotIssueEgui',
+      outputField: 'isNotIssueEgui'
     },
     custbody_gw_is_issue_egui: {
       id: 'custbody_gw_is_issue_egui',
       sourceField: '',
-      outputField: 'isIssueEgui',
+      outputField: 'isIssueEgui'
     },
     custbody_gw_allowance_num_start: {
       id: 'custbody_gw_allowance_num_start',
       sourceField: '',
-      outputField: 'allowanceNumStart',
+      outputField: 'allowanceNumStart'
     },
     custbody_gw_allowance_num_end: {
       id: 'custbody_gw_allowance_num_end',
       sourceField: '',
-      outputField: 'allowanceNumEnd',
+      outputField: 'allowanceNumEnd'
     },
     custbody_gw_customs_export_no: {
       id: 'custbody_gw_customs_export_no',
       sourceField: '',
-      outputField: 'customExportNum',
+      outputField: 'customExportNum'
     },
     custbody_gw_customs_export_category: {
       id: 'custbody_gw_customs_export_category',
       sourceField: '',
-      outputField: 'customExportCategory',
+      outputField: 'customExportCategory'
     },
     custbody_gw_gui_address: {
       id: 'custbody_gw_gui_address',
       sourceField: '',
-      outputField: 'customerAddress',
+      outputField: 'customerAddress'
     },
     custbody_gw_gui_title: {
       id: 'custbody_gw_gui_title',
       sourceField: '',
-      outputField: 'customerName',
+      outputField: 'customerName'
     },
     custbody_gw_gui_num_start: {
       id: 'custbody_gw_gui_num_start',
       sourceField: '',
-      outputField: 'eguiNumStart',
+      outputField: 'eguiNumStart'
     },
     custbody_gw_gui_num_end: {
       id: 'custbody_gw_gui_num_end',
       sourceField: '',
-      outputField: 'eguiNumEnd',
+      outputField: 'eguiNumEnd'
     },
     custbody_gw_tax_id_number: {
       id: 'custbody_gw_tax_id_number',
       sourceField: '',
-      outputField: 'customerTaxId',
+      outputField: 'customerTaxId'
     },
     custbody_gw_customs_export_date: {
       id: 'custbody_gw_customs_export_date',
       sourceField: '',
-      outputField: 'customExportDate',
+      outputField: 'customExportDate'
     },
     custbody_gw_egui_clearance_mark: {
       id: 'custbody_gw_egui_clearance_mark',
       sourceField: '',
-      outputField: 'clearanceMark',
+      outputField: 'clearanceMark'
     },
     custbody_gw_applicable_zero_tax: {
       id: 'custbody_gw_applicable_zero_tax',
       sourceField: '',
-      outputField: 'zeroTaxMark',
+      outputField: 'zeroTaxMark'
     },
     custbody_gw_gui_main_memo: {
       id: 'custbody_gw_gui_main_memo',
       sourceField: '',
-      outputField: 'eguiMainMemo',
+      outputField: 'eguiMainMemo'
     },
     custbody_gw_gui_sales_amt_tax_exempt: {
       id: 'custbody_gw_gui_sales_amt_tax_exempt',
       sourceField: '',
-      outputField: 'taxExemptSalesAmt',
+      outputField: 'taxExemptSalesAmt'
     },
     custbody_gw_gui_sales_amt: {
       id: 'custbody_gw_gui_sales_amt',
       sourceField: '',
-      outputField: 'salesAmt',
+      outputField: 'salesAmt'
     },
     custbody_gw_gui_sales_amt_tax_zero: {
       id: 'custbody_gw_gui_sales_amt_tax_zero',
       sourceField: '',
-      outputField: 'taxZeroSalesAmt',
+      outputField: 'taxZeroSalesAmt'
     },
     custbody_gw_gui_tax_amt: {
       id: 'custbody_gw_gui_tax_amt',
       sourceField: '',
-      outputField: 'taxAmt',
+      outputField: 'taxAmt'
     },
     custbody_gw_creditmemo_deduction_list: {
       id: 'custbody_gw_creditmemo_deduction_list',
       sourceField: '',
-      outputField: 'cmDeductList',
+      outputField: 'cmDeductList'
     },
     custbody_gw_gui_donation_code: {
       id: 'custbody_gw_gui_donation_code',
       sourceField: '',
-      outputField: 'donationCode',
+      outputField: 'donationCode'
     },
     custbody_gw_gui_donation_mark: {
       id: 'custbody_gw_gui_donation_mark',
       sourceField: '',
-      outputField: 'isDonate',
+      outputField: 'isDonate'
     },
     custbody_gw_gui_carrier_type: {
       id: 'custbody_gw_gui_carrier_type',
       sourceField: '',
-      outputField: 'carrierType',
+      outputField: 'carrierType'
     },
     custbody_gw_gui_carrier_id_1: {
       id: 'custbody_gw_gui_carrier_id_1',
       sourceField: '',
-      outputField: 'carrierId1',
+      outputField: 'carrierId1'
     },
     custbody_gw_gui_carrier_id_2: {
       id: 'custbody_gw_gui_carrier_id_2',
       sourceField: '',
-      outputField: 'carrierId2',
+      outputField: 'carrierId2'
     },
     custbody_gw_gui_apply_period: {
       id: 'custbody_gw_gui_apply_period',
       sourceField: '',
-      outputField: 'applyPeriod',
+      outputField: 'applyPeriod'
     },
     custbody_gw_gui_format: {
       id: 'custbody_gw_gui_format',
       sourceField: '',
-      outputField: 'guiFormat',
+      outputField: 'guiFormat'
     },
     statusref: {
       id: 'statusref',
       sourceField: '',
-      outputField: 'tranStatus',
-    },
+      outputField: 'tranStatus'
+    }
   }
   var lineFieldConfig = {
     subsidiary: {
       id: 'subsidiary',
       sourceField: '',
-      outputField: 'subsidiary',
+      outputField: 'subsidiary'
     },
     tranid: {
       id: 'tranid',
       sourceField: '',
-      outputField: 'tranName',
+      outputField: 'tranName'
     },
     transactionnumber: {
       id: 'transactionnumber',
       sourceField: '',
-      outputField: 'tranNum',
+      outputField: 'tranNum'
     },
     memo: {
       id: 'memo',
       sourceField: '',
-      outputField: 'itemName',
+      outputField: 'itemName'
     },
     amount: {
       id: 'amount',
       sourceField: '',
-      outputField: 'nsAmt',
+      outputField: 'nsAmt'
     },
     fxamount: {
       id: 'fxamount',
       sourceField: '',
-      outputField: 'nsAmtForeign',
+      outputField: 'nsAmtForeign'
     },
     grossamount: {
       id: 'grossamount',
       sourceField: '',
-      outputField: 'nsGrossAmt',
+      outputField: 'nsGrossAmt'
     },
     netamountnotax: {
       id: 'netamountnotax',
       sourceField: '',
-      outputField: 'nsNetAmtNoTax',
+      outputField: 'nsNetAmtNoTax'
     },
     netamount: {
       id: 'netamount',
       sourceField: '',
-      outputField: 'nsNetAmt',
+      outputField: 'nsNetAmt'
     },
     taxamount: {
       id: 'taxamount',
       sourceField: '',
-      outputField: 'nsTaxAmt',
+      outputField: 'nsTaxAmt'
     },
     taxtotal: {
       id: 'taxtotal',
       sourceField: '',
-      outputField: 'nsTaxTotal',
+      outputField: 'nsTaxTotal'
     },
     total: {
       id: 'total',
       sourceField: '',
-      outputField: 'nsTotal',
+      outputField: 'nsTotal'
     },
     linesequencenumber: {
       id: 'linesequencenumber',
       sourceField: '',
-      outputField: 'lineSeq',
+      outputField: 'lineSeq'
     },
     line: {
       id: 'line',
       sourceField: '',
-      outputField: 'line',
+      outputField: 'line'
     },
     item: {
       id: 'item',
       sourceField: '',
-      outputField: 'item',
+      outputField: 'item'
     },
     unitabbreviation: {
       id: 'unitabbreviation',
       sourceField: '',
-      outputField: 'unit',
+      outputField: 'unit'
     },
     itemtype: {
       id: 'itemtype',
       sourceField: '',
-      outputField: 'itemType',
+      outputField: 'itemType'
     },
     quantity: {
       id: 'quantity',
       sourceField: '',
-      outputField: 'quantity',
+      outputField: 'quantity'
     },
     custcol_gw_item_memo: {
       id: 'custcol_gw_item_memo',
       sourceField: '',
-      outputField: 'itemMemo',
+      outputField: 'itemMemo'
     },
     custcol_gw_item_unit_amt_inc_tax: {
       id: 'custcol_gw_item_unit_amt_inc_tax',
       sourceField: '',
-      outputField: 'itemRateAfterTax',
+      outputField: 'itemRateAfterTax'
     },
     rate: {
       id: 'rate',
       sourceField: '',
-      outputField: 'unitPrice',
+      outputField: 'unitPrice'
     },
     fxrate: {
       id: 'fxrate',
       sourceField: '',
-      outputField: 'unitPriceForeign',
+      outputField: 'unitPriceForeign'
     },
     taxItem: {
       id: 'taxItem',
       sourceField: '',
-      outputField: 'taxCode',
-    },
+      outputField: 'taxCode'
+    }
   }
 
   var fieldOutputMapping = ramda.reduce(
