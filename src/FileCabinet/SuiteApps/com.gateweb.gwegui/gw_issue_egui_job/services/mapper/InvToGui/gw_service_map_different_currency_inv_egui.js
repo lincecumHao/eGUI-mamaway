@@ -44,6 +44,7 @@ define([
     var configuration = gwEguiConfigDao.getConfig()
     var eguiMainObj = JSON.parse(JSON.stringify(eguiMain))
     var seller = gwBusinessEntityDao.getByTaxId(eguiMainObj.sellerTaxId)
+    log.debug({ title: 'update body values seller', details: seller })
     eguiMainObj = updateSeller(eguiMainObj, seller)
     eguiMainObj = updateCarrierAndDonation(eguiMainObj)
     eguiMainObj = updateMiscFields(eguiMainObj, configuration)
@@ -66,9 +67,12 @@ define([
 
   function updateSeller(eguiMainObj, seller) {
     var eguiMain = JSON.parse(JSON.stringify(eguiMainObj))
-    eguiMain.sellerName = 'TestName'
-    eguiMain.sellerAddress = 'TestAddress'
-    eguiMain.guiType = gwGuiTypeDao.getRegularGuiType()
+    eguiMain.sellerTaxId = seller.taxId
+    eguiMain.sellerName = seller.title
+    eguiMain.sellerAddress = `${seller.city.text}${seller.address}`
+    eguiMain.guiType = seller.isNonValueAdded
+      ? gwGuiTypeDao.getSpecialGuiType()
+      : gwGuiTypeDao.getRegularGuiType()
     return eguiMain
   }
 

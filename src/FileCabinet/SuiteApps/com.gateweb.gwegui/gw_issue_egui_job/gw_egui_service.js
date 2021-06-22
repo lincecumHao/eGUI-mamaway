@@ -80,9 +80,9 @@ define([
           eguiObj.documentDate,
           1
         )[0]
+        eguiObj.randomNumber = getRandomNumber()
       }
-
-      eguiObj.randomNumber = getRandomNumber()
+      if (!eguiObj.transactions) eguiObj.transactions = [eguiObj.internalId]
       this.egui = eguiObj
       var voucherId = gwVoucherDao.saveEguiToRecord(this.egui)
       gwInvoiceService.eguiIssued(eguiObj, voucherId)
