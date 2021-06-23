@@ -11,6 +11,7 @@ define([
   'N/record',
   'N/file',
   'N/search',
+  '../gw_common_utility/gw_common_invoice_utility',
   '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_configure',
 ], function (
@@ -20,6 +21,7 @@ define([
   record,
   file,
   search,
+  invoiceutility,
   stringutility,
   gwconfigure
 ) {
@@ -39,28 +41,14 @@ define([
 
     var _user_obj = runtime.getCurrentUser()
     var _user_subsidiary = _user_obj.subsidiary
-
-    var _businessSearch = search
-      .create({
-        type: 'customrecord_gw_business_entity',
-        columns: [
-          'custrecord_gw_be_tax_id_number',
-          'custrecord_gw_be_gui_title',
-        ],
-        filters: ['custrecord_gw_be_ns_subsidiary', 'is', _user_subsidiary],
-      })
-      .run()
-      .each(function (result) {
-        var _internalid = result.id
-
-        var _tax_id_number = result.getValue({
-          name: 'custrecord_gw_be_tax_id_number',
-        })
-
-        _user_subsidary_taxId_ary.push(_tax_id_number)
-
-        return true
-      })
+	
+	var _company_ary = invoiceutility.getBusinessEntitByUserId(_user_obj.id, _user_subsidiary)
+	if (_company_ary!=null) {
+    	for (var i=0; i<_company_ary.length; i++) {
+    		var _company = _company_ary[i];
+    		_user_subsidary_taxId_ary.push(_company.tax_id_number) 
+    	}
+    } 
 
     return _user_subsidary_taxId_ary
   }
