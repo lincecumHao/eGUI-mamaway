@@ -1129,47 +1129,48 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
   function getBusinessEntitByUserId(user_id, subsidiary) {
 	  var _comapny_ary = [];
 	  
-	  var _role_id_ary = getUserRolesByUserId(user_id);
-	  
-	  var _mySearch = search.create({
-        type: 'customrecord_gw_business_entity',
-        columns: [
-          search.createColumn({ name: 'custrecord_gw_be_tax_id_number' }),  
-          search.createColumn({ name: 'custrecord_gw_be_gui_title' }),  
-          search.createColumn({ name: 'custrecord_gw_be_ns_subsidiary' }) 
-        ],
-      })
+	  if (subsidiary !=null && subsidiary !='') {
+		  var _role_id_ary = getUserRolesByUserId(user_id);
+		  
+		  var _mySearch = search.create({
+			type: 'customrecord_gw_business_entity',
+			columns: [
+			  search.createColumn({ name: 'custrecord_gw_be_tax_id_number' }),  
+			  search.createColumn({ name: 'custrecord_gw_be_gui_title' }),  
+			  search.createColumn({ name: 'custrecord_gw_be_ns_subsidiary' }) 
+			],
+		  })
 
-      var _filterArray = []
-      _filterArray.push(['custrecord_gw_be_ns_subsidiary', search.Operator.IS, subsidiary])
-      _filterArray.push('or')
-      _filterArray.push(['custrecord_gw_business_entity_role_list', search.Operator.ANYOF, _role_id_ary]) 
-      _mySearch.filterExpression = _filterArray
-	  log.debug('GET BusinessEntit _filterArray: ' , JSON.stringify(_filterArray))
-	  _mySearch.run().each(function (result) { 
-		var _internalid = result.id
-		log.debug('GET BusinessEntit result: ' , JSON.stringify(result))
-		
-		var _tax_id_number = result.getValue({
-		  name: 'custrecord_gw_be_tax_id_number',
-		})
-		var _be_gui_title = result.getValue({
-		  name: 'custrecord_gw_be_gui_title',
-		})
-		var _be_ns_subsidiary = result.getValue({
-		  name: 'custrecord_gw_be_ns_subsidiary',
-		}) 
-		var _obj = {
-			'tax_id_number': _tax_id_number,
-			'be_gui_title': _be_gui_title,
-			'subsidiary': _be_ns_subsidiary 
-		}
-		
-		_comapny_ary.push(_obj); 
+		  var _filterArray = []
+		  _filterArray.push(['custrecord_gw_be_ns_subsidiary', search.Operator.IS, subsidiary])
+		  _filterArray.push('or')
+		  _filterArray.push(['custrecord_gw_business_entity_role_list', search.Operator.ANYOF, _role_id_ary]) 
+		  _mySearch.filterExpression = _filterArray
+		  log.debug('GET BusinessEntit _filterArray: ' , JSON.stringify(_filterArray))
+		  _mySearch.run().each(function (result) { 
+			var _internalid = result.id
+			log.debug('GET BusinessEntit result: ' , JSON.stringify(result))
+			
+			var _tax_id_number = result.getValue({
+			  name: 'custrecord_gw_be_tax_id_number',
+			})
+			var _be_gui_title = result.getValue({
+			  name: 'custrecord_gw_be_gui_title',
+			})
+			var _be_ns_subsidiary = result.getValue({
+			  name: 'custrecord_gw_be_ns_subsidiary',
+			}) 
+			var _obj = {
+				'tax_id_number': _tax_id_number,
+				'be_gui_title': _be_gui_title,
+				'subsidiary': _be_ns_subsidiary 
+			}
+			
+			_comapny_ary.push(_obj); 
 
-        return true
-      }) 
-	          
+			return true
+		  }) 
+	  }        
 	  return _comapny_ary;
   }
   
