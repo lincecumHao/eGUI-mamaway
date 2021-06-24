@@ -53,14 +53,25 @@ define([
    * @param {ServerRequest} context.request - The incoming request object
    * @param {ServerResponse} context.response - The outgoing response object
    */
+  var responseObj = {
+    code: 200,
+    data: null,
+    errorMessage: ''
+  }
   function onGet(context) {
     // TODO
+    var subsidiaryId = context.request.parameters['subsidiary']
+    var businessEntity = gwBusinessEntityDao.getBySubsidiary(subsidiaryId)
+    if (businessEntity) {
+      responseObj.data = businessEntity
+    } else {
+      responseObj.code = 403
+      responseObj.errorMessage =
+        '營業人資料未輸入, SubsidiaryId: ' + subsidiaryId
+    }
+
     context.response.write({
-      output: JSON.stringify(
-        gwBusinessEntityDao.getBySubsidiary(
-          context.request.parameters['subsidiary']
-        )
-      )
+      output: JSON.stringify(responseObj)
     })
   }
 

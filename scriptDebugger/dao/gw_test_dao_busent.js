@@ -1,7 +1,10 @@
 require([
   'SuiteApps/com.gateweb.gwegui/gw_dao/busEnt/gw_dao_business_entity_21'
 ], (gwBusinessEntDao) => {
-  const busEnt = gwBusinessEntDao.getByTaxId('82899761')
-  log.debug({ title: 'busEnt', details: busEnt })
+  const allBusEnt = gwBusinessEntDao.getAll()
+  const busEntBySubsidiary = gwBusinessEntDao.getBySubsidiary('56')
+  // const busEntByTax = gwBusinessEntDao.getByTaxId()
+  log.debug({ title: 'allBusEnt', details: allBusEnt })
+  log.debug({ title: 'busEntBySubsidiary', details: busEntBySubsidiary })
   log.debug({ title: 'Execution end' })
 })

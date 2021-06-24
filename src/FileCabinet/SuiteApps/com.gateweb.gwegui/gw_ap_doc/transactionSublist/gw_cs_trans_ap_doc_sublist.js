@@ -74,8 +74,14 @@ define([
         fieldChangeLib.setCurrentContext(context)
         fieldRoute[context.fieldId](context)
       } catch (e) {
-        alert('Exception: ' + e.message)
-        throw e
+        var errorMessage = e.message ? e.message : e
+        alert(
+          'Field ID: ' +
+            context.fieldId +
+            ' Error when change value. Message: ' +
+            errorMessage
+        )
+        throw errorMessage
       }
     }
   }

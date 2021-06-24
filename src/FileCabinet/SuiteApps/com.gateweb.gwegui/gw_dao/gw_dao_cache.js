@@ -18,7 +18,8 @@ define(['N/cache'], (cache) => {
     set(value) {
       this.getCacheObj().put({
         key: this.recordTypeId,
-        value: JSON.stringify(value)
+        value: JSON.stringify(value),
+        ttl: 300
       })
       return value
     }

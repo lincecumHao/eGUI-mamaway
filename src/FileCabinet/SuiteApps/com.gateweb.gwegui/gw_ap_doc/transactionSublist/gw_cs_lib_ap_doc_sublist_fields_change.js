@@ -180,8 +180,11 @@ define([
     var buyerInfoResponse = https.get({
       url: buyerInfoUrl
     })
-    var buyerInfo = JSON.parse(buyerInfoResponse.body)
-    return buyerInfo
+    var responseObject = JSON.parse(buyerInfoResponse.body)
+    if (responseObject.code === 200) {
+      return responseObject.data
+    }
+    throw responseObject.errorMessage
   }
 
   function setSellerCore() {

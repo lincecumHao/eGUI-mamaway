@@ -1,7 +1,8 @@
-define(['../library/gw_lib_search', './gw_dao_cache'], function (
-  searchLib,
-  dataCacheService
-) {
+define([
+  '../library/gw_lib_search',
+  './gw_dao_cache',
+  './gw_dao_session'
+], function (searchLib, dataCacheService, dataSessionService) {
   /**
    * Module Description...
    *
@@ -24,6 +25,7 @@ define(['../library/gw_lib_search', './gw_dao_cache'], function (
         this.recordTypeId,
         this.fieldConfig
       )
+      this.sessionService = new dataSessionService(this.recordTypeId)
     }
 
     getAllOptions() {
@@ -44,9 +46,9 @@ define(['../library/gw_lib_search', './gw_dao_cache'], function (
     }
 
     getAll() {
-      this.allOptions = this.cacheService.get()
-        ? this.cacheService.get()
-        : this.cacheService.set(this.getAllOptions())
+      this.allOptions = this.sessionService.get()
+        ? this.sessionService.get()
+        : this.sessionService.set(this.getAllOptions())
       return this.allOptions
     }
 
