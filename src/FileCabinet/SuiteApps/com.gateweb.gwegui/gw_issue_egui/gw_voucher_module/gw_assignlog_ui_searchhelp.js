@@ -312,6 +312,8 @@ define(['N/search', 'N/currentRecord', 'N/url', '../gw_common_utility/gw_common_
 			
 			_mySearch.filterExpression = _filterArray; 	
 						 
+			//alert('_filterArray='+JSON.parse(JSON.stringify(_filterArray)));
+			
 			_mySearch.run().each(function(result) {
 				
 				var _assignlog_businessno = result.getValue({

@@ -75,9 +75,14 @@ define(['N/ui/serverWidget', 'N/runtime', 'N/config', 'N/file', '../gw_common_ut
 					var _company = _company_ary[i];
 					
 					log.debug('get company', JSON.stringify(_company))
-					
+					/**
 					_selectBusinessNo.addSelectOption({
 						  value: _company.subsidiary+'-'+_company.tax_id_number,
+						  text: _company.tax_id_number + '-' + _company.be_gui_title,
+						})
+					*/	
+					_selectBusinessNo.addSelectOption({
+						  value: _company.tax_id_number,
 						  text: _company.tax_id_number + '-' + _company.be_gui_title,
 						})
 				}
