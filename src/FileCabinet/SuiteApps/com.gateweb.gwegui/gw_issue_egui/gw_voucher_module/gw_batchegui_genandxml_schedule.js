@@ -621,10 +621,14 @@ define([
             var _buyer_address = _result.values['customer.address']
 
             var _companyObj = getCustomerRecord(_customer_vatregnumber)
-            var _email = ''
+            /**
+			var _email = ''
             if (typeof _companyObj !== 'undefined') {
               _email = _companyObj.email
             }
+			*/
+			var _email = _result.values['customer.email']
+			
             _entity_text = _result.values.custbody_gw_gui_title
             _buyer_address = _result.values.custbody_gw_gui_address
 
@@ -2951,11 +2955,14 @@ define([
             var _companyObj = getCustomerRecord(_customer_vatregnumber)
             //_buyer_address  = _companyObj.address;
             //_entity_text    = _companyObj.companyname;
-            var _email = ''
+            /**
+		    var _email = ''
             if (typeof _companyObj !== 'undefined') {
               _email = _companyObj.email
             }
-
+            */
+            var _email = _result.values['customer.email']
+			
             _entity_text = _result.values.custbody_gw_gui_title
             _buyer_address = _result.values.custbody_gw_gui_address
             //////////////////////////////////////////////////////////////////////////////////////////////////

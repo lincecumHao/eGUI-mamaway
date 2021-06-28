@@ -1170,6 +1170,7 @@ define([
     //地址
     var _companyObj
     var _customer_ban = ''
+	var _customer_email = ''
     var _company_name = ''
     var _company_address = ''
 
@@ -1290,6 +1291,8 @@ define([
         _company_name = _result.values.custbody_gw_gui_title
         _company_address = _result.values.custbody_gw_gui_address
       }
+	  //客戶Email
+	  _customer_email  = _result.values['customer.email']
 
       var _accountValue = '' //54
       var _accountText = '' //4000 Sales
@@ -1698,10 +1701,12 @@ define([
         id: 'custpage_buyer_address',
       })
       _custpage_buyer_address.defaultValue = _company_address
-
+      /**
       if (typeof _companyObj !== 'undefined') {
         _custpage_buyer_email.defaultValue = _companyObj.email
       }
+	  */
+	  _custpage_buyer_email.defaultValue = _customer_email	  
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////
     //控制通關註記選項
@@ -2167,6 +2172,7 @@ define([
     //公司地址
     var _companyObj
     var _customer_ban = ''
+	var _customer_email = ''
     var _company_name = ''
     var _company_address = ''
 
@@ -2288,6 +2294,8 @@ define([
           //_entityValue     = stringutility.convertToInt(_companyObj.internalid);
         }
       }
+	  //客戶Email
+      _customer_email  = _result.values['customer.email']
 
       var _accountValue = '' //54
       var _accountText = '' //4000 Sales
@@ -2596,9 +2604,13 @@ define([
       var _custpage_buyer_email = form.getField({
         id: 'custpage_buyer_email',
       })
+	  /**
       if (typeof _companyObj !== 'undefined') {
         _custpage_buyer_email.defaultValue = _companyObj.email
       }
+	  */
+	  _custpage_buyer_email.defaultValue = _customer_email
+	  
       var _custpage_buyer_address = form.getField({
         id: 'custpage_buyer_address',
       })
