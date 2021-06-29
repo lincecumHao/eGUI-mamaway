@@ -8,7 +8,7 @@
     <bodysale>T</bodysale>
     <bodyvendorpayment>T</bodyvendorpayment>
     <checkspelling>F</checkspelling>
-    <defaultchecked>F</defaultchecked>
+    <defaultchecked>T</defaultchecked>
     <defaultselection></defaultselection>
     <defaultvalue></defaultvalue>
     <description></description>
