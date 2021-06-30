@@ -49,6 +49,10 @@ define([
     return result.toString()
   }
 
+  function shouldIssueNewGui(eguiObj) {
+    return !eguiObj.documentNumber
+  }
+
   class EGuiService {
     constructor(invObj) {
       if (invObj) {
@@ -62,16 +66,18 @@ define([
     }
 
     issueEgui() {
-      return this.createEgui()
+      var voucherId = this.createEgui()
+      if (voucherId) {
+        gwInvoiceService.eguiIssued(this.egui, voucherId)
+      } else {
+        gwInvoiceService.eguiIssueFailed(this.egui)
+      }
+      return voucherId
     }
 
-    createEgui() {
-      var eguiObj = JSON.parse(JSON.stringify(this.egui))
-      eguiObj['migType'] = gwMigTypeDao.getIssueEguiMigType(
-        gwMigTypeDao.businessTranTypeEnum.B2C
-      )
-      if (!eguiObj.documentNumber) {
-        eguiObj.documentNumber = gwEguiBookService.getNewEGuiNumber(
+    getNewGuiNumber(eguiObj) {
+      return {
+        newEguiNumber: gwEguiBookService.getNewEGuiNumber(
           eguiObj.guiType.value,
           eguiObj.sellerTaxId,
           '',
@@ -79,14 +85,24 @@ define([
           eguiObj.documentPeriod,
           eguiObj.documentDate,
           1
-        )[0]
-        eguiObj.randomNumber = getRandomNumber()
+        )[0],
+        newRandomNumber: getRandomNumber()
+      }
+    }
+
+    createEgui() {
+      var eguiObj = JSON.parse(JSON.stringify(this.egui))
+      eguiObj['migType'] = gwMigTypeDao.getIssueEguiMigType(
+        gwMigTypeDao.businessTranTypeEnum.B2C
+      )
+      if (shouldIssueNewGui(eguiObj)) {
+        var newNumbers = this.getNewGuiNumber(eguiObj)
+        eguiObj.documentNumber = newNumbers.newEguiNumber
+        eguiObj.randomNumber = newNumbers.newRandomNumber
       }
       if (!eguiObj.transactions) eguiObj.transactions = [eguiObj.internalId]
       this.egui = eguiObj
-      var voucherId = gwVoucherDao.saveEguiToRecord(this.egui)
-      gwInvoiceService.eguiIssued(eguiObj, voucherId)
-      return voucherId
+      return gwVoucherDao.saveEguiToRecord(this.egui)
     }
 
     uploadEgui(voucherId) {
@@ -99,12 +115,11 @@ define([
       log.debug({ title: 'result', details: result })
       gwVoucherDao.eguiUploaded(voucherId, result)
       if (result.code === 200) {
+        log.debug({ title: 'update xml log' })
         gwUploadLogDao.eguiUploaded(eguiObj, voucherId, xmlString)
       }
       return result
     }
-
-    getFromRecord(recordId) {}
   }
 
   return EGuiService

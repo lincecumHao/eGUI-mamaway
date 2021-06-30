@@ -104,7 +104,6 @@ define(['../../library/ramda.min'], function (ramda) {
       sourceField: '',
       outputField: 'nsTotal'
     },
-
     department: {
       id: 'department',
       sourceField: '',
@@ -458,7 +457,6 @@ define(['../../library/ramda.min'], function (ramda) {
       sourceField: '',
       outputField: 'nsTotal'
     },
-
     department: {
       id: 'department',
       sourceField: '',

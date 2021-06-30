@@ -25,6 +25,7 @@ define(['N/record', '../../library/gw_lib_search'], function (
     'custrecord_gw_tax_type_tax_code'
   ]
   var columnMap = {
+    name: 'name',
     custrecord_gw_ap_doc_tax_type_value: 'value',
     custrecord_gw_ap_doc_tax_type_text: 'text',
     custrecord_gw_ap_doc_tax_type_csv_value: 'csvValue',

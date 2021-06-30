@@ -107,7 +107,6 @@ define([
     context.write({
       key: voucherId
     })
-    // TODO
   }
 
   /**

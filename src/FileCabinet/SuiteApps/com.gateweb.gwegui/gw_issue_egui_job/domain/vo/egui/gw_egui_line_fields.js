@@ -16,127 +16,129 @@ define(['../../../../library/ramda.min'], function (ramda) {
     itemId: {
       id: 'itemId',
       sourceField: 'item.value',
-      outputField: '',
+      outputField: ''
     },
     itemName: {
       id: 'itemName',
       sourceField: 'item.text',
-      outputField: '',
+      outputField: ''
     },
     itemDescription: {
       id: 'itemDescription',
       sourceField: 'memo',
-      outputField: '',
+      outputField: ''
     },
     unitPrice: {
       id: 'unitPrice',
       sourceField: 'rate',
-      outputField: '',
+      outputField: ''
     },
-    unitPriceForeign: {
-      id: 'unitPriceForeign',
-      sourceField: 'fxrate',
-      outputField: '',
+    unitPriceIncludeTax: {
+      id: 'unitPriceIncludeTax',
+      sourceField: 'custcol_gw_item_unit_amt_inc_tax',
+      outputField: ''
     },
     quantity: {
       id: 'quantity',
       sourceField: 'quantity',
-      outputField: '',
+      outputField: ''
     },
     unit: {
       id: 'unit',
       sourceField: 'unitabbreviation',
-      outputField: '',
+      outputField: ''
     },
     nsAmt: {
       id: 'nsAmt',
       sourceField: 'netamountnotax',
-      outputField: '',
+      outputField: ''
     },
     nsTaxAmt: {
       id: 'nsTaxAmt',
       sourceField: 'taxtotal',
-      outputField: '',
+      outputField: ''
     },
     nsTotalAmt: {
       id: 'nsTotalAmt',
       sourceField: 'total',
-      outputField: '',
+      outputField: ''
     },
     nsLineSeq: {
       id: 'nsLineSeq',
       sourceField: 'linesequencenumber',
-      outputField: '',
+      outputField: ''
     },
     nsLine: {
       id: 'nsLine',
       sourceField: 'line',
-      outputField: '',
+      outputField: ''
     },
     itemType: {
       id: 'itemType',
       sourceField: 'itemtype',
-      outputField: '',
+      outputField: ''
     },
     itemMemo: {
       id: 'itemMemo',
       sourceField: 'custcol_gw_item_memo',
-      outputField: '',
+      outputField: ''
     },
     itemRateAfterTax: {
       id: 'itemRateAfterTax',
       sourceField: 'custcol_gw_item_unit_amt_inc_tax',
-      outputField: '',
+      outputField: ''
     },
     taxCode: {
       id: 'taxCode',
       sourceField: 'taxcode',
-      outputField: '',
+      outputField: ''
+    },
+    taxRate: {
+      id: 'taxRate',
+      sourceField: 'rate.taxItem',
+      outputField: ''
     },
     buyerTaxId: {
       id: 'buyerTaxId',
       sourceField: 'custbody_gw_tax_id_number',
-      outputField: '',
+      outputField: ''
     },
     tranType: {
       id: 'tranType',
       sourceField: 'type.text',
-      outputField: '',
+      outputField: ''
     },
     tranid: {
       id: 'tranid',
       sourceField: 'tranid',
-      outputField: '',
+      outputField: ''
     },
     tranNum: {
       id: 'tranNum',
       sourceField: 'transactionnumber',
-      outputField: '',
+      outputField: ''
     },
     tranInternalId: {
       id: 'tranInternalId',
       sourceField: 'internalId.value',
-      outputField: '',
+      outputField: ''
     },
     itemDiscountAmt: {
       id: 'itemDiscountAmt',
       sourceField: '',
-      outputField: '',
+      outputField: ''
     },
     itemDiscountCount: {
       id: 'itemDiscountCount',
       sourceField: '',
-      outputField: '',
-    },
+      outputField: ''
+    }
   }
 
   var inputMapping = (fieldConfig) => {
     return ramda.reduce(
       function (result, fieldId) {
-        var fieldObj = fieldConfig[fieldId]
-        if (fieldObj.sourceField) {
-          result[fieldId] = fieldObj.sourceField
-        }
+        result[fieldId] = fieldConfig[fieldId].sourceField
         return result
       },
       {},
@@ -147,10 +149,7 @@ define(['../../../../library/ramda.min'], function (ramda) {
   var outputMapping = (fieldConfig) => {
     return ramda.reduce(
       function (result, fieldId) {
-        var fieldObj = fieldConfig[fieldId]
-        if (fieldObj.outputField) {
-          result[fieldId] = fieldObj.outputField
-        }
+        result[fieldId] = fieldConfig[fieldId].outputField
         return result
       },
       {},

@@ -32,11 +32,12 @@ define([
     searchFilters.push(['custbody_gw_is_issue_egui', 'is', 'T'])
     searchFilters.push('AND')
 
-    searchFilters.push(getIssuedAndNotImportedEguiSubFilter())
+    searchFilters.push(getIssueSubFilter())
     var searchColumns = JSON.parse(
       JSON.stringify(transSearchFields.allFieldIds)
     )
     searchColumns.push('taxItem.rate')
+    searchColumns.push('customer.email')
     return search.create({
       type: search.Type.INVOICE,
       filters: searchFilters,
@@ -44,18 +45,26 @@ define([
     })
   }
 
-  function getNewIssueSubfilter() {
+  function getIssueSubFilter() {
+    var subFilters = []
+    subFilters.push(getNewIssueSubFilter())
+    subFilters.push('OR')
+    subFilters.push(getIssuedAndNotImportedEguiSubFilter())
+    return subFilters
+  }
+
+  function getNewIssueSubFilter() {
     var subFilters = []
     var unissuedStatus = gwEvidenceIssueStatusDao.getUnIssuedStatus()
     subFilters.push(['custbody_gw_lock_transaction', 'is', 'F'])
     subFilters.push('AND')
     subFilters.push([
       'custbody_gw_evidence_issue_status',
-      'is',
+      'anyof',
+      '@NONE@',
       unissuedStatus.id
     ])
-    subFilters.push('AND')
-    subFilters.push(['custbody_gw_gui_not_upload', 'is', 'F'])
+
     return subFilters
   }
 
@@ -69,8 +78,6 @@ define([
       'is',
       issuedAndNotImportedStatus.id
     ])
-    subFilters.push('AND')
-    subFilters.push(['custbody_gw_gui_not_upload', 'is', 'T'])
     return subFilters
   }
 
@@ -135,20 +142,24 @@ define([
     })
   }
 
-  function eguiIssued(eguiObj, voucherId) {
+  function shouldUpdateInvoiceValue(value) {
+    return (
+      value !== gwEvidenceIssueStatusDao.getIssuedAndNotTransformedStatus().id
+    )
+    return false
+  }
+
+  function eguiIssued(eguiObj) {
     log.debug({ title: 'eguiIssued eguiObj', details: eguiObj })
 
     var updateValues = {}
-    if (
-      eguiObj.gwIssueStatus.value ===
-      gwEvidenceIssueStatusDao.getUnIssuedStatus().id
-    ) {
+    if (shouldUpdateInvoiceValue(eguiObj.gwIssueStatus.value)) {
       updateValues[transSearchFields.fields.custbody_gw_gui_num_start.id] =
         eguiObj.documentNumber
       updateValues[transSearchFields.fields.custbody_gw_gui_num_end.id] =
         eguiObj.documentNumber
-    } else {
     }
+
     updateValues[
       transSearchFields.fields.custbody_gw_evidence_issue_status.id
     ] = gwEvidenceIssueStatusDao.getGwIssuedStatus().id
@@ -162,13 +173,15 @@ define([
 
   function eguiIssueFailed(eguiObj, voucherId) {
     log.debug({ title: 'eguiIssueFailed eguiObj', details: eguiObj })
-    // var updateValues = {}
-    // updateValues[transSearchFields.fields] = false
-    // record.submitFields({
-    //   type: record.Type.INVOICE,
-    //   id: invId,
-    //   values: updateValues,
-    // })
+    var updateValues = {}
+    updateValues[
+      transSearchFields.fields.custbody_gw_lock_transaction.id
+    ] = false
+    record.submitFields({
+      type: record.Type.INVOICE,
+      id: invId,
+      values: updateValues
+    })
   }
 
   exports.getInvoiceToIssueEguiSearch = getInvoiceToIssueEguiSearch

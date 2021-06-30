@@ -37,26 +37,29 @@ define([
    * @NModuleScope Public
 
    */
-  let exports = {}
 
-  // Fill in values in body if field is missing
+  //region Fill in values in body if field is missing
   function updateBodyValues(eguiMain) {
     var configuration = gwEguiConfigDao.getConfig()
     var eguiMainObj = JSON.parse(JSON.stringify(eguiMain))
-    var seller = gwBusinessEntityDao.getByTaxId(eguiMainObj.sellerTaxId)
+    var seller = eguiMainObj.sellerTaxId
+      ? gwBusinessEntityDao.getByTaxId(eguiMainObj.sellerTaxId)
+      : gwBusinessEntityDao.getBySubsidiary(eguiMainObj.subsidiaryId)
     eguiMainObj = updateSeller(eguiMainObj, seller)
     eguiMainObj = updateCarrierAndDonation(eguiMainObj)
     eguiMainObj = updateMiscFields(eguiMainObj, configuration)
     eguiMainObj = updateGuiNumber(eguiMainObj)
-    log.debug({ title: 'eguiMainObj', details: eguiMainObj })
     return eguiMainObj
   }
 
   function updateSeller(eguiMainObj, seller) {
     var eguiMain = JSON.parse(JSON.stringify(eguiMainObj))
-    eguiMain.sellerName = 'TestName'
-    eguiMain.sellerAddress = 'TestAddress'
-    eguiMain.guiType = gwGuiTypeDao.getRegularGuiType()
+    eguiMain.sellerTaxId = seller.taxId
+    eguiMain.sellerName = seller.title
+    eguiMain.sellerAddress = `${seller.city.text}${seller.address}`
+    eguiMain.guiType = seller.isNonValueAdded
+      ? gwGuiTypeDao.getSpecialGuiType()
+      : gwGuiTypeDao.getRegularGuiType()
     return eguiMain
   }
 
@@ -116,6 +119,7 @@ define([
     if (issueEgui && !uploadEgui)
       return mainFields.voucherStatus.VOUCHER_SUCCESS
   }
+  //endregion
 
   function transformLines(tranLines) {
     return ramda.map((line) => {
@@ -136,54 +140,99 @@ define([
     }, eguiLines)
   }
 
-  //calculate line tax amount and total amount
   function updateLine(eguiLine) {
     var line = JSON.parse(JSON.stringify(eguiLine))
-    var taxRate = parseFloat(
+    line = gwRecalculateLineTax(line)
+    line.nsAmt = parseFloat(line.nsAmt)
+    line.nsTaxAmt = line.nsTaxAmt ? parseFloat(line.nsTaxAmt) : 0
+    line.nsTotalAmt = line.nsTotalAmt ? parseFloat(line.nsTotalAmt) : 0
+    var lineTaxRate = parseFloat(
       parseInt(line['taxRate'].replace('%', ''), 10) / 100
     )
-    line['taxRate'] = taxRate
-    line['taxType'] = gwTaxTypeDao.getTaxTypeByTaxCode(line['taxCode'].value)
-
-    var salesAmt = parseFloat(line['nsAmt'])
-    var taxAmt = parseFloat(salesAmt * taxRate)
-    var totalAmt = salesAmt + taxAmt
-    line['calculatedSalesAmt'] = salesAmt
-    line['calculatedTaxAmt'] = taxAmt
-    line['calculatedTotalAmt'] = totalAmt
-    line['salesAmt'] = isCalculateByNs() ? parseFloat(line['nsAmt']) : salesAmt
-    line['taxAmt'] = isCalculateByNs() ? parseFloat(line['nsTaxAmt']) : taxAmt
-    line['totalAmt'] = isCalculateByNs()
-      ? parseFloat(line['nsTotalAmt'])
-      : totalAmt
-
+    line.nsTaxExemptedSalesAmt = 0
+    line.nsTaxZeroSalesAmt = 0
+    if (lineTaxRate === 0) {
+      line.nsTaxZeroSalesAmt = line.nsAmt
+      line.nsAmt = 0
+    }
+    line.salesAmt = isCalculateByNs() ? line.nsAmt : line.gwSalesAmt
+    line.taxAmt = isCalculateByNs() ? line.nsTaxAmt : line.gwTaxAmt
+    line.totalAmt = isCalculateByNs() ? line.nsTotalAmt : line.gwTotalAmt
+    line.taxZeroSalesAmt = isCalculateByNs()
+      ? line.nsTaxZeroSalesAmt
+      : line.gwTaxZeroSalesAmt
+    line.taxExemptedSalesAmt = isCalculateByNs()
+      ? line.nsTaxExemptedSalesAmt
+      : line.gwTaxExemptedSalesAmt
     return line
   }
 
-  // Sum all lines
-  function calculateLines(eguiLines) {
-    var summary = {
-      lineSumSalesAmt: 0,
-      lineSumTaxExemptedSalesAmt: 0,
-      lineSumTaxZeroSalesAmt: 0,
-      lineSumTaxAmtAmt: 0,
-      lineSumTotalAmt: 0,
-      taxType: [],
-      taxRate: [],
-      transactions: []
+  function gwRecalculateLineTax(line) {
+    var eguiLine = JSON.parse(JSON.stringify(line))
+    var lineTaxRate = parseFloat(
+      parseInt(eguiLine['taxRate'].replace('%', ''), 10) / 100
+    )
+    var lineTaxType = gwTaxTypeDao.getTaxTypeByTaxCode(line.taxCode.value)
+
+    var gwSalesAmt = parseFloat(eguiLine.nsAmt)
+    var gwTaxZeroSalesAmt = 0
+    var gwTaxExemptedSalesAmt = 0
+    if (lineTaxRate === 0) {
+      gwSalesAmt = 0
+      gwTaxZeroSalesAmt = parseFloat(eguiLine.nsAmt)
     }
-    var taxTypeCalculateRoute = {
-      1: 'lineSumSalesAmt',
-      2: 'lineSumTaxExemptedSalesAmt',
-      3: 'lineSumTaxZeroSalesAmt'
+    var gwTaxAmt = gwSalesAmt * lineTaxRate
+    var gwTotalAmt = gwSalesAmt + gwTaxAmt
+    eguiLine.taxType = lineTaxType
+    eguiLine.gwSalesAmt = gwSalesAmt
+    eguiLine.gwTaxExemptedSalesAmt = gwTaxExemptedSalesAmt
+    eguiLine.gwTaxZeroSalesAmt = gwTaxZeroSalesAmt
+    eguiLine.gwTaxAmt = gwTaxAmt
+    eguiLine.gwTotalAmt = gwTotalAmt
+    return eguiLine
+  }
+
+  function summaryLines(eguiLines) {
+    var sumAmountFields = {
+      sumNsSalesAmt: 'nsAmt',
+      sumNsTaxExemptedSalesAmt: 'nsTaxExemptedSalesAmt',
+      sumNsTaxZeroSalesAmt: 'nsTaxZeroSalesAmt',
+      sumNsTaxAmt: 'nsTaxAmt',
+      sumNsTotalAmt: 'nsTotalAmt',
+      sumGwSalesAmt: 'gwSalesAmt',
+      sumGwTaxExemptedSalesAmt: 'gwTaxExemptedSalesAmt',
+      sumGwTaxZeroSalesAmt: 'gwTaxZeroSalesAmt',
+      sumGwTaxAmt: 'gwTaxAmt',
+      sumGwTotalAmt: 'gwTotalAmt',
+      sumSalesAmt: 'salesAmt',
+      sumTaxExemptedSalesAmt: 'taxExemptedSalesAmt',
+      sumTaxZeroSalesAmt: 'taxZeroSalesAmt',
+      sumTaxAmt: 'taxAmt',
+      sumTotalAmt: 'totalAmt'
     }
-    var summaryResult = ramda.reduce(
+
+    var summaryInitObj = ramda.reduce(
+      (summary, amountField) => {
+        summary[amountField] = 0
+        return summary
+      },
+      {},
+      ramda.keys(sumAmountFields)
+    )
+    summaryInitObj['taxType'] = []
+    summaryInitObj['taxRate'] = []
+    summaryInitObj['transactions'] = []
+    var summary = ramda.reduce(
       (result, line) => {
         log.debug({ title: 'summaryResult line', details: line })
-        var summaryFieldId = taxTypeCalculateRoute[line['taxType'].value]
-        result[summaryFieldId] += parseFloat(line['salesAmt'])
-        result['lineSumTaxAmtAmt'] += parseFloat(line['taxAmt'])
-        result['lineSumTotalAmt'] += parseFloat(line['totalAmt'])
+        result = ramda.reduce(
+          (sumObj, sumField) => {
+            result[sumField] += line[sumAmountFields[sumField]]
+            return result
+          },
+          result,
+          ramda.keys(sumAmountFields)
+        )
         if (result['taxType'].indexOf(parseInt(line['taxType'].value)) === -1) {
           result['taxType'].push(parseInt(line['taxType'].value, 10))
         }
@@ -196,84 +245,97 @@ define([
         }
         return result
       },
-      summary,
+      summaryInitObj,
       eguiLines
     )
-    // Update and validate tax type
-    if (summaryResult.taxType.length > 2) throw 'Incorrect Tax Type'
-    if (summaryResult.taxType.length === 1)
-      summaryResult['taxType'] = gwTaxTypeDao.getByValue(
-        summaryResult['taxType'][0]
-      )
-    else if (
-      summaryResult.taxType.length === 2 &&
-      gwTaxTypeDao.isMixedTaxType(summaryResult.taxType)
-    ) {
-      summaryResult.taxType = gwTaxTypeDao.getByValue(9)
-    }
+    var taxType = getSummaryTaxType(summary.taxType)
+    summary.taxType = taxType
+    summary.taxRate = getSummaryTaxRate(summary.taxRate, taxType)
+    return summary
+  }
 
-    // Update and validate tax rate
-    if (summaryResult.taxRate.length > 2) throw 'taxRate invalid'
+  function validateSummaryTaxType(lineSumTaxType) {
+    var result = {
+      isValid: true,
+      errorCode: '',
+      errorMessage: ''
+    }
+    if (lineSumTaxType.length > 2) {
+      result.isValid = false
+      result.errorCode = 'INCORRECT_TAX_TYPE'
+      result.errorMessage = 'Incorrect Tax Type'
+    }
     if (
-      summaryResult.taxRate.length === 2 &&
-      summaryResult.taxType.value !== '9'
-    )
-      throw 'not mix tax can only have 1 tax rate'
-    if (
-      summaryResult.taxRate.length === 2 &&
-      summaryResult.taxType.value === '9'
+      lineSumTaxType.length === 2 &&
+      !gwTaxTypeDao.isMixedTaxType(lineSumTaxType)
     ) {
-      if (
-        !(
-          summaryResult.taxRate.indexOf(0) > -1 &&
-          summaryResult.taxRate.indexOf(0.05) > -1
-        )
-      ) {
-        throw 'mix tax rate can only have 0 and 0.05'
+      result.isValid = false
+      result.errorCode = 'INCORRECT_MIX_TAX_TYPE'
+      result.errorMessage = 'Incorrect Mix Tax Type'
+    }
+    if (lineSumTaxType.length === 0 || !lineSumTaxType) {
+      result.isValid = false
+      result.errorCode = 'MISSING_TAX_TYPE'
+      result.errorMessage = 'Missing Tax Type'
+    }
+    return result
+  }
+
+  function validateSummaryTaxRate(lineSummaryTaxRate, taxType) {
+    var result = {
+      isValid: true,
+      errorCode: '',
+      errorMessage: ''
+    }
+    if (lineSummaryTaxRate.length > 2) {
+      result.isValid = false
+      result.errorCode = 'INVALID_TAX_RATE_COUNT'
+      result.errorMessage = 'Tax Rate can only contains up to 2 different rates'
+    }
+    if (lineSummaryTaxRate.length === 2) {
+      if (taxType.value === 9) {
+        // if special tax type are allowed, it can only contains one tax rate
+        result.isValid = false
+        result.errorCode = 'INVALID_TAX_RATE'
+        result.errorMessage =
+          'TaxRate for Special Tax Type can only contain one rate'
       } else {
-        summaryResult.taxRate = 0.05
+        // Only 0 and 0.5 are allowed
+        if (
+          lineSummaryTaxRate.indexOf(0) > -1 &&
+          lineSummaryTaxRate.indexOf(5) > -1
+        ) {
+          result.isValid = false
+          result.errorCode = 'INVALID_TAX_RATE_COMBINATION'
+          result.errorMessage =
+            'TaxRate for Mixed Tax Type can only contain 0% and 5%'
+        }
       }
     }
 
-    if (summaryResult.taxRate.length === 1)
-      summaryResult.taxRate = summaryResult.taxRate[0]
-    // log.debug({ title: 'summaryResult', details: summaryResult })
-    return summaryResult
+    return result
   }
 
-  function updateLineSummaryToMain(eguiMain, lineSummary) {
-    var eguiMainObj = ramda.mergeRight(
-      JSON.parse(JSON.stringify(eguiMain)),
-      lineSummary
-    )
-    var nsSalesAmt = parseFloat(eguiMainObj['nsSalesAmt'])
-    var nsTaxAmt = parseFloat(eguiMainObj['nsTaxAmt'])
-    var nsTotalAmt = parseFloat(eguiMainObj['nsTotalAmt'])
-    var lineSumSalesAmt = parseFloat(eguiMainObj['lineSumSalesAmt'])
-    var taxExemptedSalesAmt = parseFloat(
-      eguiMainObj['lineSumTaxExemptedSalesAmt']
-    )
-    var zeroTaxSalesAmt = parseFloat(eguiMainObj['lineSumTaxZeroSalesAmt'])
-    var salesAmt = nsSalesAmt - taxExemptedSalesAmt - zeroTaxSalesAmt
-    var taxAmt = parseFloat(eguiMainObj['taxRate']) * salesAmt
-    var totalAmt = salesAmt + taxAmt + taxExemptedSalesAmt + zeroTaxSalesAmt
-    eguiMainObj['calculatedSalesAmt'] = salesAmt
-    eguiMainObj['calculatedTaxExemptedSalesAmt'] = taxExemptedSalesAmt
-    eguiMainObj['calculatedZeroTaxSalesAmt'] = zeroTaxSalesAmt
-    eguiMainObj['calculatedTaxAmt'] = taxAmt
-    eguiMainObj['calculatedTotalAmt'] = totalAmt
+  function getSummaryTaxRate(lineSummaryTaxRate, taxType) {
+    var validateResult = validateSummaryTaxRate(lineSummaryTaxRate, taxType)
+    if (validateResult.isValid) {
+      var taxRate = lineSummaryTaxRate[0]
+      if (lineSummaryTaxRate.length === 2) {
+        taxRate = Math.max(lineSummaryTaxRate[0], lineSummaryTaxRate[1])
+      }
+      return taxRate
+    }
+    throw validateResult
+  }
 
-    eguiMainObj['salesAmt'] = Math.round(salesAmt)
-    eguiMainObj['taxExemptedSalesAmt'] = Math.round(taxExemptedSalesAmt)
-    eguiMainObj['zeroTaxSalesAmt'] = Math.round(zeroTaxSalesAmt)
-    eguiMainObj['taxAmt'] = isCalculateByNs()
-      ? Math.round(nsTaxAmt)
-      : Math.round(taxAmt)
-    eguiMainObj['totalAmt'] = isCalculateByNs()
-      ? Math.round(nsTotalAmt)
-      : Math.round(totalAmt)
-    eguiMainObj['transactions'] = ramda.uniq(lineSummary['transactions'])
-    return eguiMainObj
+  function getSummaryTaxType(lineSummaryTaxType) {
+    var validateResult = validateSummaryTaxType(lineSummaryTaxType)
+    if (validateResult.isValid) {
+      var taxType = gwTaxTypeDao.getByValue(lineSummaryTaxType[0])
+      if (lineSummaryTaxType.length === 2) taxType = gwTaxTypeDao.getByValue(9)
+      return taxType
+    }
+    throw validateResult
   }
 
   function isCalculateByNs() {
@@ -284,6 +346,32 @@ define([
     )
   }
 
+  function updateSummaryToMain(eguiMain, eguiLineSummary) {
+    log.debug({ title: 'updateSummaryToMain eguiMain', details: eguiMain })
+    log.debug({
+      title: 'updateSummaryToMain eguiLineSummary',
+      details: eguiLineSummary
+    })
+    var eguiMainObj = JSON.parse(JSON.stringify(eguiMain))
+    eguiMainObj['salesAmt'] = Math.round(eguiLineSummary.sumSalesAmt)
+    eguiMainObj['taxExemptedSalesAmt'] = Math.round(
+      eguiLineSummary.sumTaxExemptedSalesAmt
+    )
+    eguiMainObj['zeroTaxSalesAmt'] = Math.round(
+      eguiLineSummary.sumTaxZeroSalesAmt
+    )
+    eguiMainObj['taxAmt'] = Math.round(eguiLineSummary.sumTaxAmt)
+    eguiMainObj['totalAmt'] = Math.round(eguiLineSummary.sumTotalAmt)
+    eguiMainObj['transactions'] = ramda.uniq(eguiLineSummary['transactions'])
+    eguiMainObj.taxType = eguiLineSummary.taxType
+    eguiMainObj.taxRate = parseFloat(eguiLineSummary.taxRate / 100)
+    log.debug({
+      title: 'updateSummaryToMain eguiMainObj',
+      details: eguiMainObj
+    })
+    return eguiMainObj
+  }
+
   class InvoiceToEguiMapper {
     constructor(invObj) {
       this.invoice = invObj
@@ -291,26 +379,16 @@ define([
 
     transform() {
       var eguiMain = gwObjectMappingUtil.mapFrom(this.invoice, mainFields)
-      log.debug({
-        title: 'InvoiceToGuiMapper transform eguiMain',
-        details: eguiMain
-      })
+      eguiMain['buyerEmail'] = this.invoice['email.customer']
       var lines = transformLines(this.invoice.lines)
       var taxLines = transformLines(this.invoice.taxLines)
       eguiMain = updateBodyValues(eguiMain)
       lines = updateLines(lines)
-      this.egui = this.calculateLinesAndMergeToMain(eguiMain, lines)
-
+      var lineSummary = summaryLines(lines)
+      eguiMain = updateSummaryToMain(eguiMain, lineSummary)
+      eguiMain.lines = lines
+      this.egui = eguiMain
       return this.egui
-    }
-
-    calculateLinesAndMergeToMain(eguiMain, eguiLines) {
-      var eguiMainObj = JSON.parse(JSON.stringify(eguiMain))
-      var eguiLinesObj = JSON.parse(JSON.stringify(eguiLines))
-      var lineSummary = calculateLines(eguiLinesObj)
-      eguiMainObj = updateLineSummaryToMain(eguiMainObj, lineSummary)
-      eguiMainObj.lines = eguiLinesObj
-      return eguiMainObj
     }
   }
 

@@ -142,5 +142,11 @@
       <isinactive>F</isinactive>
       <name>一卡通</name>
     </instance>
+    <instance scriptid="val_gw_carrier_type_ej0110">
+      <custrecord_gw_ct_text>關網會員載具</custrecord_gw_ct_text>
+      <custrecord_gw_ct_value>EJ0110</custrecord_gw_ct_value>
+      <isinactive>F</isinactive>
+      <name>關網會員載具</name>
+    </instance>
   </instances>
 </customrecordtype>

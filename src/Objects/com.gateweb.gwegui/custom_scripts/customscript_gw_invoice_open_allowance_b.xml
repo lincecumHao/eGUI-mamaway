@@ -13,9 +13,10 @@
             <alllocalizationcontexts>T</alllocalizationcontexts>
             <allroles>T</allroles>
             <audslctrole></audslctrole>
-            <eventtype></eventtype>
+            <eventtype>VIEW</eventtype>
+            <executioncontext>USERINTERFACE</executioncontext>
             <isdeployed>T</isdeployed>
-            <loglevel>ERROR</loglevel>
+            <loglevel>DEBUG</loglevel>
             <recordtype>CREDITMEMO</recordtype>
             <runasrole></runasrole>
             <status>RELEASED</status>
