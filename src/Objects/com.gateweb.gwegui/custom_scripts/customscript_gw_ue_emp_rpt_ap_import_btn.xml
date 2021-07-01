@@ -13,7 +13,8 @@
             <alllocalizationcontexts>T</alllocalizationcontexts>
             <allroles>T</allroles>
             <audslctrole></audslctrole>
-            <eventtype></eventtype>
+            <eventtype>VIEW</eventtype>
+            <executioncontext>USERINTERFACE</executioncontext>
             <isdeployed>T</isdeployed>
             <loglevel>DEBUG</loglevel>
             <recordtype>EXPENSEREPORT</recordtype>

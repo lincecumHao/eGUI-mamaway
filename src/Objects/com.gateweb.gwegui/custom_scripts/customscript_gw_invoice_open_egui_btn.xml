@@ -12,7 +12,8 @@
             <allemployees>F</allemployees>
             <alllocalizationcontexts>T</alllocalizationcontexts>
             <audslctrole></audslctrole>
-            <eventtype></eventtype>
+            <eventtype>VIEW</eventtype>
+            <executioncontext>USERINTERFACE</executioncontext>
             <isdeployed>T</isdeployed>
             <loglevel>ERROR</loglevel>
             <recordtype>INVOICE</recordtype>
