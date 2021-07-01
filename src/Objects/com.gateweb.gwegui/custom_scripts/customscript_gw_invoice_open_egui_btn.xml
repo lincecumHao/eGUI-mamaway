@@ -15,9 +15,9 @@
             <eventtype>VIEW</eventtype>
             <executioncontext>USERINTERFACE</executioncontext>
             <isdeployed>T</isdeployed>
-            <loglevel>ERROR</loglevel>
+            <loglevel>DEBUG</loglevel>
             <recordtype>INVOICE</recordtype>
-            <runasrole></runasrole>
+            <runasrole>ADMINISTRATOR</runasrole>
             <status>RELEASED</status>
         </scriptdeployment>
     </scriptdeployments>

@@ -5,7 +5,10 @@
 
 <preference type="OVERWRITING">
     <scriptdeployments defaultAction="PRESERVE">
-        <!--        <scriptdeployment scriptid="customscript_myscript.customdeploy_myscriptdeployment1" action="PRESERVE"/> -->
-        <!--        <scriptdeployment scriptid="customscript_myscript.customdeploy_myscriptdeployment2" action="PRESERVE"/> -->
+        <scriptdeployment scriptid="customscript_gw_cash_sale_open_egui_btn.customdeploy_gw_cash_sale_open_egui_btn" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_invoice_open_allowance_b.customdeploy_gw_invoice_open_allowance_b" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_invoice_open_egui_btn.customdeploy_gw_invoice_open_egui_btn" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_cust_depo_open_egui_btn.customdeploy_gw_cust_depo_open_egui_btn" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_ue_emp_rpt_ap_import_btn.customdeploy_gw_ue_emp_rpt_ap_import_btn" action="OVERWRITE"/>
     </scriptdeployments>
 </preference>
