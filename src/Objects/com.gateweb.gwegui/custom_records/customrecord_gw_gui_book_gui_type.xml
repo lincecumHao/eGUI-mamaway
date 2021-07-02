@@ -1,5 +1,5 @@
 <customrecordtype scriptid="customrecord_gw_gui_book_gui_type">
-  <accesstype>CUSTRECORDENTRYPERM</accesstype>
+  <accesstype>NONENEEDED</accesstype>
   <allowattachments>T</allowattachments>
   <allowinlinedeleting>T</allowinlinedeleting>
   <allowinlinedetaching>T</allowinlinedetaching>

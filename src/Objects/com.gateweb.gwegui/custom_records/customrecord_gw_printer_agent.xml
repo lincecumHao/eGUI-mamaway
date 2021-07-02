@@ -1,5 +1,5 @@
 <customrecordtype scriptid="customrecord_gw_printer_agent">
-    <accesstype>CUSTRECORDENTRYPERM</accesstype>
+    <accesstype>NONENEEDED</accesstype>
     <allowattachments>T</allowattachments>
     <allowinlinedeleting>F</allowinlinedeleting>
     <allowinlinedetaching>T</allowinlinedetaching>

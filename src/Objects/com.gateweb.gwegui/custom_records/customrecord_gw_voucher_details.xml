@@ -1,5 +1,5 @@
 <customrecordtype scriptid="customrecord_gw_voucher_details">
-    <accesstype>CUSTRECORDENTRYPERM</accesstype>
+    <accesstype>NONENEEDED</accesstype>
     <allowattachments>T</allowattachments>
     <allowinlinedeleting>F</allowinlinedeleting>
     <allowinlinedetaching>T</allowinlinedetaching>
