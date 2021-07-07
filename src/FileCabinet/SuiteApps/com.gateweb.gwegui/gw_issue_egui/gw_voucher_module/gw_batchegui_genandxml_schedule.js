@@ -542,6 +542,9 @@ define([
             }
 
             var _amount = stringutility.convertToFloat(_result.values.amount)
+			//20210707 walter modify
+			if (stringutility.convertToFloat(_result.values.quantity) <0) _amount = -1*_amount
+			
             var _linesequencenumber = _result.values.linesequencenumber //1
             //var _line                  = _result.values.line;			    //1
 
@@ -609,6 +612,7 @@ define([
             var _ns_item_total_amount = stringutility.convertToFloat(
               _result.values.formulacurrency
             ) //Item金額小計
+			if (stringutility.convertToFloat(_result.values.quantity) <0) _ns_item_total_amount = -1*_ns_item_total_amount
             ////////////////////////////////////////////////////////////////////////////////////////////////////
             //單位
             var _unitabbreviation = _result.values.unitabbreviation

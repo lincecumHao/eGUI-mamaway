@@ -1307,7 +1307,10 @@ define([
         _sales_order_number = _result.values.createdfrom[0].text //sales order  #42
       }
 
-      var _amount = stringutility.convertToFloat(_result.values.amount) //31428.57(未稅)
+      var _amount = stringutility.convertToFloat(_result.values.amount) //31428.57(未稅)	  
+	  //20210707 walter modify
+	  if (stringutility.convertToFloat(_result.values.quantity) <0) _amount = -1*_amount
+	  
       //20201105 walter modify
       //NS 的總稅額
       var _ns_total_tax_amount = stringutility.convertToFloat(
@@ -1326,6 +1329,7 @@ define([
       var _ns_item_total_amount = stringutility.convertToFloat(
         _result.values.formulacurrency
       ) //Item金額小計
+	  if (stringutility.convertToFloat(_result.values.quantity) <0) _ns_item_total_amount = -1*_ns_item_total_amount
 
       var _linesequencenumber = _result.values.linesequencenumber //1
       var _line = _result.values.line //1
