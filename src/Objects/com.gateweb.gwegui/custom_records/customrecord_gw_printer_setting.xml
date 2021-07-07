@@ -304,7 +304,7 @@
             <searchdefault></searchdefault>
             <searchlevel>2</searchlevel>
             <selectrecordtype></selectrecordtype>
-            <showinlist>F</showinlist>
+            <showinlist>T</showinlist>
             <sourcefilterby></sourcefilterby>
             <sourcefrom>[scriptid=customrecord_gw_printer_agent.custrecord_printer_agent_key]</sourcefrom>
             <sourcelist>[scriptid=customrecord_gw_printer_setting.custrecord_gw_printer_agent]</sourcelist>
