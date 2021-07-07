@@ -32,30 +32,12 @@ define([
   //稅差
   var tax_diff_balance = stringutility.convertToFloat(invoiceutility.getConfigureValue('TAX_GROUP', 'TAX_DIFF_BALANCE'))
   
-  function executeScript(context) {
-    log.debug('executeScript', '執行批次作業')	
-    var _index_governance = 0;
-    try {
-		
-		 var _init_remaining_usage = runtime.getCurrentScript().getRemainingUsage()
-		 log.debug('起始Governance總數', _init_remaining_usage)	 
-		 ////////////////////////////////////////////////////////////////////////////////////////
-		 processCreditMemoToDoList()
-		 
-		 ////////////////////////////////////////////////////////////////////////////////////////		
-		 var _final_remaining_usage = runtime.getCurrentScript().getRemainingUsage()		 
-		 log.debug('截止Governance總數', _final_remaining_usage)	
-         _index_governance = _init_remaining_usage-_final_remaining_usage
-		 log.debug('基準Governance總數', _index_governance)
-		 
-	} catch (e) {
-      log.error(e.name, e.message)
-    }  
-  }
+  var _min_governence = 100
+  var _final_remaining_usage = 0
   
-  //1. 取得待處理的Credit_Memo資料
-  function processCreditMemoToDoList() {
-    log.debug('processCreditMemoToDoList', '處理Credit_Memo資料')	 
+  //1. 取得待處理的Credit_Memo資料 
+  function executeScript(context) {
+    log.debug('executeScript', '執行批次作業')	 
     var _allowance_obj_ary = []	
     try {
 		//1. search credit_memo
@@ -72,14 +54,15 @@ define([
         _filterArray.push(['cogs', search.Operator.IS, false]) //擋庫存及成本科目
 		_filterArray.push('and')
         _filterArray.push(['custbody_gw_is_issue_egui', search.Operator.IS, true]) //開立發票
+		/////////////////////////////////////////////////////////////////////////////////////////////
 		//Test 
 		_filterArray.push('and') 
 		_filterArray.push([
 			['tranid', search.Operator.IS, 'CM00000000009436'],
 			'or',
 			['tranid', search.Operator.IS, 'CM00000000009437'],
-		 ])
-		
+		])
+		/////////////////////////////////////////////////////////////////////////////////////////////
 		_my_search.filterExpression = _filterArray
         log.debug('_filterArray', JSON.stringify(_filterArray))
 				
@@ -96,9 +79,9 @@ define([
 			   var _allowance_obj = JSON.parse(JSON.stringify(_main_json_obj))
 			   //處理折讓單
 			   saveAllowanceRecord(_allowance_obj)
-			   
 			   _main_json_obj = null
 		   }
+		   
 		   _index_tranid = _tranid
 		   _main_json_obj = setAllowanceMainObj(_main_json_obj, _result, _item_json_obj)
 		  
@@ -402,15 +385,17 @@ define([
 			  'custrecord_gw_discount_count' 
 			],
          })
-         var _filterArray = [] 
+         var _filterArray = []  
          _filterArray.push(['custrecord_gw_seller', search.Operator.IS, _sellerIdentifier])
 		 _filterArray.push('and')
          _filterArray.push(['custrecord_gw_buyer', search.Operator.IS, _buyerIdentifier]) 
          _filterArray.push('and')
          _filterArray.push(['custrecord_gw_original_buyer_id', search.Operator.IS, _buyerId])  
          _filterArray.push('and')
-         _filterArray.push(['custrecord_gw_voucher_number', search.Operator.IS, _voucher_number_start])   
-		 
+         _filterArray.push(['custrecord_gw_voucher_number', search.Operator.IS, _voucher_number_start])  
+         _filterArray.push('and')		 
+		 _filterArray.push(['custrecord_gw_voucher_upload_status', search.Operator.IS, 'C'])
+		  
 		 _my_search.filterExpression = _filterArray
          log.debug('_filterArray', JSON.stringify(_filterArray))
 		 
@@ -467,24 +452,37 @@ define([
   }
   
   //3. 產生折讓單(Allowance資料)
+  var _apply_internal_id = -1
   function saveAllowanceRecord(allowance_obj) {
     log.debug('saveAllowanceRecord', '產生折讓單(Allowance資料)')	    
     try {		
-		var _egui_obj = checkVoucherDiscountAmount(allowance_obj)
-		if (_egui_obj.internal_id==-1) {
-			//處理錯誤
-			allowance_obj.applyId = -1
-		}  
-		//Save Data
-		var _apply_internal_id = saveVoucherApplyListRecord(allowance_obj) //TODO
-		var _main_record_id = saveVoucherMainRecord(_apply_internal_id, allowance_obj)
-		saveVoucherDetailRecord(_apply_internal_id, _main_record_id, allowance_obj, _egui_obj)
+	    //紀錄剩餘governence
+		_final_remaining_usage = runtime.getCurrentScript().getRemainingUsage()
 		
-		if (_egui_obj.internal_id !=-1) {
-			updateEGUIDiscountFields(egui_obj)
-			updateCreditMemoFields(allowance_obj)
+		if (_final_remaining_usage >= _min_governence) {
+			//檢查條件
+			var _egui_obj = checkVoucherDiscountAmount(allowance_obj)
+			if (_egui_obj.internal_id==-1) {
+				//處理錯誤
+				allowance_obj.applyId = -1
+			}  
+			//Save Data
+			if (_apply_internal_id == -1) {
+				//做一次就好
+				_apply_internal_id = saveVoucherApplyListRecord(allowance_obj) //TODO
+			}
+		 
+			var _main_record_obj = saveVoucherMainRecord(_apply_internal_id, allowance_obj)			
+			var _check_record_result = _main_record_obj.check_record_result
+			var _main_record = _main_record_obj.record
+			
+			saveVoucherDetailRecord(_apply_internal_id, _check_record_result, _main_record, allowance_obj, _egui_obj)
+			
+			if (_check_record_result==true) {
+				updateEGUIDiscountFields(egui_obj)
+				updateCreditMemoFields(allowance_obj)
+			}
 		}
-		
 	} catch (e) {
       log.error(e.name, e.message)
     }  	
@@ -561,7 +559,8 @@ define([
   //產生折讓單(Main資料)
   function saveVoucherMainRecord(apply_internal_id, allowance_obj) {
     log.debug('saveVoucherMainRecord', '產生折讓單(Main資料)')	 
-    var _main_record_id = -1	    
+    var _check_record_result = true	    
+	var _main_record_result
     try {		
 	      var _status = 'VOUCHER_SUCCESS'
 		  var _voucher_main_record = record.create({
@@ -597,7 +596,7 @@ define([
 			fieldId: 'custrecord_gw_voucher_yearmonth',
 			value: allowance_obj.allowance_year_month,
 		  })		   
-		  var _apply_period = getApplyPeriodOptions(_year_month)
+		  var _apply_period = getApplyPeriodOptions(allowance_obj.allowance_year_month)
 		  _voucher_main_record.setValue({
 			fieldId: 'custrecord_voucher_sale_tax_apply_period',
 			value: _apply_period,
@@ -732,7 +731,6 @@ define([
 			fieldId: 'custrecord_gw_total_amount',
 			value: allowance_obj.total_amount,
 		  })
-
 		  //20210202 walter modify
 		  _voucher_main_record.setValue({
 			fieldId: 'custrecord_gw_need_upload_egui_mig',
@@ -752,222 +750,262 @@ define([
 			  allowance_obj.tax_amount,
 			  tax_diff_balance
 			)
-
-		  if (_tax_diff_error == true) {
-			//檢查稅差超過
-			_voucher_main_record.setValue({
-			  fieldId: 'custrecord_gw_need_upload_egui_mig',
-			  value: 'NONE',
-			})
-			_voucher_main_record.setValue({
-			  fieldId: 'custrecord_gw_voucher_upload_status',
-			  value: 'E',
-			})
-			_voucher_main_record.setValue({
-			  fieldId: 'custrecord_gw_uploadstatus_messag',
-			  value: '稅差超過(' + tax_diff_balance + ')元 ,請重新調整!',
-			}) 
-			 
-		  } else if (allowance_obj.applyId == -1 ) {
-			_voucher_main_record.setValue({
-			  fieldId: 'custrecord_gw_need_upload_egui_mig',
-			  value: 'NONE',
-			})
-			_voucher_main_record.setValue({
-			  fieldId: 'custrecord_gw_voucher_upload_status',
-			  value: 'E',
-			})
-			_voucher_main_record.setValue({
-			  fieldId: 'custrecord_gw_uploadstatus_messag',
-			  value: '折讓扣抵發票金額不足',
-			})
-		  } 		  
+          //檢查結果處理
+		  if (allowance_obj.applyId == -1 ) {
+			  _check_record_result = false	  
+			   _voucher_main_record.setValue({
+				  fieldId: 'custrecord_gw_need_upload_egui_mig',
+				  value: 'NONE',
+			   })
+			   _voucher_main_record.setValue({
+				  fieldId: 'custrecord_gw_voucher_upload_status',
+				  value: 'E',
+			   })
+			   _voucher_main_record.setValue({
+				  fieldId: 'custrecord_gw_uploadstatus_messag',
+				  value: '折讓扣抵發票金額不足',
+			   })
+		  } else if (_tax_diff_error == true) {
+			   _check_record_result = false	  
+			   //檢查稅差超過
+			   _voucher_main_record.setValue({
+				  fieldId: 'custrecord_gw_need_upload_egui_mig',
+				  value: 'NONE',
+			   })
+			   _voucher_main_record.setValue({
+				  fieldId: 'custrecord_gw_voucher_upload_status',
+				  value: 'E',
+			   })
+			   _voucher_main_record.setValue({
+				  fieldId: 'custrecord_gw_uploadstatus_messag',
+				  value: '稅差超過(' + tax_diff_balance + ')元 ,請重新調整!',
+			   }) 
+		  }
+		  
 		  _voucher_main_record.setValue({
 			fieldId: 'custrecord_gw_voucher_main_apply_user_id',
 			value: 0,
 		  })
-
-		  try {
-			   _main_record_id = _voucher_main_record.save()			
-			   log.debug('main save', '_main_record_id=' + _main_record_id)
-		  } catch (e) {
-			log.error(e.name, e.message)
-		  } 
-		
+		  
+		  _main_record_result = {
+			  'check_record_result' :_check_record_result,
+			  'record' :_voucher_main_record
+		  }
+         
 	} catch (e) {
       log.error(e.name, e.message)
     }  
 	
-	return _main_record_id
+	return _main_record_result
   }
   
   //產生折讓單(Detail)
-  function saveVoucherDetailRecord(apply_internal_id, main_record_id, allowance_obj, egui_obj) {
+  function saveVoucherDetailRecord(apply_internal_id, check_record_result, voucher_main_record, allowance_obj, egui_obj) {
     log.debug('saveVoucherDetailRecord', '產生折讓單(Detail)')	  
     try {	
+	     var _voucher_detail_sublist_id = 'recmachcustrecord_gw_voucher_main_internal_id'
+		 var _apply_period = getApplyPeriodOptions(allowance_obj.allowance_year_month)
+		 
+		 var _gw_ns_document_apply_id_ary = []
 	     var _detail_item_ary = allowance_obj.item_ary
          if (typeof _detail_item_ary !== 'undefined') {
              for (var i = 0; i < _detail_item_ary.length; i++) {
                   var _detail_obj = _detail_item_ary[i]
 				  
-				  var _voucher_detail_record = record.create({
-					  type: 'customrecord_gw_voucher_details',
-					  isDynamic: true,
+				  voucher_main_record.selectNewLine({
+					sublistId: _voucher_detail_sublist_id
 				  })
-				  _voucher_detail_record.setValue({
-					  fieldId: 'name',
-					  value: 'VoucherDetailRecord',
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'name',
+					value: 'VoucherDetailRecord'
 				  })
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_dtl_apply_internal_id',
-					  value: apply_internal_id,
-				  })
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_voucher_main_internal_id',
-					  value: main_record_id,
-				  })
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_dtl_voucher_type',
-					  value: 'ALLOWANCE',
-				  }) 
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_item_description',
-					  value: stringutility.trim(_detail_obj.description),
-				  }) 
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_unit_price',
-					  value: stringutility.trim(_detail_obj.unitPrice),
-				  }) 
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_item_unit',
-					  value: stringutility.trim(_detail_obj.itemUnit),
-				  })
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_item_quantity',
-					  value:
-						_net_value * stringutility.convertToFloat(_detail_obj.quantity),
-				  })
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_item_amount',
-					  value: stringutility.convertToFloat(_detail_obj.amount),
-				  })
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_item_tax_amount',
-					  value: stringutility.convertToFloat(_detail_obj.itemTaxAmount),
-				  })
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_item_total_amount',
-					  value: stringutility.convertToFloat(_detail_obj.itemTotalAmount),
-				  }) 
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_dtl_item_tax_code',
-					  value: stringutility.trim(_detail_obj.taxCode),
-				  })
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_dtl_item_tax_rate',
-					  value: stringutility.trim(_detail_obj.taxRate),
-				  }) 
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_item_seq',
-					  value: (i+1),
-				  })
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_item_remark',
-					  value: stringutility.trim(_detail_obj.itemRemark),
-				  }) 
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_dtl_voucher_number',
-					  value: allowance_obj.allowance_egui_number,
-				  })				 
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_dtl_voucher_date',
-					  value: allowance_obj.trandate,
-				  })				  
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_dtl_voucher_time',
-					  value: allowance_obj.allowance_egui_time,
-				  })				 
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_dtl_voucher_yearmonth',
-					  value: allowance_obj.allowance_year_month,
-				  })
-
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_dtl_voucher_status',
-					  value: 'VOUCHER_SUCCESS',
-				  })
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_dtl_voucher_upload_status',
-					  value: 'A',
-				  }) 
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_ns_document_type',
-					  value: 'CREDITMEMO',
-				  }) 
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_ns_document_number',
-					  value: _detail_obj.nsDocumentNumber,
-				  })  
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_ns_document_item_id',
-					  value: _detail_obj.nsDocumentItemId,
-				  })
-			      _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_ns_document_items_seq',
-					  value: _detail_obj.nsDocumentItemSeq,
-				  })
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_ns_item_discount_amount',
-					  value: '0',
-				  })
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_ns_item_discount_count',
-					  value: '0',
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_dtl_apply_internal_id',
+					value: apply_internal_id
 				  })
 				  //TODO
-				  _voucher_detail_record.setValue({
-					  fieldId: 'custrecord_gw_dtl_voucher_apply_period',
-					  value: _applyPeriod,
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_voucher_main_internal_id',
+					value: '0'
 				  })
-                  //紀錄發票資料 TODO
-				  _voucher_detail_record.setValue({
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_dtl_voucher_type',
+					value: 'ALLOWANCE'
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_item_description',
+					value: stringutility.trim(_detail_obj.description)
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_unit_price',
+					value: stringutility.trim(_detail_obj.unitPrice)
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_item_unit',
+					value: stringutility.trim(_detail_obj.itemUnit)
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_item_quantity',
+					value: stringutility.trim(_detail_obj.quantity)
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_item_amount',
+					value: stringutility.trim(_detail_obj.amount)
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_item_tax_amount',
+					value: stringutility.trim(_detail_obj.itemTaxAmount)
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_item_total_amount',
+					value: stringutility.trim(_detail_obj.itemTotalAmount)
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_dtl_item_tax_code',
+					value: stringutility.trim(_detail_obj.taxCode)
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_dtl_item_tax_rate',
+					value: stringutility.trim(_detail_obj.taxRate)
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_item_seq',
+					value: (i+1)
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_item_remark',
+					value: stringutility.trim(_detail_obj.itemRemark)
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_dtl_voucher_number',
+					value: allowance_obj.allowance_egui_number
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_dtl_voucher_date',
+					value: allowance_obj.trandate
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_dtl_voucher_time',
+					value: allowance_obj.allowance_egui_time
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_dtl_voucher_yearmonth',
+					value: allowance_obj.allowance_year_month
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_dtl_voucher_status',
+					value: 'VOUCHER_SUCCESS'
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_dtl_voucher_upload_status',
+					value: 'A'
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_ns_document_type',
+					value: _detail_obj.nsDocumentType
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_ns_document_apply_id',
+					value: _detail_obj.nsDocumentApplyId
+				  })
+				  if (_gw_ns_document_apply_id_ary.toString().indexOf(_detail_obj.nsDocumentApplyId)==-1) {
+                      _gw_ns_document_apply_id_ary.push(_detail_obj.nsDocumentApplyId)
+			      }
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_ns_document_number',
+					value: stringutility.trim(_detail_obj.nsDocumentNumber)
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_ns_document_item_id',
+					value: _detail_obj.nsDocumentItemId
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_ns_document_items_seq',
+					value: _detail_obj.nsDocumentItemSeq
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_ns_item_discount_amount',
+					value: '0'
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_ns_item_discount_count',
+					value: '0'
+				  })
+				  //TODO
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
+					fieldId: 'custrecord_gw_dtl_voucher_apply_period',
+					value: _apply_period
+				  })
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
 					fieldId: 'custrecord_gw_original_gui_internal_id',
-					value: egui_obj.internal_id,
+					value: egui_obj.internal_id
 				  })
-				  _voucher_detail_record.setValue({
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
 					fieldId: 'custrecord_gw_original_gui_number',
-					value: egui_obj.egui_number,
+					value: egui_obj.egui_number
 				  })
-				  _voucher_detail_record.setValue({
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
 					fieldId: 'custrecord_gw_original_gui_date',
-					value: egui_obj.egui_date,
+					value: egui_obj.egui_date
 				  })
-				  _voucher_detail_record.setValue({
+				  voucher_main_record.setCurrentSublistValue({
+					sublistId: _voucher_detail_sublist_id,
 					fieldId: 'custrecord_gw_original_gui_yearmonth',
-					value: egui_obj.egui_year_month,
+					value: egui_obj.egui_year_month
 				  })
-
-				  try {
-				       var _result_id = _voucher_detail_record.save()
-				  } catch (e) {
-				       log.error(e.name, e.message)
-				  } 
-
+				  
+				  voucher_main_record.commitLine({
+					sublistId: _voucher_detail_sublist_id
+				  }) 
 		     }
 			 
 			 try {
-				 var values = {}
-				 values['custrecord_gw_is_completed_detail'] = true	 
-				 var _id = record.submitFields({
-					 type: 'customrecord_gw_voucher_main',
-					 id: main_record_id,
-					 values: values,
-					 options: {
-						enableSourcing: false,
-						ignoreMandatoryFields: true,
-					 },
-				 }) 		
-				
+				  voucher_main_record.setValue({
+					fieldId: 'custrecord_gw_is_completed_detail',
+					value: true
+				  })
+				  voucher_main_record.setValue({
+					fieldId: 'custrecord_gw_ns_transaction',
+					value: _gw_ns_document_apply_id_ary.toString() 
+				  })
+				   
+				  voucher_main_record.commitLine({
+					sublistId: _voucher_detail_sublist_id
+				  })
+				  
+				  var _main_record_id = voucher_main_record.save()	
 			} catch (e) {
 			   log.error(e.name, e.message)
 			}  
