@@ -16,7 +16,7 @@
             <isdeployed>T</isdeployed>
             <isonline>F</isonline>
             <loglevel>DEBUG</loglevel>
-            <runasrole></runasrole>
+            <runasrole>ADMINISTRATOR</runasrole>
             <status>RELEASED</status>
             <title>Gw Voucher Gen Xml for PDF And Printer</title>
         </scriptdeployment>

@@ -16,7 +16,7 @@
             <isdeployed>T</isdeployed>
             <isonline>F</isonline>
             <loglevel>DEBUG</loglevel>
-            <runasrole></runasrole>
+            <runasrole>ADMINISTRATOR</runasrole>
             <status>TESTING</status>
             <title>gw_assignlog_ui_action</title>
         </scriptdeployment>

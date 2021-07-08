@@ -16,7 +16,7 @@
             <isdeployed>T</isdeployed>
             <isonline>F</isonline>
             <loglevel>DEBUG</loglevel>
-            <runasrole></runasrole>
+            <runasrole>ADMINISTRATOR</runasrole>
             <status>RELEASED</status>
             <title>GW 作廢審核服務-背景</title>
         </scriptdeployment>

@@ -16,7 +16,7 @@
             <isdeployed>T</isdeployed>
             <isonline>T</isonline>
             <loglevel>DEBUG</loglevel>
-            <runasrole></runasrole>
+            <runasrole>ADMINISTRATOR</runasrole>
             <status>RELEASED</status>
             <title>GW SL Retrieve Business Information</title>
         </scriptdeployment>

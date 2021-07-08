@@ -16,7 +16,7 @@
             <isdeployed>T</isdeployed>
             <isonline>F</isonline>
             <loglevel>ERROR</loglevel>
-            <runasrole></runasrole>
+            <runasrole>ADMINISTRATOR</runasrole>
             <status>RELEASED</status>
             <title>現金銷售開立-EDIT</title>
         </scriptdeployment>
