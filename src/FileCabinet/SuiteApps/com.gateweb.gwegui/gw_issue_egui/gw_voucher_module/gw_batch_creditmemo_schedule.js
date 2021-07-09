@@ -55,16 +55,16 @@ define([
         _filterArray.push(['custbody_gw_is_issue_egui', search.Operator.IS, true]) //開立發票
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		//Test 
-		 
+		/** 
 		_filterArray.push('and') 
 		_filterArray.push([
 			['tranid', search.Operator.IS, 'CM00000000009436'],
 			'or',
 			['tranid', search.Operator.IS, 'CM00000000009437'],
-		])
+		]) 
 		//_filterArray.push('and') 
 		//_filterArray.push(['tranid', search.Operator.IS, 'CM00000000009436'])	
-		
+		*/
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		_my_search.filterExpression = _filterArray
         log.debug('_filterArray', JSON.stringify(_filterArray))
