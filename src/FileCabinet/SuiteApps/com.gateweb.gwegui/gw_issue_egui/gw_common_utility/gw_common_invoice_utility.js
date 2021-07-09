@@ -998,7 +998,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
         return true
       })
     } catch (e) {
-      console.log(e.name + ':' + e.message)
+      //console.log(e.name + ':' + e.message)
     }
 
     return _result
