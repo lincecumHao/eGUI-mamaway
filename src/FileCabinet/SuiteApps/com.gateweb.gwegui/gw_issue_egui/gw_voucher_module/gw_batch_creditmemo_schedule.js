@@ -53,18 +53,20 @@ define([
         _filterArray.push(['cogs', search.Operator.IS, false]) //擋庫存及成本科目
 		_filterArray.push('and')
         _filterArray.push(['custbody_gw_is_issue_egui', search.Operator.IS, true]) //開立發票
+		_filterArray.push('and')
+        _filterArray.push(['custbody_gw_lock_transaction', search.Operator.IS, false]) //LOCK
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		//Test 
-		/** 
+		/**
 		_filterArray.push('and') 
 		_filterArray.push([
-			['tranid', search.Operator.IS, 'CM00000000009436'],
+			['tranid', search.Operator.IS, 'CM00000000009434'],
 			'or',
-			['tranid', search.Operator.IS, 'CM00000000009437'],
-		]) 
-		//_filterArray.push('and') 
-		//_filterArray.push(['tranid', search.Operator.IS, 'CM00000000009436'])	
+			['tranid', search.Operator.IS, 'CM00000000009435'],
+		]) 		
 		*/
+		//_filterArray.push('and') 
+		//_filterArray.push(['tranid', search.Operator.IS, 'CM00000000009433'])	
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		_my_search.filterExpression = _filterArray
         log.debug('_filterArray', JSON.stringify(_filterArray))
@@ -362,90 +364,93 @@ define([
 		 var _voucher_number_start = allowance_obj.voucher_number_start
 		 var _voucher_number_end = allowance_obj.voucher_number_end
 		 
-		 //1. search voucher_main
-		 var _my_search = search.create({
-            type: 'customrecord_gw_voucher_main',
-			columns: [
-			  'internalid',
-			  'custrecord_gw_voucher_number',
-			  'custrecord_gw_voucher_date',
-			  'custrecord_gw_voucher_yearmonth',
-			  'custrecord_gw_discount_sales_amount',
-			  'custrecord_gw_discount_free_amount',
-			  'custrecord_gw_discount_zero_amount',
-			  'custrecord_gw_discount_count',  
-			  'custrecord_gw_seller', 
-			  'custrecord_gw_buyer', 
-			  'custrecord_gw_original_buyer_id', 
-			  'custrecord_gw_voucher_number', 			  
-			  'custrecord_gw_sales_amount', 
-			  'custrecord_gw_discount_sales_amount', 
-			  'custrecord_gw_free_sales_amount', 
-			  'custrecord_gw_discount_free_amount', 
-			  'custrecord_gw_zero_sales_amount', 
-			  'custrecord_gw_discount_zero_amount', 
-			  'custrecord_gw_discount_count' 
-			],
-         })
-         var _filterArray = []  
-         _filterArray.push(['custrecord_gw_seller', search.Operator.IS, _sellerIdentifier])
-		 _filterArray.push('and')
-         _filterArray.push(['custrecord_gw_buyer', search.Operator.IS, _buyerIdentifier]) 
-         _filterArray.push('and')
-         _filterArray.push(['custrecord_gw_original_buyer_id', search.Operator.IS, _buyerId])  
-         _filterArray.push('and')
-         _filterArray.push(['custrecord_gw_voucher_number', search.Operator.IS, _voucher_number_start])  
-         _filterArray.push('and')		 
-		 _filterArray.push(['custrecord_gw_voucher_upload_status', search.Operator.IS, 'C'])
-		  
-		 _my_search.filterExpression = _filterArray
-         log.debug('_filterArray', JSON.stringify(_filterArray))
-		 
-		 var _search_result = _my_search.run().getRange({
-		    start: 0,
-		    end: 1,
-		 })
-		 for (var i = 0; i < _search_result.length; i++) {
-              var _internal_id = _search_result[i].id	
-			   
-			  var _egui_number = _search_result[i].getValue({name: 'custrecord_gw_voucher_number'})
-			  var _egui_date    = _search_result[i].getValue({name: 'custrecord_gw_voucher_date'})
-			  var _egui_year_month = _search_result[i].getValue({name: 'custrecord_gw_voucher_yearmonth'})
+		 if (_voucher_number_start.length !=0) {
+		     //1. search voucher_main
+			 var _my_search = search.create({
+				type: 'customrecord_gw_voucher_main',
+				columns: [
+				  'internalid',
+				  'custrecord_gw_voucher_number',
+				  'custrecord_gw_voucher_date',
+				  'custrecord_gw_voucher_yearmonth',
+				  'custrecord_gw_discount_sales_amount',
+				  'custrecord_gw_discount_free_amount',
+				  'custrecord_gw_discount_zero_amount',
+				  'custrecord_gw_discount_count',  
+				  'custrecord_gw_seller', 
+				  'custrecord_gw_buyer', 
+				  'custrecord_gw_original_buyer_id', 
+				  'custrecord_gw_voucher_number', 			  
+				  'custrecord_gw_sales_amount', 
+				  'custrecord_gw_discount_sales_amount', 
+				  'custrecord_gw_free_sales_amount', 
+				  'custrecord_gw_discount_free_amount', 
+				  'custrecord_gw_zero_sales_amount', 
+				  'custrecord_gw_discount_zero_amount', 
+				  'custrecord_gw_discount_count' 
+				],
+			 })
+			 var _filterArray = []  
+			 _filterArray.push(['custrecord_gw_seller', search.Operator.IS, _sellerIdentifier])
+			 _filterArray.push('and')
+			 _filterArray.push(['custrecord_gw_buyer', search.Operator.IS, _buyerIdentifier]) 
+			 _filterArray.push('and')
+			 _filterArray.push(['custrecord_gw_original_buyer_id', search.Operator.IS, _buyerId])  
+			 _filterArray.push('and')
+			 _filterArray.push(['custrecord_gw_voucher_number', search.Operator.IS, _voucher_number_start])  
+			 _filterArray.push('and')		 
+			 _filterArray.push(['custrecord_gw_voucher_upload_status', search.Operator.IS, 'C'])
 			  
-			  var _egui_sales_amount       = stringutility.convertToFloat(_search_result[i].getValue({name: 'custrecord_gw_sales_amount'}))
-			  var _egui_free_sales_amount  = stringutility.convertToFloat(_search_result[i].getValue({name: 'custrecord_gw_free_sales_amount'}))
-			  var _egui_zero_sales_amount  = stringutility.convertToFloat(_search_result[i].getValue({name: 'custrecord_gw_zero_sales_amount'}))
-			  
-			  var _egui_discount_sales_amount = _sales_amount+stringutility.convertToFloat(_search_result[i].getValue({name: 'custrecord_gw_discount_sales_amount'}))
-			  var _egui_discount_free_amount  = _free_sales_amount+stringutility.convertToFloat(_search_result[i].getValue({name: 'custrecord_gw_discount_free_amount'}))
-			  var _egui_discount_zero_amount  = _zero_sales_amount+stringutility.convertToFloat(_search_result[i].getValue({name: 'custrecord_gw_discount_zero_amount'}))
-			  
-			  var _egui_discount_count  = 1+stringutility.convertToFloat(_search_result[i].getValue({name: 'custrecord_gw_discount_count'}))
-			  var _egui_discount_amount = _egui_discount_sales_amount+
-			                              _egui_discount_free_amount+
-										  _egui_discount_zero_amount
-										  
-			  //判斷折讓條件是否成立
-			  if (_egui_discount_sales_amount > _egui_sales_amount ||
-			      _egui_discount_free_amount  > _egui_free_sales_amount ||
-				  _egui_discount_zero_amount  > _egui_zero_sales_amount ) {
-				  _internal_id = -1	  
-			  }
-			  			  
-			  _egui_obj = {
-					'internal_id' :_internal_id,
-					'egui_number' :_egui_number,
-					'egui_date' :_egui_date,
-					'egui_year_month' :_egui_year_month,
-					
-					'egui_discount_sales_amount' :_egui_discount_sales_amount,
-					'egui_discount_free_amount' :_egui_discount_free_amount,
-					'egui_discount_zero_amount' :_egui_discount_zero_amount,
-					'egui_discount_count' :_egui_discount_count,
-					'egui_discount_amount' :_egui_discount_amount 
-			  }		
-			  
-		 } 
+			 _my_search.filterExpression = _filterArray
+			 log.debug('_filterArray', JSON.stringify(_filterArray))
+			 
+			 var _search_result = _my_search.run().getRange({
+				start: 0,
+				end: 1,
+			 })
+			 for (var i = 0; i < _search_result.length; i++) {
+				  var _internal_id = _search_result[i].id	
+				   
+				  var _egui_number = _search_result[i].getValue({name: 'custrecord_gw_voucher_number'})
+				  var _egui_date    = _search_result[i].getValue({name: 'custrecord_gw_voucher_date'})
+				  var _egui_year_month = _search_result[i].getValue({name: 'custrecord_gw_voucher_yearmonth'})
+				  
+				  var _egui_sales_amount       = stringutility.convertToFloat(_search_result[i].getValue({name: 'custrecord_gw_sales_amount'}))
+				  var _egui_free_sales_amount  = stringutility.convertToFloat(_search_result[i].getValue({name: 'custrecord_gw_free_sales_amount'}))
+				  var _egui_zero_sales_amount  = stringutility.convertToFloat(_search_result[i].getValue({name: 'custrecord_gw_zero_sales_amount'}))
+				  
+				  var _egui_discount_sales_amount = _sales_amount+stringutility.convertToFloat(_search_result[i].getValue({name: 'custrecord_gw_discount_sales_amount'}))
+				  var _egui_discount_free_amount  = _free_sales_amount+stringutility.convertToFloat(_search_result[i].getValue({name: 'custrecord_gw_discount_free_amount'}))
+				  var _egui_discount_zero_amount  = _zero_sales_amount+stringutility.convertToFloat(_search_result[i].getValue({name: 'custrecord_gw_discount_zero_amount'}))
+				  
+				  var _egui_discount_count  = 1+stringutility.convertToFloat(_search_result[i].getValue({name: 'custrecord_gw_discount_count'}))
+				  var _egui_discount_amount = _egui_discount_sales_amount+
+											  _egui_discount_free_amount+
+											  _egui_discount_zero_amount
+											  
+				  //判斷折讓條件是否成立
+				  if (_egui_discount_sales_amount > _egui_sales_amount ||
+					  _egui_discount_free_amount  > _egui_free_sales_amount ||
+					  _egui_discount_zero_amount  > _egui_zero_sales_amount ) {
+					  _internal_id = -1	
+                      allowance_obj.applyId = -1					  
+				  }
+							  
+				  _egui_obj = {
+						'internal_id' :_internal_id,
+						'egui_number' :_egui_number,
+						'egui_date' :_egui_date,
+						'egui_year_month' :_egui_year_month,					
+						'egui_discount_sales_amount' :_egui_discount_sales_amount,
+						'egui_discount_free_amount' :_egui_discount_free_amount,
+						'egui_discount_zero_amount' :_egui_discount_zero_amount,
+						'egui_discount_count' :_egui_discount_count,
+						'egui_discount_amount' :_egui_discount_amount 
+				  }	
+			 } 
+		 } else {
+			 allowance_obj.applyId = -1
+		 }
 	} catch (e) {
       log.error(e.name, e.message)
     }  
@@ -465,10 +470,7 @@ define([
 		if (_final_remaining_usage >= _min_governence) {
 			//檢查條件
 			var _egui_obj = checkVoucherDiscountAmount(allowance_obj)
-			if (_egui_obj.internal_id==-1) {
-				//處理錯誤
-				allowance_obj.applyId = -1
-			}  
+			 
 			//Save Data
 			if (_apply_internal_id == -1) {
 				//做一次就好
@@ -477,7 +479,7 @@ define([
 			var _main_record_id = saveVoucherMainRecord(_apply_internal_id, allowance_obj)
 			saveVoucherDetailRecord(_apply_internal_id, _main_record_id, allowance_obj, _egui_obj)
 			
-			if (_egui_obj.internal_id !=-1) {
+			if (_egui_obj !=null && _egui_obj.internal_id !=-1) {
 				updateEGUIDiscountFields(_egui_obj)
 				updateCreditMemoFields(allowance_obj)
 			}
@@ -938,24 +940,25 @@ define([
 					  fieldId: 'custrecord_gw_dtl_voucher_apply_period',
 					  value: _apply_period,
 				  })
-                  //紀錄發票資料 TODO
-				  _voucher_detail_record.setValue({
-					fieldId: 'custrecord_gw_original_gui_internal_id',
-					value: egui_obj.internal_id,
-				  })
-				  _voucher_detail_record.setValue({
-					fieldId: 'custrecord_gw_original_gui_number',
-					value: egui_obj.egui_number,
-				  })
-				  _voucher_detail_record.setValue({
-					fieldId: 'custrecord_gw_original_gui_date',
-					value: egui_obj.egui_date,
-				  })
-				  _voucher_detail_record.setValue({
-					fieldId: 'custrecord_gw_original_gui_yearmonth',
-					value: egui_obj.egui_year_month,
-				  })
-
+                  //紀錄發票資料  
+				  if (egui_obj !=null) {
+					  _voucher_detail_record.setValue({
+						fieldId: 'custrecord_gw_original_gui_internal_id',
+						value: egui_obj.internal_id,
+					  })
+					  _voucher_detail_record.setValue({
+						fieldId: 'custrecord_gw_original_gui_number',
+						value: egui_obj.egui_number,
+					  })
+					  _voucher_detail_record.setValue({
+						fieldId: 'custrecord_gw_original_gui_date',
+						value: egui_obj.egui_date,
+					  })
+					  _voucher_detail_record.setValue({
+						fieldId: 'custrecord_gw_original_gui_yearmonth',
+						value: egui_obj.egui_year_month,
+					  })
+                  }
 				  try {
 				       var _result_id = _voucher_detail_record.save()
 				  } catch (e) {
