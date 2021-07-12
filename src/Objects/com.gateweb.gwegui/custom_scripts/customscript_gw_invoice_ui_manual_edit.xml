@@ -15,7 +15,7 @@
             <eventtype></eventtype>
             <isdeployed>T</isdeployed>
             <isonline>F</isonline>
-            <loglevel>ERROR</loglevel>
+            <loglevel>DEBUG</loglevel>
             <runasrole>ADMINISTRATOR</runasrole>
             <status>RELEASED</status>
             <title>Manual Invoice Edit Page</title>

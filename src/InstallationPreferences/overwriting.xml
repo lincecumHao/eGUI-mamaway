@@ -5,10 +5,46 @@
 
 <preference type="OVERWRITING">
     <scriptdeployments defaultAction="PRESERVE">
+        <scriptdeployment scriptid="customscript_gw_allowance_ui_view.customdeploy_gw_allowance_ui_view" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_allowance_ui_list.customdeploy_gw_allowance_ui_list" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_allowance_pdf_ui_list.customdeploy_gw_allowance_pdf_ui_list" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_allowance_paper_ui_list.customdeploy_gw_allowance_paper_ui_list" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_allowance_cancel_ui_list.customdeploy_gw_allowance_cancel_ui_list" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_assign_log_empty_list.customdeploy_gw_assign_log_empty_list" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_assignlog_manualedit.customdeploy_gw_assignlog_ui_manualedit" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_assignlog_ui_action.customdeploy_gw_assignlog_ui_action" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_assignlog_ui_edit.customdeploy_gw_assignlog_ui_edit" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_assignlog_ui_import.customdeploy_gw_assignlog_ui_import" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_cash_sale_egui_ui_edit.customdeploy_gw_cash_sale_egui_ui_edit" action="OVERWRITE"/>
         <scriptdeployment scriptid="customscript_gw_cash_sale_open_egui_btn.customdeploy_gw_cash_sale_open_egui_btn" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_cust_depo_open_egui_btn.customdeploy_gw_cust_depo_open_egui_btn" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_deposit_egui_ui_edit.customdeploy_gw_deposit_egui_ui_edit" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_egui_cancel_ui_list.customdeploy_gw_egui_cancel_ui_list" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_egui_pdf_ui_list.customdeploy_gw_egui_pdf_ui_list" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_egui_print_ui_list.customdeploy_gw_egui_print_ui_list" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_egui_ui_list.customdeploy_gw_egui_ui_list" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_egui_ui_view.customdeploy_gw_egui_ui_view" action="OVERWRITE"/>
         <scriptdeployment scriptid="customscript_gw_invoice_open_allowance_b.customdeploy_gw_invoice_open_allowance_b" action="OVERWRITE"/>
         <scriptdeployment scriptid="customscript_gw_invoice_open_egui_btn.customdeploy_gw_invoice_open_egui_btn" action="OVERWRITE"/>
-        <scriptdeployment scriptid="customscript_gw_cust_depo_open_egui_btn.customdeploy_gw_cust_depo_open_egui_btn" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_invoice_submit_action.customdeploy_gw_invoice_submit_action" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_invoice_ui_edit.customdeploy_gw_invoice_ui_e" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_invoice_ui_manual_edit.customdeploy_gw_invoice_ui_manual_edit" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_invoice_ui_manual_list.customdeploy_gw_invoice_ui_manual_list" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_sl_ap_import.customdeploy_gw_sl_ap_import" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_sl_business_info_data.customdeploy_gw_sl_business_info_data" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_sl_credential_setup_page.customdeploy_gw_sl_credential_setup_page" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_sl_decrypt_payload.customdeploy_gw_sl_decrypt_payload" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_sl_download_pdf.customdeploy_gw_sl_download_pdf" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_sl_unlock_cm.customdeploy_gw_sl_unlock_cm" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_sl_unlock_inv.customdeploy_gw_sl_unlock_inv" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_sl_validate_payload.customdeploy_gw_sl_validate_payload" action="OVERWRITE"/>
         <scriptdeployment scriptid="customscript_gw_ue_emp_rpt_ap_import_btn.customdeploy_gw_ue_emp_rpt_ap_import_btn" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_ue_printer_agent.customdeploy_gw_ue_printer_agent" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_voucher_apply_action.customdeploy_gw_voucher_apply_action" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_voucher_apply_list.customdeploy_gw_voucher_apply_list" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_voucher_exception_list.customdeploy_gw_voucher_exception_list" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_voucher_genxml_sl_action.customdeploy_gw_voucher_genxml_sl_action" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_voucher_reupload_ui_list.customdeploy_gw_voucher_reupload_ui_list" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_voucher_unlocked_ui_list.customdeploy_gw_voucher_unlocked_ui_list" action="OVERWRITE"/>
     </scriptdeployments>
 </preference>
