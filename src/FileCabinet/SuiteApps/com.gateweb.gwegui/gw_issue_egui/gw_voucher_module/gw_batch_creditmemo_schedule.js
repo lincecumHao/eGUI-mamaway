@@ -408,6 +408,8 @@ define([
 				start: 0,
 				end: 1,
 			 })
+			 
+			 var _data_error = false;
 			 for (var i = 0; i < _search_result.length; i++) {
 				  var _internal_id = _search_result[i].id	
 				   
@@ -431,9 +433,8 @@ define([
 				  //判斷折讓條件是否成立
 				  if (_egui_discount_sales_amount > _egui_sales_amount ||
 					  _egui_discount_free_amount  > _egui_free_sales_amount ||
-					  _egui_discount_zero_amount  > _egui_zero_sales_amount ) {
-					  _internal_id = -1	
-                      allowance_obj.applyId = -1					  
+					  _egui_discount_zero_amount  > _egui_zero_sales_amount ) { 
+                      _data_error = true;					  
 				  }
 							  
 				  _egui_obj = {
@@ -445,11 +446,10 @@ define([
 						'egui_discount_free_amount' :_egui_discount_free_amount,
 						'egui_discount_zero_amount' :_egui_discount_zero_amount,
 						'egui_discount_count' :_egui_discount_count,
-						'egui_discount_amount' :_egui_discount_amount 
+						'egui_discount_amount' :_egui_discount_amount,
+						'data_error' :_data_error 
 				  }	
 			 } 
-		 } else {
-			 allowance_obj.applyId = -1
 		 }
 	} catch (e) {
       log.error(e.name, e.message)
@@ -476,10 +476,13 @@ define([
 				//做一次就好
 				_apply_internal_id = saveVoucherApplyListRecord(allowance_obj) //TODO
 			}
-			var _main_record_id = saveVoucherMainRecord(_apply_internal_id, allowance_obj)
+			
+			var _balance_amount_error = _egui_obj==null?false:_egui_obj.data_error
+			
+			var _main_record_id = saveVoucherMainRecord(_apply_internal_id, allowance_obj, _balance_amount_error)
 			saveVoucherDetailRecord(_apply_internal_id, _main_record_id, allowance_obj, _egui_obj)
 			
-			if (_egui_obj !=null && _egui_obj.internal_id !=-1) {
+			if (_egui_obj !=null && _egui_obj.data_error==true) {
 				updateEGUIDiscountFields(_egui_obj)  
 			}
 			//Lock CM
@@ -559,7 +562,7 @@ define([
   }
   
   //產生折讓單(Main資料)
-  function saveVoucherMainRecord(apply_internal_id, allowance_obj) {
+  function saveVoucherMainRecord(apply_internal_id, allowance_obj, balance_amount_error) {
     log.debug('saveVoucherMainRecord', '產生折讓單(Main資料)')	 
     var _main_record_id = -1	    
     try {		
@@ -753,7 +756,7 @@ define([
 			  tax_diff_balance
 			)
           //檢查結果處理
-		  if (allowance_obj.applyId == -1 ) {
+		  if (balance_amount_error == false ) {
 			   _voucher_main_record.setValue({
 				  fieldId: 'custrecord_gw_need_upload_egui_mig',
 				  value: 'NONE',
