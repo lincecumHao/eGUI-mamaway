@@ -480,9 +480,10 @@ define([
 			saveVoucherDetailRecord(_apply_internal_id, _main_record_id, allowance_obj, _egui_obj)
 			
 			if (_egui_obj !=null && _egui_obj.internal_id !=-1) {
-				updateEGUIDiscountFields(_egui_obj)
-				updateCreditMemoFields(allowance_obj)
+				updateEGUIDiscountFields(_egui_obj)  
 			}
+			//Lock CM
+			updateCreditMemoFields(allowance_obj)
 		}
 	} catch (e) {
       log.error(e.name, e.message)
