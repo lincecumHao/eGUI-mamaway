@@ -549,9 +549,16 @@ define([
             //var _line                  = _result.values.line;			    //1
 
             var _memo = _result.values['memo'] //雅結~~
-            var _item_salesdescription = _result.values['item.salesdescription']
+            //var _item_salesdescription = _result.values['item.salesdescription']
+			var _prodcut_id = ''
+			var _prodcut_text = ''
+			if (_result.values.item.length != 0) {
+				_prodcut_id = _result.values.item[0].value //10519
+				_prodcut_text = _result.values.item[0].text //NI20200811000099
+			}
             var _item_displayname = _result.values['item.displayname'] //新客戶折扣
-            if (stringutility.trim(_memo) != '') _item_displayname = _memo
+			_item_displayname = _prodcut_text+_item_displayname
+            //if (stringutility.trim(_memo) != '') _item_displayname = _memo
 
             var _item_salestaxcode_value = '' //5
             var _item_salestaxcode_text = _result.values['taxItem.itemid'] //UNDEF-TW
@@ -2875,10 +2882,16 @@ define([
             //var _line                  = _result.values.line;			    //1
 
             var _memo = _result.values['memo'] //雅結~~
-            var _item_salesdescription = _result.values['item.salesdescription']
-
+            //var _item_salesdescription = _result.values['item.salesdescription']
+            var _prodcut_id = ''
+			var _prodcut_text = ''
+			if (_result.values.item.length != 0) {
+				_prodcut_id = _result.values.item[0].value //10519
+				_prodcut_text = _result.values.item[0].text //NI20200811000099
+			}
             var _item_displayname = _result.values['item.displayname'] //新客戶折扣
-            if (stringutility.trim(_memo) != '') _item_displayname = _memo
+			_item_displayname = _prodcut_text+_item_displayname
+            //if (stringutility.trim(_memo) != '') _item_displayname = _memo
 
             var _item_salestaxcode_value = '' //5
             var _item_salestaxcode_text = _result.values['taxItem.itemid'] //UNDEF-TW
