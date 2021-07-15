@@ -441,8 +441,10 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
 			var _assignlog_lastinvnumbe = _assignLogRecord.getValue({
 			  fieldId: 'custrecord_gw_assignlog_lastinvnumbe',
 			})
-
+			 
 			_assignlog_lastinvnumbe = add(_assignlog_lastinvnumbe, '1')
+			_assignlog_lastinvnumbe = padding('' +_assignlog_lastinvnumbe, 8)
+			//補0
 			_assignLogRecord.setValue({
 			  fieldId: 'custrecord_gw_assignlog_lastinvnumbe',
 			  value: _assignlog_lastinvnumbe,
