@@ -11,6 +11,7 @@
         <scriptdeployment scriptid="customdeploy_gw_invoice_open_egui_btn">
             <allemployees>F</allemployees>
             <alllocalizationcontexts>T</alllocalizationcontexts>
+            <allroles>T</allroles>
             <audslctrole></audslctrole>
             <eventtype>VIEW</eventtype>
             <executioncontext>USERINTERFACE</executioncontext>
