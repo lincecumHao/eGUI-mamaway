@@ -50,17 +50,17 @@ define(['../../../../library/ramda.min'], function (ramda) {
     },
     nsAmt: {
       id: 'nsAmt',
-      sourceField: 'netamountnotax',
+      sourceField: 'amount',
       outputField: ''
     },
     nsTaxAmt: {
       id: 'nsTaxAmt',
-      sourceField: 'taxtotal',
+      sourceField: 'taxamount',
       outputField: ''
     },
     nsTotalAmt: {
       id: 'nsTotalAmt',
-      sourceField: 'total',
+      sourceField: 'grossamount',
       outputField: ''
     },
     nsLineSeq: {

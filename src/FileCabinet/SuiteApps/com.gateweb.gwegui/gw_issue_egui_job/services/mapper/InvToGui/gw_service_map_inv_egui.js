@@ -145,7 +145,7 @@ define([
     line = gwRecalculateLineTax(line)
     line.nsAmt = parseFloat(line.nsAmt)
     line.nsTaxAmt = line.nsTaxAmt ? parseFloat(line.nsTaxAmt) : 0
-    line.nsTotalAmt = line.nsTotalAmt ? parseFloat(line.nsTotalAmt) : 0
+    line.nsTotalAmt = line.nsAmt + line.nsTotalAmt
     var lineTaxRate = parseFloat(
       parseInt(line['taxRate'].replace('%', ''), 10) / 100
     )
