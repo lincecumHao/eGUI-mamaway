@@ -9,6 +9,7 @@ define([
   '../../../../gw_dao/docFormat/gw_dao_doc_format_21',
   '../../../../gw_dao/taxCalcMethod/gw_dao_tax_calc_method_21',
   '../../../../gw_dao/taxType/gw_dao_tax_type_21',
+  '../../../../gw_dao/carrierType/gw_dao_carrier_type_21',
   '../../../domain/vo/egui/gw_egui_main_fields',
   '../../../domain/vo/egui/gw_egui_line_fields'
 ], (
@@ -22,6 +23,7 @@ define([
   gwDocFormatDao,
   gwTaxCalculationDao,
   gwTaxTypeDao,
+  gwCarrierTypeDao,
   mainFields,
   lineFields
 ) => {
@@ -74,6 +76,11 @@ define([
 
   function updateCarrierAndDonation(eguiMainObj) {
     var eguiMain = JSON.parse(JSON.stringify(eguiMainObj))
+    if (eguiMain['carrierType'] && eguiMain['carrierType'].value) {
+      eguiMain['carrierType'] = gwCarrierTypeDao.getById(
+        eguiMain['carrierType'].value
+      )
+    }
     eguiMain['needUploadMig'] =
       eguiMain['isNotUploadEGui'] === 'F' ? 'ALL' : 'NONE'
     eguiMain['printMark'] =
@@ -119,6 +126,7 @@ define([
     if (issueEgui && !uploadEgui)
       return mainFields.voucherStatus.VOUCHER_SUCCESS
   }
+
   //endregion
 
   function transformLines(tranLines) {
@@ -145,7 +153,7 @@ define([
     line = gwRecalculateLineTax(line)
     line.nsAmt = parseFloat(line.nsAmt)
     line.nsTaxAmt = line.nsTaxAmt ? parseFloat(line.nsTaxAmt) : 0
-    line.nsTotalAmt = line.nsAmt + line.nsTotalAmt
+    line.nsTotalAmt = line.nsAmt + line.nsTaxAmt
     var lineTaxRate = parseFloat(
       parseInt(line['taxRate'].replace('%', ''), 10) / 100
     )
