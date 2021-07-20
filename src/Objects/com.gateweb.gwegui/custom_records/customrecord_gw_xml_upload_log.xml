@@ -681,7 +681,7 @@
             <help></help>
             <isformula>F</isformula>
             <ismandatory>F</ismandatory>
-            <isparent>F</isparent>
+            <isparent>T</isparent>
             <label>Voucher</label>
             <linktext></linktext>
             <maxlength></maxlength>

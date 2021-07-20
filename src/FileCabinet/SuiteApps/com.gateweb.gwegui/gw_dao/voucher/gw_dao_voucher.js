@@ -54,7 +54,9 @@ define([
     mainObj['custrecord_gw_voucher_sales_tax_apply'] =
       mainObj['custrecord_gw_voucher_sales_tax_apply'] === 'T'
     mainObj['custrecord_gw_tax_rate'] =
-      parseFloat(mainObj['custrecord_gw_tax_rate']) * 100
+      parseFloat(mainObj['custrecord_gw_tax_rate']) < 1
+        ? parseFloat(mainObj['custrecord_gw_tax_rate']) * 100
+        : parseFloat(mainObj['custrecord_gw_tax_rate'])
     mainObj['custrecord_gw_dm_seller_profile'] =
       mainObj['custrecord_gw_dm_seller_profile'].id
     mainObj['custrecord_gw_lock_transaction'] = true
@@ -64,7 +66,9 @@ define([
       detail['custrecord_gw_dtl_voucher_type'] =
         mainObj['custrecord_gw_voucher_type']
       detail['custrecord_gw_dtl_item_tax_rate'] =
-        parseFloat(detail['custrecord_gw_dtl_item_tax_rate']) * 100
+        parseFloat(detail['custrecord_gw_dtl_item_tax_rate']) < 1
+          ? parseFloat(detail['custrecord_gw_dtl_item_tax_rate']) * 100
+          : parseFloat(detail['custrecord_gw_dtl_item_tax_rate'])
       detail['custrecord_gw_dtl_voucher_apply_period'] =
         mainObj['custrecord_voucher_sale_tax_apply_period']
       // detail['custrecord_gw_dtl_voucher_number']
@@ -89,7 +93,9 @@ define([
     mainObj['custrecord_gw_voucher_sales_tax_apply'] =
       mainObj['custrecord_gw_voucher_sales_tax_apply'] === 'T'
     mainObj['custrecord_gw_tax_rate'] =
-      parseFloat(mainObj['custrecord_gw_tax_rate']) * 100
+      parseFloat(mainObj['custrecord_gw_tax_rate']) < 1
+        ? parseFloat(mainObj['custrecord_gw_tax_rate']) * 100
+        : parseFloat(mainObj['custrecord_gw_tax_rate'])
     mainObj['custrecord_gw_dm_seller_profile'] =
       mainObj['custrecord_gw_dm_seller_profile'].id
     mainObj['custrecord_gw_lock_transaction'] = true
@@ -99,7 +105,9 @@ define([
       detail['custrecord_gw_dtl_voucher_type'] =
         mainObj['custrecord_gw_voucher_type']
       detail['custrecord_gw_dtl_item_tax_rate'] =
-        parseFloat(detail['custrecord_gw_dtl_item_tax_rate']) * 100
+        parseFloat(detail['custrecord_gw_dtl_item_tax_rate']) < 1
+          ? parseFloat(detail['custrecord_gw_dtl_item_tax_rate']) * 100
+          : parseFloat(detail['custrecord_gw_dtl_item_tax_rate'])
       detail['custrecord_gw_dtl_voucher_apply_period'] =
         mainObj['custrecord_voucher_sale_tax_apply_period']
       // detail['custrecord_gw_dtl_voucher_number']
@@ -156,13 +164,39 @@ define([
     return newRecord.save()
   }
 
+  function isB2CEgui(eguiObj) {
+    return eguiObj.buyerTaxId === '0000000000' || buyerName === '0000000000'
+  }
+
   function updateEguiObj(eguiObj) {
     var egui = JSON.parse(JSON.stringify(eguiObj))
     egui.migTypeOption = gwMigTypeDao.getById(egui.migTypeOption.value)
     egui.taxRate = parseFloat(egui.taxRate) / 100
     egui.sellerProfile = gwBusinessEntityDao.getByTaxId(egui.sellerTaxId)
+    if (isB2CEgui(egui)) {
+      egui.salesAmt = egui.totalAmt
+      egui.taxAmt = 0
+      egui.lines = updateB2CLines(egui)
+    }
     log.debug({ title: 'UpdateEguiObj', details: egui })
     return egui
+  }
+
+  function updateB2CLines(eguiObj) {
+    log.debug({ title: 'updateB2CLines', details: eguiObj })
+    var lines = JSON.parse(JSON.stringify(eguiObj.lines))
+    return ramda.map(function (line) {
+      log.debug({ title: 'updateB2CLines line', details: line })
+      line.taxAmt = 0
+      line.salesAmt = line.totalAmt
+      line.quantity = line.quantity ? parseFloat(line.quantity) : 1
+      line.unitPrice = parseFloat(line.totalAmt) / line.quantity
+      return line
+    }, lines)
+  }
+
+  function isNullOrEmptyString(value) {
+    return value === '' || value === null || value === undefined
   }
 
   function updateAllowanceObj(allowanceObj) {

@@ -1,0 +1,25 @@
+<centercategory scriptid="custcentercategory_gw_invoice_accounting">
+    <center>ACCOUNTCENTER</center>
+    <centertab>[scriptid=custcentertab_gw_egui_accounting]</centertab>
+    <label>電子發票開立</label>
+    <links>
+        <link>
+            <linklabel>電子發票開立作業（憑證查詢）</linklabel>
+            <linkobject>[scriptid=customscript_gw_document_ui_list.customdeploy_gw_document_ui_list]</linkobject>
+            <linktasktype>SCRIPT</linktasktype>
+            <shortlist>F</shortlist>
+        </link>
+        <link>
+            <linklabel>錯誤憑證清單</linklabel>
+            <linkobject>[scriptid=customscript_gw_voucher_exception_list.customdeploy_gw_voucher_exception_list]</linkobject>
+            <linktasktype>SCRIPT</linktasktype>
+            <shortlist>F</shortlist>
+        </link>
+        <link>
+            <linklabel>歷史發票維護作業</linklabel>
+            <linkobject>[scriptid=customscript_gw_invoice_ui_manual_list.customdeploy_gw_invoice_ui_manual_list]</linkobject>
+            <linktasktype>SCRIPT</linktasktype>
+            <shortlist>F</shortlist>
+        </link>
+    </links>
+</centercategory>

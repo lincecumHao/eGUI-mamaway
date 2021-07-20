@@ -14,17 +14,17 @@ define(['N/record'], (record) => {
   let exports = {}
   var recordId = 'customrecord_gw_xml_upload_log'
   class XmlUploadLog {
-    eguiUploaded(eguiObj, voucherId, xmlString) {
+    eguiUploaded(eguiObj, voucherId, xmlString, uploadResult) {
       var xmlLog = record.create({
-        type: recordId,
+        type: recordId
       })
       xmlLog.setValue({
         fieldId: 'custrecord_gw_upload_voucher',
-        value: voucherId,
+        value: voucherId
       })
       xmlLog.setValue({
         fieldId: 'custrecord_gw_upload_voucher_xml',
-        value: xmlString,
+        value: xmlString
       })
       return xmlLog.save()
     }

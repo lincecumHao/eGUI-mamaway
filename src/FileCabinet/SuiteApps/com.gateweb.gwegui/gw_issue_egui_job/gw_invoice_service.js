@@ -38,11 +38,60 @@ define([
     )
     searchColumns.push('taxItem.rate')
     searchColumns.push('customer.email')
+    searchColumns.push('item.displayname')
     return search.create({
       type: search.Type.INVOICE,
       filters: searchFilters,
       columns: searchColumns
     })
+  }
+
+  function getInvoiceSearchResultDebugger(internalId) {
+    var searchFilters = []
+    searchFilters.push(['internalid', 'is', internalId])
+    var searchColumns = JSON.parse(
+      JSON.stringify(transSearchFields.allFieldIds)
+    )
+    searchColumns.push('taxItem.rate')
+    searchColumns.push('customer.email')
+    searchColumns.push('item.displayname')
+    var invoiceSearch = search.create({
+      type: search.Type.INVOICE,
+      filters: searchFilters,
+      columns: searchColumns
+    })
+
+    var pagedData = invoiceSearch.runPaged({
+      pageSize: 1000
+    })
+    var searchResults = []
+    for (var i = 0; i < pagedData.pageRanges.length; i++) {
+      var currentPage = pagedData.fetch({ index: i })
+      currentPage.data.forEach(function (result) {
+        var value = JSON.parse(JSON.stringify(result)).values
+        var resultObject = {}
+        Object.keys(value).forEach(function (key) {
+          var objectValue = value[key]
+          var newKey = key
+          if (key.indexOf('.') > -1) {
+            newKey = key.split('.')[1] + '.' + key.split('.')[0]
+          }
+          if (typeof objectValue === 'string') {
+            resultObject[newKey] = objectValue
+          } else {
+            if (objectValue.length === 0) {
+              resultObject[newKey] = ''
+            } else if (objectValue.length === 1) {
+              resultObject[newKey] = objectValue[0]
+            } else {
+              resultObject[newKey] = objectValue
+            }
+          }
+        })
+        searchResults.push(resultObject)
+      })
+    }
+    return searchResults
   }
 
   function getIssueSubFilter() {
@@ -185,6 +234,7 @@ define([
   }
 
   exports.getInvoiceToIssueEguiSearch = getInvoiceToIssueEguiSearch
+  exports.getInvoiceSearchResultDebugger = getInvoiceSearchResultDebugger
   exports.composeInvObj = composeInvObj
   exports.lockInvoice = lockInvoice
   exports.unlockInvoice = unlockInvoice

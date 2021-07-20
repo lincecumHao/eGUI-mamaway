@@ -133,6 +133,8 @@ define([
     return ramda.map((line) => {
       var eguiLine = gwObjectMappingUtil.mapFrom(line, lineFields)
       eguiLine['taxRate'] = line['rate.taxItem']
+      eguiLine['itemDisplayName'] = line['displayname.item']
+      eguiLine['itemName'] = eguiLine['itemDisplayName']
       return eguiLine
     }, tranLines)
   }
@@ -151,6 +153,7 @@ define([
   function updateLine(eguiLine) {
     var line = JSON.parse(JSON.stringify(eguiLine))
     line = gwRecalculateLineTax(line)
+    line.quantity = line.quantity ? parseFloat(line.quantity) : 1
     line.nsAmt = parseFloat(line.nsAmt)
     line.nsTaxAmt = line.nsTaxAmt ? parseFloat(line.nsTaxAmt) : 0
     line.nsTotalAmt = line.nsAmt + line.nsTaxAmt
@@ -163,7 +166,7 @@ define([
       line.nsTaxZeroSalesAmt = line.nsAmt
       line.nsAmt = 0
     }
-    line.salesAmt = isCalculateByNs() ? line.nsAmt : line.gwSalesAmt
+    line.salesAmt = isCalculateByNs() ? line.nsAmt : parseFloat(line.gwSalesAmt)
     line.taxAmt = isCalculateByNs() ? line.nsTaxAmt : line.gwTaxAmt
     line.totalAmt = isCalculateByNs() ? line.nsTotalAmt : line.gwTotalAmt
     line.taxZeroSalesAmt = isCalculateByNs()
@@ -172,6 +175,9 @@ define([
     line.taxExemptedSalesAmt = isCalculateByNs()
       ? line.nsTaxExemptedSalesAmt
       : line.gwTaxExemptedSalesAmt
+    line.unitPrice = line.unitPrice
+      ? line.unitPrice
+      : line.salesAmt / line.quantity
     return line
   }
 

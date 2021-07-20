@@ -116,7 +116,7 @@ define([
       gwVoucherDao.eguiUploaded(voucherId, result)
       if (result.code === 200) {
         log.debug({ title: 'update xml log' })
-        gwUploadLogDao.eguiUploaded(eguiObj, voucherId, xmlString)
+        gwUploadLogDao.eguiUploaded(eguiObj, voucherId, xmlString, result)
       }
       return result
     }
