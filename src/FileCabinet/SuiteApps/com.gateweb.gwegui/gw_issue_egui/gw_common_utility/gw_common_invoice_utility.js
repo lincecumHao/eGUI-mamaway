@@ -190,6 +190,26 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
     return statusDesc
   }
 
+  function genHash(stringValue) {
+    var hash = 7,
+      i,
+      chr
+    if (stringValue.length === 0) return hash
+    for (i = 0; i < stringValue.length; i++) {
+      chr = stringValue.charCodeAt(i)
+      hash = (hash << 5) - hash + chr
+      hash |= 0 // Convert to 32bit integer
+    }
+    return hash
+  }
+
+  function getRandomNumNew(eguiNumber, sellerTaxId) {
+    var eguiNumberStr = eguiNumber + ''
+    var sellerTaxIdStr = sellerTaxId + ''
+    return (
+      Math.abs(genHash(eguiNumberStr + sellerTaxIdStr)) % 10000
+    ).toString()
+  }
   //取亂數
   function getRandomNum(min, max) {
     var range = max - min
@@ -200,7 +220,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
   //取得折讓單號碼
   function getAllowanceNumber(date) {
     var _randomNumber = randomWord(true, 5, 5)
-    var _pre = 'SHO';
+    var _pre = 'SHO'
     var _allowanceNumber = _pre + date + _randomNumber
     return _allowanceNumber
   }
@@ -259,36 +279,36 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
         search.createColumn({ name: 'custrecord_gw_assignlog_startno' }),
         search.createColumn({ name: 'custrecord_gw_assignlog_endno' }),
         search.createColumn({ name: 'custrecord_gw_assignlog_yearmonth' }),
-		search.createColumn({ name: 'custrecord_gw_last_invoice_date' }),
+        search.createColumn({ name: 'custrecord_gw_last_invoice_date' }),
         search.createColumn({
           name: 'custrecord_gw_assignlog_status',
-          sort: search.Sort.DESC,
+          sort: search.Sort.DESC
         }),
         search.createColumn({ name: 'custrecord_gw_assignlog_taketime' }),
         search.createColumn({ name: 'custrecord_gw_assignlog_lastinvnumbe' }),
         search.createColumn({ name: 'custrecord_gw_assignlog_reason' }),
         search.createColumn({ name: 'custrecord_gw_assignlog_usedcount' }),
-        search.createColumn({ name: 'custrecord_gw_assignlog_version' }),
-      ],
+        search.createColumn({ name: 'custrecord_gw_assignlog_version' })
+      ]
     })
 
     var _filterArray = []
     _filterArray.push([
       'custrecord_gw_assignlog_businessno',
       search.Operator.IS,
-      ban,
+      ban
     ])
     _filterArray.push('and')
     _filterArray.push([
       'custrecord_gw_egui_format_code',
       search.Operator.IS,
-      invoceFormatCode,
+      invoceFormatCode
     ])
     _filterArray.push('and')
     _filterArray.push([
       'custrecord_gw_assignlog_invoicetype',
       search.Operator.IS,
-      invoice_type,
+      invoice_type
     ])
 
     if (dept_code === '') {
@@ -296,14 +316,14 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
       _filterArray.push([
         'custrecord_gw_assignlog_deptcode',
         search.Operator.ISEMPTY,
-        '',
+        ''
       ])
     } else {
       _filterArray.push('and')
       _filterArray.push([
         'custrecord_gw_assignlog_deptcode',
         search.Operator.IS,
-        dept_code,
+        dept_code
       ])
     }
     if (classification === '') {
@@ -311,21 +331,21 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
       _filterArray.push([
         'custrecord_gw_assignlog_classification',
         search.Operator.ISEMPTY,
-        '',
+        ''
       ])
     } else {
       _filterArray.push('and')
       _filterArray.push([
         'custrecord_gw_assignlog_classification',
         search.Operator.IS,
-        classification,
+        classification
       ])
     }
     _filterArray.push('and')
     _filterArray.push([
       'custrecord_gw_assignlog_yearmonth',
       search.Operator.IS,
-      year_month,
+      year_month
     ])
 
     //檢查日期資料(申請日期要大於字軌日期)
@@ -347,13 +367,13 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
       _filterArray.push([
         ['custrecord_gw_assignlog_status', search.Operator.IS, '11'],
         'or',
-        ['custrecord_gw_assignlog_status', search.Operator.IS, '12'],
+        ['custrecord_gw_assignlog_status', search.Operator.IS, '12']
       ])
     } else {
       _filterArray.push([
         ['custrecord_gw_assignlog_status', search.Operator.IS, '21'],
         'or',
-        ['custrecord_gw_assignlog_status', search.Operator.IS, '22'],
+        ['custrecord_gw_assignlog_status', search.Operator.IS, '22']
       ])
     }
     //alert('Parse 11 _filterArray='+JSON.stringify(_filterArray));
@@ -361,122 +381,122 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
 
     var _assignLogSearchResult = _assignLogSearch.run().getRange({
       start: 0,
-      end: 1,
+      end: 1
     })
 
     for (var i = 0; i < _assignLogSearchResult.length; i++) {
-      var _internalid = _assignLogSearchResult[i].id	  
-	  //alert('_assignLogSearchResult[i]='+JSON.stringify(_assignLogSearchResult[i]));
-	  var _lastInvoiceDate = _assignLogSearchResult[i].getValue({
-        name: 'custrecord_gw_last_invoice_date',
+      var _internalid = _assignLogSearchResult[i].id
+      //alert('_assignLogSearchResult[i]='+JSON.stringify(_assignLogSearchResult[i]));
+      var _lastInvoiceDate = _assignLogSearchResult[i].getValue({
+        name: 'custrecord_gw_last_invoice_date'
       })
-	 
-	  if (parseInt(voucher_date) >= parseInt(_lastInvoiceDate)) {
-		  var _status = _assignLogSearchResult[i].getValue({
-			name: 'custrecord_gw_assignlog_status',
-		  })
-		  var _startNo = _assignLogSearchResult[i].getValue({
-			name: 'custrecord_gw_assignlog_startno',
-		  })
-		  _startNo = padding('' + _startNo, 8)
 
-		  var _lastinvnumbe = _assignLogSearchResult[i].getValue({
-			name: 'custrecord_gw_assignlog_lastinvnumbe',
-		  })
-		  var _invoiceTrack = _assignLogSearchResult[i].getValue({
-			name: 'custrecord_gw_assignlog_invoicetrack',
-		  })
+      if (parseInt(voucher_date) >= parseInt(_lastInvoiceDate)) {
+        var _status = _assignLogSearchResult[i].getValue({
+          name: 'custrecord_gw_assignlog_status'
+        })
+        var _startNo = _assignLogSearchResult[i].getValue({
+          name: 'custrecord_gw_assignlog_startno'
+        })
+        _startNo = padding('' + _startNo, 8)
 
-		  var _assignLogRecord = record.load({
-			type: _assignLogRecordId,
-			id: _internalid,
-			isDynamic: true,
-		  })
+        var _lastinvnumbe = _assignLogSearchResult[i].getValue({
+          name: 'custrecord_gw_assignlog_lastinvnumbe'
+        })
+        var _invoiceTrack = _assignLogSearchResult[i].getValue({
+          name: 'custrecord_gw_assignlog_invoicetrack'
+        })
 
-		  if (parseInt(_status) === 11 || parseInt(_status) === 21) {
-			//新字軌
-			var _assignlog_lastinvnumbe = _startNo
-			if (parseInt(_status) === 11) {
-			  _assignLogRecord.setValue({
-				fieldId: 'custrecord_gw_assignlog_status',
-				value: '12',
-			  })
-			} else if (parseInt(_status) === 21) {
-			  _assignLogRecord.setValue({
-				fieldId: 'custrecord_gw_assignlog_status',
-				value: '22',
-			  })
-			}
-			_assignLogRecord.setValue({
-			  fieldId: 'custrecord_gw_assignlog_lastinvnumbe',
-			  value: _assignlog_lastinvnumbe,
-			})
-			_assignLogRecord.setValue({
-			  fieldId: 'custrecord_gw_assignlog_usedcount',
-			  value: '1',
-			})
-			_assignLogRecord.setValue({
-			  fieldId: 'custrecord_gw_last_invoice_date',
-			  value: voucher_date,
-			})
+        var _assignLogRecord = record.load({
+          type: _assignLogRecordId,
+          id: _internalid,
+          isDynamic: true
+        })
 
-			try {
-			  var callId = _assignLogRecord.save()
-			} catch (e) {
-			  console.log(e.name + ':' + e.message)
-			}
+        if (parseInt(_status) === 11 || parseInt(_status) === 21) {
+          //新字軌
+          var _assignlog_lastinvnumbe = _startNo
+          if (parseInt(_status) === 11) {
+            _assignLogRecord.setValue({
+              fieldId: 'custrecord_gw_assignlog_status',
+              value: '12'
+            })
+          } else if (parseInt(_status) === 21) {
+            _assignLogRecord.setValue({
+              fieldId: 'custrecord_gw_assignlog_status',
+              value: '22'
+            })
+          }
+          _assignLogRecord.setValue({
+            fieldId: 'custrecord_gw_assignlog_lastinvnumbe',
+            value: _assignlog_lastinvnumbe
+          })
+          _assignLogRecord.setValue({
+            fieldId: 'custrecord_gw_assignlog_usedcount',
+            value: '1'
+          })
+          _assignLogRecord.setValue({
+            fieldId: 'custrecord_gw_last_invoice_date',
+            value: voucher_date
+          })
 
-			_resultNumber = _invoiceTrack + _assignlog_lastinvnumbe
-		  } else if (parseInt(_status) === 12 || parseInt(_status) === 22) {
-			//使用中
-			var _assignlog_usedcount = _assignLogRecord.getValue({
-			  fieldId: 'custrecord_gw_assignlog_usedcount',
-			})
-			_assignlog_usedcount = parseInt(_assignlog_usedcount) + 1
-			_assignLogRecord.setValue({
-			  fieldId: 'custrecord_gw_assignlog_usedcount',
-			  value: _assignlog_usedcount,
-			})
+          try {
+            var callId = _assignLogRecord.save()
+          } catch (e) {
+            console.log(e.name + ':' + e.message)
+          }
 
-			var _assignlog_lastinvnumbe = _assignLogRecord.getValue({
-			  fieldId: 'custrecord_gw_assignlog_lastinvnumbe',
-			})
-			 
-			_assignlog_lastinvnumbe = add(_assignlog_lastinvnumbe, '1')
-			_assignlog_lastinvnumbe = padding('' +_assignlog_lastinvnumbe, 8)
-			//補0
-			_assignLogRecord.setValue({
-			  fieldId: 'custrecord_gw_assignlog_lastinvnumbe',
-			  value: _assignlog_lastinvnumbe,
-			})
-			_assignLogRecord.setValue({
-			  fieldId: 'custrecord_gw_last_invoice_date',
-			  value: voucher_date,
-			})
+          _resultNumber = _invoiceTrack + _assignlog_lastinvnumbe
+        } else if (parseInt(_status) === 12 || parseInt(_status) === 22) {
+          //使用中
+          var _assignlog_usedcount = _assignLogRecord.getValue({
+            fieldId: 'custrecord_gw_assignlog_usedcount'
+          })
+          _assignlog_usedcount = parseInt(_assignlog_usedcount) + 1
+          _assignLogRecord.setValue({
+            fieldId: 'custrecord_gw_assignlog_usedcount',
+            value: _assignlog_usedcount
+          })
 
-			_resultNumber = _invoiceTrack + _assignlog_lastinvnumbe
+          var _assignlog_lastinvnumbe = _assignLogRecord.getValue({
+            fieldId: 'custrecord_gw_assignlog_lastinvnumbe'
+          })
 
-			if (parseInt(_assignlog_usedcount) == 50) {
-			  if (parseInt(_status) === 12) {
-				_assignLogRecord.setValue({
-				  fieldId: 'custrecord_gw_assignlog_status',
-				  value: '13',
-				})
-			  } else if (parseInt(_status) === 22) {
-				_assignLogRecord.setValue({
-				  fieldId: 'custrecord_gw_assignlog_status',
-				  value: '33',
-				})
-			  }
-			}
+          _assignlog_lastinvnumbe = add(_assignlog_lastinvnumbe, '1')
+          _assignlog_lastinvnumbe = padding('' + _assignlog_lastinvnumbe, 8)
+          //補0
+          _assignLogRecord.setValue({
+            fieldId: 'custrecord_gw_assignlog_lastinvnumbe',
+            value: _assignlog_lastinvnumbe
+          })
+          _assignLogRecord.setValue({
+            fieldId: 'custrecord_gw_last_invoice_date',
+            value: voucher_date
+          })
 
-			try {
-			  var callId = _assignLogRecord.save()
-			} catch (e) {
-			  log.debug(e.name, e.message)
-			}
-		  } 
-	  }
+          _resultNumber = _invoiceTrack + _assignlog_lastinvnumbe
+
+          if (parseInt(_assignlog_usedcount) == 50) {
+            if (parseInt(_status) === 12) {
+              _assignLogRecord.setValue({
+                fieldId: 'custrecord_gw_assignlog_status',
+                value: '13'
+              })
+            } else if (parseInt(_status) === 22) {
+              _assignLogRecord.setValue({
+                fieldId: 'custrecord_gw_assignlog_status',
+                value: '33'
+              })
+            }
+          }
+
+          try {
+            var callId = _assignLogRecord.save()
+          } catch (e) {
+            log.debug(e.name, e.message)
+          }
+        }
+      }
     }
     //alert('_resultNumber='+_resultNumber);
     return _resultNumber
@@ -492,12 +512,12 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
         columns: [
           search.createColumn({
             name: 'custrecord_gw_track_year_month',
-            sort: search.Sort.ASC,
+            sort: search.Sort.ASC
           }),
           search.createColumn({ name: 'custrecord_gw_track_type_code' }),
           search.createColumn({ name: 'custrecord_gw_track_invoice_track' }),
-          search.createColumn({ name: 'custrecord_gw_track_invoice_type' }),
-        ],
+          search.createColumn({ name: 'custrecord_gw_track_invoice_type' })
+        ]
       })
 
       var _filterArray = []
@@ -514,7 +534,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
       _mySearch.filterExpression = _filterArray
       _mySearch.run().each(function (result) {
         var _invoice_track = result.getValue({
-          name: 'custrecord_gw_track_invoice_track',
+          name: 'custrecord_gw_track_invoice_track'
         })
         _resultAry.push(_invoice_track)
         return true
@@ -531,19 +551,19 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
     var _isError = false
     try {
       var _mySearch = search.load({
-        id: _assignLogSearchId,
+        id: _assignLogSearchId
       })
       var _filterArray = []
       _filterArray.push([
         'custrecord_gw_assignlog_businessno',
         search.Operator.IS,
-        businessNo,
+        businessNo
       ])
       _filterArray.push('and')
       _filterArray.push([
         'custrecord_gw_assignlog_invoicetrack',
         search.Operator.IS,
-        track,
+        track
       ])
       if (startNo != '') {
         _filterArray.push('and')
@@ -551,14 +571,14 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
           [
             'custrecord_gw_assignlog_startno',
             search.Operator.LESSTHANOREQUALTO,
-            parseInt(startNo),
+            parseInt(startNo)
           ],
           'and',
           [
             'custrecord_gw_assignlog_endno',
             search.Operator.GREATERTHANOREQUALTO,
-            parseInt(startNo),
-          ],
+            parseInt(startNo)
+          ]
         ])
       }
       if (endNo != '') {
@@ -567,14 +587,14 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
           [
             'custrecord_gw_assignlog_startno',
             search.Operator.LESSTHANOREQUALTO,
-            parseInt(endNo),
+            parseInt(endNo)
           ],
           'and',
           [
             'custrecord_gw_assignlog_endno',
             search.Operator.GREATERTHANOREQUALTO,
-            parseInt(endNo),
-          ],
+            parseInt(endNo)
+          ]
         ])
       }
       _mySearch.filterExpression = _filterArray
@@ -595,33 +615,33 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
     var _isError = false
     try {
       var _mySearch = search.load({
-        id: _assignLogSearchId,
+        id: _assignLogSearchId
       })
       var _filterArray = []
       _filterArray.push([
         'custrecord_gw_assignlog_businessno',
         search.Operator.IS,
-        businessNo,
+        businessNo
       ])
       _filterArray.push('and')
       _filterArray.push([
         'custrecord_gw_assignlog_invoicetrack',
         search.Operator.IS,
-        track,
+        track
       ])
       _filterArray.push('and')
       _filterArray.push([
         [
           'custrecord_gw_assignlog_startno',
           search.Operator.LESSTHANOREQUALTO,
-          parseInt(invoiceNumber),
+          parseInt(invoiceNumber)
         ],
         'and',
         [
           'custrecord_gw_assignlog_endno',
           search.Operator.GREATERTHANOREQUALTO,
-          parseInt(invoiceNumber),
-        ],
+          parseInt(invoiceNumber)
+        ]
       ])
 
       _mySearch.filterExpression = _filterArray
@@ -640,19 +660,19 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
     var _isError = false
     try {
       var _mySearch = search.load({
-        id: _gwVoucherMainSearchId,
+        id: _gwVoucherMainSearchId
       })
       var _filterArray = []
       _filterArray.push([
         'custrecord_gw_seller',
         search.Operator.IS,
-        businessNo,
+        businessNo
       ])
       _filterArray.push('and')
       _filterArray.push([
         'custrecord_gw_voucher_number',
         search.Operator.IS,
-        invoiceNumber,
+        invoiceNumber
       ])
 
       _mySearch.filterExpression = _filterArray
@@ -681,33 +701,33 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
           search.createColumn({ name: 'custrecord_gw_track_year_month' }),
           search.createColumn({ name: 'custrecord_gw_track_type_code' }),
           search.createColumn({ name: 'custrecord_gw_track_invoice_track' }),
-          search.createColumn({ name: 'custrecord_gw_track_invoice_type' }),
-        ],
+          search.createColumn({ name: 'custrecord_gw_track_invoice_type' })
+        ]
       })
 
       var _filterArray = []
       _filterArray.push([
         'custrecord_gw_track_year_month',
         search.Operator.IS,
-        year_month,
+        year_month
       ])
       _filterArray.push('and')
       _filterArray.push([
         'custrecord_gw_track_type_code',
         search.Operator.IS,
-        format_code,
+        format_code
       ])
       _filterArray.push('and')
       _filterArray.push([
         'custrecord_gw_track_invoice_track',
         search.Operator.IS,
-        track,
+        track
       ])
       _filterArray.push('and')
       _filterArray.push([
         'custrecord_gw_track_invoice_type',
         search.Operator.IS,
-        invoice_type,
+        invoice_type
       ])
 
       _mySearch.filterExpression = _filterArray
@@ -733,8 +753,8 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
           search.createColumn({ name: 'amountpaid' }),
           search.createColumn({ name: 'custbody_tcm_taxcode' }), //NS 稅別
           search.createColumn({ name: 'custbody_tcm_taxrate' }), //NS 稅率
-          search.createColumn({ name: 'custbody_tcm_tax_account' }), //科目
-        ],
+          search.createColumn({ name: 'custbody_tcm_tax_account' }) //科目
+        ]
       })
 
       var _filterArray = []
@@ -746,14 +766,14 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
 
       _mySearch.run().each(function (result) {
         var _amount = result.getValue({
-          name: 'amount',
+          name: 'amount'
         })
         var _amountpaid = result.getValue({
-          name: 'amountpaid',
+          name: 'amountpaid'
         })
         //TODO 待確認是否都是含稅金額
         var _tcm_taxrate = result.getValue({
-          name: 'custbody_tcm_taxrate',
+          name: 'custbody_tcm_taxrate'
         })
 
         _payment_amount += _amount
@@ -796,54 +816,54 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
         columns: [
           search.createColumn({
             name: 'custrecord_gw_assign_document_id',
-            summary: search.Summary.GROUP,
+            summary: search.Summary.GROUP
           }),
           search.createColumn({
             name: 'custrecord_gw_deposit_egui_tax_type',
-            summary: search.Summary.GROUP,
+            summary: search.Summary.GROUP
           }),
           search.createColumn({
             name: 'custrecord_gw_assign_document_number',
-            summary: search.Summary.MAX,
+            summary: search.Summary.MAX
           }),
           search.createColumn({
             name: 'custrecord_gw_deposit_egui_tax_amount',
-            summary: search.Summary.SUM,
+            summary: search.Summary.SUM
           }),
           search.createColumn({
             name: 'custrecord_gw_deposit_egui_amount',
-            summary: search.Summary.SUM,
+            summary: search.Summary.SUM
           }),
           search.createColumn({
             name: 'custrecord_gw_deposit_dedcuted_amount',
-            summary: search.Summary.SUM,
-          }),
-        ],
+            summary: search.Summary.SUM
+          })
+        ]
       })
 
       var _filterArray = []
       _filterArray.push([
         'custrecord_gw_deposit_voucher_status',
         search.Operator.IS,
-        'C',
+        'C'
       ])
       _filterArray.push('and')
       _filterArray.push([
         'custrecord_gw_assign_document_type',
         search.Operator.IS,
-        'SALES_ORDER',
+        'SALES_ORDER'
       ])
       _filterArray.push('and')
       _filterArray.push([
         'custrecord_gw_assign_document_id',
         search.Operator.CONTAINS,
-        documentIDAry,
+        documentIDAry
       ])
       _filterArray.push('and')
       _filterArray.push([
         'sum(formulanumeric:{custrecord_gw_deposit_egui_amount}-{custrecord_gw_deposit_dedcuted_amount})',
         search.Operator.NOTEQUALTO,
-        0,
+        0
       ])
 
       _mySearch.filterExpression = _filterArray
@@ -852,27 +872,27 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
       _mySearch.run().each(function (result) {
         var _assign_document_id = result.getValue({
           name: 'custrecord_gw_assign_document_id',
-          summary: search.Summary.GROUP,
+          summary: search.Summary.GROUP
         })
         var _tax_type = result.getValue({
           name: 'custrecord_gw_deposit_egui_tax_type',
-          summary: search.Summary.GROUP,
+          summary: search.Summary.GROUP
         })
         var _assign_document_number = result.getValue({
           name: 'custrecord_gw_assign_document_number',
-          summary: search.Summary.MAX,
+          summary: search.Summary.MAX
         })
         var _tax_amount = parseInt(
           result.getValue({
             name: 'custrecord_gw_deposit_egui_tax_amount',
-            summary: search.Summary.SUM,
+            summary: search.Summary.SUM
           })
         )
 
         var _amount = parseInt(
           result.getValue({
             name: 'custrecord_gw_deposit_egui_amount',
-            summary: search.Summary.SUM,
+            summary: search.Summary.SUM
           }),
           10
         )
@@ -880,7 +900,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
         var _dedcuted_amount = parseInt(
           result.getValue({
             name: 'custrecord_gw_deposit_dedcuted_amount',
-            summary: search.Summary.SUM,
+            summary: search.Summary.SUM
           }),
           10
         )
@@ -894,7 +914,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
           dedcuted_amount: _dedcuted_amount,
           tax_amount: _tax_amount,
           amount: _amount,
-          total_amount: _total_amount,
+          total_amount: _total_amount
         }
 
         _jsonObjAry.push(_jsonObj)
@@ -917,11 +937,11 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
         'companyname',
         'custentity_gw_tax_id_number',
         'address',
-        'email',
-      ],
+        'email'
+      ]
     })
     var pagedData = s.runPaged({
-      pageSize: 1000,
+      pageSize: 1000
     })
     for (var i = 0; i < pagedData.pageRanges.length; i++) {
       var currentPage = pagedData.fetch(i)
@@ -929,19 +949,19 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
         var _internalid = result.id
 
         var _entityid = result.getValue({
-          name: 'entityid',
+          name: 'entityid'
         })
         var _name = result.getValue({
-          name: 'companyname',
+          name: 'companyname'
         })
         var _ban = result.getValue({
-          name: 'custentity_gw_tax_id_number',
+          name: 'custentity_gw_tax_id_number'
         })
         var _email = result.getValue({
-          name: 'email',
+          name: 'email'
         })
         var _address = result.getValue({
-          name: 'address',
+          name: 'address'
         })
 
         var customer = {
@@ -950,7 +970,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
           ban: _ban,
           companyname: _name,
           email: _email,
-          address: _address,
+          address: _address
         }
         customers.push(customer)
       })
@@ -974,28 +994,28 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
           search.createColumn({ name: 'custrecord_gw_voucher_property_value' }),
           search.createColumn({ name: 'custrecord_gw_voucher_property_note' }),
           search.createColumn({ name: 'custrecord_gw_netsuite_id_value' }),
-          search.createColumn({ name: 'custrecord_gw_netsuite_id_text' }),
-        ],
+          search.createColumn({ name: 'custrecord_gw_netsuite_id_text' })
+        ]
       })
 
       var _filterArray = []
       _filterArray.push([
         'custrecord_gw_voucher_group_type',
         search.Operator.IS,
-        group_type,
+        group_type
       ])
       _filterArray.push('and')
       _filterArray.push([
         'custrecord_gw_voucher_property_id',
         search.Operator.IS,
-        voucher_property_value,
+        voucher_property_value
       ])
 
       _mySearch.filterExpression = _filterArray
       _mySearch.run().each(function (result) {
         var internalid = result.id
         _result = result.getValue({
-          name: 'custrecord_gw_voucher_property_value',
+          name: 'custrecord_gw_voucher_property_value'
         })
         return true
       })
@@ -1014,15 +1034,15 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
         type: 'customrecord_gw_apply_period_options',
         columns: [
           search.createColumn({ name: 'custrecord_gw_apply_period_value' }),
-          search.createColumn({ name: 'custrecord_gw_apply_period_text' }),
-        ],
+          search.createColumn({ name: 'custrecord_gw_apply_period_text' })
+        ]
       })
 
       var _filterArray = []
       _filterArray.push([
         'custrecord_gw_apply_period_value',
         search.Operator.IS,
-        year_month,
+        year_month
       ])
       _mySearch.filterExpression = _filterArray
 
@@ -1070,8 +1090,8 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
           'custentity_gw_tax_id_number',
           'vatregnumber',
           'address',
-          'email',
-        ],
+          'email'
+        ]
       })
       log.debug('_fieldLookUp', JSON.stringify(_fieldLookUp))
       _ban = _fieldLookUp.custentity_gw_tax_id_number
@@ -1086,187 +1106,199 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
   /////////////////////////////////////////////////////////////////////////////////////////////
   //20210510 walter modify
   function getSellerInfoBySubsidiary(subsidiary) {
-	  var _comapny_ary = [];
-	  
-	  var _businessSearch = search
-		      .create({
-		        type: 'customrecord_gw_business_entity',
-		        columns: ['custrecord_gw_be_tax_id_number', 'custrecord_gw_be_gui_title', 'custrecord_gw_be_ns_subsidiary', 'custrecord_gw_business_entity_role_list'],
-		        filters: ['custrecord_gw_be_ns_subsidiary', 'is', subsidiary]
-		      })
-		      .run()
-		      .each(function (result) {
-		        var _internalid = result.id
-		
-		        var _tax_id_number = result.getValue({
-		          name: 'custrecord_gw_be_tax_id_number',
-		        })
-		        var _be_gui_title = result.getValue({
-		          name: 'custrecord_gw_be_gui_title',
-		        })
-		        var _be_ns_subsidiary = result.getValue({
-		          name: 'custrecord_gw_be_ns_subsidiary',
-		        })
-				
-				var _business_entity_role_list = result.getValue({
-		          name: 'custrecord_gw_business_entity_role_list',
-		        })
-			  
-		        var _obj = {
-		        	'tax_id_number': _tax_id_number,
-		        	'be_gui_title': _be_gui_title,
-		        	'subsidiary': _be_ns_subsidiary,
-					'business_entity_role_list': _business_entity_role_list
-		        }
-		        
-		        _comapny_ary.push(_obj);
-		      
-		        return true
-		      }) 
-	           
-		      return _comapny_ary;
+    var _comapny_ary = []
+
+    var _businessSearch = search
+      .create({
+        type: 'customrecord_gw_business_entity',
+        columns: [
+          'custrecord_gw_be_tax_id_number',
+          'custrecord_gw_be_gui_title',
+          'custrecord_gw_be_ns_subsidiary',
+          'custrecord_gw_business_entity_role_list'
+        ],
+        filters: ['custrecord_gw_be_ns_subsidiary', 'is', subsidiary]
+      })
+      .run()
+      .each(function (result) {
+        var _internalid = result.id
+
+        var _tax_id_number = result.getValue({
+          name: 'custrecord_gw_be_tax_id_number'
+        })
+        var _be_gui_title = result.getValue({
+          name: 'custrecord_gw_be_gui_title'
+        })
+        var _be_ns_subsidiary = result.getValue({
+          name: 'custrecord_gw_be_ns_subsidiary'
+        })
+
+        var _business_entity_role_list = result.getValue({
+          name: 'custrecord_gw_business_entity_role_list'
+        })
+
+        var _obj = {
+          tax_id_number: _tax_id_number,
+          be_gui_title: _be_gui_title,
+          subsidiary: _be_ns_subsidiary,
+          business_entity_role_list: _business_entity_role_list
+        }
+
+        _comapny_ary.push(_obj)
+
+        return true
+      })
+
+    return _comapny_ary
   }
-  
+
   //透過user_id取得資料營業人清單
   function getBusinessEntitByUserId(user_id, subsidiary) {
-	  var _comapny_ary = [];
-	  
-	  if (subsidiary !=null && subsidiary !='') {
-		  var _role_id_ary = getUserRolesByUserId(user_id);
-		  
-		  var _mySearch = search.create({
-			type: 'customrecord_gw_business_entity',
-			columns: [
-			  search.createColumn({ name: 'custrecord_gw_be_tax_id_number' }),  
-			  search.createColumn({ name: 'custrecord_gw_be_gui_title' }),  
-			  search.createColumn({ name: 'custrecord_gw_be_ns_subsidiary' }) 
-			],
-		  })
+    var _comapny_ary = []
 
-		  var _filterArray = []
-		  _filterArray.push(['custrecord_gw_be_ns_subsidiary', search.Operator.IS, subsidiary])
-		  _filterArray.push('or')
-		  _filterArray.push(['custrecord_gw_business_entity_role_list', search.Operator.ANYOF, _role_id_ary]) 
-		  _mySearch.filterExpression = _filterArray
-		  log.debug('GET BusinessEntit _filterArray: ' , JSON.stringify(_filterArray))
-		  _mySearch.run().each(function (result) { 
-			var _internalid = result.id
-			log.debug('GET BusinessEntit result: ' , JSON.stringify(result))
-			
-			var _tax_id_number = result.getValue({
-			  name: 'custrecord_gw_be_tax_id_number',
-			})
-			var _be_gui_title = result.getValue({
-			  name: 'custrecord_gw_be_gui_title',
-			})
-			var _be_ns_subsidiary = result.getValue({
-			  name: 'custrecord_gw_be_ns_subsidiary',
-			}) 
-			var _obj = {
-				'tax_id_number': _tax_id_number,
-				'be_gui_title': _be_gui_title,
-				'subsidiary': _be_ns_subsidiary 
-			}
-			
-			_comapny_ary.push(_obj); 
+    if (subsidiary != null && subsidiary != '') {
+      var _role_id_ary = getUserRolesByUserId(user_id)
 
-			return true
-		  }) 
-	  }        
-	  return _comapny_ary;
+      var _mySearch = search.create({
+        type: 'customrecord_gw_business_entity',
+        columns: [
+          search.createColumn({ name: 'custrecord_gw_be_tax_id_number' }),
+          search.createColumn({ name: 'custrecord_gw_be_gui_title' }),
+          search.createColumn({ name: 'custrecord_gw_be_ns_subsidiary' })
+        ]
+      })
+
+      var _filterArray = []
+      _filterArray.push([
+        'custrecord_gw_be_ns_subsidiary',
+        search.Operator.IS,
+        subsidiary
+      ])
+      _filterArray.push('or')
+      _filterArray.push([
+        'custrecord_gw_business_entity_role_list',
+        search.Operator.ANYOF,
+        _role_id_ary
+      ])
+      _mySearch.filterExpression = _filterArray
+      log.debug(
+        'GET BusinessEntit _filterArray: ',
+        JSON.stringify(_filterArray)
+      )
+      _mySearch.run().each(function (result) {
+        var _internalid = result.id
+        log.debug('GET BusinessEntit result: ', JSON.stringify(result))
+
+        var _tax_id_number = result.getValue({
+          name: 'custrecord_gw_be_tax_id_number'
+        })
+        var _be_gui_title = result.getValue({
+          name: 'custrecord_gw_be_gui_title'
+        })
+        var _be_ns_subsidiary = result.getValue({
+          name: 'custrecord_gw_be_ns_subsidiary'
+        })
+        var _obj = {
+          tax_id_number: _tax_id_number,
+          be_gui_title: _be_gui_title,
+          subsidiary: _be_ns_subsidiary
+        }
+
+        _comapny_ary.push(_obj)
+
+        return true
+      })
+    }
+    return _comapny_ary
   }
-  
+
   //取得人員權限清單-255781
   function getUserRolesByUserId(user_id) {
-	  var _role_ary = [];
-	  
-	  var _mySearch = search.load({
-		  id: 'customsearch_gw_user_roles_search_list',
-	  })
-	  
-	  var _filterArray = []
-	  _filterArray.push([
-		  'internalid',
-		  search.Operator.IS,
-		  user_id,
-	  ])
-	  _mySearch.filterExpression = _filterArray
-	  
-	  _mySearch.run().each(function (result) {
-         var _result = JSON.parse(JSON.stringify(result))		 
-		 log.debug('GET user search result: ' , JSON.stringify(_result))
-		 
-		 var _role_id = -1;
-		 if (_result.values.role.length != 0) {
-              _role_id = _result.values.role[0].value //3
-              //_role_text = _result.values.role[0].text //Administrator
-         }
-	     _role_ary.push(_role_id)
-		 
-	     return true
-	  })
-	   	   
-	  return _role_ary;
+    var _role_ary = []
+
+    var _mySearch = search.load({
+      id: 'customsearch_gw_user_roles_search_list'
+    })
+
+    var _filterArray = []
+    _filterArray.push(['internalid', search.Operator.IS, user_id])
+    _mySearch.filterExpression = _filterArray
+
+    _mySearch.run().each(function (result) {
+      var _result = JSON.parse(JSON.stringify(result))
+      log.debug('GET user search result: ', JSON.stringify(_result))
+
+      var _role_id = -1
+      if (_result.values.role.length != 0) {
+        _role_id = _result.values.role[0].value //3
+        //_role_text = _result.values.role[0].text //Administrator
+      }
+      _role_ary.push(_role_id)
+
+      return true
+    })
+
+    return _role_ary
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////
-  
+
   function loadAllTaxInformation() {
-	var _taxObjAry = [];
-	
-    try {		  
+    var _taxObjAry = []
+
+    try {
       var _mySearch = search.create({
         type: 'customrecord_gw_ap_doc_tax_type_option',
-        columns: [ 
+        columns: [
           search.createColumn({ name: 'custrecord_gw_ap_doc_tax_type_value' }), //1
-          search.createColumn({ name: 'custrecord_gw_ap_doc_tax_type_text' }),  //應稅
-          search.createColumn({ name: 'custrecord_gw_tax_type_tax_code' })      //TAX CODES
-        ],
+          search.createColumn({ name: 'custrecord_gw_ap_doc_tax_type_text' }), //應稅
+          search.createColumn({ name: 'custrecord_gw_tax_type_tax_code' }) //TAX CODES
+        ]
       })
 
       //var _filterArray = []
       //_filterArray.push(['custrecord_gw_voucher_group_type', 'is', _group_type])
       //_mySearch.filterExpression = _filterArray
       _mySearch.run().each(function (result) {
-        var internalid = result.id;
-		
-        var _voucher_property_id = 'TAX_TYPE'		
+        var internalid = result.id
+
+        var _voucher_property_id = 'TAX_TYPE'
         var _voucher_property_value = result.getValue({
-          name: 'custrecord_gw_ap_doc_tax_type_value',
+          name: 'custrecord_gw_ap_doc_tax_type_value'
         })
         var _voucher_property_note = result.getValue({
-          name: 'custrecord_gw_ap_doc_tax_type_text',
-        }) 
-		var _netsuite_id_value = result.getValue({
-          name: 'custrecord_gw_tax_type_tax_code',
-        }) 
-		var _netsuite_id_text = result.getText({
-          name: 'custrecord_gw_tax_type_tax_code',
-        }) 
-		
+          name: 'custrecord_gw_ap_doc_tax_type_text'
+        })
+        var _netsuite_id_value = result.getValue({
+          name: 'custrecord_gw_tax_type_tax_code'
+        })
+        var _netsuite_id_text = result.getText({
+          name: 'custrecord_gw_tax_type_tax_code'
+        })
+
         var _obj = {
           voucher_property_id: _voucher_property_id,
           voucher_property_value: _voucher_property_value,
           voucher_property_note: _voucher_property_note,
           netsuite_id_value: _netsuite_id_value,
-          netsuite_id_text: _netsuite_id_text,
+          netsuite_id_text: _netsuite_id_text
         }
-		
-        _taxObjAry.push(_obj);
-		
-        return true;
+
+        _taxObjAry.push(_obj)
+
+        return true
       })
     } catch (e) {
       log.debug(e.name, e.message)
     }
-	
-	return _taxObjAry;
+
+    return _taxObjAry
   }
-  
+
   /////////////////////////////////////////////////////////////////////////////////////////////
 
   return {
-	getBusinessEntitByUserId: getBusinessEntitByUserId,
-	loadAllTaxInformation: loadAllTaxInformation,
+    getBusinessEntitByUserId: getBusinessEntitByUserId,
+    loadAllTaxInformation: loadAllTaxInformation,
     getApplyPeriodOptionId: getApplyPeriodOptionId,
     getCustomerBAN: getCustomerBAN,
     checkTaxDifference: checkTaxDifference,
@@ -1288,6 +1320,6 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
     getAssignLogNumber: getAssignLogNumber,
     getRandomNum: getRandomNum,
     getSellerInfoBySubsidiary: getSellerInfoBySubsidiary,
-    test1: test1,
+    test1: test1
   }
 })

@@ -40,13 +40,21 @@ define([
     VOID: 'VOID'
   }
 
-  function getRandomNumber() {
-    var max = 9999
-    var min = 1000
-    var range = max - min
-    var rand = Math.random()
-    var result = min + Math.round(rand * range)
-    return result.toString()
+  function getRandomNumber(stringValue) {
+    return (Math.abs(genHash(stringValue)) % 10000).toString()
+  }
+
+  function genHash(stringValue) {
+    var hash = 7,
+      i,
+      chr
+    if (stringValue.length === 0) return hash
+    for (i = 0; i < stringValue.length; i++) {
+      chr = stringValue.charCodeAt(i)
+      hash = (hash << 5) - hash + chr
+      hash |= 0 // Convert to 32bit integer
+    }
+    return hash
   }
 
   function shouldIssueNewGui(eguiObj) {
@@ -76,18 +84,16 @@ define([
     }
 
     getNewGuiNumber(eguiObj) {
-      return {
-        newEguiNumber: gwEguiBookService.getNewEGuiNumber(
-          eguiObj.guiType.value,
-          eguiObj.sellerTaxId,
-          '',
-          '',
-          eguiObj.documentPeriod,
-          eguiObj.documentDate,
-          1
-        )[0],
-        newRandomNumber: getRandomNumber()
-      }
+      var newEguiNumber = gwEguiBookService.getNewEGuiNumber(
+        eguiObj.guiType.value,
+        eguiObj.sellerTaxId,
+        '',
+        '',
+        eguiObj.documentPeriod,
+        eguiObj.documentDate,
+        1
+      )[0]
+      return newEguiNumber
     }
 
     createEgui() {
@@ -96,10 +102,11 @@ define([
         gwMigTypeDao.businessTranTypeEnum.B2C
       )
       if (shouldIssueNewGui(eguiObj)) {
-        var newNumbers = this.getNewGuiNumber(eguiObj)
-        eguiObj.documentNumber = newNumbers.newEguiNumber
-        eguiObj.randomNumber = newNumbers.newRandomNumber
+        eguiObj.documentNumber = this.getNewGuiNumber(eguiObj)
       }
+      eguiObj.randomNumber = getRandomNumber(
+        `${eguiObj.documentNumber}${eguiObj.sellerTaxId}`
+      )
       if (!eguiObj.transactions) eguiObj.transactions = [eguiObj.internalId]
       this.egui = eguiObj
       return gwVoucherDao.saveEguiToRecord(this.egui)
