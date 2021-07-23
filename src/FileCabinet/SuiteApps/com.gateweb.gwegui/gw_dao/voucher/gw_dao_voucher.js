@@ -190,7 +190,9 @@ define([
       line.taxAmt = 0
       line.salesAmt = line.totalAmt
       line.quantity = line.quantity ? parseFloat(line.quantity) : 1
-      line.unitPrice = parseFloat(line.totalAmt) / line.quantity
+      line.unitPrice = parseFloat(
+        (parseFloat(line.totalAmt) / line.quantity).toFixed(7)
+      )
       return line
     }, lines)
   }
