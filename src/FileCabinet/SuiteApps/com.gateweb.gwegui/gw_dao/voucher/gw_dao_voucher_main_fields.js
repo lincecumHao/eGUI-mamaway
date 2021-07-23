@@ -372,6 +372,27 @@ define(['../../library/ramda.min'], function (ramda) {
     Object.keys(fieldConfig)
   )
 
+  var uploadStatus = {
+    PENDING_UPLOAD: 'A',
+    UPLOADING: 'P',
+    ISSUE_SUCCESS: 'C',
+    ISSUE_FAILED: 'E',
+    RESPONDED_ERROR: 'G',
+    NOT_UPLOAD: 'M',
+    DELETED: 'D'
+  }
+  var voucherStatus = {
+    VOUCHER_ISSUE: 'VOUCHER_ISSUE',
+    VOUCHER_SUCCESS: 'VOUCHER_SUCCESS',
+    VOUCHER_ERROR: 'VOUCHER_ERROR',
+    CANCEL_ISSUE: 'CANCEL_ISSUE',
+    CANCEL_APPROVE: 'CANCEL_APPROVE',
+    CANCEL_REJECT: 'CANCEL_REJECT',
+    CANCEL_UPLOAD: 'CANCEL_UPLOAD',
+    CANCEL_SUCCESS: 'CANCEL_SUCCESS',
+    CANCEL_ERROR: 'CANCEL_ERROR'
+  }
+
   exports.fields = fieldConfig
   exports.allFieldIds = Object.keys(fieldConfig).map(function (key) {
     return key
@@ -379,6 +400,8 @@ define(['../../library/ramda.min'], function (ramda) {
   exports.fieldOutputMapping = fieldOutputMapping
   exports.fieldIdMapping = fieldIdMapping
   exports.fieldInputMapping = fieldInputMapping
+  exports.voucherStatus = voucherStatus
+  exports.uploadStatus = uploadStatus
   exports.sublists = sublists
   return exports
 })

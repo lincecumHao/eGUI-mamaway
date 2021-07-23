@@ -292,7 +292,10 @@ define([
       ] = isSuccess ? 'P' : 'E'
       updateValue[
         mainFields.fields.custrecord_gw_uploadstatus_messag.id
-      ] = isSuccess ? result.code : result.body
+      ] = isSuccess ? '' : result.body
+      updateValue[mainFields.fields.custrecord_gw_voucher_status.id] = isSuccess
+        ? mainFields.voucherStatus.VOUCHER_SUCCESS
+        : mainFields.voucherStatus.VOUCHER_ERROR
       record.submitFields({
         type: 'customrecord_gw_voucher_main',
         id: voucherId,
