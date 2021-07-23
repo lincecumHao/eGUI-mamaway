@@ -165,7 +165,9 @@ define([
   }
 
   function isB2CEgui(eguiObj) {
-    return eguiObj.buyerTaxId === '0000000000' || buyerName === '0000000000'
+    return (
+      eguiObj.buyerTaxId === '0000000000' || eguiObj.buyerName === '0000000000'
+    )
   }
 
   function updateEguiObj(eguiObj) {
