@@ -206,9 +206,14 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
   function getRandomNumNew(eguiNumber, sellerTaxId) {
     var eguiNumberStr = eguiNumber + ''
     var sellerTaxIdStr = sellerTaxId + ''
-    return (
+    var randomNumber = (
       Math.abs(genHash(eguiNumberStr + sellerTaxIdStr)) % 10000
     ).toString()
+    if (randomNumber.length === 3) {
+      randomNumber = '0' + randomNumber
+    }
+
+    return randomNumber
   }
   //取亂數
   function getRandomNum(min, max) {

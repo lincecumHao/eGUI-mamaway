@@ -13,12 +13,12 @@ require([], function () {
   }
 
   function genRandomNumber(stringValue) {
-    return (Math.abs(genHash(stringValue)) % 10000).toString()
+    return (Math.abs(genHash(stringValue)) % 10000).toString().padStart(4, '0')
   }
 
-  var hashValue = genHash('PH3977104724549210')
+  var hashValue = genHash('VA0498927783684541')
   log.debug({ title: 'hashValue', details: hashValue })
-  var randomNumber = genRandomNumber('PH3977104724549210')
+  var randomNumber = genRandomNumber('VA0498927783684541')
   log.debug({ title: 'randomNumber', details: randomNumber })
   log.debug({ title: 'Execution end' })
 })

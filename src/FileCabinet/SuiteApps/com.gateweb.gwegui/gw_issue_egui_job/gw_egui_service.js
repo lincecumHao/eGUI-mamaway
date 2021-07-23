@@ -41,7 +41,7 @@ define([
   }
 
   function getRandomNumber(stringValue) {
-    return (Math.abs(genHash(stringValue)) % 10000).toString()
+    return (Math.abs(genHash(stringValue)) % 10000).toString().padStart(4, '0')
   }
 
   function genHash(stringValue) {
