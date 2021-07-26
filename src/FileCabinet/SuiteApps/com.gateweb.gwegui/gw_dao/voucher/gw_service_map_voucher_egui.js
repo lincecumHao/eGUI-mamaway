@@ -4,7 +4,8 @@ define([
   '../../library/gw_mapping_util',
   './gw_dao_voucher_main_fields',
   './gw_dao_voucher_detail_fields',
-], (ramda, gwVoucherDao, gwMapUtil, mainFields, detailFields) => {
+  '../taxType/gw_dao_tax_type_21'
+], (ramda, gwVoucherDao, gwMapUtil, mainFields, detailFields, gwTaxTypeDao) => {
   /**
    * Module Description...
    *
@@ -48,7 +49,11 @@ define([
         var document = gwMapUtil.mapTo(searchResult, mainFields)
 
         document.lines = ramda.map((resultLine) => {
-          return gwMapUtil.mapTo(resultLine, detailFields)
+          let mappedLine = gwMapUtil.mapTo(resultLine, detailFields)
+          log.debug({ title: 'test mapped lines', details: mappedLine })
+          let taxTypeObj = gwTaxTypeDao.getTaxTypeByTaxCode(mappedLine.taxCode)
+          mappedLine.taxType = taxTypeObj ? taxTypeObj.value : '1'
+          return mappedLine
         }, searchResult.lines)
         return document
       }, searchResults)
