@@ -1066,7 +1066,7 @@
             <displaywidth></displaywidth>
             <dynamicdefault></dynamicdefault>
             <encryptatrest>F</encryptatrest>
-            <fieldtype>FLOAT</fieldtype>
+            <fieldtype>TEXT</fieldtype>
             <globalsearch>F</globalsearch>
             <help></help>
             <isformula>F</isformula>
