@@ -875,22 +875,16 @@ define([
             )
           }
           //DonateMark
+          var _donateMark = '0'
+		  if (_npoban != '') _donateMark = '1'
           setXmlMainAndAmountValue(
             _xmlDocument,
             _select_path,
             'Main',
             'DonateMark',
-            '0'
+            _donateMark
           )
-          if (_npoban !== '') {
-            setXmlMainAndAmountValue(
-              _xmlDocument,
-              _select_path,
-              'Main',
-              'DonateMark',
-              '1'
-            )
-          }
+    
           setXmlMainAndAmountValue(
             _xmlDocument,
             _select_path,

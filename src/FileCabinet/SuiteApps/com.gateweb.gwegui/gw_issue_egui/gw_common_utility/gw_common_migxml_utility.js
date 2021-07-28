@@ -859,23 +859,17 @@ define([
             )
           }
           //DonateMark
+          var _donateMark = '0'
+		  if (_npoban != '') _donateMark= '1'
+		   
           setXmlMainAndAmountValue(
             _xmlDocument,
             _select_path,
             'Main',
             'DonateMark',
-            '0'
-          )
-          if (_npoban !== '') {
-            setXmlMainAndAmountValue(
-              _xmlDocument,
-              _select_path,
-              'Main',
-              'DonateMark',
-              '1'
-            )
-          }
-
+            _donateMark
+          ) 
+            
           setXmlMainAndAmountValue(
             _xmlDocument,
             _select_path,
@@ -1605,22 +1599,16 @@ define([
             )
           }
           //DonateMark
+          var _donateMark = '0'
+		  if (_npoban != '') _donateMark= '1'
+		   
           setXmlMainAndAmountValue(
             _xmlDocument,
             _select_path,
             'Main',
             'DonateMark',
-            '0'
-          )
-          if (_npoban !== '') {
-            setXmlMainAndAmountValue(
-              _xmlDocument,
-              _select_path,
-              'Main',
-              'DonateMark',
-              '1'
-            )
-          }
+            _donateMark
+          )  
 
           setXmlMainAndAmountValue(
             _xmlDocument,

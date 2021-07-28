@@ -76,6 +76,225 @@ define([
       var _pre_deposit_sales_amount = 0
       var _pre_deposit_free_sales_amount = 0
       var _pre_deposit_zero_sales_amount = 0
+	  
+	  var _pagedData = _mySearch.runPaged({
+		  pageSize: 80,
+	  })
+	  for (var i = 0; i < _pagedData.pageRanges.length; i++) {
+		  var _currentPage = _pagedData.fetch(i)
+		  _currentPage.data.forEach(function (result) {
+			  
+			var _result = JSON.parse(JSON.stringify(result))
+			log.debug('JSON.stringify(result)', JSON.stringify(result))
+
+			var _applyId = _result.id //948
+			var _mig_type = _result.values.custrecord_gw_mig_type //B2BS, B2BE, B2C
+			var _voucher_number = _result.values.custrecord_gw_voucher_number
+			var _voucher_type = _result.values.custrecord_gw_voucher_type //EGUI , ALLOWANCE
+			var _voucher_status = _result.values.custrecord_gw_voucher_status //VOUCHER_SUCCESS , CANCEL_SUCCESS
+			var _sales_amount = _result.values.custrecord_gw_sales_amount //未稅金額
+
+			var _ns_document_type =
+			  _result.values[
+				'CUSTRECORD_GW_VOUCHER_MAIN_INTERNAL_ID.custrecord_gw_ns_document_type'
+			  ] //INVOICE, CREDITMEMO
+			var _ns_document_apply_id =
+			  _result.values[
+				'CUSTRECORD_GW_VOUCHER_MAIN_INTERNAL_ID.custrecord_gw_ns_document_apply_id'
+			  ] //Netsuite internalId
+
+			var _original_gui_internal_id =
+			  _result.values[
+				'CUSTRECORD_GW_VOUCHER_MAIN_INTERNAL_ID.custrecord_gw_original_gui_internal_id'
+			  ] //ZZ10094357
+			var _original_item_code =
+			  _result.values[
+				'CUSTRECORD_GW_VOUCHER_MAIN_INTERNAL_ID.custrecord_gw_dtl_item_tax_code'
+			  ]
+			var _original_item_amount =
+			  _result.values[
+				'CUSTRECORD_GW_VOUCHER_MAIN_INTERNAL_ID.custrecord_gw_item_amount'
+			  ] //1200
+			var _original_voucher_information =
+			  Math.round(_original_gui_internal_id) +
+			  '-' +
+			  Math.abs(_original_item_amount) +
+			  '-' +
+			  _original_item_code
+
+			var _applyType = 'APPLY'
+			if (_voucher_status.indexOf('CANCEL') != -1) _applyType = 'CANCEL'
+
+			var _upload_mig_type = invoiceutility.getMigType(
+			  _applyType,
+			  _voucher_type,
+			  _mig_type
+			) //C0401, A0101..etc
+			var _file_name =
+			  _upload_mig_type + '-' + _voucher_number + '-' + _applyId + '.xml'
+			var _documentID = _ns_document_type + '-' + _ns_document_apply_id //INVOICE-948, CREDITMEMO-1230
+
+			if (_ns_document_type == 'INVOICE') {
+			  var _array_str = _invoice_ids_Ary.toString()
+			  if (_array_str.indexOf(_documentID) == -1) {
+				_invoice_ids_Ary.push(_documentID)
+			  }
+			} else if (_ns_document_type == 'CUSTOMER_DEPOSIT') {
+			  var _array_str = _customer_deposit_ids_Ary.toString()
+			  if (_array_str.indexOf(_documentID) == -1) {
+				_customer_deposit_ids_Ary.push(_documentID)
+			  }
+			} else if (_ns_document_type == 'SALES_ORDER') {
+			  var _array_str = _sales_order_deposit_ids_Ary.toString()
+			  if (_array_str.indexOf(_documentID) == -1) {
+				_sales_order_deposit_ids_Ary.push(_documentID)
+			  }
+			} else if (_ns_document_type == 'CREDITMEMO') {
+			  var _array_str = _creditmemo_ids_Ary.toString()
+			  if (_array_str.indexOf(_documentID) == -1) {
+				_creditmemo_ids_Ary.push(_documentID)
+			  }
+			  //只有折讓單才紀錄
+			  _original_voucher_number_Ary.push(_original_voucher_information) //1230-590(amount)
+			}
+
+			if (_checkId != _applyId) {
+			  if (_jsonObjAry.length != 0) {
+				var _pre_obj = JSON.parse(
+				  JSON.stringify(_jsonObjAry[_jsonObjAry.length - 1])
+				)
+
+				_pre_obj.file_name = _pre_file_name
+				_pre_obj.sales_amount = _pre_sales_amount
+				_pre_obj.deposit_sales_amount = _pre_deposit_sales_amount
+				_pre_obj.deposit_zero_amount = _pre_deposit_zero_sales_amount
+				_pre_obj.deposit_free_amount = _pre_deposit_free_sales_amount
+
+				_pre_obj.invoiceAry = JSON.parse(
+				  JSON.stringify(_pre_invoice_ids_Ary)
+				)
+				_pre_obj.creditmemoAry = JSON.parse(
+				  JSON.stringify(_pre_creditmemo_ids_Ary)
+				)
+				_pre_obj.customerdepositAry = JSON.parse(
+				  JSON.stringify(_pre_customer_deposit_ids_Ary)
+				)
+				_pre_obj.salesorderAry = JSON.parse(
+				  JSON.stringify(_pre_sales_order_deposit_ids_Ary)
+				)
+				_pre_obj.originalVoucherAry = JSON.parse(
+				  JSON.stringify(_pre_original_voucher_number_Ary)
+				)
+
+				_jsonObjAry[_jsonObjAry.length - 1] = _pre_obj
+
+				_pre_deposit_sales_amount = 0
+				_pre_deposit_free_sales_amount = 0
+				_pre_deposit_zero_sales_amount = 0
+
+				_pre_invoice_ids_Ary = []
+				_pre_creditmemo_ids_Ary = []
+				_pre_original_voucher_number_Ary = []
+				_pre_customer_deposit_ids_Ary = []
+				_pre_sales_order_deposit_ids_Ary = []
+				_invoice_ids_Ary = []
+				_creditmemo_ids_Ary = []
+				_original_voucher_number_Ary = []
+				_customer_deposit_ids_Ary = []
+				_sales_order_deposit_ids_Ary = []
+
+				if (
+				  _ns_document_type == 'INVOICE' ||
+				  _ns_document_type == 'SALES_ORDER'
+				) {
+				  var _array_str = _invoice_ids_Ary.toString()
+				  if (_array_str.indexOf(_documentID) == -1) {
+					_invoice_ids_Ary.push(_documentID)
+				  }
+				} else if (_ns_document_type == 'CUSTOMER_DEPOSIT') {
+				  var _array_str = _customer_deposit_ids_Ary.toString()
+				  if (_array_str.indexOf(_documentID) == -1) {
+					_customer_deposit_ids_Ary.push(_documentID)
+				  }
+				} else if (_ns_document_type == 'SALES_ORDER') {
+				  var _array_str = _sales_order_deposit_ids_Ary.toString()
+				  if (_array_str.indexOf(_documentID) == -1) {
+					_sales_order_deposit_ids_Ary.push(_documentID)
+				  }
+				} else if (_ns_document_type == 'CREDITMEMO') {
+				  var _array_str = _creditmemo_ids_Ary.toString()
+				  if (_array_str.indexOf(_documentID) == -1) {
+					_creditmemo_ids_Ary.push(_documentID)
+				  }
+				  //只有折讓單才紀錄
+				  _original_voucher_number_Ary.push(_original_voucher_information) //1230-590(amount)
+				}
+			  }
+
+			  _obj = {
+				applyId: _applyId,
+				upload_mig_type: _upload_mig_type, //C0401, A0101...etc
+				voucher_number: _voucher_number,
+				voucher_type: _voucher_type,
+				ns_document_type: _ns_document_type,
+				voucher_status: _voucher_status,
+				file_name: _file_name,
+				sales_amount: _sales_amount,
+				deposit_sales_amount: 0,
+				deposit_zero_amount: 0,
+				deposit_free_amount: 0,
+				invoiceAry: _invoice_ids_Ary,
+				creditmemoAry: _creditmemo_ids_Ary,
+				customerdepositAry: _customer_deposit_ids_Ary,
+				salesorderAry: _sales_order_deposit_ids_Ary,
+				originalVoucherAry: _original_voucher_number_Ary,
+			  }
+			  _jsonObjAry.push(_obj)
+			}
+
+			if (_ns_document_type == 'INVOICE') {
+			  var _array_str = _pre_invoice_ids_Ary.toString()
+			  if (_array_str.indexOf(_documentID) == -1) {
+				_pre_invoice_ids_Ary.push(_documentID)
+			  }
+			} else if (_ns_document_type == 'CUSTOMER_DEPOSIT') {
+			  var _array_str = _pre_customer_deposit_ids_Ary.toString()
+			  if (_array_str.indexOf(_documentID) == -1) {
+				_pre_customer_deposit_ids_Ary.push(_documentID)
+			  }
+			} else if (_ns_document_type == 'SALES_ORDER') {
+			  var _array_str = _pre_sales_order_deposit_ids_Ary.toString()
+			  if (_array_str.indexOf(_documentID) == -1) {
+				_pre_sales_order_deposit_ids_Ary.push(_documentID)
+			  }
+			} else if (_ns_document_type == 'CREDITMEMO') {
+			  var _array_str = _pre_creditmemo_ids_Ary.toString()
+			  if (_array_str.indexOf(_documentID) == -1) {
+				_pre_creditmemo_ids_Ary.push(_documentID)
+			  }
+			  _pre_original_voucher_number_Ary.push(_original_voucher_information)
+			}
+
+			_checkId = _applyId
+			_pre_file_name = _file_name
+			_pre_sales_amount = _sales_amount
+
+			var _taxObj = getTaxInformation(_original_item_code)
+			var _tax_type = _taxObj==null?_original_item_code: _taxObj.voucher_property_value
+			if (_ns_document_type == 'CUSTOMER_DEPOSIT') {
+			  if (_tax_type == '1') {
+				_pre_deposit_sales_amount += _original_item_amount
+			  } else if (_tax_type == '2') {
+				_pre_deposit_zero_sales_amount += _original_item_amount
+			  } else if (_tax_type == '3') {
+				_pre_deposit_free_sales_amount += _original_item_amount
+			  }
+			} 
+		  })
+	  }
+	  	  
+	  ////////////////////////////////////////////////////
+	  /**
       _mySearch.run().each(function (result) {
         var _result = JSON.parse(JSON.stringify(result))
         log.debug('JSON.stringify(result)', JSON.stringify(result))
@@ -273,7 +492,7 @@ define([
         _pre_sales_amount = _sales_amount
 
         var _taxObj = getTaxInformation(_original_item_code)
-        var _tax_type = _taxObj.voucher_property_value
+        var _tax_type = _taxObj==null?_original_item_code: _taxObj.voucher_property_value
         if (_ns_document_type == 'CUSTOMER_DEPOSIT') {
           if (_tax_type == '1') {
             _pre_deposit_sales_amount += _original_item_amount
@@ -286,6 +505,8 @@ define([
 
         return true
       })
+	  */
+	  
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     } catch (e) {
       log.error(e.name, e.message)
