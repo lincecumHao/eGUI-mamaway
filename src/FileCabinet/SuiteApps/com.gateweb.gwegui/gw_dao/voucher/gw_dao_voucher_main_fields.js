@@ -289,8 +289,8 @@ define(['../../library/ramda.min'], function (ramda) {
     },
     custrecord_gw_original_buyer_id: {
       id: 'custrecord_gw_original_buyer_id',
-      sourceField: '',
-      outputField: 'allowanceEguiBuyer'
+      sourceField: 'buyerId',
+      outputField: 'buyerId'
     },
     custrecord_gw_voucher_main_apply_user_id: {
       id: 'custrecord_gw_voucher_main_apply_user_id',
