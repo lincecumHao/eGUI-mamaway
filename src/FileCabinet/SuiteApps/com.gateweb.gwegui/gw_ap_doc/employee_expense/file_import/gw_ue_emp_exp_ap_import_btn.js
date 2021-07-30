@@ -37,12 +37,21 @@ define([], () => {
    * @param {Form} context.form - The current UI form
    */
   function addApImportBtn(context) {
+    log.debug({
+      title: 'add ap import btn context record type',
+      details: context.newRecord.type
+    })
     var form = context.form
     form.clientScriptModulePath = './gw_cs_emp_exp_ap_import_btn.js'
     form.addButton({
       id: 'custpage_ap_import_btn',
       label: '批次匯入進項憑證',
-      functionName: 'apDocImportBtnClicked(' + context.newRecord.id + ')',
+      functionName:
+        "apDocImportBtnClicked('" +
+        context.newRecord.type +
+        "'," +
+        context.newRecord.id +
+        ')'
     })
   }
 

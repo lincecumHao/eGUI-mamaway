@@ -11,7 +11,7 @@ define([
   '../../application/gw_service_ap_doc_apply_period',
   '../../application/gw_service_ap_doc_gui_number',
   '../../application/moment-with-locales',
-  '../../application/gw_lib_wrapper',
+  '../../application/gw_lib_wrapper'
 ], function (
   format,
   record,
@@ -60,8 +60,9 @@ define([
     14: 'custrecord_gw_ap_doc_total_amt',
     15: 'custrecord_gw_ap_doc_tax_type',
     16: '',
-    17: 'custrecord_gw_ap_doc_comm_num',
+    17: 'custrecord_gw_ap_doc_comm_num'
   }
+  const transactionTypeMapping = {}
   var lines = {}
   var applyPeriod = applyPeriodService.convertToApplyPeriod(null)
   var companyPreference = null
@@ -78,7 +79,7 @@ define([
       headerCols[colIdx] = {
         colIdx: colIdx,
         colLabel: headerLabel,
-        apFieldId: csvColNsFieldIdMapping[colIdx],
+        apFieldId: csvColNsFieldIdMapping[colIdx]
       }
     })
   }
@@ -101,10 +102,6 @@ define([
   }
 
   function parseLineCore(line, lineIndex) {
-    if (line.trim() === ',,,,,,,,,,,,,,,,,,,') {
-      // Empty line
-      return null
-    }
     line = reFormatApCsvLine(line)
     var lineColValuesArr = line.split(',')
     var lineColValues = {}
@@ -118,7 +115,7 @@ define([
         colIdx: colIdx,
         colValue: value,
         colLabel: colLabel,
-        apFieldId: nsFieldId,
+        apFieldId: nsFieldId
       }
       lineColValues[colIdx] = lineColValueObj
     })
@@ -263,10 +260,10 @@ define([
   function getDateFormatPreference() {
     if (!dateFormatPreference) {
       var companyPreference = config.load({
-        type: config.Type.COMPANY_PREFERENCES,
+        type: config.Type.COMPANY_PREFERENCES
       })
       dateFormatPreference = companyPreference.getValue({
-        fieldId: 'DATEFORMAT',
+        fieldId: 'DATEFORMAT'
       })
     }
     return dateFormatPreference
@@ -275,20 +272,20 @@ define([
   var apDocRecordTypeId = 'customrecord_gw_ap_doc'
   var apDocSublistId = 'recmachcustrecord_gw_apt_doc_tran_id'
 
-  function insertExpenseSublistLinesCore(recordId, nsRecordArr) {
-    var expenseRecord = record.load({
-      type: record.Type.EXPENSE_REPORT,
+  function insertExpenseSublistLinesCore(recordId, nsRecordArr, tranType) {
+    var transactionRecord = record.load({
+      type: tranType,
       isDynamic: true,
-      id: recordId,
+      id: recordId
     })
 
     nsRecordArr.forEach(function (nsObj) {
       var nsRecordObj = getNsRecordObj(nsObj)
-      expenseRecord = setSublistValues(expenseRecord, nsRecordObj)
+      transactionRecord = setSublistValues(transactionRecord, nsRecordObj)
     })
-    expenseRecord.save({
+    transactionRecord.save({
       ignoreMandatoryFields: true,
-      enableSourcing: false,
+      enableSourcing: false
     })
   }
 
@@ -299,9 +296,9 @@ define([
     return nsObj
   }
 
-  function setSublistValues(expenseRecord, nsRecordObj) {
-    expenseRecord.selectNewLine({
-      sublistId: apDocSublistId,
+  function setSublistValues(transactionRecord, nsRecordObj) {
+    transactionRecord.selectNewLine({
+      sublistId: apDocSublistId
     })
     var ignoreFields = [apDocFields.fields.transaction.id, 'csvLine']
     Object.keys(nsRecordObj).forEach(function (fieldId) {
@@ -310,20 +307,20 @@ define([
         if (fieldId === apDocFields.fields.guiDate.id) {
           fieldValue = format.parse({
             value: fieldValue,
-            type: format.Type.DATE,
+            type: format.Type.DATE
           })
         }
-        expenseRecord.setCurrentSublistValue({
+        transactionRecord.setCurrentSublistValue({
           sublistId: apDocSublistId,
           fieldId: fieldId,
-          value: fieldValue,
+          value: fieldValue
         })
       }
     })
-    expenseRecord.commitLine({
-      sublistId: apDocSublistId,
+    transactionRecord.commitLine({
+      sublistId: apDocSublistId
     })
-    return expenseRecord
+    return transactionRecord
   }
 
   function isGuiNumberDuplicated(guiNumber) {

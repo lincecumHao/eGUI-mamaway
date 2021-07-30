@@ -40,13 +40,16 @@ define(['N/url'], function (url) {
     console.log('pageInit current record id', context.currentRecord.id)
   }
 
-  function apDocImportBtnClicked(transactionId) {
+  function apDocImportBtnClicked(transactionType, transactionId) {
     // alert('apDocImportBtnClicked, transaction Id : ' + transactionId)
     var importUrl = url.resolveScript({
       scriptId: 'customscript_gw_sl_ap_import',
       deploymentId: 'customdeploy_gw_sl_ap_import',
       returnExternalUrl: false,
-      params: { transaction_id: transactionId },
+      params: {
+        transaction_type: transactionType,
+        transaction_id: transactionId
+      }
     })
     window.location = importUrl
   }

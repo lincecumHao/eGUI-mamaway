@@ -7,7 +7,7 @@ define([
   '../../application/gw_service_ap_doc_apply_period',
   './gw_lib_csv_task_service',
   './gw_lib_ap_csv',
-  '../../application/gw_lib_wrapper',
+  '../../application/gw_lib_wrapper'
 ], (
   https,
   serverWidget,
@@ -48,7 +48,7 @@ define([
 
     const eventRouter = {
       [https.Method.GET]: onGet,
-      [https.Method.POST]: onPost,
+      [https.Method.POST]: onPost
     }
 
     try {
@@ -71,65 +71,84 @@ define([
    */
   function onGet(context) {
     // TODO
+    log.debug({
+      title: 'on Get request params',
+      details: context.request.parameters
+    })
     var uploadForm = serverWidget.createForm({
-      title: '進項發票匯入',
+      title: '進項發票匯入'
     })
     var applyPeriodField = uploadForm.addField({
       id: 'apply_period',
       label: '申報期別',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
 
     applyPeriodField.updateBreakType({
-      breakType: serverWidget.FieldBreakType.STARTROW,
+      breakType: serverWidget.FieldBreakType.STARTROW
     })
     var uploadField = uploadForm.addField({
       id: 'upload_file',
       label: 'Upload',
-      type: serverWidget.FieldType.FILE,
+      type: serverWidget.FieldType.FILE
     })
     var transactionField = uploadForm.addField({
       id: 'transaction_id',
       label: 'Transaction',
       type: serverWidget.FieldType.SELECT,
-      source: 'transaction',
+      source: 'transaction'
+    })
+
+    var transactionTypeField = uploadForm.addField({
+      id: 'transaction_type',
+      label: 'TransactionType',
+      type: serverWidget.FieldType.TEXT
     })
     // transactionField.isDisabled = true
-
     var paramTranId = context.request.parameters['transaction_id']
+    var paramTranType = context.request.parameters['transaction_type']
     var paramApplyPeriod = context.request.parameters['apply_period']
 
     applyPeriodField.defaultValue = paramApplyPeriod
       ? paramApplyPeriod
       : applyPeriodService.convertToApplyPeriod(null)
     transactionField.defaultValue = paramTranId ? paramTranId : '107'
-
+    transactionTypeField.defaultValue = paramTranType
     applyPeriodField.updateLayoutType({
-      layoutType: serverWidget.FieldLayoutType.OUTSIDE,
+      layoutType: serverWidget.FieldLayoutType.OUTSIDE
     })
     applyPeriodField.updateBreakType({
-      breakType: serverWidget.FieldBreakType.STARTROW,
+      breakType: serverWidget.FieldBreakType.STARTROW
     })
     uploadField.updateLayoutType({
-      layoutType: serverWidget.FieldLayoutType.OUTSIDE,
+      layoutType: serverWidget.FieldLayoutType.OUTSIDE
     })
     uploadField.updateBreakType({
-      breakType: serverWidget.FieldBreakType.STARTROW,
+      breakType: serverWidget.FieldBreakType.STARTROW
     })
 
     transactionField.updateLayoutType({
-      layoutType: serverWidget.FieldLayoutType.OUTSIDE,
+      layoutType: serverWidget.FieldLayoutType.OUTSIDE
     })
     transactionField.updateBreakType({
-      breakType: serverWidget.FieldBreakType.STARTROW,
+      breakType: serverWidget.FieldBreakType.STARTROW
     })
     transactionField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.INLINE,
+      displayType: serverWidget.FieldDisplayType.INLINE
+    })
+
+    transactionTypeField.updateDisplayType({
+      displayType: serverWidget.FieldDisplayType.INLINE
     })
     uploadForm.addSubmitButton({
-      label: 'Submit',
+      label: 'Submit'
     })
     context.response.writePage(uploadForm)
+  }
+
+  const transactionTypeMapping = {
+    vendorbill: record.Type.VENDOR_BILL,
+    expensereport: record.Type.EXPENSE_REPORT
   }
 
   /**
@@ -143,37 +162,55 @@ define([
    */
   function onPost(context) {
     // TODO
+    log.debug({
+      title: 'on POST request params',
+      details: context.request.parameters
+    })
     var uploaded_file = context.request.files['upload_file']
     var applyPeriod = context.request.parameters['apply_period'] || ''
     var transactionId = context.request.parameters['transaction_id'] || ''
+    var transactionType = context.request.parameters['transaction_type'] || ''
+    var tranType = transactionTypeMapping[transactionType]
     // var fileLines = getFileContent(uploaded_file)
     // if (fileLines > 2000) {
     // submitToQueue(uploaded_file, applyPeriod, transactionId)
     // } else {
-    processUploadFile(uploaded_file, applyPeriod, transactionId)
+    processUploadFile(uploaded_file, applyPeriod, transactionId, tranType)
     // }
 
-    redirectToExpenseRecord(context, transactionId)
+    redirectToExpenseRecord(context, transactionId, tranType)
   }
 
   function getFileContent(uploaded_file) {
     var fileContent = uploaded_file.getContents()
-    var fileLines = fileContent.split('\r\n')
+    var fileLines = fileContent.split('\r\n').filter(function (line) {
+      return !(line.trim() === ',,,,,,,,,,,,,,,,,,,' || !line)
+    })
+    log.debug({ title: 'fileLines', details: fileLines })
     return fileLines
   }
 
   var processUploadFile = wrapperLib.logWrapper(processUploadFileCore)
 
-  function processUploadFileCore(uploaded_file, applyPeriod, transactionId) {
+  function processUploadFileCore(
+    uploaded_file,
+    applyPeriod,
+    transactionId,
+    transactionType
+  ) {
     var fileLines = getFileContent(uploaded_file)
     csvService.setApplyPeriod(applyPeriod)
     var allNsRecord = csvService.parseAllLines(fileLines)
     var validRecords = filterValidateRecord(allNsRecord)
     log.debug({
       title: 'processUploadFile validate count/record count',
-      details: validRecords.length + '/' + allNsRecord.length,
+      details: validRecords.length + '/' + allNsRecord.length
     })
-    csvService.insertExpenseSublistLines(transactionId, validRecords)
+    csvService.insertExpenseSublistLines(
+      transactionId,
+      validRecords,
+      transactionType
+    )
   }
 
   function filterValidateRecord(allNsRecord) {
@@ -190,12 +227,12 @@ define([
     return validRecords
   }
 
-  function redirectToExpenseRecord(context, transactionId) {
+  function redirectToExpenseRecord(context, transactionId, transactionType) {
     context.response.sendRedirect({
-      identifier: record.Type.EXPENSE_REPORT,
+      identifier: transactionType,
       type: https.RedirectType.RECORD,
       editMode: false,
-      id: transactionId,
+      id: transactionId
     })
   }
 
@@ -213,7 +250,7 @@ define([
 
   function executeMapReduceTask() {
     var csv_import_task = task.create({
-      taskType: task.TaskType.MAP_REDUCE,
+      taskType: task.TaskType.MAP_REDUCE
     })
     csv_import_task.scriptId = 'customscript_gw_mr_import_ap_csv'
     csv_import_task.deploymentId = 'customdeploy_gw_mr_import_ap_csv'
