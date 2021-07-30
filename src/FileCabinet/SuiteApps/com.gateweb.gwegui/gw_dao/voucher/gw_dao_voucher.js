@@ -9,7 +9,7 @@ define([
   '../../library/gw_lib_search',
   '../../library/ramda.min',
   './gw_service_map_allowance_voucher',
-  './gw_service_map_voucher_allowance',
+  './gw_service_map_voucher_allowance'
 ], (
   record,
   gwMigTypeDao,
@@ -21,7 +21,7 @@ define([
   searchLib,
   ramda,
   gwAllowanceVoucherMapper,
-  gwVoucherAllowanceMapper,
+  gwVoucherAllowanceMapper
 ) => {
   /**
    * Module Description...
@@ -49,7 +49,7 @@ define([
     var mainObj = JSON.parse(JSON.stringify(voucherMain))
     mainObj['name'] = mainObj['custrecord_gw_voucher_number']
     mainObj['custrecord_gw_voucher_date'] = getDateStr(
-      mainObj['custrecord_gw_voucher_date'],
+      mainObj['custrecord_gw_voucher_date']
     )
     mainObj['custrecord_gw_voucher_sales_tax_apply'] =
       mainObj['custrecord_gw_voucher_sales_tax_apply'] === 'T'
@@ -88,7 +88,7 @@ define([
     var mainObj = JSON.parse(JSON.stringify(voucherMain))
     mainObj['name'] = mainObj['custrecord_gw_voucher_number']
     mainObj['custrecord_gw_voucher_date'] = getDateStr(
-      mainObj['custrecord_gw_voucher_date'],
+      mainObj['custrecord_gw_voucher_date']
     )
     mainObj['custrecord_gw_voucher_sales_tax_apply'] =
       mainObj['custrecord_gw_voucher_sales_tax_apply'] === 'T'
@@ -127,9 +127,9 @@ define([
     var recordTypeId = 'customrecord_gw_voucher_main'
     var newRecord = record.create({
       type: recordTypeId,
-      isDynamic: true,
+      isDynamic: true
     })
-    Object.keys(voucherObj).forEach(function(fieldId) {
+    Object.keys(voucherObj).forEach(function (fieldId) {
       if (fieldId !== 'lines') {
         var fieldValue = voucherObj[fieldId]
         var fieldObj = mainFields.fields[fieldId]
@@ -138,7 +138,7 @@ define([
         }
         newRecord.setValue({
           fieldId: fieldId,
-          value: fieldValue,
+          value: fieldValue
         })
       }
     })
@@ -146,19 +146,19 @@ define([
 
     // add line
     var sublistId = mainFields.sublists.detail
-    voucherObj.lines.forEach(function(lineObj) {
+    voucherObj.lines.forEach(function (lineObj) {
       newRecord.selectNewLine({
-        sublistId: sublistId,
+        sublistId: sublistId
       })
-      Object.keys(lineObj).forEach(function(sublistFieldId) {
+      Object.keys(lineObj).forEach(function (sublistFieldId) {
         newRecord.setCurrentSublistValue({
           sublistId: sublistId,
           fieldId: sublistFieldId,
-          value: lineObj[sublistFieldId],
+          value: lineObj[sublistFieldId]
         })
       })
       newRecord.commitLine({
-        sublistId: sublistId,
+        sublistId: sublistId
       })
     })
     return newRecord.save()
@@ -189,14 +189,16 @@ define([
   function updateB2CLines(eguiObj) {
     log.debug({ title: 'updateB2CLines', details: eguiObj })
     var lines = JSON.parse(JSON.stringify(eguiObj.lines))
-    return ramda.map(function(line) {
+    return ramda.map(function (line) {
       log.debug({ title: 'updateB2CLines line', details: line })
       line.taxAmt = 0
+      line.totalAmt = parseFloat(line.totalAmt.toFixed(7))
       line.salesAmt = line.totalAmt
       line.quantity = line.quantity ? parseFloat(line.quantity) : 1
       line.unitPrice = parseFloat(
-        (parseFloat(line.totalAmt) / line.quantity).toFixed(7),
+        (parseFloat(line.totalAmt) / line.quantity).toFixed(7)
       )
+
       return line
     }, lines)
   }
@@ -204,11 +206,12 @@ define([
   function updateB2BLines(eguiObj) {
     log.debug({ title: 'updateB2CLines', details: eguiObj })
     var lines = JSON.parse(JSON.stringify(eguiObj.lines))
-    return ramda.map(function(line) {
+    return ramda.map(function (line) {
       log.debug({ title: 'updateB2CLines line', details: line })
+      line.totalAmt = parseFloat(line.totalAmt.toFixed(7))
       line.quantity = line.quantity ? parseFloat(line.quantity) : 1
       line.unitPrice = parseFloat(
-        (parseFloat(line.salesAmt) / line.quantity).toFixed(7),
+        (parseFloat(line.salesAmt) / line.quantity).toFixed(7)
       )
       return line
     }, lines)
@@ -222,11 +225,11 @@ define([
     var allowance = JSON.parse(JSON.stringify(allowanceObj))
     log.debug({ title: 'UpdateAllowanceObj', details: allowance })
     allowance.migTypeOption = gwMigTypeDao.getById(
-      allowance.migTypeOption.value,
+      allowance.migTypeOption.value
     )
     allowance.taxRate = parseFloat(allowance.taxRate) / 100
     allowance.sellerProfile = gwBusinessEntityDao.getById(
-      allowance.sellerProfile.value,
+      allowance.sellerProfile.value
     )
     return egui
   }
@@ -241,14 +244,14 @@ define([
           return result
         },
         [],
-        internalIds,
+        internalIds
       )
       internalIdFilters.pop()
       log.debug({ title: 'internalIdFilters', details: internalIdFilters })
       searchFilters.push(internalIdFilters)
       var searchResults = searchLib.runSavedSearch(
         'customsearch_gw_voucher_main_search',
-        internalIdFilters,
+        internalIdFilters
       )
       return searchResults
       // return ramda.map((eguiObj) => {
@@ -273,7 +276,7 @@ define([
     searchVoucher(searchFilters) {
       return searchLib.runSavedSearch(
         'customsearch_gw_voucher_main_search',
-        searchFilters,
+        searchFilters
       )
     }
 
@@ -282,7 +285,7 @@ define([
       var voucherRecordObj = gwEguiVoucherMapper.transform(eguiObj)
       voucherRecordObj = updateEguiVoucherRecordObj(
         voucherRecordObj,
-        voucherRecordObj.lines,
+        voucherRecordObj.lines
       )
       var id = createRecord(voucherRecordObj)
       // this.recordSaved(eguiObj)
@@ -294,7 +297,7 @@ define([
       var voucherRecordObj = gwAllowanceVoucherMapper.transform(allowanceObj)
       voucherRecordObj = updateAllowanceVoucherRecordObj(
         voucherRecordObj,
-        voucherRecordObj.lines,
+        voucherRecordObj.lines
       )
       var id = createRecord(voucherRecordObj)
       // this.recordSaved(eguiObj)
@@ -306,22 +309,21 @@ define([
       var isSuccess = result.code === 200
       updateValue[
         mainFields.fields.custrecord_gw_voucher_upload_status.id
-        ] = isSuccess ? 'P' : 'E'
+      ] = isSuccess ? 'P' : 'E'
       updateValue[
         mainFields.fields.custrecord_gw_uploadstatus_messag.id
-        ] = isSuccess ? '' : result.body
+      ] = isSuccess ? '' : result.body
       updateValue[mainFields.fields.custrecord_gw_voucher_status.id] = isSuccess
         ? mainFields.voucherStatus.VOUCHER_SUCCESS
         : mainFields.voucherStatus.VOUCHER_ERROR
       record.submitFields({
         type: 'customrecord_gw_voucher_main',
         id: voucherId,
-        values: updateValue,
+        values: updateValue
       })
     }
 
-    allowanceUploaded(voucherId) {
-    }
+    allowanceUploaded(voucherId) {}
   }
 
   return new VoucherDao()
