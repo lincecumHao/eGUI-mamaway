@@ -153,6 +153,7 @@ define([
   function updateLine(eguiLine) {
     var line = JSON.parse(JSON.stringify(eguiLine))
     line = gwRecalculateLineTax(line)
+    log.debug({ title: 'updateLine after recalculate line', details: line })
     line.quantity = line.quantity ? parseFloat(line.quantity) : 1
     line.nsAmt = parseFloat(line.nsAmt)
     line.nsTaxAmt = line.nsTaxAmt ? parseFloat(line.nsTaxAmt) : 0
@@ -163,7 +164,12 @@ define([
     line.nsTaxExemptedSalesAmt = 0
     line.nsTaxZeroSalesAmt = 0
     if (lineTaxRate === 0) {
-      line.nsTaxZeroSalesAmt = line.nsAmt
+      if (line.taxType.value.toString() === '2') {
+        line.nsTaxZeroSalesAmt = line.nsAmt
+      }
+      if (line.taxType.value.toString() === '3') {
+        line.nsTaxExemptedSalesAmt = line.nsAmt
+      }
       line.nsAmt = 0
     }
     line.salesAmt = isCalculateByNs() ? line.nsAmt : parseFloat(line.gwSalesAmt)
@@ -178,6 +184,7 @@ define([
     line.unitPrice = line.unitPrice
       ? line.unitPrice
       : line.salesAmt / line.quantity
+    log.debug({ title: 'updateline line', details: line })
     return line
   }
 
@@ -193,7 +200,12 @@ define([
     var gwTaxExemptedSalesAmt = 0
     if (lineTaxRate === 0) {
       gwSalesAmt = 0
-      gwTaxZeroSalesAmt = parseFloat(eguiLine.nsAmt)
+      if (lineTaxType.value.toString() === '2') {
+        gwTaxZeroSalesAmt = parseFloat(eguiLine.nsAmt)
+      }
+      if (lineTaxType.value.toString() === '3') {
+        gwTaxExemptedSalesAmt = parseFloat(eguiLine.nsAmt)
+      }
     }
     var gwTaxAmt = gwSalesAmt * lineTaxRate
     var gwTotalAmt = gwSalesAmt + gwTaxAmt
