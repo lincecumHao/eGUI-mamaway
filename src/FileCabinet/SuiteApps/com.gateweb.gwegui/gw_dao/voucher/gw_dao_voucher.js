@@ -305,6 +305,8 @@ define([
     }
 
     eguiUploaded(voucherId, result) {
+      log.debug({ title: 'eguiUploaded voucherId', details: voucherId })
+      log.debug({ title: 'eguiUploaded result', details: result })
       var updateValue = {}
       var isSuccess = result.code === 200
       updateValue[
@@ -316,6 +318,7 @@ define([
       updateValue[mainFields.fields.custrecord_gw_voucher_status.id] = isSuccess
         ? mainFields.voucherStatus.VOUCHER_SUCCESS
         : mainFields.voucherStatus.VOUCHER_ERROR
+      log.debug({ title: 'eguiUploaded updateValue', details: updateValue })
       record.submitFields({
         type: 'customrecord_gw_voucher_main',
         id: voucherId,
