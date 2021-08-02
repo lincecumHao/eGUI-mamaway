@@ -339,6 +339,36 @@ define(['../../library/ramda.min'], function (ramda) {
     }
   }
 
+  var voucherType = {
+    EGUI: 'EGUI',
+    ALLOWANCE: 'ALLOWANCE'
+  }
+  var uploadStatus = {
+    PENDING_UPLOAD: 'A',
+    UPLOADING: 'P',
+    ISSUE_SUCCESS: 'C',
+    ISSUE_FAILED: 'E',
+    RESPONDED_ERROR: 'G',
+    NOT_UPLOAD: 'M',
+    DELETED: 'D'
+  }
+  var voucherStatus = {
+    VOUCHER_ISSUE: 'VOUCHER_ISSUE',
+    VOUCHER_SUCCESS: 'VOUCHER_SUCCESS',
+    VOUCHER_ERROR: 'VOUCHER_ERROR',
+    CANCEL_ISSUE: 'CANCEL_ISSUE',
+    CANCEL_APPROVE: 'CANCEL_APPROVE',
+    CANCEL_REJECT: 'CANCEL_REJECT',
+    CANCEL_UPLOAD: 'CANCEL_UPLOAD',
+    CANCEL_SUCCESS: 'CANCEL_SUCCESS',
+    CANCEL_ERROR: 'CANCEL_ERROR'
+  }
+  var migType = {
+    B2C: 'B2C',
+    B2BS: 'B2BS',
+    B2BE: 'B2BE'
+  }
+
   var fieldInputMapping = ramda.reduce(
     function (result, fieldId) {
       var fieldObj = fieldConfig[fieldId]

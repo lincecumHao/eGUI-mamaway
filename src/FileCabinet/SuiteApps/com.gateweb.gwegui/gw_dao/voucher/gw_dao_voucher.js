@@ -61,6 +61,8 @@ define([
       mainObj['custrecord_gw_dm_seller_profile'].id
     mainObj['custrecord_gw_lock_transaction'] = true
     mainObj['custrecord_gw_is_completed_detail'] = true
+    mainObj['custrecord_gw_voucher_status'] =
+      mainFields.voucherStatus.VOUCHER_SUCCESS
     mainObj['lines'] = ramda.map((detail) => {
       detail['name'] = 'VoucherDetailRecord'
       detail['custrecord_gw_dtl_voucher_type'] =
@@ -192,12 +194,10 @@ define([
     return ramda.map(function (line) {
       log.debug({ title: 'updateB2CLines line', details: line })
       line.taxAmt = 0
-      line.totalAmt = parseFloat(line.totalAmt.toFixed(7))
+      line.totalAmt = parseFloat(parseFloat(line.totalAmt).toFixed(7))
       line.salesAmt = line.totalAmt
       line.quantity = line.quantity ? parseFloat(line.quantity) : 1
-      line.unitPrice = parseFloat(
-        (parseFloat(line.totalAmt) / line.quantity).toFixed(7)
-      )
+      line.unitPrice = parseFloat((line.totalAmt / line.quantity).toFixed(7))
 
       return line
     }, lines)
@@ -208,7 +208,7 @@ define([
     var lines = JSON.parse(JSON.stringify(eguiObj.lines))
     return ramda.map(function (line) {
       log.debug({ title: 'updateB2CLines line', details: line })
-      line.totalAmt = parseFloat(line.totalAmt.toFixed(7))
+      line.totalAmt = parseFloat(parseFloat(line.totalAmt).toFixed(7))
       line.quantity = line.quantity ? parseFloat(line.quantity) : 1
       line.unitPrice = parseFloat(
         (parseFloat(line.salesAmt) / line.quantity).toFixed(7)

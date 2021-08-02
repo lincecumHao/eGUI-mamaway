@@ -50,7 +50,6 @@ define([
 
         document.lines = ramda.map((resultLine) => {
           let mappedLine = gwMapUtil.mapTo(resultLine, detailFields)
-          log.debug({ title: 'test mapped lines', details: mappedLine })
           let taxTypeObj = gwTaxTypeDao.getTaxTypeByTaxCode(mappedLine.taxCode)
           mappedLine.taxType = taxTypeObj ? taxTypeObj.value : '1'
           return mappedLine

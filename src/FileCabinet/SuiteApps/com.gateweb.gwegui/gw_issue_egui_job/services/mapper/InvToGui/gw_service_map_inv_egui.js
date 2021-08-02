@@ -122,7 +122,7 @@ define([
   function getDocumentStatus(isIssueEgui, isNotUploadEgui) {
     var issueEgui = isIssueEgui === 'T'
     var uploadEgui = isNotUploadEgui === 'F'
-    if (issueEgui && uploadEgui) return mainFields.voucherStatus.VOUCHER_ISSUE
+    if (issueEgui && uploadEgui) return mainFields.voucherStatus.VOUCHER_SUCCESS
     if (issueEgui && !uploadEgui)
       return mainFields.voucherStatus.VOUCHER_SUCCESS
   }
