@@ -120,11 +120,24 @@ define([
 
   // TBD: more scenarios might be applicable
   function getDocumentStatus(isIssueEgui, isNotUploadEgui) {
-    var issueEgui = isIssueEgui === 'T'
-    var uploadEgui = isNotUploadEgui === 'F'
-    if (issueEgui && uploadEgui) return mainFields.voucherStatus.VOUCHER_SUCCESS
+    var issueEgui = true
+    var uploadEgui = true
+    if (typeof isIssueEgui === 'boolean') {
+      issueEgui = isIssueEgui
+    } else {
+      issueEgui = isIssueEgui === 'T'
+    }
+    if (typeof isNotUploadEgui === 'boolean') {
+      uploadEgui = !isNotUploadEgui
+    } else {
+      uploadEgui = isNotUploadEgui === 'F'
+    }
+    if (issueEgui && uploadEgui)
+      status = mainFields.voucherStatus.VOUCHER_SUCCESS
     if (issueEgui && !uploadEgui)
-      return mainFields.voucherStatus.VOUCHER_SUCCESS
+      status = mainFields.voucherStatus.VOUCHER_SUCCESS
+    log.debug({ title: 'getDocumentStatus status', details: status })
+    return status
   }
 
   //endregion

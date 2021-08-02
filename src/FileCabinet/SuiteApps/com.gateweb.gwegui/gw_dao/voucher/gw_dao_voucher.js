@@ -192,13 +192,11 @@ define([
     log.debug({ title: 'updateB2CLines', details: eguiObj })
     var lines = JSON.parse(JSON.stringify(eguiObj.lines))
     return ramda.map(function (line) {
-      log.debug({ title: 'updateB2CLines line', details: line })
       line.taxAmt = 0
       line.totalAmt = parseFloat(parseFloat(line.totalAmt).toFixed(7))
       line.salesAmt = line.totalAmt
       line.quantity = line.quantity ? parseFloat(line.quantity) : 1
       line.unitPrice = parseFloat((line.totalAmt / line.quantity).toFixed(7))
-
       return line
     }, lines)
   }
@@ -207,7 +205,6 @@ define([
     log.debug({ title: 'updateB2CLines', details: eguiObj })
     var lines = JSON.parse(JSON.stringify(eguiObj.lines))
     return ramda.map(function (line) {
-      log.debug({ title: 'updateB2CLines line', details: line })
       line.totalAmt = parseFloat(parseFloat(line.totalAmt).toFixed(7))
       line.quantity = line.quantity ? parseFloat(line.quantity) : 1
       line.unitPrice = parseFloat(
