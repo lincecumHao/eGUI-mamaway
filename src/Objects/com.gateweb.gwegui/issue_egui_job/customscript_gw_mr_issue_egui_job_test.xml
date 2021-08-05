@@ -1,0 +1,16 @@
+<mapreducescript scriptid="customscript_gw_mr_issue_egui_job_test">
+    <isinactive>F</isinactive>
+    <name>GW MR ISSUE EGUI JOB TEST</name>
+    <notifyowner>T</notifyowner>
+    <scriptfile>[/SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/gw_mr_issue_egui_from_inv_test.js]</scriptfile>
+    <scriptdeployments>
+        <scriptdeployment scriptid="customdeploy_gw_mr_issue_egui_job_test">
+            <title>GW MR ISSUE EGUI JOB TEST</title>
+            <isdeployed>T</isdeployed>
+            <loglevel>DEBUG</loglevel>
+            <runasrole>ADMINISTRATOR</runasrole>
+            <status>NOTSCHEDULED</status>
+            <yieldaftermins>10</yieldaftermins>
+        </scriptdeployment>
+    </scriptdeployments>
+</mapreducescript>

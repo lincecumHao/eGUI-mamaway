@@ -120,6 +120,7 @@ define([
 
   // TBD: more scenarios might be applicable
   function getDocumentStatus(isIssueEgui, isNotUploadEgui) {
+    var status = ''
     var issueEgui = true
     var uploadEgui = true
     if (typeof isIssueEgui === 'boolean') {

@@ -93,6 +93,8 @@ define([
 			var _voucher_type = _result.values.custrecord_gw_voucher_type //EGUI , ALLOWANCE
 			var _voucher_status = _result.values.custrecord_gw_voucher_status //VOUCHER_SUCCESS , CANCEL_SUCCESS
 			var _sales_amount = _result.values.custrecord_gw_sales_amount //未稅金額
+			//上傳檔名
+			var _upload_xml_file_name = _result.values.custrecord_upload_xml_file_name
 
 			var _ns_document_type =
 			  _result.values[
@@ -130,8 +132,11 @@ define([
 			  _voucher_type,
 			  _mig_type
 			) //C0401, A0101..etc
-			var _file_name =
-			  _upload_mig_type + '-' + _voucher_number + '-' + _applyId + '.xml'
+			var _file_name = _upload_mig_type + '-' + _voucher_number + '-' + _applyId + '.xml'
+			if (_upload_xml_file_name.length !=0) {
+				_file_name = _upload_xml_file_name+ '.xml'
+			}
+			  
 			var _documentID = _ns_document_type + '-' + _ns_document_apply_id //INVOICE-948, CREDITMEMO-1230
 
 			if (_ns_document_type == 'INVOICE') {

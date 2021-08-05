@@ -682,8 +682,13 @@ define([
               voucher_type,
               _pre_mig_type
             )
+            /**
             var _file_name =
-              _xml_mig_type + '-' + _pre_voucher_number + '-' + _pre_apply_id
+              _xml_mig_type + '-' + _pre_voucher_number + '-' + _pre_apply_id +'-'
+              new Date().getTime()
+            */  
+            var _file_name = _xml_mig_type + '-' + _pre_voucher_number + '-' + new Date().getTime()
+              
             var _jsonObj = {
               apply_id: _pre_apply_id,
               mig_type: _xml_mig_type,
@@ -1170,12 +1175,24 @@ define([
           voucher_type,
           _pre_mig_type
         )
+        //20210802 walter modify
+        /**
         var _file_name =
           invoiceutility.getMigType('APPLY', voucher_type, _pre_mig_type) +
           '-' +
           _pre_voucher_number +
           '-' +
-          _pre_apply_id
+          _pre_apply_id +
+          '-' +
+          new Date().getTime()
+        */
+        var _file_name =
+          invoiceutility.getMigType('APPLY', voucher_type, _pre_mig_type) +
+          '-' +
+          _pre_voucher_number + 
+          '-' +
+          new Date().getTime()
+                  
         var _jsonObj = {
           apply_id: _pre_apply_id,
           mig_type: _xml_mig_type,
@@ -1200,7 +1217,8 @@ define([
     mig_type,
     mig_xml,
     statusId,
-    message
+    message,
+    file_name
   ) {
     var _upload_status = 'P'
     try {
@@ -1230,6 +1248,10 @@ define([
       _record.setValue({
         fieldId: 'custrecord_gw_upload_access_model',
         value: access_model,
+      })
+      _record.setValue({
+        fieldId: 'custrecord_upload_xml_file_name',
+        value: file_name,
       })
 
       _record.save()
@@ -1366,7 +1388,8 @@ define([
         _mig_type,
         _mig_xml,
         _guiResultObj.codenumber,
-        _guiResultObj.message
+        _guiResultObj.message,
+        _file_name
       )
     }
 
@@ -1396,7 +1419,8 @@ define([
         _mig_type,
         _mig_xml,
         _allowanceResultObj.codenumber,
-        _allowanceResultObj.message
+        _allowanceResultObj.message,
+        _file_name
       )
     }
   }

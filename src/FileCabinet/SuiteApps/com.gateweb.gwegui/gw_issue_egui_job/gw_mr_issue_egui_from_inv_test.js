@@ -39,7 +39,7 @@ define([
    */
   function getInputData(context) {
     log.audit({ title: 'Start ...' })
-    return gwInvoiceService.getInvoiceToIssueEguiSearch()
+    return gwInvoiceService.getInvoiceToIssueEguiSearchById(3094977)
   }
 
   /**
@@ -85,26 +85,9 @@ define([
     log.audit({ title: '[reduce] Processing Key:', details: context.key })
     var voucherId = 0
     var searchResults = context.values.map((value) => {
-      log.debug({ title: '[reduce] searchResults value', details: value })
       return JSON.parse(value)
     })
-    var invoiceObj = gwInvoiceService.composeInvObj(searchResults)
-    log.debug({ title: 'reduce invoiceObj', details: invoiceObj })
-    if (invoiceObj.custbody_gw_lock_transaction === 'F') {
-      gwInvoiceService.lockInvoice(context.key)
-    }
-    var eguiService = new gwEguiService(invoiceObj)
-    try {
-      voucherId = eguiService.issueEgui()
-      log.debug({ title: 'reduce voucherId', details: voucherId })
-    } catch (e) {
-      voucherId = 0
-      gwInvoiceService.unlockInvoice(context.key)
-      throw e
-    }
-    if (voucherId && eguiService.getEgui().isNotUploadEGui === 'F') {
-      var uploadEguiResult = eguiService.uploadEgui(voucherId)
-    }
+    log.debug({ title: '[reduce] searchResults', details: searchResults })
     context.write({
       key: voucherId
     })

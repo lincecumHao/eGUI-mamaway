@@ -46,6 +46,22 @@ define([
     })
   }
 
+  function getInvoiceToIssueEguiSearchById(internalId) {
+    var searchFilters = []
+    searchFilters.push(['internalid', 'is', internalId])
+    var searchColumns = JSON.parse(
+      JSON.stringify(transSearchFields.allFieldIds)
+    )
+    searchColumns.push('taxItem.rate')
+    searchColumns.push('customer.email')
+    searchColumns.push('item.displayname')
+    return search.create({
+      type: search.Type.INVOICE,
+      filters: searchFilters,
+      columns: searchColumns
+    })
+  }
+
   function getInvoiceSearchResultDebugger(internalId) {
     var searchFilters = []
     searchFilters.push(['internalid', 'is', internalId])
@@ -234,6 +250,7 @@ define([
   }
 
   exports.getInvoiceToIssueEguiSearch = getInvoiceToIssueEguiSearch
+  exports.getInvoiceToIssueEguiSearchById = getInvoiceToIssueEguiSearchById
   exports.getInvoiceSearchResultDebugger = getInvoiceSearchResultDebugger
   exports.composeInvObj = composeInvObj
   exports.lockInvoice = lockInvoice
