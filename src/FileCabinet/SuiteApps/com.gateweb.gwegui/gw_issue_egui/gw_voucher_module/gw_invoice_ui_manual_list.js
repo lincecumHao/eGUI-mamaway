@@ -209,6 +209,7 @@ define([
         var _seller = _result.values.custrecord_gw_seller
         var _buyer = _result.values.custrecord_gw_buyer
         var _buyer_name = _result.values.custrecord_gw_buyer_name
+        if (_buyer_name=='')_buyer_name=_buyer
         var _invoice_type = _result.values.custrecord_gw_invoice_type
         var _sales_amount = _result.values.custrecord_gw_sales_amount
         var _free_sales_amount = _result.values.custrecord_gw_free_sales_amount
@@ -293,12 +294,12 @@ define([
           subListObj.setSublistValue({
             id: 'customer_voucher_buyer',
             line: _index,
-            value: _buyer,
+            value: stringutility.trimOrAppendBlank(_buyer),
           })
           subListObj.setSublistValue({
             id: 'customer_voucher_buyer_name',
             line: _index,
-            value: _buyer_name,
+            value: stringutility.trimOrAppendBlank(_buyer_name),
           })
 
           var _departmentname = getSelectName(
@@ -718,6 +719,13 @@ define([
       label: '維護發票',
       functionName:
         'forwardToManualEdit("customscript_gw_invoice_ui_manual_edit","customdeploy_gw_invoice_ui_manual_edit")',
+    })
+    
+    form.addButton({
+      id: 'custpage_manual_import_button',
+      label: '匯入發票',
+      functionName:
+        'forwardToManualEdit("customscript_gw_manualegui_ui_import","customdeploy_gw_manualegui_ui_import")',
     })
 
     form.addButton({

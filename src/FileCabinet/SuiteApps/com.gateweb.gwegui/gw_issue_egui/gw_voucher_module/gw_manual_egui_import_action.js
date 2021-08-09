@@ -4,6 +4,7 @@
  * @NModuleScope Public
  */
 define([  
+  'N/runtime',
   'N/file',  
   'N/record',
   'N/format', 
@@ -13,6 +14,7 @@ define([
   '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_configure',
 ], function ( 
+  runtime,
   file, 
   record,
   format,  
@@ -24,6 +26,8 @@ define([
 ) {
   var _voucher_apply_list_record_id = gwconfigure.getGwVoucherApplyListRecord()
   var _voucher_main_record_id = gwconfigure.getGwVoucherMainRecord()
+  var _remaining_usage_limit = 50
+  var _limit_count = 1000
     
   function saveVoucherApplyListRecord(line_value) {
 	    var _apply_id    = 0
@@ -100,11 +104,7 @@ define([
 	  
 	  var _total_discount_amount = stringutility.convertToFloat(_sales_discount_amount) +
 							       stringutility.convertToFloat(_free_sales_discount_amount) +
-							       stringutility.convertToFloat(_zero_discount_amount)
-	  
-	  log.debug('get _seller_ban', _seller_ban) 
-	  log.debug('get _voucher_date', _voucher_date) 
-	  log.debug('get _sales_amount', _sales_amount) 
+							       stringutility.convertToFloat(_zero_discount_amount) 
 	  /////////////////////////////////////////////////////////////////////
 	  //Save To Voucher Main And Detail
 	  var _voucher_type = 'EGUI'
@@ -120,8 +120,8 @@ define([
 	                               stringutility.convertToFloat(_tax_rate) / 100)
 	                               
       var _total_amount = stringutility.convertToFloat(_sales_amount) +
-					      stringutility.convertToFloat(_free_sales_discount_amount) +
-					      stringutility.convertToFloat(_zero_discount_amount) +
+					      stringutility.convertToFloat(_free_sales_amount) +
+					      stringutility.convertToFloat(_zero_sales_amount) +
                           _tax_amount	  
        
       var _formattedDate = format.format({
@@ -479,63 +479,92 @@ define([
 	  return _year+''+_month+''+_day
   }
   
+  function forwardToNextSuitelet (next_script_id, next_deployment_id, temp_file_id, message, temp_count) { 
+	  var _params = {
+		            'saved_temp_file_result' : message,
+		            'saved_temp_file_id' : temp_file_id,
+		            'saved_temp_count'   : temp_count,
+	                }
+	  redirect.toSuitelet({
+	      scriptId: next_script_id,
+	      deploymentId: next_deployment_id,
+	      parameters : _params
+	  })
+  }
+  
   function onRequest(context) { 
-    var _temp_file_id = context.request.parameters.temp_file_id 
+    var _temp_file_id    = context.request.parameters.temp_file_id 
+    var _temp_file_index = context.request.parameters.temp_file_index 
     log.debug('temp_file_id', _temp_file_id)
+    log.debug('temp_file_index', _temp_file_index)
      
     try {
          //1.Load File From Temp Folder
     	 var _file_obj = file.load({ 'id': _temp_file_id });
     	 var _iterator = _file_obj.lines.iterator()	  
          // Skip the first line, which is the CSV header line
-         _iterator.each(function () {
-             return false
-         })
+    	 for (var i=0; i<_temp_file_index; i++) {
+    		  _iterator.each(function () {
+                 return false
+              })
+    	 } 
          
          //2.Access Data
-         var _count = 0
-         var _apply_id = -1	      
+         var _count = _temp_file_index - 1
+         var _apply_id = -1	   
+         var _forward_to_self = false
+          
 		 _iterator.each(function (line) { 	
-		      log.debug('get line.value', line.value) 
-		      if (_apply_id==-1) {
-		          _apply_id = saveVoucherApplyListRecord(line.value)
+		      //log.debug('get line.value', line.value) 
+		      //log.debug('count is', _count) 
+		      
+		      var _remaining_usage = runtime.getCurrentScript().getRemainingUsage()
+		      //log.debug('remaining_usage', _remaining_usage) 
+		      
+		      if (_forward_to_self == false) {
+			      if (_remaining_usage <= _remaining_usage_limit && _count <= _limit_count) {
+			    	  _count++
+			    	  _forward_to_self = true		    	 
+			      } else {		      
+				      if (_apply_id==-1) {
+				          _apply_id = saveVoucherApplyListRecord(line.value)
+				      }
+				       
+				      var _voucher_main_record = saveVoucherMain(_apply_id, line.value)
+			          saveVoucherDetail(line.value, _voucher_main_record)
+				    
+			          _count++
+			      }
 		      }
-		       
-		      var _voucher_main_record = saveVoucherMain(_apply_id, line.value)
-	          saveVoucherDetail(line.value, _voucher_main_record)
-		    
-	          _count++
+		      //_remaining_usage = 40
 		      return true
-		 })   
-		 //3.Delete Temp File
-         file.delete({ id: _temp_file_id })
-         
-         //4.Forward To Apply Page
-         log.debug('FORWARD TASK', 'START FORWARD TO IMPORT ACTION')
-         var _params = {
-    		            'saved_temp_file_result' : 'successful',
-    		            'saved_temp_file_id' : _temp_file_id,
-    		            'saved_temp_count'   : _count,
-    		           }
-         redirect.toSuitelet({
-             scriptId: 'customscript_gw_manualegui_ui_import',
-             deploymentId: 'customdeploy_gw_manualegui_ui_import',
-             parameters : _params
-         })
-         
+		 })  
+		 
+		 if (_forward_to_self == true) {
+			 var _params = {
+					        'temp_file_id' : _temp_file_id,
+					        'temp_file_index' : _count
+				           }
+			 redirect.toSuitelet({
+		         scriptId: 'customscript_gw_manual_egui_import_actio',
+		         deploymentId: 'customdeploy_gw_manual_egui_import_actio',
+		         parameters : _params
+		     }) 
+		 } else {
+			 //3.Delete Temp File
+	         file.delete({ id: _temp_file_id })
+	         
+	         //4.Forward To Apply Page
+	         //log.debug('FORWARD TASK', 'START FORWARD TO IMPORT ACTION') 
+	         forwardToNextSuitelet('customscript_gw_manualegui_ui_import', 
+	        		               'customdeploy_gw_manualegui_ui_import', 
+	        		               _temp_file_id, 'successful', _count)
+		 }
     } catch (e) {
-         log.error(e.name, e.message)
-         
-         var _params = {
-    		            'saved_temp_file_result' : 'error',
-    		            'saved_temp_file_id' : _temp_file_id,
-    		            'saved_temp_count'   : -1,
-    		           }
-         redirect.toSuitelet({
-             scriptId: 'customscript_gw_manualegui_ui_import',
-             deploymentId: 'customdeploy_gw_manualegui_ui_import',
-             parameters : _params
-         })
+         log.error(e.name, e.message)  
+         forwardToNextSuitelet('customscript_gw_manualegui_ui_import', 
+        		               'customdeploy_gw_manualegui_ui_import', 
+        		               _temp_file_id, 'error', -1)
     }
   } //End onRequest
 
