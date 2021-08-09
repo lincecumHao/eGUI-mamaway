@@ -168,7 +168,7 @@ define([
     var line = JSON.parse(JSON.stringify(eguiLine))
     line = gwRecalculateLineTax(line)
     log.debug({ title: 'updateLine after recalculate line', details: line })
-    line.quantity = line.quantity ? parseFloat(line.quantity) : 1
+    line.quantity = line.quantity ? Math.abs(parseFloat(line.quantity)) : 1
     line.nsAmt = parseFloat(line.nsAmt)
     line.nsTaxAmt = line.nsTaxAmt ? parseFloat(line.nsTaxAmt) : 0
     line.nsTotalAmt = line.nsAmt + line.nsTaxAmt
