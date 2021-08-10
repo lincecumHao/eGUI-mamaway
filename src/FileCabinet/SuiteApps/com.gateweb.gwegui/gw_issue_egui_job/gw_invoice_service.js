@@ -168,18 +168,21 @@ define([
    * @return {{}}
    */
   function composeInvObj(invoiceSearchResults) {
+    var uniqueResults = ramda.uniqBy(function (item) {
+      return item.line
+    }, invoiceSearchResults)
     var invMainObj = ramda.filter((result) => {
       return result.mainline === '*'
-    }, invoiceSearchResults)[0]
+    }, uniqueResults)[0]
     if (!invMainObj) {
       throw 'No invoice body defined'
     }
     invMainObj.lines = ramda.filter((result) => {
       return result.mainline !== '*' && result.itemtype !== 'TaxItem'
-    }, invoiceSearchResults)
+    }, uniqueResults)
     invMainObj.taxLines = ramda.filter((result) => {
       return result.mainline !== '*' && result.itemtype === 'TaxItem'
-    }, invoiceSearchResults)
+    }, uniqueResults)
     return invMainObj
   }
 
