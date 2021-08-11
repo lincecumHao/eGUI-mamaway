@@ -336,6 +336,11 @@ define(['../../library/ramda.min'], function (ramda) {
       id: 'custrecord_gw_dm_seller_profile',
       sourceField: 'sellerProfile',
       outputField: 'sellerProfile'
+    },
+    custrecord_upload_xml_file_name: {
+      id: 'custrecord_upload_xml_file_name',
+      sourceField: 'uploadXmlFileName',
+      outputField: 'uploadXmlFileName'
     }
   }
 

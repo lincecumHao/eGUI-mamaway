@@ -98,15 +98,20 @@ define([
 
     createEgui() {
       var eguiObj = JSON.parse(JSON.stringify(this.egui))
-      eguiObj['migType'] = gwMigTypeDao.getIssueEguiMigType(
+      var migTypeOption = gwMigTypeDao.getIssueEguiMigType(
         gwMigTypeDao.businessTranTypeEnum.B2C
       )
+      eguiObj['migType'] = migTypeOption
       if (shouldIssueNewGui(eguiObj)) {
         eguiObj.documentNumber = this.getNewGuiNumber(eguiObj)
       }
       eguiObj.randomNumber = getRandomNumber(
         `${eguiObj.documentNumber}${eguiObj.sellerTaxId}`
       )
+      eguiObj.uploadXmlFileName = `${migTypeOption.migType}-${
+        eguiObj.documentNumber
+      }-${new Date().getTime()}.xml`
+
       if (!eguiObj.transactions) eguiObj.transactions = [eguiObj.internalId]
       this.egui = eguiObj
       return gwVoucherDao.saveEguiToRecord(this.egui)
@@ -115,7 +120,7 @@ define([
     uploadEgui(voucherId) {
       var eguiObj = gwVoucherDao.getGuiByVoucherId(voucherId)
       log.debug({ title: 'eguiService uploadEgui eguiObj', details: eguiObj })
-      var filename = `${eguiObj.migTypeOption.migType}-${eguiObj.documentNumber}-${voucherId}.xml`
+      var filename = eguiObj.uploadXmlFileName
       var xmlString = gwEguiUploadService.getXmlString(eguiObj)
       log.debug({ title: 'xmlString', details: xmlString })
       var result = gwEguiUploadService.sendToGw(xmlString, filename)
