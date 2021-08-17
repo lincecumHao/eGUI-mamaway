@@ -134,7 +134,13 @@ define([
 			) //C0401, A0101..etc
 			var _file_name = _upload_mig_type + '-' + _voucher_number + '-' + _applyId + '.xml'
 			if (_upload_xml_file_name.length !=0) {
-				_file_name = _upload_xml_file_name+ '.xml'
+				_file_name = _upload_xml_file_name
+				if (_upload_xml_file_name.indexOf('xml') != -1) {
+					_file_name = _upload_xml_file_name
+				} else {
+					_file_name = _upload_xml_file_name+ '.xml'
+				}
+				//_file_name = _upload_xml_file_name+ '.xml'				
 			}
 			  
 			var _documentID = _ns_document_type + '-' + _ns_document_apply_id //INVOICE-948, CREDITMEMO-1230

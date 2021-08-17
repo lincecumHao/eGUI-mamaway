@@ -238,6 +238,8 @@ define([
         var _is_printed_pdf = _result.values.custrecord_gw_is_printed_pdf
         if (_is_printed_pdf == true) _is_printed = '是'
 
+       	var _gw_original_buyer_id = _result.values.custrecord_gw_original_buyer_id
+        	
         //四捨五入
         //_tax_rate     = (stringutility.convertToFloat(_tax_rate)/100).toFixed(2);
         _sales_amount = Math.round(
@@ -270,7 +272,6 @@ define([
           if (_indexId != '') _index++
 
           _documentNos = '' //需設空值
-
           subListObj.setSublistValue({
             id: 'customer_search_voucher_id',
             line: _index,
@@ -291,6 +292,13 @@ define([
             line: _index,
             value: _voucher_date + ' ' + _voucher_time,
           })
+          
+          subListObj.setSublistValue({
+              id: 'customer_original_buyer_id',
+              line: _index,
+              value: _gw_original_buyer_id,
+          })
+          
           subListObj.setSublistValue({
             id: 'customer_voucher_buyer',
             line: _index,
@@ -638,6 +646,17 @@ define([
       type: serverWidget.FieldType.TEXT,
       label: '買方公司',
     })
+    
+    var _originalBuyerIdField = _sublist.addField({
+      id: 'customer_original_buyer_id',
+      type: serverWidget.FieldType.TEXT,
+      label: '買方客戶ID',
+    })
+    /**
+    _originalBuyerIdField.updateDisplayType({
+      displayType: serverWidget.FieldDisplayType.HIDDEN,
+    })
+    */
     _sublist.addField({
       id: 'customer_voucher_dept_code',
       type: serverWidget.FieldType.TEXT,
@@ -741,6 +760,7 @@ define([
     })
 
     form.clientScriptModulePath = './gw_invoice_ui_manual_event.js'
+    //form.clientScriptModulePath = './gw_invoice_ui_manual_event_v2.js'
 
     context.response.writePage(form)
 

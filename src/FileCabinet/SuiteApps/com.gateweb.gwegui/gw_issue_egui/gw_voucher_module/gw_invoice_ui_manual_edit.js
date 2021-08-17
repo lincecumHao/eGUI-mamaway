@@ -635,8 +635,11 @@ define([
         var _buyerIdentifierldField = form.getField({
           id: 'custpage_buyer_identifier',
         })
-        _buyerIdentifierldField.defaultValue = _customerObj.vatregnumber
-
+        if (_customerObj.vatregnumber=='') {
+        	_buyerIdentifierldField.defaultValue = _buyer
+        } else {
+           _buyerIdentifierldField.defaultValue = _customerObj.vatregnumber
+        }
         var _buyerNameField = form.getField({
           id: 'custpage_buyer_name',
         })

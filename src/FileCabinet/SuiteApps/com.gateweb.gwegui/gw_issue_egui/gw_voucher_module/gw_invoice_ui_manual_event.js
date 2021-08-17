@@ -52,9 +52,9 @@ define([
         null
       }
     }
-
+ 
     var _changeFieldId = context.fieldId
-    console.log('_changeFieldId=' + _changeFieldId)
+    console.log('_changeFieldId=' + _changeFieldId)      
     //客戶資料變更
     var _changedSubListId = 'invoicesublistid'
     var _line = _current_record.getCurrentSublistIndex({
@@ -1384,14 +1384,20 @@ define([
               'customer_voucher_buyer',
               _internalId
             )
+            var _original_buyer_id = getSublistColumnValue(
+              _invoiceSublistId,
+              'customer_search_voucher_id',
+              'customer_original_buyer_id',
+              _internalId
+            )
 
             if (_checkID != '') {
-              if (_checkID.indexOf(_voucher_buyer) == -1) {
+              if (_checkID.indexOf(_voucher_buyer+_original_buyer_id) == -1) {
                 _errorMsg = '不可處理不同買方!'
                 break
               }
             } else {
-              _checkID += _voucher_buyer
+              _checkID += _voucher_buyer+_original_buyer_id
             }
           }
         }
