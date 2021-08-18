@@ -164,10 +164,28 @@ define([
     }, eguiLines)
   }
 
+  function isDeductLine(line) {
+    return (
+      (!!line.quantity && parseFloat(line.quantity) < 0) ||
+      parseFloat(line.nsTaxAmt) < 0
+    )
+  }
+
+  function convertDeductLine(line) {
+    log.debug({ title: 'convertDeductLine line', details: line })
+    line.quantity = line.quantity ? Math.abs(parseFloat(line.quantity)) : 1
+    line.nsAmt = Math.abs(parseFloat(line.nsAmt)) * -1
+    let taxAmt = line.nsTaxAmt ? parseFloat(line.nsTaxAmt) : 0
+    line.nsTaxAmt = Math.abs(taxAmt) * -1
+    return line
+  }
+
   function updateLine(eguiLine) {
     var line = JSON.parse(JSON.stringify(eguiLine))
+    log.debug({ title: 'isDeductLine', details: isDeductLine(line) })
+
+    line = isDeductLine(line) ? convertDeductLine(line) : line
     line = gwRecalculateLineTax(line)
-    log.debug({ title: 'updateLine after recalculate line', details: line })
     line.quantity = line.quantity ? Math.abs(parseFloat(line.quantity)) : 1
     line.nsAmt = parseFloat(line.nsAmt)
     line.nsTaxAmt = line.nsTaxAmt ? parseFloat(line.nsTaxAmt) : 0
@@ -198,7 +216,6 @@ define([
     line.unitPrice = line.unitPrice
       ? line.unitPrice
       : line.salesAmt / line.quantity
-    log.debug({ title: 'updateline line', details: line })
     return line
   }
 
@@ -264,7 +281,6 @@ define([
     summaryInitObj['transactions'] = []
     var summary = ramda.reduce(
       (result, line) => {
-        log.debug({ title: 'summaryResult line', details: line })
         result = ramda.reduce(
           (sumObj, sumField) => {
             result[sumField] += line[sumAmountFields[sumField]]
@@ -387,11 +403,6 @@ define([
   }
 
   function updateSummaryToMain(eguiMain, eguiLineSummary) {
-    log.debug({ title: 'updateSummaryToMain eguiMain', details: eguiMain })
-    log.debug({
-      title: 'updateSummaryToMain eguiLineSummary',
-      details: eguiLineSummary
-    })
     var eguiMainObj = JSON.parse(JSON.stringify(eguiMain))
     eguiMainObj['salesAmt'] = Math.round(eguiLineSummary.sumSalesAmt)
     eguiMainObj['taxExemptedSalesAmt'] = Math.round(
@@ -405,10 +416,6 @@ define([
     eguiMainObj['transactions'] = ramda.uniq(eguiLineSummary['transactions'])
     eguiMainObj.taxType = eguiLineSummary.taxType
     eguiMainObj.taxRate = parseFloat(eguiLineSummary.taxRate / 100)
-    log.debug({
-      title: 'updateSummaryToMain eguiMainObj',
-      details: eguiMainObj
-    })
     return eguiMainObj
   }
 
