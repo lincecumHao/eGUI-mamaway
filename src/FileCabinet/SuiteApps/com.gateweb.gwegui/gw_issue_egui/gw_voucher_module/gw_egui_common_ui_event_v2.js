@@ -535,8 +535,8 @@ define([
           //unlock
           var values = {}
           values[_invoce_control_field_id] = false
-          values['custbody_gw_gui_num_start'] = ''
-          values['custbody_gw_gui_num_end'] = ''
+          //values['custbody_gw_gui_num_start'] = ''
+          //values['custbody_gw_gui_num_end'] = ''
           values['custbody_gw_allowance_num_start'] = ''
           values['custbody_gw_allowance_num_end'] = ''
 

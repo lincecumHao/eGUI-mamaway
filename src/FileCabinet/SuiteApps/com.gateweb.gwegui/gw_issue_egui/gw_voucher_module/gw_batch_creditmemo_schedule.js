@@ -229,7 +229,7 @@ define([
               applyId: _id,
               trandate: _trandate,
               sellerIdentifier: _business_entity.tax_id_number,
-              sellerName: _business_entity._be_gui_title,
+              sellerName: _business_entity.be_gui_title,
               sellerAddress: _business_entity.address,
               buyerId: _entity_value,
               buyerIdentifier: _customer_vatregnumber,
@@ -247,8 +247,8 @@ define([
               customs_export_date: _gw_customs_export_date,
               randomNumber: _random_number,             
               sales_amount: _sales_amount,
-              free_sales_amount: _zero_sales_amount,
-              zero_sales_amount: _free_sales_amount,
+              free_sales_amount: _free_sales_amount,
+              zero_sales_amount: _zero_sales_amount,
               tax_amount: _tax_amount,
               tax_type: _tax_type,
               total_amount: _total_amount, 
@@ -395,20 +395,17 @@ define([
 			        search.createColumn({ name: 'custrecord_gw_voucher_number' }),
 			        search.createColumn({ name: 'custrecord_gw_voucher_date' }),
 			        search.createColumn({ name: 'custrecord_gw_voucher_yearmonth' }),
+			        search.createColumn({ name: 'custrecord_gw_sales_amount' }),
+			        search.createColumn({ name: 'custrecord_gw_free_sales_amount' }),			        
+			        search.createColumn({ name: 'custrecord_gw_zero_sales_amount' }),  
 			        search.createColumn({ name: 'custrecord_gw_discount_sales_amount' }),
 			        search.createColumn({ name: 'custrecord_gw_discount_free_amount' }),
-			        search.createColumn({ name: 'custrecord_gw_discount_zero_amount' }),
-			        search.createColumn({ name: 'custrecord_gw_discount_count' }),
+			        search.createColumn({ name: 'custrecord_gw_discount_zero_amount' }), 
 			        search.createColumn({ name: 'custrecord_gw_seller' }),
 			        search.createColumn({ name: 'custrecord_gw_buyer' }),
 			        search.createColumn({ name: 'custrecord_gw_original_buyer_id' }),
-			        search.createColumn({ name: 'custrecord_gw_voucher_number' }),
-			        search.createColumn({ name: 'custrecord_gw_sales_amount' }),
-			        search.createColumn({ name: 'custrecord_gw_discount_sales_amount' }),
-			        search.createColumn({ name: 'custrecord_gw_discount_free_amount' }),
-			        search.createColumn({ name: 'custrecord_gw_zero_sales_amount' }),
-			        search.createColumn({ name: 'custrecord_gw_discount_zero_amount' }),
-			        search.createColumn({ name: 'custrecord_gw_discount_zero_amount' }),
+			        search.createColumn({ name: 'custrecord_gw_voucher_number' }), 
+			        search.createColumn({ name: 'custrecord_gw_discount_amount' }),
 			        search.createColumn({ name: 'custrecord_gw_discount_count' })   
 				],
 			 })
@@ -458,6 +455,14 @@ define([
 					  _egui_discount_zero_amount  > _egui_zero_sales_amount ) { 
                       _data_error = true;					  
 				  }
+				  
+				  log.debug('_egui_discount_sales_amount', _egui_discount_sales_amount)
+				  log.debug('_egui_sales_amount', _egui_sales_amount)
+				  log.debug('_egui_discount_free_amount', _egui_discount_free_amount)
+				  log.debug('_egui_free_sales_amount', _egui_free_sales_amount)
+				  log.debug('_egui_discount_zero_amount', _egui_discount_zero_amount)
+				  log.debug('_egui_zero_sales_amount', _egui_zero_sales_amount)
+				  
 							  
 				  _egui_obj = {
 						'internal_id' :_internal_id,

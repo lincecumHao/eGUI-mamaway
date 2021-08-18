@@ -327,9 +327,24 @@ define([
     _company_ban.defaultValue = _voucher_record.getValue({
       fieldId: 'custrecord_gw_seller',
     })
+    ////////////////////////////////////////////////////////////////////////
+    var _hide_company_ban = form.addField({
+      id: 'custpage_hide_company_ban',
+      type: serverWidget.FieldType.TEXT,
+      label: '公司統編',
+      container: 'row01_fieldgroupid',
+    })
+    _hide_company_ban.defaultValue = _voucher_record.getValue({
+      fieldId: 'custrecord_gw_seller',
+    })
+    _hide_company_ban.updateDisplayType({
+        displayType: serverWidget.FieldDisplayType.HIDDEN,
+    })
+    ////////////////////////////////////////////////////////////////////////
     _company_ban.updateDisplayType({
       displayType: serverWidget.FieldDisplayType.DISABLED,
     })
+    
     _company_ban.updateBreakType({
       breakType: serverWidget.FieldBreakType.STARTCOL,
     })

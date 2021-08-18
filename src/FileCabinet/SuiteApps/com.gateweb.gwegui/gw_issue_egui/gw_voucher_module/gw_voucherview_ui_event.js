@@ -267,6 +267,50 @@ define([
       log.debug(e.name, e.message)
     }
   }
+   
+  function searchBusinessName(businessNo) {
+    var _companyObj
+    try {
+		 var _businessSearch = search
+				  .create({
+					type: 'customrecord_gw_business_entity',
+					columns: ['custrecord_gw_be_tax_id_number', 'custrecord_gw_be_gui_title', 'custrecord_gw_be_business_address', 'custrecord_gw_be_contact_email'],
+					filters: ['custrecord_gw_be_tax_id_number', 'is', businessNo]
+				  })
+				  .run()
+				  .each(function (result) {
+					var _internalid = result.id
+
+					var _tax_id_number = result.getValue({
+					  name: 'custrecord_gw_be_tax_id_number',
+					})
+					var _be_gui_title = result.getValue({
+					  name: 'custrecord_gw_be_gui_title',
+					})
+					var _business_address = result.getValue({
+					  name: 'custrecord_gw_be_business_address',
+					})
+					var _contact_email = result.getValue({
+					  name: 'custrecord_gw_be_contact_email',
+					})
+					
+					_companyObj = {
+						'tax_id_number':_tax_id_number,
+						'be_gui_title':_be_gui_title,
+						'business_address':_business_address,
+						'contact_email':_contact_email
+					}
+ 
+					return true
+				  }) 
+	  
+       
+    } catch (e) {
+      log.error(e.name, e.message)
+    }
+
+    return _companyObj.be_gui_title
+  }
 
   function failureTask(reason) {
     console.log('cancel this task=>' + reason)
@@ -322,6 +366,9 @@ define([
         _values['custrecord_gw_main_remark'] = _main_remark
       } else {
         //折讓單=>不處理任何資料只做重傳
+    	//重抓公司名稱
+    	var _hide_company_ban = _currentRecord.getValue({fieldId: 'custpage_hide_company_ban'})    	  
+    	_values['custrecord_gw_seller_name'] = searchBusinessName(_hide_company_ban)  
       }
       if (_voucher_status.indexOf('VOUCHER') != -1) {
         //開立
