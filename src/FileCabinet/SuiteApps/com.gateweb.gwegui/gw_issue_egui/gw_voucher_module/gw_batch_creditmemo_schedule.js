@@ -93,7 +93,7 @@ define([
 		   return true
         })
 		//處理折讓單-最後一筆
-		saveAllowanceRecord(_main_json_obj)		
+		if (_main_json_obj!=null)saveAllowanceRecord(_main_json_obj)		
 		 
 		
 	} catch (e) {
