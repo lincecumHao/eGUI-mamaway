@@ -320,7 +320,7 @@ define([
 		 if (result_obj.values['item.internalid'].length != 0) {
 		     _item_internalid_value = result_obj.values['item.internalid'][0].value //115 
 		 }
-		 
+		 /**
 		 _item_json_obj = {
               description: _item_displayname,
               taxType: _tax_type,
@@ -340,6 +340,26 @@ define([
               nsDocumentItemId: _item_internalid_value,
               nsDocumentItemSeq: _linesequencenumber,
             }
+		 */
+		 _item_json_obj = {
+	              description: _item_displayname,
+	              taxType: _tax_type,
+	              taxCode: _item_salestaxcode_value,
+	              taxRate: _tax_item_rate,
+	              quantity: -1*(_quantity),
+	              unitPrice: _rate,
+	              itemUnit: _unitabbreviation,
+	              amount: -1*(_amount),
+	              itemTaxAmount: -1*(_ns_item_tax_amount),
+	              itemTotalAmount: -1*(_ns_item_total_amount),
+	              sequenceNumber: _linesequencenumber,
+	              itemRemark: '',
+	              nsDocumentType: _ns_document_type,
+	              nsDocumentApplyId: _id,
+	              nsDocumentNumber: _tranid,
+	              nsDocumentItemId: _item_internalid_value,
+	              nsDocumentItemSeq: _linesequencenumber,
+	            }
 		
 	} catch (e) {
       log.error(e.name, e.message)
@@ -350,7 +370,7 @@ define([
   
   //2.檢查折讓單金額是否足夠
   function checkVoucherDiscountAmount(allowance_obj) {
-    log.debug('checkVoucherDiscountAmount', '檢查折讓單金額')	
+    log.debug('checkVoucherDiscountAmount', JSON.stringify(allowance_obj))	
     var _egui_obj	
     try {
 		 var _sellerIdentifier = allowance_obj.sellerIdentifier
@@ -369,25 +389,25 @@ define([
 			 var _my_search = search.create({
 				type: 'customrecord_gw_voucher_main',
 				columns: [
-				  'internalid',
-				  'custrecord_gw_voucher_number',
-				  'custrecord_gw_voucher_date',
-				  'custrecord_gw_voucher_yearmonth',
-				  'custrecord_gw_discount_sales_amount',
-				  'custrecord_gw_discount_free_amount',
-				  'custrecord_gw_discount_zero_amount',
-				  'custrecord_gw_discount_count',  
-				  'custrecord_gw_seller', 
-				  'custrecord_gw_buyer', 
-				  'custrecord_gw_original_buyer_id', 
-				  'custrecord_gw_voucher_number', 			  
-				  'custrecord_gw_sales_amount', 
-				  'custrecord_gw_discount_sales_amount', 
-				  'custrecord_gw_free_sales_amount', 
-				  'custrecord_gw_discount_free_amount', 
-				  'custrecord_gw_zero_sales_amount', 
-				  'custrecord_gw_discount_zero_amount', 
-				  'custrecord_gw_discount_count' 
+					search.createColumn({ name: 'internalid' }),
+			        search.createColumn({ name: 'custrecord_gw_voucher_number' }),
+			        search.createColumn({ name: 'custrecord_gw_voucher_date' }),
+			        search.createColumn({ name: 'custrecord_gw_voucher_yearmonth' }),
+			        search.createColumn({ name: 'custrecord_gw_discount_sales_amount' }),
+			        search.createColumn({ name: 'custrecord_gw_discount_free_amount' }),
+			        search.createColumn({ name: 'custrecord_gw_discount_zero_amount' }),
+			        search.createColumn({ name: 'custrecord_gw_discount_count' }),
+			        search.createColumn({ name: 'custrecord_gw_seller' }),
+			        search.createColumn({ name: 'custrecord_gw_buyer' }),
+			        search.createColumn({ name: 'custrecord_gw_original_buyer_id' }),
+			        search.createColumn({ name: 'custrecord_gw_voucher_number' }),
+			        search.createColumn({ name: 'custrecord_gw_sales_amount' }),
+			        search.createColumn({ name: 'custrecord_gw_discount_sales_amount' }),
+			        search.createColumn({ name: 'custrecord_gw_discount_free_amount' }),
+			        search.createColumn({ name: 'custrecord_gw_zero_sales_amount' }),
+			        search.createColumn({ name: 'custrecord_gw_discount_zero_amount' }),
+			        search.createColumn({ name: 'custrecord_gw_discount_zero_amount' }),
+			        search.createColumn({ name: 'custrecord_gw_discount_count' })   
 				],
 			 })
 			 var _filterArray = []  
@@ -477,12 +497,12 @@ define([
 				_apply_internal_id = saveVoucherApplyListRecord(allowance_obj) //TODO
 			}
 			
-			var _balance_amount_error = _egui_obj==null?false:_egui_obj.data_error
+			var _balance_amount_error = _egui_obj==null?true:_egui_obj.data_error
 			
 			var _main_record_id = saveVoucherMainRecord(_apply_internal_id, allowance_obj, _balance_amount_error)
 			saveVoucherDetailRecord(_apply_internal_id, _main_record_id, allowance_obj, _egui_obj)
 			
-			if (_egui_obj !=null && _egui_obj.data_error==true) {
+			if (_balance_amount_error==false) {
 				updateEGUIDiscountFields(_egui_obj)  
 			}
 			//Lock CM
@@ -756,7 +776,7 @@ define([
 			  tax_diff_balance
 			)
           //檢查結果處理
-		  if (balance_amount_error == false ) {
+		  if (balance_amount_error == true ) {
 			   _voucher_main_record.setValue({
 				  fieldId: 'custrecord_gw_need_upload_egui_mig',
 				  value: 'NONE',

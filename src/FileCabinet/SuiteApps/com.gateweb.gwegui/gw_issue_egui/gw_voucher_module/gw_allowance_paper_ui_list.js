@@ -432,6 +432,10 @@ define([
             'CUSTRECORD_GW_VOUCHER_MAIN_INTERNAL_ID.custrecord_gw_ns_document_number'
           ]
 
+        var _gw_original_gui_number =
+            _result.values[
+              'CUSTRECORD_GW_VOUCHER_MAIN_INTERNAL_ID.custrecord_gw_original_gui_number'
+            ]
         if (_indexId != _id) {
           if (_indexId != '') _index++
 
@@ -441,6 +445,11 @@ define([
             id: 'customer_voucher_year_month',
             line: _index,
             value: _voucher_yearmonth,
+          })
+          subListObj.setSublistValue({
+            id: 'customer_deduction_egui_number',
+            line: _index,
+            value: stringutility.trimOrAppendBlank(_gw_original_gui_number),
           })
           subListObj.setSublistValue({
             id: 'customer_search_voucher_id',
@@ -993,6 +1002,11 @@ define([
       id: 'customer_voucher_relate_number',
       type: serverWidget.FieldType.TEXT,
       label: 'NS Inv/CM #',
+    })
+    _sublist.addField({
+      id: 'customer_deduction_egui_number',
+      type: serverWidget.FieldType.TEXT,
+      label: '扣抵發票',
     })
     _sublist.addField({
       id: 'customer_voucher_year_month',

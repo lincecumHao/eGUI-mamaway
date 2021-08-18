@@ -54,7 +54,7 @@ define([
 	  
 	    //統編8碼
 	    if (_seller_ban.length != 8) _error_msg += '賣方統編-長度需為8碼\n'      
-	    if (_buyer_ban.length  != 8) _error_msg += '買方統編-長度需為8碼\n'        
+	    if (_buyer_ban.length  != 8 && _buyer_ban !='0000000000') _error_msg += '買方統編-長度需為8碼\n'        
 	    	 
 	    if (/^[1239]$/.test(_tax_type)==false)	_error_msg += '稅別錯誤-需為[1,2,3,9]\n' 
 	   	if (/^[05]$/.test(_tax_rate)==false)	_error_msg += '稅率錯誤-需為[0,5]\n' 

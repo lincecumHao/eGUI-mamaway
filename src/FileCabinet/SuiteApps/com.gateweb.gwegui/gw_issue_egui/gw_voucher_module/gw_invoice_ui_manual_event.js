@@ -1032,8 +1032,8 @@ define([
           value: _detailObj.tax_type,
         })
 
-        var _main_tax_rate =
-          stringutility.convertToFloat(_detailObj.tax_rate) / 100
+        //var _main_tax_rate = stringutility.convertToFloat(_detailObj.tax_rate) / 100
+        var _main_tax_rate = stringutility.convertToFloat(_detailObj.tax_rate) 
         _voucherMainRecord.setValue({
           fieldId: 'custrecord_gw_tax_rate',
           value: _main_tax_rate,
