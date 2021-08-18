@@ -39,6 +39,8 @@ define([
   function executeScript(context) {
     log.debug('executeScript', '執行批次作業')  
     try {
+    	loadAllTaxInformation()
+    	
 		//1. search credit_memo
 		var _my_search = search.load({
             id: _gw_creditmemo_detail_search_id,
