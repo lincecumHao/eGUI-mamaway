@@ -349,7 +349,7 @@ define([
       result.errorMessage = 'Tax Rate can only contains up to 2 different rates'
     }
     if (lineSummaryTaxRate.length === 2) {
-      if (taxType.value === 9) {
+      if (taxType.value !== 9) {
         // if special tax type are allowed, it can only contains one tax rate
         result.isValid = false
         result.errorCode = 'INVALID_TAX_RATE'
