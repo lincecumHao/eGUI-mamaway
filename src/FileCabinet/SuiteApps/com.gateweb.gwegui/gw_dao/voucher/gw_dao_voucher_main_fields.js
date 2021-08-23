@@ -139,7 +139,7 @@ define(['../../library/ramda.min'], function (ramda) {
     },
     custrecord_gw_tax_type: {
       id: 'custrecord_gw_tax_type',
-      sourceField: 'taxType.id',
+      sourceField: 'taxType.value',
       outputField: 'taxType'
     },
     custrecord_gw_tax_rate: {
