@@ -645,7 +645,7 @@ define([
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////
             var _random_number = invoiceutility.getRandomNum(1000, 9999)
-
+			
             var _gw_gui_main_memo = _result.values.custbody_gw_gui_main_memo //額外備註
             var _gw_item_memo = _result.values.custcol_gw_item_memo //項目備註
 
@@ -1989,7 +1989,8 @@ define([
       var _print_mark = 'N'
       if (mig_type == 'C0401' || mig_type == 'B2C') {
         //TODO 要產生隨機碼
-        _random_number = Math.round(invoiceutility.getRandomNum(1000, 9999))
+        //_random_number = Math.round(invoiceutility.getRandomNum(1000, 9999))
+		_random_number = invoiceutility.getRandomNumNew(_documentNumber, jsonObj.sellerIdentifier)
         _print_mark = 'Y'
       }
       _voucherMainRecord.setValue({

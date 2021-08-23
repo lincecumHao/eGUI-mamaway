@@ -1325,6 +1325,6 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
     getAssignLogNumber: getAssignLogNumber,
     getRandomNum: getRandomNum,
     getSellerInfoBySubsidiary: getSellerInfoBySubsidiary,
-    test1: test1
+	getRandomNumNew: getRandomNumNew
   }
 })
