@@ -2,7 +2,7 @@ define([
   'N/record',
   './gw_lib_search',
   'N/search',
-  './gw_lib_wrapper',
+  './gw_lib_wrapper'
 ], function (record, GwSearch, search, wrapperLib) {
   /**
    * Module Description...
@@ -22,7 +22,7 @@ define([
     'custrecord_gw_track_year_month',
     'custrecord_gw_track_type_code',
     'custrecord_gw_track_invoice_track',
-    'custrecord_gw_track_invoice_type',
+    'custrecord_gw_track_invoice_type'
   ]
   var allOptions = []
 
@@ -30,7 +30,7 @@ define([
     return function () {
       if (allOptions.length === 0) {
         log.debug({
-          title: 'assign log track constructor wrapper get all options',
+          title: 'assign log track constructor wrapper get all options'
         })
         getAllOptions()
       }
@@ -58,7 +58,7 @@ define([
       'custrecord_gw_track_year_month',
       'custrecord_gw_track_type_code',
       'custrecord_gw_track_invoice_track',
-      'custrecord_gw_track_invoice_type',
+      'custrecord_gw_track_invoice_type'
     ]
     var result = GwSearch.search(assignLogTrackRecordTypeId, columns)
     allOptions = result.map(function (recordObj) {
@@ -67,7 +67,7 @@ define([
         applyPeriod: recordObj['custrecord_gw_track_year_month'],
         docTypeCode: recordObj['custrecord_gw_track_type_code'],
         guiTrack: recordObj['custrecord_gw_track_invoice_track'],
-        mofDocType: recordObj['custrecord_gw_track_invoice_type'],
+        mofDocType: recordObj['custrecord_gw_track_invoice_type']
       }
     })
     return allOptions
@@ -88,7 +88,7 @@ define([
     return options
   }
 
-  function getAvaliableGuiTrackCore(docTypeObj, applyPeriod) {
+  function getAvailableGuiTrackCore(docTypeObj, applyPeriod) {
     var options = allOptions.filter(function (option) {
       return option.applyPeriod.toString() === applyPeriod
     })
@@ -97,6 +97,7 @@ define([
         return option.mofDocType.toString() === docTypeObj.mofDocType.toString()
       })
     }
+    return options
   }
 
   function getAvailableGuiTrack(docTypeObj, applyPeriod) {
@@ -105,13 +106,13 @@ define([
       'custrecord_gw_track_year_month',
       'custrecord_gw_track_type_code',
       'custrecord_gw_track_invoice_track',
-      'custrecord_gw_track_invoice_type',
+      'custrecord_gw_track_invoice_type'
     ]
     var searchFilters = []
     searchFilters.push([
       'custrecord_gw_track_type_code',
       'is',
-      docTypeObj.docType.toString(),
+      docTypeObj.docType.toString()
     ])
     searchFilters.push('AND')
     searchFilters.push(['custrecord_gw_track_year_month', 'is', applyPeriod])
@@ -120,17 +121,17 @@ define([
       searchFilters.push([
         'custrecord_gw_track_invoice_type',
         'is',
-        docTypeObj.mofDocType.toString(),
+        docTypeObj.mofDocType.toString()
       ])
     }
 
     var trackSearch = search.create({
       type: assignLogTrackRecordTypeId,
-      columns: searchColumns,
+      columns: searchColumns
     })
     trackSearch.filterExpression = searchFilters
     var pagedData = trackSearch.runPaged({
-      pageSize: 1000,
+      pageSize: 1000
     })
     for (var i = 0; i < pagedData.pageRanges.length; i++) {
       var currentPage = pagedData.fetch(i)
@@ -138,7 +139,7 @@ define([
         var resultObj = {}
         searchColumns.forEach(function (column) {
           var value = result.getValue({
-            name: column.name,
+            name: column.name
           })
           resultObj[column.name] = value
         })
@@ -158,7 +159,7 @@ define([
         var resultObj = {}
         searchColumns.forEach(function (column) {
           var value = result.getValue({
-            name: column.name,
+            name: column.name
           })
           resultObj[column.name] = value
         })
@@ -178,27 +179,27 @@ define([
     searchFilters.push([
       'custrecord_gw_track_type_code',
       'is',
-      docTypeCode.toString(),
+      docTypeCode.toString()
     ])
     searchFilters.push('AND')
     searchFilters.push([
       'custrecord_gw_track_year_month',
       'is',
-      applyPeriod.toString(),
+      applyPeriod.toString()
     ])
     searchFilters.push('AND')
     searchFilters.push([
       'custrecord_gw_track_invoice_track',
       'is',
-      guiTrack.toString(),
+      guiTrack.toString()
     ])
     var trackSearch = search.create({
       type: assignLogTrackRecordTypeId,
-      columns: assignLogTrackColumns,
+      columns: assignLogTrackColumns
     })
     trackSearch.filterExpression = searchFilters
     var pagedData = trackSearch.runPaged({
-      pageSize: 1000,
+      pageSize: 1000
     })
     var results = getAllResults(pagedData, trackSearch.columns)
     return results
@@ -207,6 +208,6 @@ define([
   exports.getRecordsByDocTypeGuiTrackAndApplyPeriod = constructorWrapper(
     getRecordsByDocTypeGuiTrackAndApplyPeriodCore
   ) //getRecordsByDocTypeGuiTrackAndApplyPeriod
-  exports.getAvailableGuiTrack = constructorWrapper(getAvaliableGuiTrackCore) //getAvailableGuiTrack
+  exports.getAvailableGuiTrack = constructorWrapper(getAvailableGuiTrackCore) //getAvailableGuiTrack
   return exports
 })
