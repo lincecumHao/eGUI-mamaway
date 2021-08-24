@@ -13,7 +13,7 @@ define([
   '../field_validation/gw_lib_field_validation_tax_amt',
   '../field_validation/gw_lib_field_validation_taxable_sales_amt',
   '../field_validation/gw_lib_field_validation_tax_exempt_sales_amt',
-  '../field_validation/gw_lib_field_validation_tax_zero_sales_amt',
+  '../field_validation/gw_lib_field_validation_tax_zero_sales_amt'
 ], function (
   stringUtil,
   apDocFields,
@@ -90,7 +90,7 @@ define([
     console.log('validateGuiNumber fieldValue', fieldValue)
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
     var guiNumber = fieldValue // getSublistValue(context.fieldId)
     var docType = apDocTypeService.getDocTypeCodeByRecordId(
@@ -127,7 +127,7 @@ define([
   function validateOptionalGuiNumber(value, docType) {
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
     // Check with common number
     var commonNumber = getSublistValue(apDocFields.fields.commonNumber.id)
@@ -150,7 +150,7 @@ define([
   function validateRequiredGuiNumber(value, docType) {
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
     if (stringUtil.isNullOrEmpty(value)) {
       resultObj.isValid = false
@@ -165,7 +165,7 @@ define([
   function validateMustNotHaveGuiNumber(value) {
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
     if (!stringUtil.isNullOrEmpty(value)) {
       resultObj.isValid = false
@@ -177,7 +177,7 @@ define([
   function validateGuiNumberValue(value, docType) {
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
 
     if (!guiNumberValidator.isFormatValid(value)) {
@@ -211,6 +211,8 @@ define([
     var guiPeriod = applyPeriodService.convertGuiPeriod(guiDate)
     var applyPeriod = getSublistValue(apDocFields.fields.applyPeriod.id)
     if (!docTypeFieldValue || !applyPeriod) return true
+    console.log('initAvailableGuiTrack docTypeObj', docTypeObj)
+    console.log('initAvailableGuiTrack guiPeriod', guiPeriod)
     var availableTrack = assignLogTrackService.getAvailableGuiTrack(
       docTypeObj,
       guiPeriod
@@ -254,7 +256,7 @@ define([
     console.log('validateCommonNumber fieldValue', fieldValue)
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
     var guiNumber = getSublistValue(apDocFields.fields.guiNum.id)
     console.log('validateCommonNumber guiNumber', guiNumber)
@@ -289,7 +291,7 @@ define([
   function validateCommonNumberForbidden(value) {
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
     if (!stringUtil.isNullOrEmpty(value)) {
       resultObj.isValid = false
@@ -301,7 +303,7 @@ define([
   function validateCommonNumberRequired(value, docType) {
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
     if (stringUtil.isNullOrEmpty(value)) {
       resultObj.isValid = false
@@ -319,7 +321,7 @@ define([
   function validateCommonNumberOptional(docType, value) {
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
     var guiNumber = getSublistValue(apDocFields.fields.guiNum.id)
     if (
@@ -353,7 +355,7 @@ define([
   function validateCommonNumberValue(docType, value) {
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
     console.log('validatCommonNumberValue docType', docType)
     console.log('validatCommonNumberValue value', value)
@@ -407,7 +409,7 @@ define([
     console.log('validateBuyerTaxId fieldValue', value)
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
     if (stringUtil.isNullOrEmpty(value.toString())) {
       resultObj.isValid = false
@@ -494,7 +496,7 @@ define([
   function validateSellerTaxIdOptional(value) {
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
     if (!stringUtil.isNullOrEmpty(value)) {
       if (!taxIdValidator.isLengthValid(value.toString())) {
@@ -514,7 +516,7 @@ define([
   function validateSellerTaxIdRequired(value) {
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
     if (stringUtil.isNullOrEmpty(value.toString())) {
       resultObj.isValid = false
@@ -535,7 +537,7 @@ define([
   function validateSellerTaxIdMustNotHave(value) {
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
     if (!stringUtil.isNullOrEmpty(value.toString())) {
       resultObj.isValid = false
@@ -574,7 +576,7 @@ define([
   function validateSalesAmt(context, value) {
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
     if (!salesAmtValidator.isLengthValid(value)) {
       resultObj.isValid = false
@@ -625,7 +627,7 @@ define([
   function validateTaxExemptSalesAmt(context, value) {
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
     if (!taxExemptSalesAmtValidator.isLengthValid(value)) {
       resultObj.isValid = false
@@ -676,7 +678,7 @@ define([
   function validateTaxZeroSalesAmt(context, value) {
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
     if (!taxZeroSalesAmtValidator.isLengthValid(value)) {
       resultObj.isValid = false
@@ -727,7 +729,7 @@ define([
   function validateTaxAmt(context, value) {
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
     var salesAmt = getNumberSublistFieldValue(apDocFields.fields.salesAmt.id)
     var taxAmt = value
@@ -773,7 +775,7 @@ define([
   function validateTaxId(context, value) {
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
     if (!taxIdValidator.isLengthValid(value)) {
       resultObj.isValid = false
@@ -816,7 +818,7 @@ define([
   function validateDeductionCode(context, value) {
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
     var taxType = apDocTaxTypeService.getTaxTypeValueByRecordId(
       getNumberSublistFieldValue(apDocFields.fields.taxType.id)
@@ -868,7 +870,7 @@ define([
   function validateConsolidationMark(context, value) {
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
     // TODO Add validateConsolidationMark logic
     return resultObj
@@ -904,7 +906,7 @@ define([
   function validateConsolidationQty(context, value) {
     var resultObj = {
       isValid: true,
-      error: [],
+      error: []
     }
     // TODO Add validateConsolidationQty logic
     return resultObj

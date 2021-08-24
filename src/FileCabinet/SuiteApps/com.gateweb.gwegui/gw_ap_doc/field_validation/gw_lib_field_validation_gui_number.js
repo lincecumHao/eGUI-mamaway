@@ -34,9 +34,13 @@ define(['../application/gw_service_ap_doc_gui_number'], function (
 
   function isTrackValid(value) {
     var guiNumberObject = parseEguiNumber(value)
+    log.debug({
+      title: 'isTrackValid guiNumberObject',
+      details: guiNumberObject
+    })
     var track = guiNumberObject.track
     var result = availableTrackValues.filter(function (trackRecordObj) {
-      return trackRecordObj.custrecord_gw_track_invoice_track === track
+      return trackRecordObj.guiTrack === track
     })
     return result.length > 0
   }
