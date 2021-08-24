@@ -146,11 +146,6 @@ define([
     context.response.writePage(uploadForm)
   }
 
-  const transactionTypeMapping = {
-    vendorbill: record.Type.VENDOR_BILL,
-    expensereport: record.Type.EXPENSE_REPORT
-  }
-
   /**
    * Event handler for HTTP POST request
    *
@@ -166,6 +161,10 @@ define([
       title: 'on POST request params',
       details: context.request.parameters
     })
+    const transactionTypeMapping = {
+      vendorbill: record.Type.VENDOR_BILL,
+      expensereport: record.Type.EXPENSE_REPORT
+    }
     var uploaded_file = context.request.files['upload_file']
     var applyPeriod = context.request.parameters['apply_period'] || ''
     var transactionId = context.request.parameters['transaction_id'] || ''
