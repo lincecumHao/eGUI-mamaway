@@ -379,9 +379,9 @@ define([
 		 var _buyerIdentifier = allowance_obj.buyerIdentifier
 		 var _buyerId = allowance_obj.buyerId
 		 
-		 var _sales_amount = allowance_obj.sales_amount
-		 var _free_sales_amount = allowance_obj.free_sales_amount
-		 var _zero_sales_amount = allowance_obj.zero_sales_amount
+		 var _sales_amount = stringutility.convertToFloat(allowance_obj.sales_amount)
+		 var _free_sales_amount = stringutility.convertToFloat(allowance_obj.free_sales_amount)
+		 var _zero_sales_amount = stringutility.convertToFloat(allowance_obj.zero_sales_amount)
 		 
 		 var _voucher_number_start = allowance_obj.voucher_number_start
 		 var _voucher_number_end = allowance_obj.voucher_number_end
