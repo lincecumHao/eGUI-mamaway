@@ -13,7 +13,7 @@ define([
   'N/search',
   '../gw_common_utility/gw_common_invoice_utility',
   '../gw_common_utility/gw_common_string_utility',
-  '../gw_common_utility/gw_common_configure',
+  '../gw_common_utility/gw_common_configure'
 ], function (
   runtime,
   serverWidget,
@@ -41,14 +41,17 @@ define([
 
     var _user_obj = runtime.getCurrentUser()
     var _user_subsidiary = _user_obj.subsidiary
-	
-	var _company_ary = invoiceutility.getBusinessEntitByUserId(_user_obj.id, _user_subsidiary)
-	if (_company_ary!=null) {
-    	for (var i=0; i<_company_ary.length; i++) {
-    		var _company = _company_ary[i];
-    		_user_subsidary_taxId_ary.push(_company.tax_id_number) 
-    	}
-    } 
+
+    var _company_ary = invoiceutility.getBusinessEntitByUserId(
+      _user_obj.id,
+      _user_subsidiary
+    )
+    if (_company_ary != null) {
+      for (var i = 0; i < _company_ary.length; i++) {
+        var _company = _company_ary[i]
+        _user_subsidary_taxId_ary.push(_company.tax_id_number)
+      }
+    }
 
     return _user_subsidary_taxId_ary
   }
@@ -65,11 +68,11 @@ define([
   ) {
     //Load company Information
     var _companyInfo = config.load({
-      type: config.Type.COMPANY_INFORMATION,
+      type: config.Type.COMPANY_INFORMATION
     })
     //暫借欄位做統編
     var _ban = _companyInfo.getValue({
-      fieldId: 'employerid',
+      fieldId: 'employerid'
     })
     var _isError = false
     var _errorMsg = ''
@@ -129,15 +132,15 @@ define([
       _isError = true
     }
     //字軌本數上限
-    var _number_count =
-      (stringutility.convertToFloat(endNo) -
-        stringutility.convertToFloat(startNo) +
-        1) /
-      50
-    if (_number_count > _count_limit) {
-      _errorMsg += '字軌本數勿超過' + _count_limit + '本,'
-      _isError = true
-    }
+    // var _number_count =
+    //   (stringutility.convertToFloat(endNo) -
+    //     stringutility.convertToFloat(startNo) +
+    //     1) /
+    //   50
+    // if (_number_count > _count_limit) {
+    //   _errorMsg += '字軌本數勿超過' + _count_limit + '本,'
+    // _isError = true
+    // }
 
     if (checkAssignLogDuplicate(businessNo, track, startNo, endNo) == true) {
       _errorMsg += '發票號碼重複,'
@@ -153,31 +156,31 @@ define([
     var _isError = false
     try {
       var _mySearch = search.load({
-        id: _assignLogSearchId,
+        id: _assignLogSearchId
       })
       var _filterArray = []
       _filterArray.push([
         'custrecord_gw_assignlog_businessno',
         search.Operator.IS,
-        businessNo,
+        businessNo
       ])
       _filterArray.push('and')
       _filterArray.push([
         'custrecord_gw_assignlog_invoicetrack',
         search.Operator.IS,
-        track,
+        track
       ])
       _filterArray.push('and')
       _filterArray.push([
         'custrecord_gw_assignlog_startno',
         search.Operator.GREATERTHANOREQUALTO,
-        startNo,
+        startNo
       ])
       _filterArray.push('and')
       _filterArray.push([
         'custrecord_gw_assignlog_endno',
         search.Operator.LESSTHANOREQUALTO,
-        endNo,
+        endNo
       ])
 
       _mySearch.filterExpression = _filterArray
@@ -198,21 +201,21 @@ define([
     try {
       ////////////////////////////////////////////////////////////////////
       var _mainSearch = search.create({
-        type: _assignLogRecordId,
+        type: _assignLogRecordId
       })
 
       var _filterArray = []
       _filterArray.push([
         'custrecord_gw_assignlog_businessno',
         'is',
-        '24549210',
+        '24549210'
       ])
       _mainSearch.filterExpression = _filterArray
       _mainSearch.run().each(function (result) {
         var internalid = result.id
         record.delete({
           type: _assignLogRecordId,
-          id: internalid,
+          id: internalid
         })
         return true
       })
@@ -227,7 +230,7 @@ define([
     try {
       ////////////////////////////////////////////////////////////////////
       var _search = search.create({
-        type: 'customrecord_gw_apply_period_options',
+        type: 'customrecord_gw_apply_period_options'
       })
 
       var _filterArray = []
@@ -247,50 +250,50 @@ define([
 
   function onRequest(context) {
     var form = serverWidget.createForm({
-      title: '電子發票字軌匯入作業',
+      title: '電子發票字軌匯入作業'
     })
 
     //file
     var _file = form.addField({
       id: 'assignlog_uploadfiles',
       type: serverWidget.FieldType.FILE,
-      label: 'AssignLog Upload File',
+      label: 'AssignLog Upload File'
     })
     _file.updateLayoutType({
-      layoutType: serverWidget.FieldLayoutType.OUTSIDE,
+      layoutType: serverWidget.FieldLayoutType.OUTSIDE
     })
 
     //部門代碼
     var _selectDeptCode = form.addField({
       id: 'custpage_select_deptcode',
       type: serverWidget.FieldType.SELECT,
-      label: '部門',
+      label: '部門'
     })
     _selectDeptCode.addSelectOption({
       value: '',
-      text: 'NONE',
+      text: 'NONE'
     })
     _selectDeptCode.updateLayoutType({
-      layoutType: serverWidget.FieldLayoutType.OUTSIDE,
+      layoutType: serverWidget.FieldLayoutType.OUTSIDE
     })
 
     var _deptCodeSearch = search
       .create({
         type: search.Type.DEPARTMENT,
-        columns: ['internalid', 'name'],
+        columns: ['internalid', 'name']
       })
       .run()
       .each(function (result) {
         var internalid = result.getValue({
-          name: 'internalid',
+          name: 'internalid'
         })
         var deptname = result.getValue({
-          name: 'name',
+          name: 'name'
         })
 
         _selectDeptCode.addSelectOption({
           value: internalid,
-          text: deptname,
+          text: deptname
         })
         return true
       })
@@ -299,33 +302,33 @@ define([
     var _selectClassification = form.addField({
       id: 'custpage_select_classification',
       type: serverWidget.FieldType.SELECT,
-      label: '分類',
+      label: '分類'
     })
     _selectClassification.addSelectOption({
       value: '',
-      text: 'NONE',
+      text: 'NONE'
     })
     _selectClassification.updateLayoutType({
-      layoutType: serverWidget.FieldLayoutType.OUTSIDE,
+      layoutType: serverWidget.FieldLayoutType.OUTSIDE
     })
 
     var _classificationSearch = search
       .create({
         type: search.Type.CLASSIFICATION,
-        columns: ['internalid', 'name'],
+        columns: ['internalid', 'name']
       })
       .run()
       .each(function (result) {
         var internalid = result.getValue({
-          name: 'internalid',
+          name: 'internalid'
         })
         var deptname = result.getValue({
-          name: 'name',
+          name: 'name'
         })
 
         _selectClassification.addSelectOption({
           value: internalid,
-          text: deptname,
+          text: deptname
         })
         return true
       })
@@ -333,56 +336,56 @@ define([
     var _sublist = form.addSublist({
       id: 'sublist',
       type: serverWidget.SublistType.LIST,
-      label: '字軌清單',
+      label: '字軌清單'
     })
     _sublist.addField({
       id: 'assignlogseq',
       type: serverWidget.FieldType.TEXT,
-      label: '序號',
+      label: '序號'
     })
     _sublist.addField({
       id: 'invoicetype',
       type: serverWidget.FieldType.TEXT,
-      label: '發票類型',
+      label: '發票類型'
     })
     _sublist.addField({
       id: 'assignlogdeptcode',
       type: serverWidget.FieldType.TEXT,
-      label: '部門',
+      label: '部門'
     })
     _sublist.addField({
       id: 'assignlogclassfication',
       type: serverWidget.FieldType.TEXT,
-      label: '分類',
+      label: '分類'
     })
     _sublist.addField({
       id: 'invoiceperiod',
       type: serverWidget.FieldType.TEXT,
-      label: '年月',
+      label: '年月'
     })
     _sublist.addField({
       id: 'trackno',
       type: serverWidget.FieldType.TEXT,
-      label: '字軌',
+      label: '字軌'
     })
     _sublist.addField({
       id: 'startno',
       type: serverWidget.FieldType.TEXT,
-      label: '起號',
+      label: '起號'
     })
     _sublist.addField({
       id: 'endno',
       type: serverWidget.FieldType.TEXT,
-      label: '迄號',
+      label: '迄號'
     })
     _sublist.addField({
       id: 'resultmessage',
       type: serverWidget.FieldType.TEXT,
-      label: '處理結果',
+      label: '處理結果'
     })
 
     form.addSubmitButton({
-      label: '存檔',
+      label: '存檔'
     })
 
     context.response.writePage(form)
@@ -398,10 +401,10 @@ define([
         var _record = record.load({
           type: record.Type.DEPARTMENT,
           id: _selectDeptCode,
-          isDynamic: true,
+          isDynamic: true
         })
         _selectDeptName = _record.getValue({
-          fieldId: 'name',
+          fieldId: 'name'
         })
       }
 
@@ -412,10 +415,10 @@ define([
         var _record = record.load({
           type: record.Type.CLASSIFICATION,
           id: _selectClassification,
-          isDynamic: true,
+          isDynamic: true
         })
         _selectClassificationName = _record.getValue({
-          fieldId: 'name',
+          fieldId: 'name'
         })
       }
       //start access file
@@ -476,20 +479,20 @@ define([
           _sublist.setSublistValue({
             id: 'assignlogseq',
             line: row,
-            value: row + 1,
+            value: row + 1
           })
 
           //發票類型
           _sublist.setSublistValue({
             id: 'invoicetype',
             line: row,
-            value: _invoiceType,
+            value: _invoiceType
           })
           //部門
           _sublist.setSublistValue({
             id: 'assignlogdeptcode',
             line: row,
-            value: _selectDeptCode + '-' + _selectDeptName,
+            value: _selectDeptCode + '-' + _selectDeptName
           })
           //類別
           var _selectClassName =
@@ -497,36 +500,36 @@ define([
           _sublist.setSublistValue({
             id: 'assignlogclassfication',
             line: row,
-            value: _selectClassName,
+            value: _selectClassName
           })
           //期別
           _sublist.setSublistValue({
             id: 'invoiceperiod',
             line: row,
-            value: _yearMonth,
+            value: _yearMonth
           })
           //字軌
           _sublist.setSublistValue({
             id: 'trackno',
             line: row,
-            value: _invoiceTrack,
+            value: _invoiceTrack
           })
           //起號
           _sublist.setSublistValue({
             id: 'startno',
             line: row,
-            value: stringutility.padding('' + _startNo, 8),
+            value: stringutility.padding('' + _startNo, 8)
           })
           //迄號
           _sublist.setSublistValue({
             id: 'endno',
             line: row,
-            value: stringutility.padding('' + _endNo, 8),
+            value: stringutility.padding('' + _endNo, 8)
           })
           _sublist.setSublistValue({
             id: 'resultmessage',
             line: row,
-            value: _resultJsonObject.message,
+            value: _resultJsonObject.message
           })
           _hasError = true
           row++
@@ -566,7 +569,7 @@ define([
           var _periodRecord = record.load({
             type: 'customrecord_gw_apply_period_options',
             isDynamic: true,
-            id: _internal_id,
+            id: _internal_id
           })
 
           for (var i = 0; i < _diff; i++) {
@@ -575,20 +578,20 @@ define([
             _sublist.setSublistValue({
               id: 'assignlogseq',
               line: row,
-              value: row + 1,
+              value: row + 1
             })
 
             //發票類型
             _sublist.setSublistValue({
               id: 'invoicetype',
               line: row,
-              value: _invoiceType,
+              value: _invoiceType
             })
             //部門
             _sublist.setSublistValue({
               id: 'assignlogdeptcode',
               line: row,
-              value: _selectDeptCode + '-' + _selectDeptName,
+              value: _selectDeptCode + '-' + _selectDeptName
             })
             //類別
             var _selectClassName =
@@ -596,38 +599,38 @@ define([
             _sublist.setSublistValue({
               id: 'assignlogclassfication',
               line: row,
-              value: _selectClassName,
+              value: _selectClassName
             })
             //期別
             _sublist.setSublistValue({
               id: 'invoiceperiod',
               line: row,
-              value: _yearMonth,
+              value: _yearMonth
             })
             //字軌
             _sublist.setSublistValue({
               id: 'trackno',
               line: row,
-              value: _invoiceTrack,
+              value: _invoiceTrack
             })
             //起號
             _sublist.setSublistValue({
               id: 'startno',
               line: row,
-              value: stringutility.padding('' + _startNo, 8),
+              value: stringutility.padding('' + _startNo, 8)
             })
             //迄號
             _sublist.setSublistValue({
               id: 'endno',
               line: row,
-              value: stringutility.padding('' + _endNo, 8),
+              value: stringutility.padding('' + _endNo, 8)
             })
             //////////////////////////////////////////////////////////////////////////////
             //Save to assignLog Record Start
             var _periodSublistId = 'recmachcustrecord_gw_assignlog_peroid'
             try {
               _periodRecord.selectNewLine({
-                sublistId: _periodSublistId,
+                sublistId: _periodSublistId
               })
             } catch (e) {
               log.error(e.name, e.message)
@@ -636,87 +639,87 @@ define([
             _periodRecord.setCurrentSublistValue({
               sublistId: _periodSublistId,
               fieldId: 'name',
-              value: 'assignlog',
+              value: 'assignlog'
             })
             _periodRecord.setCurrentSublistValue({
               sublistId: _periodSublistId,
               fieldId: 'custrecord_gw_assignlog_businessno',
-              value: _businessno,
+              value: _businessno
             })
             _periodRecord.setCurrentSublistValue({
               sublistId: _periodSublistId,
               fieldId: 'custrecord_gw_assignlog_deptcode',
-              value: _selectDeptCode,
+              value: _selectDeptCode
             })
             _periodRecord.setCurrentSublistValue({
               sublistId: _periodSublistId,
               fieldId: 'custrecord_gw_assignlog_deptname',
-              value: _selectDeptName,
+              value: _selectDeptName
             })
             _periodRecord.setCurrentSublistValue({
               sublistId: _periodSublistId,
               fieldId: 'custrecord_gw_assignlog_classification',
-              value: _selectClassification,
+              value: _selectClassification
             })
             _periodRecord.setCurrentSublistValue({
               sublistId: _periodSublistId,
               fieldId: 'custrecord_gw_assignlog_class_name',
-              value: _selectClassificationName,
+              value: _selectClassificationName
             })
             _periodRecord.setCurrentSublistValue({
               sublistId: _periodSublistId,
               fieldId: 'custrecord_gw_assignlog_invoicetype',
-              value: _invoiceType,
+              value: _invoiceType
             })
             _periodRecord.setCurrentSublistValue({
               sublistId: _periodSublistId,
               fieldId: 'custrecord_gw_assignlog_invoicetrack',
-              value: _invoiceTrack,
+              value: _invoiceTrack
             })
             _periodRecord.setCurrentSublistValue({
               sublistId: _periodSublistId,
               fieldId: 'custrecord_gw_assignlog_startno',
-              value: stringutility.padding('' + _startNo, 8),
+              value: stringutility.padding('' + _startNo, 8)
             })
             _periodRecord.setCurrentSublistValue({
               sublistId: _periodSublistId,
               fieldId: 'custrecord_gw_assignlog_endno',
-              value: stringutility.padding('' + _endNo, 8),
+              value: stringutility.padding('' + _endNo, 8)
             })
             _periodRecord.setCurrentSublistValue({
               sublistId: _periodSublistId,
               fieldId: 'custrecord_gw_assignlog_yearmonth',
-              value: _yearMonth.toString(),
+              value: _yearMonth.toString()
             })
             _periodRecord.setCurrentSublistValue({
               sublistId: _periodSublistId,
               fieldId: 'custrecord_gw_assignlog_status',
-              value: _status,
+              value: _status
             })
             _periodRecord.setCurrentSublistValue({
               sublistId: _periodSublistId,
               fieldId: 'custrecord_gw_last_invoice_date',
-              value: 0,
+              value: 0
             })
             _periodRecord.setCurrentSublistValue({
               sublistId: _periodSublistId,
               fieldId: 'custrecord_gw_assignlog_usedcount',
-              value: _usedCount,
+              value: _usedCount
             })
             _periodRecord.setCurrentSublistValue({
               sublistId: _periodSublistId,
               fieldId: 'custrecord_gw_assignlog_version',
-              value: _version,
+              value: _version
             })
             _periodRecord.setCurrentSublistValue({
               sublistId: _periodSublistId,
               fieldId: 'custrecord_gw_egui_format_code',
-              value: _invoceFormatCode,
+              value: _invoceFormatCode
             })
             ////////////////////////////////////////////////////////
             try {
               _periodRecord.commitLine({
-                sublistId: _periodSublistId,
+                sublistId: _periodSublistId
               })
             } catch (e) {
               log.error(e.name, e.message)
@@ -767,7 +770,7 @@ define([
             _sublist.setSublistValue({
               id: 'resultmessage',
               line: row,
-              value: resultmessage,
+              value: resultmessage
             })
             row++
           }
@@ -776,7 +779,7 @@ define([
             //save record
             _periodRecord.save({
               ignoreMandatoryFields: true,
-              enableSourcing: false,
+              enableSourcing: false
             })
           } catch (e) {
             log.error(e.name, e.message)
@@ -788,6 +791,6 @@ define([
   }
 
   return {
-    onRequest: onRequest,
+    onRequest: onRequest
   }
 })
