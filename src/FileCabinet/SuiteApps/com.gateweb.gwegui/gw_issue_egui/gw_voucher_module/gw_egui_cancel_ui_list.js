@@ -383,6 +383,10 @@ define([
         var _need_upload_egui_mig =
           _result.values.custrecord_gw_need_upload_egui_mig //Y/N
 
+        _need_upload_egui_mig = _need_upload_egui_mig=='N'?'NONE':_need_upload_egui_mig;
+		//20210825 walter modify
+		var _is_manual_voucher = _result.values.custrecord_gw_is_manual_voucher;//true / false
+		 
         //處理 Print 紀錄
         var _is_printed = '' //_mig_type
         var _is_printed_paper = _result.values.custrecord_gw_is_printed_paper
@@ -516,6 +520,11 @@ define([
             line: _index,
             value: _voucher_upload_status,
           })
+          subListObj.setSublistValue({
+			id: 'customer_voucher_manual_egui_id',
+			line: _index,
+			value: _is_manual_voucher.toString(),
+		  })
 
           var _voucher_manual_egui = ' '
           if (
@@ -1122,6 +1131,15 @@ define([
       type: serverWidget.FieldType.TEXT,
       label: '已列印',
     })
+    /////////////////////////////////////////////////////////////////////////////////////////////
+	var _manualEguiField = _sublist.addField({
+      id: 'customer_voucher_manual_egui_id',
+      label: '是否歷史發票',
+      type: serverWidget.FieldType.RADIO,
+    })      
+    _manualEguiField.updateDisplayType({
+      displayType: serverWidget.FieldDisplayType.HIDDEN,
+    })   
     ////////////////////////////////////////////////////////////////////////////////////////////
     return _sublist
   }

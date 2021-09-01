@@ -212,7 +212,11 @@ define([
               'customer_voucher_relate_number',
               _internalId
             )
-
+            
+            var _manual_egui_id  = getSublistColumnValue('vouchersublistid', 'customer_search_voucher_id', 'customer_voucher_manual_egui_id', _internalId);
+                	              
+            var _need_upload_egui_mig  = getSublistColumnValue('vouchersublistid', 'customer_search_voucher_id', 'customer_need_upload_egui_mig', _internalId);
+						
             /**
                if (stringutility.trim(_voucher_status) != 'VOUCHER_SUCCESS' ||
                stringutility.trim(_upload_status) != 'C'){
@@ -233,33 +237,58 @@ define([
 						}
                */
             //20201113 walter modify
+            /**
             if (dateutility.checkVoucherEffectiveDate(_voucher_date) == false) {
               _error_message = ']:憑證-已超過報稅期不可作廢!'
               _error_message = '[' + _voucher_number + _error_message
               _checkFlag = false
               break
             }
+            */
+            if (_need_upload_egui_mig != 'NONE' && 
+			    dateutility.checkVoucherEffectiveDate(_voucher_date)==false) {
+				_error_message = ']:憑證-已超過報稅期不可作廢!';
+				_error_message = '['+_voucher_number+_error_message;
+				_checkFlag = false;  
+				break;
+			}
 
             //作廢行為檢查
             if (voucher_open_type.indexOf('EGUI') != -1) {
-              //發票作廢規則檢查
-              if (
-                stringutility.trim(_voucher_status) != 'VOUCHER_SUCCESS' ||
-                stringutility.trim(_upload_status) == 'A' ||
-                stringutility.trim(_upload_status) == 'P' ||
-                stringutility.trim(_upload_status) == 'E' ||
-                stringutility.trim(_upload_status) == 'D'
-              ) {
-                _error_message = ']:發票-需上傳後或開立成功才可作廢!'
-                _error_message = '[' + _voucher_number + _error_message
-                _checkFlag = false
-                break
-              } else if (stringutility.trim(_discounted) !== '') {
-                _error_message = '[' + _voucher_number + ']:有折讓單不可作廢!'
-                _error_message = '[' + _voucher_number + _error_message
-                _checkFlag = false
-                break
-              }
+                //發票作廢規則檢查
+	        	if (_need_upload_egui_mig == 'NONE') {
+					//不上傳規則
+					if (stringutility.trim(_discounted) !== '' && _manual_egui_id==true) {
+						//檢查歷史發票是否真的被折
+						//checkAllowanceOfEguiVoucher TODO
+						_manual_egui_voucher_ary.push(_voucher_number);
+					} else if (stringutility.trim(_voucher_status).indexOf('CANCEL') != -1) {
+						_error_message = '['+_voucher_number+']:已申請作廢!';
+						_checkFlag = false;  
+						break;
+					} else if (stringutility.trim(_discounted) !== '' && _manual_egui_id==false) {
+						_error_message = '['+_voucher_number+']:有折讓單不可作廢!';
+						_error_message = '['+_voucher_number+_error_message;
+						_checkFlag = false;  
+						break;
+					}	
+				} else {
+					if (stringutility.trim(_voucher_status) != 'VOUCHER_SUCCESS' ||
+						stringutility.trim(_upload_status) == 'A' ||
+						stringutility.trim(_upload_status) == 'P' ||
+						stringutility.trim(_upload_status) == 'E' ||
+						stringutility.trim(_upload_status) == 'D') {
+						_error_message = ']:發票-需上傳後或開立成功才可作廢!';
+						_error_message = '['+_voucher_number+_error_message;
+						_checkFlag = false;  
+						break;
+					} else if (stringutility.trim(_discounted) !== '') {
+						_error_message = '['+_voucher_number+']:有折讓單不可作廢!';
+						_error_message = '['+_voucher_number+_error_message;
+						_checkFlag = false;  
+						break;
+					}	
+				} 
             } else if (
               voucher_open_type.indexOf('ALLOWANCE') != -1 &&
               stringutility.trim(_voucher_status).indexOf('CANCEL') != -1
@@ -285,6 +314,11 @@ define([
             }
           }
         }
+        //檢查歷史發票是否真的被折			   
+	    if (_manual_egui_voucher_ary.length !=0 && _error_message.length == 0) {
+		    _error_message = checkAllowanceOfEguiVoucher(_manual_egui_voucher_ary);
+		    if (_error_message.length != 0) _checkFlag = false; 
+	    }
       }
       _jsonResult = {
         checkflag: _checkFlag,
@@ -294,6 +328,49 @@ define([
       console.log(e.name + ':' + e.message)
     }
     return _jsonResult
+  }
+  
+  //檢查歷史發票是否真的被折
+  function checkAllowanceOfEguiVoucher(manual_egui_voucher_ary) {	 
+     var _error_message = '';
+	  try {
+		   var _mySearch = search.load({
+			  id: 'customsearch_gw_voucher_main_search',
+		   }) 
+		   
+		   var _filterArray = [];  
+		   _filterArray.push(['custrecord_gw_voucher_type', search.Operator.IS, 'ALLOWANCE']);
+		   _filterArray.push('and');  
+		   _filterArray.push(['custrecord_gw_voucher_status', search.Operator.IS, 'VOUCHER_SUCCESS']);
+		   _filterArray.push('and');  
+		   _filterArray.push(['custrecord_gw_voucher_upload_status', search.Operator.IS, 'C']);
+		   _filterArray.push('and'); 
+		   
+		   var _subFilterArray = [];  
+		   for(var i=0; i<manual_egui_voucher_ary.length; i++) {
+				 var _gui_number = manual_egui_voucher_ary[i];
+				 if (i!=0) _subFilterArray.push('or');	
+				 _subFilterArray.push(['custrecord_gw_original_gui_number', search.Operator.IS, _gui_number]);
+		   }	 
+		   if (_subFilterArray !=0)_filterArray.push(_subFilterArray); 
+		   
+		   _mySearch.filterExpression = _filterArray; 
+		  
+		   var _error_original_gui_number = '';
+		   _mySearch.run().each(function(result) {		 
+			  var _original_gui_number = result.getValue({name: 'custrecord_gw_original_gui_number'});  
+			  _error_original_gui_number += _original_gui_number+','; 
+			  
+			  return true;
+		   });	
+		   if (_error_original_gui_number.length !=0) {
+              _error_message = ']:歷史發票已有折讓單扣抵!';
+			   _error_message = '['+_error_original_gui_number+_error_message;
+		   }	  
+	  } catch (e) {
+		  console.log(e.name+':'+e.message);  
+	  }
+	  return _error_message;
   }
 
   function checkCustomerDepositBalanceAmountIsZero(mainId) {

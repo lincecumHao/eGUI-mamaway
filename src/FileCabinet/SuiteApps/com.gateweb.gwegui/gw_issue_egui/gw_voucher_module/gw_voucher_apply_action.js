@@ -205,10 +205,13 @@ define([
           var _need_upload_egui_mig = _record.getValue({
             fieldId: 'custrecord_gw_need_upload_egui_mig',
           })
+                   
+          if (_need_upload_egui_mig=='NONE') {
+			   //upload_status = 'D'; voucher_status='CANCEL_SUCCESS';
+			   upload_status = 'C'; voucher_status='CANCEL_SUCCESS';
+		  }
+          
           var values = {}
-          if (_need_upload_egui_mig == 'NONE') {
-            upload_status = 'A'
-          }
           values['custrecord_gw_voucher_status'] = voucher_status //VOUCHER_SUCCESS
           values['custrecord_gw_voucher_upload_status'] = upload_status
           var _id = record.submitFields({
