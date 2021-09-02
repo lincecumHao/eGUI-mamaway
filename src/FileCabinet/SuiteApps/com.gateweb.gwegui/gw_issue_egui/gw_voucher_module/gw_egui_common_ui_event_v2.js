@@ -161,6 +161,7 @@ define([
         _checkFlag = false
         _error_message = '請選取作廢憑證資料!'
       } else {
+    	var _manual_egui_voucher_ary = [];//紀錄歷史發票
         //check selected items
         var _checkDocumentIndexId = ''
         for (var i = 0; i < _voucherIdAry.length; i++) {
