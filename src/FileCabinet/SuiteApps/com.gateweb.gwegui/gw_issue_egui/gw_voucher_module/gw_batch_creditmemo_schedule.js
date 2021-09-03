@@ -35,6 +35,8 @@ define([
   var _min_governence = 100
   var _final_remaining_usage = 0
   
+  var _allowance_pre_code = invoiceutility.getConfigureValue('ALLOWANCE_GROUP', 'ALLOWANCE_PRE_CODE')
+  
   //1. 取得待處理的Credit_Memo資料 
   function executeScript(context) {
     log.debug('executeScript', '執行批次作業')  
@@ -221,7 +223,7 @@ define([
 			_item_ary.push(allowance_item_obj)
 			
 			//Allowance資料
-			var _allowance_egui_number = invoiceutility.getAllowanceNumber(dateutility.getCompanyLocatDate())
+			var _allowance_egui_number = invoiceutility.getAllowanceNumber(_allowance_pre_code, dateutility.getCompanyLocatDate())
             var _allowance_egui_time   = dateutility.getCompanyLocatTime()
             var _allowance_year_month  = dateutility.getTaxYearMonthByDate(result_obj.values.trandate)  
 			

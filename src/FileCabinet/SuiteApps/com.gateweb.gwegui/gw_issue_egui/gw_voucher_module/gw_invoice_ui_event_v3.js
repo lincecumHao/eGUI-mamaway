@@ -50,6 +50,8 @@ define([
   var _invoce_control_field_id = gwconfigure.getInvoceControlFieldId()
   var _credmemo_control_field_id = gwconfigure.getCredMemoControlFieldId()
 
+  var _allowance_pre_code = invoiceutility.getConfigureValue('ALLOWANCE_GROUP', 'ALLOWANCE_PRE_CODE')
+  
   //Page Parameters
   var _invoice_hiddent_listid = 'custpage_invoice_hiddent_listid'
   var _creditmemo_hiddent_listid = 'custpage_creditmemo_hiddent_listid'
@@ -2741,7 +2743,7 @@ define([
         } else {
           //1.取得折讓單號
           var _today = dateutility.getCompanyLocatDateForClient() //alert('allowance _today='+_today);
-          var _allowanceNumber = invoiceutility.getAllowanceNumber(_today)
+          var _allowanceNumber = invoiceutility.getAllowanceNumber(_allowance_pre_code, _today)
           _allowanceNumberAry.push(_allowanceNumber)
 
           ////////////////////////////////////////////////////////////////////////////////////////////////////////////

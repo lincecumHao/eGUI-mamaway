@@ -65,6 +65,8 @@ define([
   var _tax_diff_balance = stringutility.convertToFloat(
     invoiceutility.getConfigureValue('TAX_GROUP', 'TAX_DIFF_BALANCE')
   )
+  
+  var _allowance_pre_code = invoiceutility.getConfigureValue('ALLOWANCE_GROUP', 'ALLOWANCE_PRE_CODE')
 
   var _invoiceEditScriptId = 'customscript_gw_document_ui_list'
   var _invoiceEditDeployId = 'customdeploy_gw_document_ui_list'
@@ -3043,7 +3045,7 @@ define([
         } else {
           //1.取得折讓單號
           var _today = dateutility.getCompanyLocatDateForClient() //alert('allowance _today='+_today);
-          var _allowanceNumber = invoiceutility.getAllowanceNumber(_today)
+          var _allowanceNumber = invoiceutility.getAllowanceNumber(_allowance_pre_code, _today)
           _allowanceNumberAry.push(_allowanceNumber)
 
           ////////////////////////////////////////////////////////////////////////////////////////////////////////////

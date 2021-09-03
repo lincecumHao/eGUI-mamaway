@@ -222,11 +222,10 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
     return min + Math.round(rand * range)
   }
 
-  //取得折讓單號碼
-  function getAllowanceNumber(date) {
-    var _randomNumber = randomWord(true, 5, 5)
-    var _pre = 'AUO'
-    var _allowanceNumber = _pre + date + _randomNumber
+  //取得折讓單號碼 
+  function getAllowanceNumber(pre_allowance, date) {
+    var _randomNumber = randomWord(true, 5, 5)  
+    var _allowanceNumber = pre_allowance + date + _randomNumber
     return _allowanceNumber
   }
 

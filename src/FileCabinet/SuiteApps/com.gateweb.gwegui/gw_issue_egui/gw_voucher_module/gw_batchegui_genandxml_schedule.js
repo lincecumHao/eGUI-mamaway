@@ -66,6 +66,8 @@ define([
   var _gw_allowance_num_end_field = 'custbody_gw_allowance_num_end'
   var _deduction_egui_number_field = 'custbody_gw_creditmemo_deduction_list'
 
+  var _allowance_pre_code = invoiceutility.getConfigureValue('ALLOWANCE_GROUP', 'ALLOWANCE_PRE_CODE')
+	  
   //放公司基本資料
   var _companyObjAry = []
   var _taxObjAry = []
@@ -1852,7 +1854,7 @@ define([
         ) {
           _net_value = -1
           var _today = getCompanyLocatDate()
-          _documentNumber = invoiceutility.getAllowanceNumber(_today)
+          _documentNumber = invoiceutility.getAllowanceNumber(_allowance_pre_code, _today)
           _voucherFormatCode = _creditMemoFormatCode
         }
       }
@@ -2986,7 +2988,7 @@ define([
             //////////////////////////////////////////////////////////////////////////////////////////////////
 
             var _random_number = invoiceutility.getRandomNum(1000, 9999)
-
+             
             var _createdfrom_value = ''
             var _createdfrom_text = ''
             if (_result.values['createdfrom'].length != 0) {
