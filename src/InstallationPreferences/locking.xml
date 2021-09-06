@@ -3,9 +3,12 @@
 <!-- This configuration is only applied when the "Apply Installation Preferences" option is provided through SuiteCloud SDK. Otherwise this file is ignored. -->
 <!-- For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1543865613.html -->
 
-<preference type="LOCKING" defaultAction="UNLOCK">
-    <apply action="LOCK">
-        <!-- <object>custcontenttype_myobject</object> -->
-        <!-- <path>~/FileCabinet/SuiteApps/xxx.xxx.xxx/MyScript.js</path> -->
+<preference type="LOCKING" defaultAction="LOCK">
+    <apply action="UNLOCK">
+        <!--         <object>custcontenttype_myobject</object> -->
+<!--        <path appliesTo="FOLDER">~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_mig_xml</path>-->
+<!--        <path appliesTo="FOLDER">~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_email_templates</path>-->
+<!--        <path appliesTo="FILES">~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_mig_xml/*</path>-->
+<!--        <path appliesTo="FILES">~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_email_templates/*</path>-->
     </apply>
 </preference>

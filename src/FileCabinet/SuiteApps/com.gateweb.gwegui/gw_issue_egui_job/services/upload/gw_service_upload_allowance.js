@@ -20,9 +20,9 @@ define([
    */
   function getXmlTemplateFilePath(migTypeObj) {
     var fileName = migTypeObj.xmlFileName
-    var folder = '../gw_mig_xml/'
+    var folder = '../../../gw_mig_xml/'
     if (runtime.executionContext === runtime.ContextType.DEBUGGER) {
-      folder = 'SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/gw_mig_xml/'
+      folder = 'SuiteApps/com.gateweb.gwegui/gw_mig_xml/'
     }
     return folder + fileName
   }

@@ -19,7 +19,7 @@ define([
 
      */
   var debuggerPath =
-    'SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/services/email'
+    'SuiteApps/com.gateweb.gwegui/gw_email_templates'
 
   function isInDebuggerMode() {
     return runtime.executionContext === runtime.ContextType.DEBUGGER
@@ -31,7 +31,7 @@ define([
 
   function getHtmlTemplateFile() {
     var filename = 'eguiEmailTemplate.ftl'
-    return isInDebuggerMode() ? `${debuggerPath}/${filename}` : `./${filename}`
+    return isInDebuggerMode() ? `${debuggerPath}/${filename}` : `../../../gw_email_templates/${filename}`
   }
 
   function updateEguiObj(eguiObj) {
