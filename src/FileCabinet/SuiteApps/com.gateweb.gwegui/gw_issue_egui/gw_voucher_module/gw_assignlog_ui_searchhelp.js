@@ -282,8 +282,17 @@ define(['N/search', 'N/currentRecord', 'N/url', '../gw_common_utility/gw_common_
 			//字軌狀態-TODO
 			if (assign_status_ary.length !=0) {
 			    _filterArray.push('and'); 
-			    _filterArray.push(['custrecord_gw_assignlog_status', search.Operator.ANY, assign_status_ary]); 
-		 	}
+			    //_filterArray.push(['custrecord_gw_assignlog_status', search.Operator.ANY, assign_status_ary]); 
+				//_filterArray.push(['custrecord_gw_assignlog_status', search.Operator.CONTAINS, assign_status_ary]); 
+		 	   
+				var _subFilterArray = []; 
+				for (var i=0; i<assign_status_ary.length; i++) {
+					 var _status = assign_status_ary[i];
+					 if (i!=0) _subFilterArray.push('or');  
+				     _subFilterArray.push(['custrecord_gw_assignlog_status', search.Operator.IS, _status]); 
+				}
+				_filterArray.push(_subFilterArray);
+			}
 			
 			//格式代碼
 			if (format_code_ary.length !=0) { //31-05
@@ -425,7 +434,7 @@ define(['N/search', 'N/currentRecord', 'N/url', '../gw_common_utility/gw_common_
 			}
 			_mySearch.filterExpression = _filterArray; 	
 			
-			var _pre_invoice_startno = '';
+			var _invoice_number_log_ary = [];			
 			_mySearch.run().each(function(result) {
 				
 				var _business_no = result.getValue({
@@ -436,7 +445,7 @@ define(['N/search', 'N/currentRecord', 'N/url', '../gw_common_utility/gw_common_
 				}); 
 				var _invoice_startno = result.getValue({
 					name: 'custrecord_gw_voucher_number'
-				});
+				}); 
 				var _invoice_endno = result.getValue({
 					name: 'custrecord_gw_voucher_number'
 				});
@@ -453,7 +462,8 @@ define(['N/search', 'N/currentRecord', 'N/url', '../gw_common_utility/gw_common_
 				_invoice_startno = _invoice_startno.replace(_invoice_track,'');				
 				_invoice_endno   = _invoice_endno.replace(_invoice_track,'');
 				
-				if (_pre_invoice_startno != _invoice_startno) {
+                var _log_invoice_startno = _invoice_track+prependZero(_invoice_startno, 8);
+				if (_invoice_number_log_ary.indexOf(_log_invoice_startno)==-1) {
 					var _json_ary = {
 						'business_no':_business_no,
 						'year_month':_year_month,
@@ -464,9 +474,9 @@ define(['N/search', 'N/currentRecord', 'N/url', '../gw_common_utility/gw_common_
 						'invoice_type':_invoice_type					
 					};
 					 
-					_invoice_ary.push(_json_ary); 
+					_invoice_ary.push(_json_ary); 	
 					
-					_pre_invoice_startno = _invoice_startno;
+                    _invoice_number_log_ary.push(_log_invoice_startno);					
 				}
 				
 				return true;
@@ -474,6 +484,7 @@ define(['N/search', 'N/currentRecord', 'N/url', '../gw_common_utility/gw_common_
 		} catch(e) {
 			console.log(e.name+':'+e.message); 
 		}
+		 
 		return _invoice_ary;
    }
    
@@ -568,7 +579,7 @@ define(['N/search', 'N/currentRecord', 'N/url', '../gw_common_utility/gw_common_
 				 'response_code':_response_code,
 				 'error_message': _error_message				 
 			 };		     
-			 
+			 			 
 		} catch(e) {
 			alert(e.name+':'+e.message);
 			console.log(e.name+':'+e.message); 
