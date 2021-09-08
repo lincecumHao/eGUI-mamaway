@@ -174,8 +174,8 @@ define(['N/search', 'N/currentRecord', 'N/url', '../gw_common_utility/gw_common_
 					  var _business_no   = _json_obj.business_no;
 					  var _year_month    = _json_obj.year_month;
 					  var _invoice_track = _json_obj.invoice_track;
-					  var _start_no      = _json_obj.start_no;
-					  var _end_no        = _json_obj.end_no;
+					  var _start_no      = prependZero(_json_obj.start_no, 8);
+					  var _end_no        = prependZero(_json_obj.end_no, 8);
 					  var _invoice_type  = _json_obj.invoice_type; 
 					  /////////////////////////////////////////////////////////////////////
 					  //TODO 
