@@ -12,6 +12,7 @@ define([
   '../gw_common_utility/gw_common_date_utility',
   '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_migxml_utility',
+  '../gw_common_utility/gw_common_invoice_utility',
   '../gw_common_utility/gw_common_gwmessage_utility',
 ], function (
   search,
@@ -22,6 +23,7 @@ define([
   dateutility,
   stringutility,
   migxmlutility,
+  invoiceutility,
   gwmessage
 ) {
   var _voucher_apply_list_record = gwconfigure.getGwVoucherApplyListRecord()
@@ -159,6 +161,7 @@ define([
         _checkFlag = false
         _error_message = '請選取作廢憑證資料!'
       } else {
+    	var _manual_egui_voucher_ary = [];//紀錄歷史發票
         //check selected items
         var _checkDocumentIndexId = ''
         for (var i = 0; i < _voucherIdAry.length; i++) {
@@ -172,10 +175,11 @@ define([
               'customer_voucher_number',
               _internalId
             )
+            //20201115 23:59:59
             var _voucher_date = getSublistColumnValue(
               'vouchersublistid',
               'customer_search_voucher_id',
-              'custrecord_gw_voucher_date',
+              'customer_voucher_date',
               _internalId
             )
             var _yearmonth = getSublistColumnValue(
@@ -209,7 +213,11 @@ define([
               'customer_voucher_relate_number',
               _internalId
             )
-
+            
+            var _manual_egui_id  = getSublistColumnValue('vouchersublistid', 'customer_search_voucher_id', 'customer_voucher_manual_egui_id', _internalId);
+                	              
+            var _need_upload_egui_mig  = getSublistColumnValue('vouchersublistid', 'customer_search_voucher_id', 'customer_need_upload_egui_mig', _internalId);
+						
             /**
                if (stringutility.trim(_voucher_status) != 'VOUCHER_SUCCESS' ||
                stringutility.trim(_upload_status) != 'C'){
@@ -229,26 +237,59 @@ define([
 							break;
 						}
                */
+            //20201113 walter modify
+            /**
+            if (dateutility.checkVoucherEffectiveDate(_voucher_date) == false) {
+              _error_message = ']:憑證-已超過報稅期不可作廢!'
+              _error_message = '[' + _voucher_number + _error_message
+              _checkFlag = false
+              break
+            }
+            */
+            if (_need_upload_egui_mig != 'NONE' && 
+			    dateutility.checkVoucherEffectiveDate(_voucher_date)==false) {
+				_error_message = ']:憑證-已超過報稅期不可作廢!';
+				_error_message = '['+_voucher_number+_error_message;
+				_checkFlag = false;  
+				break;
+			}
 
             //作廢行為檢查
             if (voucher_open_type.indexOf('EGUI') != -1) {
-              //發票作廢規則檢查
-              if (
-                stringutility.trim(_voucher_status) != 'VOUCHER_SUCCESS' ||
-                stringutility.trim(_upload_status) == 'A' ||
-                stringutility.trim(_upload_status) == 'E' ||
-                stringutility.trim(_upload_status) == 'D'
-              ) {
-                _error_message = ']:發票-需上傳後或開立成功才可作廢!'
-                _error_message = '[' + _voucher_number + _error_message
-                _checkFlag = false
-                break
-              } else if (stringutility.trim(_discounted) !== '') {
-                _error_message = '[' + _voucher_number + ']:有折讓單不可作廢!'
-                _error_message = '[' + _voucher_number + _error_message
-                _checkFlag = false
-                break
-              }
+                //發票作廢規則檢查
+	        	if (_need_upload_egui_mig == 'NONE') {
+					//不上傳規則
+					if (stringutility.trim(_discounted) !== '' && _manual_egui_id==true) {
+						//檢查歷史發票是否真的被折
+						//checkAllowanceOfEguiVoucher TODO
+						_manual_egui_voucher_ary.push(_voucher_number);
+					} else if (stringutility.trim(_voucher_status).indexOf('CANCEL') != -1) {
+						_error_message = '['+_voucher_number+']:已申請作廢!';
+						_checkFlag = false;  
+						break;
+					} else if (stringutility.trim(_discounted) !== '' && _manual_egui_id==false) {
+						_error_message = '['+_voucher_number+']:有折讓單不可作廢!';
+						_error_message = '['+_voucher_number+_error_message;
+						_checkFlag = false;  
+						break;
+					}	
+				} else {
+					if (stringutility.trim(_voucher_status) != 'VOUCHER_SUCCESS' ||
+						stringutility.trim(_upload_status) == 'A' ||
+						stringutility.trim(_upload_status) == 'P' ||
+						stringutility.trim(_upload_status) == 'E' ||
+						stringutility.trim(_upload_status) == 'D') {
+						_error_message = ']:發票-需上傳後或開立成功才可作廢!';
+						_error_message = '['+_voucher_number+_error_message;
+						_checkFlag = false;  
+						break;
+					} else if (stringutility.trim(_discounted) !== '') {
+						_error_message = '['+_voucher_number+']:有折讓單不可作廢!';
+						_error_message = '['+_voucher_number+_error_message;
+						_checkFlag = false;  
+						break;
+					}	
+				} 
             } else if (
               voucher_open_type.indexOf('ALLOWANCE') != -1 &&
               stringutility.trim(_voucher_status).indexOf('CANCEL') != -1
@@ -274,6 +315,11 @@ define([
             }
           }
         }
+        //檢查歷史發票是否真的被折			   
+	    if (_manual_egui_voucher_ary.length !=0 && _error_message.length == 0) {
+		    _error_message = checkAllowanceOfEguiVoucher(_manual_egui_voucher_ary);
+		    if (_error_message.length != 0) _checkFlag = false; 
+	    }
       }
       _jsonResult = {
         checkflag: _checkFlag,
@@ -283,6 +329,49 @@ define([
       console.log(e.name + ':' + e.message)
     }
     return _jsonResult
+  }
+  
+  //檢查歷史發票是否真的被折
+  function checkAllowanceOfEguiVoucher(manual_egui_voucher_ary) {	 
+     var _error_message = '';
+	  try {
+		   var _mySearch = search.load({
+			  id: 'customsearch_gw_voucher_main_search',
+		   }) 
+		   
+		   var _filterArray = [];  
+		   _filterArray.push(['custrecord_gw_voucher_type', search.Operator.IS, 'ALLOWANCE']);
+		   _filterArray.push('and');  
+		   _filterArray.push(['custrecord_gw_voucher_status', search.Operator.IS, 'VOUCHER_SUCCESS']);
+		   _filterArray.push('and');  
+		   _filterArray.push(['custrecord_gw_voucher_upload_status', search.Operator.IS, 'C']);
+		   _filterArray.push('and'); 
+		   
+		   var _subFilterArray = [];  
+		   for(var i=0; i<manual_egui_voucher_ary.length; i++) {
+				 var _gui_number = manual_egui_voucher_ary[i];
+				 if (i!=0) _subFilterArray.push('or');	
+				 _subFilterArray.push(['custrecord_gw_original_gui_number', search.Operator.IS, _gui_number]);
+		   }	 
+		   if (_subFilterArray !=0)_filterArray.push(_subFilterArray); 
+		   
+		   _mySearch.filterExpression = _filterArray; 
+		  
+		   var _error_original_gui_number = '';
+		   _mySearch.run().each(function(result) {		 
+			  var _original_gui_number = result.getValue({name: 'custrecord_gw_original_gui_number'});  
+			  _error_original_gui_number += _original_gui_number+','; 
+			  
+			  return true;
+		   });	
+		   if (_error_original_gui_number.length !=0) {
+              _error_message = ']:歷史發票已有折讓單扣抵!';
+			   _error_message = '['+_error_original_gui_number+_error_message;
+		   }	  
+	  } catch (e) {
+		  console.log(e.name+':'+e.message);  
+	  }
+	  return _error_message;
   }
 
   function checkCustomerDepositBalanceAmountIsZero(mainId) {
@@ -524,8 +613,8 @@ define([
           //unlock
           var values = {}
           values[_invoce_control_field_id] = false
-          values['custbody_gw_gui_num_start'] = ''
-          values['custbody_gw_gui_num_end'] = ''
+          //values['custbody_gw_gui_num_start'] = ''
+          //values['custbody_gw_gui_num_end'] = ''
           values['custbody_gw_allowance_num_start'] = ''
           values['custbody_gw_allowance_num_end'] = ''
 
@@ -705,7 +794,7 @@ define([
       if (_voucherIdAry.length == 1) {
         //沒選取
         _checkFlag = false
-        _error_message = '請選取刪除憑證資料!'
+        _error_message = '請選取解鎖憑證資料!'
       } else {
         //check selected items
         var _checkDocumentIndexId = ''
@@ -761,6 +850,25 @@ define([
       var voucher_list_id = _currentRecord.getValue({
         fieldId: 'custpage_voucher_hiddent_listid',
       })
+      if (voucher_list_id == '') {
+        var _pre_text = '電子發票'
+        if (voucher_type == 'EGUI') {
+          _pre_text = '電子發票'
+        } else if (voucher_type == 'ALLOWANCE') {
+          _pre_text = '折讓(電子發票)'
+        }
+
+        var _title = _pre_text + '-下載PDF管理'
+        var _message = '請選取' + _pre_text + '-下載PDF資料'
+
+        if (printType == 'PAPER') {
+          _title = _pre_text + '-列印管理'
+          _message = '請選取' + _pre_text + '-列印資料'
+        }
+
+        gwmessage.showErrorMessage(_title, _message)
+        return
+      }
 
       var _b2bs_xml = _currentRecord.getValue({
         fieldId: 'custpage_b2bs_xml_field',
@@ -771,8 +879,6 @@ define([
       var _b2c_xml = _currentRecord.getValue({
         fieldId: 'custpage_b2c_xml_field',
       })
-
-      if (voucher_list_id == '') return
 
       var _genxml_toftp_result = 'Y'
       var _genxml_toftp_message = ''
@@ -816,7 +922,9 @@ define([
           var _reprint_pdf = _obj.is_printed_pdf
           var _reprint_paper = _obj.is_printed_paper
           //var _extra_memo    = _obj.extra_memo;
-          var _extra_memo = removeChangeLineChar(_obj.extra_memo)
+          var _extra_memo = removeChangeLineChar(_obj.extra_memo) 
+          //20210909 walter modify 取消 _extra_memo=''
+          _extra_memo = ''
           //20201102 walter modify (NONE)
           var _need_upload_egui_mig = _obj.need_upload_egui_mig
 
@@ -905,7 +1013,7 @@ define([
       console.log(e.name + ':' + e.message)
     }
 
-    //document.forms[0].submit();
+    document.forms[0].submit()
   }
 
   function removeChangeLineChar(text) {
@@ -941,17 +1049,22 @@ define([
           return
         } else if (_cancel_reason.length == 0 || _cancel_reason.length >= 20) {
           var _message = '作廢原因不可空白或過20個字!'
-          gwmessage.showInformationMessage(_title, _message)
+          gwmessage.showErrorMessage(_title, _message)
 
           return
         }
 
+        
+        var _selected_business_no = _currentRecord.getValue({
+            fieldId: 'custpage_businessno',
+          })
         var _voucher_hiddent_listid = _currentRecord.getValue({
           fieldId: 'custpage_voucher_hiddent_listid',
         })
 
         startBatchProcess(
           voucher_open_type,
+          _selected_business_no,
           _voucher_hiddent_listid,
           _cancel_reason
         )
@@ -1003,6 +1116,7 @@ define([
 
   function startBatchProcess(
     voucher_open_type,
+    business_no,
     voucher_hiddent_listid,
     cancel_reason
   ) {
@@ -1038,6 +1152,12 @@ define([
         fieldId: 'custrecord_gw_voucher_void_comment',
         value: cancel_reason,
       })
+      _voucherApplyRecord.setValue({
+        fieldId: 'custrecord_gw_voucher_apply_seller',
+        value: business_no,
+      })
+      
+      
       //_voucherApplyRecord.setValue({fieldId:'custrecord_gw_voucher_apply_yearmonth',value:_year_month});
       //_voucherApplyRecord.setValue({fieldId:'custrecord_gw_voucher_apply_seller',value:applyMainObj.company_ban});
       //_voucherApplyRecord.setValue({fieldId:'custrecord_gw_voucher_apply_seller_name',value:applyMainObj.company_name});
@@ -1223,6 +1343,43 @@ define([
     }
   }
 
+  //不上傳申報(set voucher_status=C, year_month=10912
+  function reportTxtNotUpload(voucher_upload_type, voucher_upload_status) {
+    console.log(
+      'reportTxtNotUpload start:' +
+        voucher_upload_type +
+        ' ,voucher_upload_status=' +
+        voucher_upload_status
+    )
+    try {
+      //voucher_upload_type =>EGUI, ALLOWANCE
+      var _title = '憑證重傳管理'
+      var _checkJsonObject = validateReUploadTask(voucher_upload_type)
+      var _checkFlag = _checkJsonObject.checkflag
+      var _message = _checkJsonObject.message
+
+      if (_checkFlag) {
+        var _voucherSelectedIds = _currentRecord.getValue({
+          fieldId: 'custpage_voucher_hiddent_listid',
+        })
+        saveVoucherYearMonthAndStatus(
+          voucher_upload_type,
+          voucher_upload_status,
+          _voucherSelectedIds
+        )
+
+        var _message = '不上傳申報設定完成!'
+        gwmessage.showInformationMessage(_title, _message)
+
+        document.forms[0].submit()
+      } else {
+        gwmessage.showErrorMessage(_title, _message)
+      }
+    } catch (e) {
+      console.log(e.name + ':' + e.message)
+    }
+  }
+
   function validateReUploadTask(voucher_upload_type) {
     var _jsonResult
     try {
@@ -1237,6 +1394,41 @@ define([
         //沒選取
         _checkFlag = false
         _error_message = '請選取重傳憑證資料!'
+      } else {
+        for (var i = 0; i < _voucherIdAry.length; i++) {
+          var _internalId = _voucherIdAry[i]
+
+          if (parseInt(_internalId) > 0) {
+            //取得 sublist 的 entityid(客戶代碼)
+            var _voucher_number = getSublistColumnValue(
+              'vouchersublistid',
+              'customer_search_voucher_id',
+              'customer_voucher_number',
+              _internalId
+            )
+            var _voucher_date = getSublistColumnValue(
+              'vouchersublistid',
+              'customer_search_voucher_id',
+              'customer_voucher_reupload_date',
+              _internalId
+            )
+            var _year_month = getSublistColumnValue(
+              'vouchersublistid',
+              'customer_search_voucher_id',
+              'customer_voucher_year_month',
+              _internalId
+            )
+            if (!validateTraditionYearMonth(_year_month)) {
+              _checkFlag = false
+              _error_message +=
+                _voucher_number + '-申報年月格式錯誤[需為民國年雙月共5碼],'
+            }
+            if (_voucher_date.length == 0) {
+              _checkFlag = false
+              _error_message += _voucher_number + '-上傳日期不可空白,'
+            }
+          }
+        }
       }
       _jsonResult = {
         checkflag: _checkFlag,
@@ -1246,6 +1438,16 @@ define([
       console.log(e.name + ':' + e.message)
     }
     return _jsonResult
+  }
+
+  function validateTraditionYearMonth(value) {
+    var _regxp = /^[0-9]{3}[0-9]{2}$/
+    if (_regxp.test(value)) {
+      return true
+    } else {
+      return false
+    }
+    return false
   }
 
   function saveVoucherDateAndStatus(voucher_upload_type, _voucherSelectedIds) {
@@ -1262,16 +1464,153 @@ define([
             'customer_voucher_reupload_date',
             _internalId
           )
-          //TODO
+          //var _voucher_date = getSublistColumnValue('vouchersublistid', 'customer_search_voucher_id', 'customer_voucher_reupload_date', _internalId);
+          var _year_month = getSublistColumnValue(
+            'vouchersublistid',
+            'customer_search_voucher_id',
+            'customer_voucher_year_month',
+            _internalId
+          )
+
           //1.load main
           //2. update date and upload status
           var values = {}
           values['custrecord_gw_need_upload_egui_mig'] = voucher_upload_type
+          var _date = ''
           if (_voucher_date != '') {
-            var _date = dateutility.getConvertDateByDate(
-              _voucher_date.toString()
-            )
+            _date = dateutility.getConvertDateByDate(_voucher_date.toString())
             values['custrecord_gw_voucher_date'] = _date
+          }
+
+          var _apply_period = ''
+          if (_year_month != '') {
+            values['custrecord_gw_voucher_yearmonth'] = _year_month
+            _apply_period = invoiceutility.getApplyPeriodOptionId(_year_month)
+            values['custrecord_voucher_sale_tax_apply_period'] = _apply_period
+          }
+          //處理Detail Item
+          updateVoucherDetailInfomation(
+            _internalId,
+            _date,
+            _year_month,
+            _apply_period
+          )
+
+          var _id = record.submitFields({
+            type: _voucher_main_record,
+            id: parseInt(_internalId),
+            values: values,
+            options: {
+              enableSourcing: false,
+              ignoreMandatoryFields: true,
+            },
+          })
+        }
+      }
+    } catch (e) {
+      console.log(e.name + ':' + e.message)
+    }
+  }
+
+  function updateVoucherDetailInfomation(
+    _internalId,
+    _date,
+    _voucher_yearmonth,
+    _apply_period
+  ) {
+    try {
+      var _mySearch = search.create({
+        type: 'customrecord_gw_voucher_details',
+        columns: [
+          search.createColumn({ name: 'custrecord_gw_ns_document_item_id' }),
+          search.createColumn({ name: 'custrecord_gw_original_gui_yearmonth' }),
+        ],
+      })
+
+      var _filterArray = []
+      _filterArray.push([
+        'custrecord_gw_voucher_main_internal_id',
+        search.Operator.IS,
+        parseInt(_internalId),
+      ])
+      _mySearch.filterExpression = _filterArray
+
+      _mySearch.run().each(function (result) {
+        var internalid = result.id
+
+        var values = {}
+        if (_date != '') {
+          values['custrecord_gw_dtl_voucher_date'] = _date
+        }
+        if (_voucher_yearmonth != '') {
+          values['custrecord_gw_dtl_voucher_yearmonth'] = _voucher_yearmonth
+          values['custrecord_gw_dtl_voucher_apply_period'] = _apply_period
+        }
+        var _id = record.submitFields({
+          type: 'customrecord_gw_voucher_details',
+          id: parseInt(internalid),
+          values: values,
+          options: {
+            enableSourcing: false,
+            ignoreMandatoryFields: true,
+          },
+        })
+
+        return true
+      })
+    } catch (e) {
+      console.log(e.name + ':' + e.message)
+    }
+  }
+
+  function saveVoucherYearMonthAndStatus(
+    voucher_upload_type,
+    voucher_upload_status,
+    voucherSelectedIds
+  ) {
+    try {
+      var _voucherIdAry = voucherSelectedIds.split(',')
+      for (var i = 0; i < _voucherIdAry.length; i++) {
+        var _internalId = _voucherIdAry[i]
+
+        if (parseInt(_internalId) > 0) {
+          //取得 sublist 的 entityid(客戶代碼)
+          var _voucher_date = getSublistColumnValue(
+            'vouchersublistid',
+            'customer_search_voucher_id',
+            'customer_voucher_reupload_date',
+            _internalId
+          )
+          var _year_month = getSublistColumnValue(
+            'vouchersublistid',
+            'customer_search_voucher_id',
+            'customer_voucher_year_month',
+            _internalId
+          )
+          //TODO
+          //1.load main
+          //2. update date and upload status
+          var values = {}
+          values['custrecord_gw_voucher_upload_status'] = voucher_upload_status
+
+          if (_year_month != '') {
+            values['custrecord_gw_voucher_yearmonth'] = _year_month
+            var _apply_period = invoiceutility.getApplyPeriodOptionId(
+              _year_month
+            )
+            values['custrecord_voucher_sale_tax_apply_period'] = _apply_period
+            //處理Detail Item
+            var _date = ''
+            if (_voucher_date.toString() != '') {
+              _date = dateutility.getConvertDateByDate(_voucher_date.toString())
+              values['custrecord_gw_voucher_date'] = _date
+            }
+            updateVoucherDetailInfomation(
+              _internalId,
+              _date,
+              _year_month,
+              _apply_period
+            )
           }
           var _id = record.submitFields({
             type: _voucher_main_record,
@@ -1307,6 +1646,7 @@ define([
     unLockSelected: unLockSelected,
     submitCancelProcess: submitCancelProcess,
     reSendToGWProcess: reSendToGWProcess,
+    reportTxtNotUpload: reportTxtNotUpload,
     printPDFSelected: printPDFSelected,
     printPaperSelected: printPaperSelected,
     searchResults: searchResults,

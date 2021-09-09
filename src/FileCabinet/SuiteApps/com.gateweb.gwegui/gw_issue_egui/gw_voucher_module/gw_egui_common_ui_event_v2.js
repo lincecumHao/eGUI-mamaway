@@ -922,7 +922,9 @@ define([
           var _reprint_pdf = _obj.is_printed_pdf
           var _reprint_paper = _obj.is_printed_paper
           //var _extra_memo    = _obj.extra_memo;
-          var _extra_memo = removeChangeLineChar(_obj.extra_memo)
+          var _extra_memo = removeChangeLineChar(_obj.extra_memo) 
+          //20210909 walter modify 取消 _extra_memo=''
+          _extra_memo = ''
           //20201102 walter modify (NONE)
           var _need_upload_egui_mig = _obj.need_upload_egui_mig
 

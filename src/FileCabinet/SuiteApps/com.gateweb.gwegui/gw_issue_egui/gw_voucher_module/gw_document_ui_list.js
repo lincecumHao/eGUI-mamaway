@@ -71,7 +71,8 @@ define([
     employee,
     tranid,
     transtartdate,
-    tranenddate
+    tranenddate,
+    invoice_status
   ) {
     
     var _mySearch = search.load({
@@ -138,6 +139,17 @@ define([
         _formattedDate,
       ])
     }
+    //////////////////////////////////////////////////////////////////////////
+    //20210908 walter add status filter
+    if (invoice_status.length !=0) {    
+	    var _status_ary = []
+	    //Invoice 
+	    _status_ary.push(invoice_status)   
+	    _filterArray.push('and')
+	    _filterArray.push(['status', search.Operator.ANYOF, _status_ary])    	      
+    }    
+    //////////////////////////////////////////////////////////////////////////
+    
     _mySearch.filterExpression = _filterArray
     log.debug('invoice filterArray', JSON.stringify(_filterArray))
     ///////////////////////////////////////////////////////////////////////////////////
@@ -285,7 +297,8 @@ define([
     employee,
     tranid,
     transtartdate,
-    tranenddate
+    tranenddate,
+    creditmemo_status
   ) { 
     var _mySearch = search.load({
       id: _gw_creditmemo_detail_search_id,
@@ -343,6 +356,16 @@ define([
       _filterArray.push('and')
       _filterArray.push(['trandate', 'onorbefore', _formattedDate])
     }
+    //////////////////////////////////////////////////////////////////////////
+    //20210908 walter add status filter
+    if (creditmemo_status.length !=0) { 
+	    var _status_ary = []      
+	    //Create Memo status list
+	    _status_ary.push(creditmemo_status)  
+	    _filterArray.push('and')
+	    _filterArray.push(['status', search.Operator.ANYOF, _status_ary])   
+    }   
+    //////////////////////////////////////////////////////////////////////////
     _mySearch.filterExpression = _filterArray
     ///////////////////////////////////////////////////////////////////////////////////
 
@@ -702,7 +725,64 @@ define([
       height: _field_height,
       width: _field_text_width,
     })
-
+    /////////////////////////////////////////////////////////////////////////
+    //Invoice
+    var _selectInvoiceStatus = form.addField({
+      id: 'custpage_invoice_status',
+      type: serverWidget.FieldType.SELECT,
+      label: 'Invoice 狀態',
+      container: 'row01_fieldgroupid',
+    })
+    _selectInvoiceStatus.updateLayoutType({
+      layoutType: serverWidget.FieldLayoutType.OUTSIDEBELOW,
+    })
+    _selectInvoiceStatus.addSelectOption({
+      value: '',
+      text: 'None',
+    })
+    _selectInvoiceStatus.addSelectOption({
+      value: 'CustInvc:A',
+      text: 'Open',
+    })
+    _selectInvoiceStatus.addSelectOption({
+      value: 'CustInvc:B',
+      text: 'Paid In Full',
+    })
+    _selectInvoiceStatus.addSelectOption({
+      value: 'CustInvc:C',
+      text: 'Pending Approval',
+    })
+    _selectInvoiceStatus.addSelectOption({
+      value: 'CustInvc:D',
+      text: 'Rejected',
+    })    
+    _selectInvoiceStatus.defaultValue = 'CustInvc:A'
+    ////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////
+    //Credit Memo
+    var _selectCreditMemoStatus = form.addField({
+      id: 'custpage_creditmemo_status',
+      type: serverWidget.FieldType.SELECT,
+      label: 'Credit Memo 狀態',
+      container: 'row01_fieldgroupid',
+    })
+    _selectCreditMemoStatus.updateLayoutType({
+      layoutType: serverWidget.FieldLayoutType.OUTSIDEBELOW,
+    })
+    _selectCreditMemoStatus.addSelectOption({
+      value: '',
+      text: 'None',
+    })
+    _selectCreditMemoStatus.addSelectOption({
+      value: 'CustCred:A',
+      text: 'Open',
+    })
+    _selectCreditMemoStatus.addSelectOption({
+      value: 'CustCred:B',
+      text: 'Fully Applied',
+    }) 
+    _selectCreditMemoStatus.defaultValue = 'CustCred:A'
+    ////////////////////////////////////////////////////////////////////////
     //單據日期
     var _tran_start_date = form.addField({
       id: 'custpage_select_transtartdate',
@@ -1211,6 +1291,18 @@ define([
         context.request.parameters.custpage_select_tranenddate
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      //20210908 walter add column
+      var _invoice_status = context.request.parameters.custpage_invoice_status
+      var _creditmemo_status = context.request.parameters.custpage_creditmemo_status
+      var _invoiceStatusField = form.getField({
+          id: 'custpage_invoice_status',
+      })
+      _invoiceStatusField.defaultValue = _invoice_status
+      var _creditMemoStatusField = form.getField({
+          id: 'custpage_creditmemo_status',
+      })
+      _creditMemoStatusField.defaultValue = _creditmemo_status  
+      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       var _businessnoField = form.getField({
         id: 'custpage_businessno',
       })
@@ -1264,7 +1356,8 @@ define([
         _select_employee,
         _select_invoice_tranid,
         _select_transtartdate,
-        _select_tranenddate
+        _select_tranenddate,
+        _invoice_status
       )
       //2.Get Credit Memo LIST
       searchCreateMemo(
@@ -1277,7 +1370,8 @@ define([
         _select_employee,
         _select_creditmemo_tranid,
         _select_transtartdate,
-        _select_tranenddate
+        _select_tranenddate,
+        _creditmemo_status
       )
 
       //search result end
