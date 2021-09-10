@@ -365,9 +365,9 @@ define([
         fieldId: 'custpage_company_name'
       })
       if (_custpage_company_name.length == 0) {
-        _errorMsg += '請填寫客戶公司名稱,'
+        _errorMsg += '請填寫客戶公司名稱<br>'
       } else if (stringutility.checkByteLength(_custpage_company_name) > 60) {
-        _errorMsg += '公司名稱長度不可超過30個中文字或60個英文字,'
+        _errorMsg += '公司名稱長度不可超過30個中文字或60個英文字<br>'
       }
       //3.載具格式錯誤, 請輸入載具類別, 輸入統編不得使用自然人(CQ0001)載具!
       var _buyer_identifier = _current_record.getValue({
@@ -382,7 +382,7 @@ define([
       })
 
       if (_buyer_identifier != '0000000000' && _carrier_type === 'CQ0001') {
-        _errorMsg += '輸入統編不得使用自然人(CQ0001)載具,'
+        _errorMsg += '輸入統編不得使用自然人(CQ0001)載具<br>'
       }
       //4.載具號碼錯誤! 手機條碼 自然人載具錯誤!
       var _carrier_id = _current_record.getValue({
@@ -392,19 +392,19 @@ define([
       if (_carrier_type === 'CQ0001') {
         //自然人憑證
         if (!validate.checkCarrier(_carrier_type, _carrier_id)) {
-          _errorMsg += '請輸入正確自然人憑證格式,'
+          _errorMsg += '請輸入正確自然人憑證格式<br>'
         }
       } else if (_carrier_type === '3J0002') {
         //手機條碼
         if (!validate.checkCarrier(_carrier_type, _carrier_id)) {
-          _errorMsg += '請輸入正確手機條碼格式,'
+          _errorMsg += '請輸入正確手機條碼格式<br>'
         }
       }
       if (_carrier_type !== '' && _carrier_id == '') {
-        _errorMsg += '請輸入載具號碼,'
+        _errorMsg += '請輸入載具號碼<br>'
       }
       if (_carrier_type == '' && _carrier_id != '') {
-        _errorMsg += '請輸入載具類別,'
+        _errorMsg += '請輸入載具類別<br>'
       }
       //5.Email格式錯誤!
       var _buyer_email = _current_record.getValue({
@@ -412,30 +412,30 @@ define([
       })
       /**
          if (_buyer_email.length == 0) {
-			   _errorMsg += '請輸入Email,';
+			   _errorMsg += '請輸入Email<br>';
 		   } else {
 			   //TODO Check Format
 			   if (!validate.checkEmail(_buyer_email)) {
-				   _errorMsg += '請輸入正確Email格式,';
+				   _errorMsg += '請輸入正確Email格式<br>';
 			   }
 		   }
          */
       if (_buyer_email.length != 0) {
         //TODO Check Format
         if (!validate.checkEmail(_buyer_email)) {
-          _errorMsg += '請輸入正確Email格式,'
+          _errorMsg += '請輸入正確Email格式<br>'
         }
       }
       //custpage_buyer_identifier
 
       if (_buyer_identifier.length == 0) {
-        _errorMsg += '請維護正確統編,'
+        _errorMsg += '請維護正確統編<br>'
       }
       var _buyer_name = _current_record.getValue({
         fieldId: 'custpage_buyer_name'
       })
       if (_buyer_name.length == 0) {
-        _errorMsg += '買方公司名稱不可空白,'
+        _errorMsg += '買方公司名稱不可空白<br>'
       }
 
       //5.捐贈碼Npoban: '請輸入3-7碼數字'-Done
@@ -447,14 +447,14 @@ define([
           _npo_ban.length != 0 &&
           (_npo_ban.length < 3 || _npo_ban.length > 7)
         ) {
-          _errorMsg += '捐贈碼請輸入3-7碼數字,'
+          _errorMsg += '捐贈碼請輸入3-7碼數字<br>'
         } else if (isNaN(_npo_ban)) {
-          _errorMsg += '捐贈碼請輸入3-7碼數字,'
-          _errorMsg += '捐贈碼請輸入3-7碼數字,'
+          _errorMsg += '捐贈碼請輸入3-7碼數字<br>'
+          _errorMsg += '捐贈碼請輸入3-7碼數字<br>'
         }
       } else {
         if (_npo_ban.length != 0) {
-          _errorMsg += '捐贈碼不可輸入,'
+          _errorMsg += '捐贈碼不可輸入<br>'
         }
       }
 
@@ -468,7 +468,7 @@ define([
           fieldId: 'custpage_customs_clearance_mark'
         })
         if (_customs_clearance_mark.length == 0) {
-          _errorMsg += '請選擇通關方式(零稅必填!),'
+          _errorMsg += '請選擇通關方式(零稅必填!)<br>'
         }
       }
 
@@ -478,7 +478,7 @@ define([
       })
       if (stringutility.trim(_select_voucher_date) == '') {
         //檢查發票日期
-        _errorMsg += '請選擇發票日期,'
+        _errorMsg += '請選擇發票日期<br>'
       }
 
       //8.檢查手開發票號碼
@@ -488,7 +488,7 @@ define([
       if (stringutility.trim(_manual_voucher_number) != '') {
         //檢查發票號碼格式
         if (validate.validateEGUINumber(_manual_voucher_number) == false) {
-          _errorMsg += '手開發票號碼格式錯誤,'
+          _errorMsg += '手開發票號碼格式錯誤<br>'
         } else {
           //檢查手開發票
           var _ban = _current_record.getValue({
@@ -507,7 +507,7 @@ define([
               _inv_number
             ) == false
           ) {
-            _errorMsg += '手開發票字軌號碼區間錯誤,'
+            _errorMsg += '手開發票字軌號碼區間錯誤<br>'
           } else {
             if (
               invoiceutility.checkInvoiceNumberDuplicate(
@@ -515,7 +515,7 @@ define([
                 _manual_voucher_number
               ) == true
             ) {
-              _errorMsg += '手開發票號碼重覆,'
+              _errorMsg += '手開發票號碼重覆<br>'
             }
           }
         }
@@ -531,7 +531,7 @@ define([
         for (var i = 0; i < _deduction_egui_number_ary.length; i++) {
           var _number = _deduction_egui_number_ary[i]
           if (validate.validateEGUINumber(_number) == false) {
-            _errorMsg += _number + ':折讓單扣抵發票號碼格式錯誤,'
+            _errorMsg += _number + ':折讓單扣抵發票號碼格式錯誤<br>'
           }
         }
       }
@@ -606,15 +606,24 @@ define([
           fieldId: 'custpage_item_remark',
           line: i
         })
+        
+        var _item_unit = _current_record.getSublistValue({
+          sublistId: _invoiceSublistId,
+          fieldId: 'custpage_invoice_item_unit',
+          line: i
+        })
         //Set value
         if (stringutility.checkByteLength(_item_name) > 256) {
-          _errorMsg += _invoice_id + ':Invoice商品名稱需小於256字元,'
+          _errorMsg += _item_name + ':Invoice商品名稱需小於256字元<br>'
         } else if (stringutility.checkByteLength(_item_name) == 0) {
-          _errorMsg += _invoice_id + ':Invoice商品名稱不可空白,'
+          _errorMsg += _item_name + ':Invoice商品名稱不可空白<br>'
         }
         if (stringutility.checkByteLength(_item_remark) > 40) {
-          _errorMsg += _invoice_id + ':Invoice明細備註需小於40字元,'
+          _errorMsg += _item_name + ':Invoice明細備註需小於等於40字元<br>'
         }
+        if (stringutility.checkByteLength(_item_unit) > 6) {
+            _errorMsg += _item_name + ':Invoice單位需小於等於6字元<br>'
+        } 
       }
     }
 
@@ -674,12 +683,12 @@ define([
           line: i
         })
         if (stringutility.checkByteLength(_item_name) > 256) {
-          _errorMsg += _creditmemo_id + ':CreditMemo商品名稱需小於256字元,'
+          _errorMsg += _creditmemo_id + ':CreditMemo商品名稱需小於256字元<br>'
         } else if (stringutility.checkByteLength(_item_name) > 256) {
-          _errorMsg += _creditmemo_id + ':CreditMemo商品名稱不可空白,'
+          _errorMsg += _creditmemo_id + ':CreditMemo商品名稱不可空白<br>'
         }
         if (stringutility.checkByteLength(_item_remark) > 40) {
-          _errorMsg += _creditmemo_id + ':CreditMemo明細備註需小於40字元,'
+          _errorMsg += _creditmemo_id + ':CreditMemo明細備註需小於40字元<br>'
         }
       }
     }
@@ -688,13 +697,13 @@ define([
       stringutility.trim(_manual_voucher_number) != '' &&
       _invoice_item_count + _creditmemo_item_count > 999
     ) {
-      _errorMsg += _manual_voucher_number + ':筆數不可超過999筆,'
+      _errorMsg += _manual_voucher_number + ':筆數不可超過999筆<br>'
     }
     if (
       stringutility.trim(_manual_voucher_number) != '' &&
       _check_tax_code_flag == false
     ) {
-      _errorMsg += _manual_voucher_number + ':不可開立不同稅別,'
+      _errorMsg += _manual_voucher_number + ':不可開立不同稅別<br>'
     }
 
     return _errorMsg
@@ -1041,6 +1050,7 @@ define([
       var _title = '憑證管理'
       gwmessage.showErrorMessage(_title, _errorMsg)
       document.getElementById('custpage_forward_back_button').disabled = false
+      document.getElementById('custpage_create_voucher_button').disabled = false
       return
     }
 
@@ -1168,7 +1178,7 @@ define([
         _creditTotalAmount_TaxType_1
       )
       if (_creditMemoAmountFlag_TaxType_1 == false)
-        _creditmemo_error_message += '(應稅)發票可折金額不足,'
+        _creditmemo_error_message += '(應稅)發票可折金額不足<br>'
     }
     //alert('_creditMemoAmountFlag_TaxType_1='+_creditMemoAmountFlag_TaxType_1);
     //Check 零稅部分
@@ -1202,7 +1212,7 @@ define([
         _creditTotalAmount_TaxType_2
       )
       if (_creditMemoAmountFlag_TaxType_2 == false)
-        _creditmemo_error_message += '(零稅率)發票可折金額不足,'
+        _creditmemo_error_message += '(零稅率)發票可折金額不足<br>'
     }
 
     //Check 免稅部分
@@ -1236,7 +1246,7 @@ define([
         _creditTotalAmount_TaxType_3
       )
       if (_creditMemoAmountFlag_TaxType_3 == false)
-        _creditmemo_error_message += '(免稅)發票可折金額不足,'
+        _creditmemo_error_message += '(免稅)發票可折金額不足<br>'
     }
 
     //TODO
@@ -1271,7 +1281,7 @@ define([
         _creditTotalAmount_TaxType_3
       )
       if (_creditMemoAmountFlag_TaxType_9 == false)
-        _creditmemo_error_message += '(免稅)發票可折金額不足,'
+        _creditmemo_error_message += '(免稅)發票可折金額不足<br>'
     }
     //alert('_creditMemoAmountFlag_TaxType_1='+JSON.stringify(_creditMemoAmountFlag_TaxType_1));
     //檢查折讓金額是否足夠-END
@@ -2270,6 +2280,9 @@ define([
            */
         var _tax_diff_error = checkVoucherTaxDifference(_details)
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        //20210909 walter modify
+        if (stringutility.convertToFloat(_main.tax_amount) <0)_tax_diff_error=true
+        
         //20201113 walter modify
         if (_tax_diff_error == true) {
           var _title = '發票管理'
@@ -3035,10 +3048,14 @@ define([
            */
         var _tax_diff_error = checkVoucherTaxDifference(_details)
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        //20210909 walter modify
+        if (_net_value * stringutility.convertToFloat(_main.tax_amount) <0)_tax_diff_error=true
+        
         //20201113 walter modify
         if (_tax_diff_error == true) {
           _error_message += '稅差超過(' + _tax_diff_balance + ')元 ,請重新調整!'
         }
+        
         if (_error_message.length != 0) {
           gwmessage.showErrorMessage(_title, _error_message)
           break

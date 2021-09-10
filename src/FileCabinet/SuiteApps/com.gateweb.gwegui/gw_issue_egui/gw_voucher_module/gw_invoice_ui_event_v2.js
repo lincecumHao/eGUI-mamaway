@@ -16,7 +16,7 @@ define([
   '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_configure',
   '../gw_common_utility/gw_common_invoice_utility',
-  '../gw_common_utility/gw_common_gwmessage_utility',
+  '../gw_common_utility/gw_common_gwmessage_utility'
 ], function (
   runtime,
   dialog,
@@ -56,8 +56,6 @@ define([
   var _invoice_hiddent_listid = 'custpage_invoice_hiddent_listid'
   var _creditmemo_hiddent_listid = 'custpage_creditmemo_hiddent_listid'
   var _deduction_egui_number_field = 'custbody_gw_creditmemo_deduction_list'
-
-  var _gw_voucher_properties = gwconfigure.getGwVoucherProperties() //設定檔
 
   var _defaultAssignLogType = 'TYPE_1'
 
@@ -105,10 +103,10 @@ define([
       changeMigType(_changeFieldId)
     } else if (_changeFieldId == 'custpage_allowance_deduction_period') {
       var _allowance_deduction_period = _current_record.getValue({
-        fieldId: _changeFieldId,
+        fieldId: _changeFieldId
       })
       var _deduction_egui_number = _current_record.getField({
-        fieldId: 'custpage_deduction_egui_number',
+        fieldId: 'custpage_deduction_egui_number'
       })
       if (_allowance_deduction_period === 'user_selected') {
         _deduction_egui_number.isDisplay = true //顯示
@@ -117,7 +115,7 @@ define([
         _current_record.setValue({
           fieldId: 'custpage_deduction_egui_number',
           value: '',
-          ignoreFieldChange: true,
+          ignoreFieldChange: true
         })
       }
     }
@@ -127,7 +125,7 @@ define([
   function changeMigType(changeFieldId) {
     //課稅別
     var _custpage_mig_type = _current_record.getValue({
-      fieldId: changeFieldId,
+      fieldId: changeFieldId
     })
     //custpage_tax_rate
     var _npo_ban = _current_record.getField({ fieldId: 'custpage_npo_ban' })
@@ -143,61 +141,61 @@ define([
 
     //課稅別
     var _custpage_invoice_type = _current_record.getValue({
-      fieldId: changeFieldId,
+      fieldId: changeFieldId
     })
 
     //清除custpage_tax_rate
     var _changeSelectField = _current_record.getField({
-      fieldId: changeFieldId,
+      fieldId: changeFieldId
     })
 
     var _changeTaxTypeField = _current_record.getField({
-      fieldId: _custpage_tax_type,
+      fieldId: _custpage_tax_type
     })
     _changeTaxTypeField.removeSelectOption({
       //應稅(一般稅率)
-      value: '1',
+      value: '1'
     })
     _changeTaxTypeField.removeSelectOption({
       //零稅率
-      value: '2',
+      value: '2'
     })
     _changeTaxTypeField.removeSelectOption({
       //免稅
-      value: '3',
+      value: '3'
     })
     _changeTaxTypeField.removeSelectOption({
       //特種稅
-      value: '4',
+      value: '4'
     })
     _changeTaxTypeField.removeSelectOption({
       //混合稅率
-      value: '9',
+      value: '9'
     })
 
     if (_custpage_invoice_type == '07') {
       //一般稅發票
       _changeTaxTypeField.insertSelectOption({
         value: '1',
-        text: '應稅(一般稅率)',
+        text: '應稅(一般稅率)'
       })
       _changeTaxTypeField.insertSelectOption({
         value: '2',
-        text: '零稅率',
+        text: '零稅率'
       })
       _changeTaxTypeField.insertSelectOption({
         value: '3',
-        text: '免稅',
+        text: '免稅'
       })
       _changeTaxTypeField.insertSelectOption({
         value: '9',
-        text: '混合稅',
+        text: '混合稅'
       })
     } else if (_custpage_invoice_type == '08') {
       //特種稅發票
       _changeTaxTypeField.insertSelectOption({
         value: '4',
-        text: '特種稅',
+        text: '特種稅'
       })
     }
 
@@ -207,73 +205,73 @@ define([
   function changeTaxType(changeFieldId) {
     //課稅別
     var _custpage_tax_type = _current_record.getValue({
-      fieldId: changeFieldId,
+      fieldId: changeFieldId
     })
     //custpage_tax_rate
     var _customs_clearance_mark_field = _current_record.getField({
-      fieldId: 'custpage_customs_clearance_mark',
+      fieldId: 'custpage_customs_clearance_mark'
     })
     _customs_clearance_mark_field.isDisplay = false //顯示通關註記
 
     //清除custpage_tax_rate
     var _changeSelectField = _current_record.getField({
-      fieldId: changeFieldId,
+      fieldId: changeFieldId
     })
 
     var _changeTaxRateField = _current_record.getField({
-      fieldId: 'custpage_tax_rate',
+      fieldId: 'custpage_tax_rate'
     })
     _changeTaxRateField.removeSelectOption({
-      value: '0',
+      value: '0'
     })
     _changeTaxRateField.removeSelectOption({
-      value: '2',
+      value: '2'
     })
     _changeTaxRateField.removeSelectOption({
-      value: '5',
+      value: '5'
     })
     _changeTaxRateField.removeSelectOption({
-      value: '15',
+      value: '15'
     })
 
     if (_custpage_tax_type == '1') {
       //應稅(一般稅率)
       _changeTaxRateField.insertSelectOption({
         value: '5',
-        text: '5',
+        text: '5'
       })
     } else if (_custpage_tax_type == '2') {
       // 零稅率
       _customs_clearance_mark_field.isDisplay = true //顯示通關註記
       _changeTaxRateField.insertSelectOption({
         value: '0',
-        text: '0',
+        text: '0'
       })
     } else if (_custpage_tax_type == '3') {
       //免稅
       _changeTaxRateField.insertSelectOption({
         value: '0',
-        text: '0',
+        text: '0'
       })
     } else if (_custpage_tax_type == '4') {
       //特種稅
       _changeTaxRateField.insertSelectOption({
         value: '2',
-        text: '2',
+        text: '2'
       })
       _changeTaxRateField.insertSelectOption({
         value: '5',
-        text: '5',
+        text: '5'
       })
       _changeTaxRateField.insertSelectOption({
         value: '15',
-        text: '15',
+        text: '15'
       })
     } else if (_custpage_tax_type == '9') {
       //混合稅率
       _changeTaxRateField.insertSelectOption({
         value: '5',
-        text: '5',
+        text: '5'
       })
     }
   }
@@ -281,7 +279,7 @@ define([
   function changeCustomerInformation(changeFieldId) {
     //客戶代碼
     var _custpage_customer_id = _current_record.getValue({
-      fieldId: changeFieldId,
+      fieldId: changeFieldId
     })
 
     var _entityid = ''
@@ -294,43 +292,43 @@ define([
       var _customerRecord = record.load({
         type: record.Type.CUSTOMER,
         id: _custpage_customer_id,
-        isDynamic: true,
+        isDynamic: true
       })
       _entityid = _customerRecord.getValue({
-        fieldId: 'entityid',
+        fieldId: 'entityid'
       })
       _customer_buyer_name = _customerRecord.getValue({
-        fieldId: 'companyname',
+        fieldId: 'companyname'
       })
       _customer_buyer_email = _customerRecord.getValue({
-        fieldId: 'email',
+        fieldId: 'email'
       })
       _customer_buyer_identifier = _customerRecord.getValue({
-        fieldId: 'vatregnumber',
+        fieldId: 'vatregnumber'
       })
       _customer_address = _customerRecord.getValue({
-        fieldId: 'defaultaddress',
+        fieldId: 'defaultaddress'
       })
     }
     _current_record.setValue({
       fieldId: 'custpage_buyer_identifier',
       value: _customer_buyer_identifier,
-      ignoreFieldChange: true,
+      ignoreFieldChange: true
     })
     _current_record.setValue({
       fieldId: 'custpage_buyer_name',
       value: _customer_buyer_name,
-      ignoreFieldChange: true,
+      ignoreFieldChange: true
     })
     _current_record.setValue({
       fieldId: 'custpage_buyer_email',
       value: _customer_buyer_email,
-      ignoreFieldChange: true,
+      ignoreFieldChange: true
     })
     _current_record.setValue({
       fieldId: 'custpage_buyer_address',
       value: _customer_address,
-      ignoreFieldChange: true,
+      ignoreFieldChange: true
     })
   }
 
@@ -338,19 +336,19 @@ define([
     var changedSubListId = context.sublistId
     console.log('changedSubListId=' + changedSubListId)
     var changeLineId = _current_record.getCurrentSublistIndex({
-      sublistId: changedSubListId,
+      sublistId: changedSubListId
     })
     console.log('changeLineId=' + changeLineId)
 
     var _item_name = _current_record.getCurrentSublistValue({
       sublistId: changedSubListId,
-      fieldId: 'custpage_item_name',
+      fieldId: 'custpage_item_name'
     })
     _current_record.setCurrentSublistValue({
       sublistId: changedSubListId,
       fieldId: 'custpage_item_name',
       value: _item_name,
-      ignoreFieldChange: true,
+      ignoreFieldChange: true
     })
     console.log('_item_name=' + _item_name)
   }
@@ -364,137 +362,137 @@ define([
       //1.請輸入商品名稱:中文30字以內, 英文60字以內
       //2.請填寫客戶公司名稱
       var _custpage_company_name = _current_record.getValue({
-        fieldId: 'custpage_company_name',
+        fieldId: 'custpage_company_name'
       })
       if (_custpage_company_name.length == 0) {
-        _errorMsg += '請填寫客戶公司名稱,'
+        _errorMsg += '請填寫客戶公司名稱<br>'
       } else if (stringutility.checkByteLength(_custpage_company_name) > 60) {
-        _errorMsg += '公司名稱長度不可超過30個中文字或60個英文字,'
+        _errorMsg += '公司名稱長度不可超過30個中文字或60個英文字<br>'
       }
       //3.載具格式錯誤, 請輸入載具類別, 輸入統編不得使用自然人(CQ0001)載具!
       var _buyer_identifier = _current_record.getValue({
-        fieldId: 'custpage_buyer_identifier',
+        fieldId: 'custpage_buyer_identifier'
       })
       var _custpage_customer_id = _current_record.getValue({
-        fieldId: 'custpage_customer_id',
+        fieldId: 'custpage_customer_id'
       })
 
       var _carrier_type = _current_record.getValue({
-        fieldId: 'custpage_carrier_type',
+        fieldId: 'custpage_carrier_type'
       })
 
       if (_buyer_identifier != '0000000000' && _carrier_type === 'CQ0001') {
-        _errorMsg += '輸入統編不得使用自然人(CQ0001)載具,'
+        _errorMsg += '輸入統編不得使用自然人(CQ0001)載具<br>'
       }
       //4.載具號碼錯誤! 手機條碼 自然人載具錯誤!
       var _carrier_id = _current_record.getValue({
-        fieldId: 'custpage_carrier_id',
+        fieldId: 'custpage_carrier_id'
       })
 
       if (_carrier_type === 'CQ0001') {
         //自然人憑證
         if (!validate.checkCarrier(_carrier_type, _carrier_id)) {
-          _errorMsg += '請輸入正確自然人憑證格式,'
+          _errorMsg += '請輸入正確自然人憑證格式<br>'
         }
       } else if (_carrier_type === '3J0002') {
         //手機條碼
         if (!validate.checkCarrier(_carrier_type, _carrier_id)) {
-          _errorMsg += '請輸入正確手機條碼格式,'
+          _errorMsg += '請輸入正確手機條碼格式<br>'
         }
       }
       if (_carrier_type !== '' && _carrier_id == '') {
-        _errorMsg += '請輸入載具號碼,'
+        _errorMsg += '請輸入載具號碼<br>'
       }
       if (_carrier_type == '' && _carrier_id != '') {
-        _errorMsg += '請輸入載具類別,'
+        _errorMsg += '請輸入載具類別<br>'
       }
       //5.Email格式錯誤!
       var _buyer_email = _current_record.getValue({
-        fieldId: 'custpage_buyer_email',
+        fieldId: 'custpage_buyer_email'
       })
       /**
          if (_buyer_email.length == 0) {
-			   _errorMsg += '請輸入Email,';
+			   _errorMsg += '請輸入Email<br>';
 		   } else {
 			   //TODO Check Format
 			   if (!validate.checkEmail(_buyer_email)) {
-				   _errorMsg += '請輸入正確Email格式,';
+				   _errorMsg += '請輸入正確Email格式<br>';
 			   }
 		   }
          */
       if (_buyer_email.length != 0) {
         //TODO Check Format
         if (!validate.checkEmail(_buyer_email)) {
-          _errorMsg += '請輸入正確Email格式,'
+          _errorMsg += '請輸入正確Email格式<br>'
         }
       }
       //custpage_buyer_identifier
 
       if (_buyer_identifier.length == 0) {
-        _errorMsg += '請維護正確統編,'
+        _errorMsg += '請維護正確統編<br>'
       }
       var _buyer_name = _current_record.getValue({
-        fieldId: 'custpage_buyer_name',
+        fieldId: 'custpage_buyer_name'
       })
       if (_buyer_name.length == 0) {
-        _errorMsg += '買方公司名稱不可空白,'
+        _errorMsg += '買方公司名稱不可空白<br>'
       }
 
       //5.捐贈碼Npoban: '請輸入3-7碼數字'-Done
       var _npo_ban = _current_record.getValue({
-        fieldId: 'custpage_npo_ban',
+        fieldId: 'custpage_npo_ban'
       })
       if (_mig_type === 'B2C') {
         if (
           _npo_ban.length != 0 &&
           (_npo_ban.length < 3 || _npo_ban.length > 7)
         ) {
-          _errorMsg += '捐贈碼請輸入3-7碼數字,'
+          _errorMsg += '捐贈碼請輸入3-7碼數字<br>'
         } else if (isNaN(_npo_ban)) {
-          _errorMsg += '捐贈碼請輸入3-7碼數字,'
-          _errorMsg += '捐贈碼請輸入3-7碼數字,'
+          _errorMsg += '捐贈碼請輸入3-7碼數字<br>'
+          _errorMsg += '捐贈碼請輸入3-7碼數字<br>'
         }
       } else {
         if (_npo_ban.length != 0) {
-          _errorMsg += '捐贈碼不可輸入,'
+          _errorMsg += '捐贈碼不可輸入<br>'
         }
       }
 
       //6.*請選擇通關方式(零稅必填!)-Done
       var _tax_type = _current_record.getValue({
-        fieldId: 'custpage_tax_type',
+        fieldId: 'custpage_tax_type'
       })
       if (_tax_type === '2') {
         //零稅率
         var _customs_clearance_mark = _current_record.getValue({
-          fieldId: 'custpage_customs_clearance_mark',
+          fieldId: 'custpage_customs_clearance_mark'
         })
         if (_customs_clearance_mark.length == 0) {
-          _errorMsg += '請選擇通關方式(零稅必填!),'
+          _errorMsg += '請選擇通關方式(零稅必填!)<br>'
         }
       }
 
       //7.檢查發票日期
       var _select_voucher_date = _current_record.getValue({
-        fieldId: 'custpage_select_voucher_date',
+        fieldId: 'custpage_select_voucher_date'
       })
       if (stringutility.trim(_select_voucher_date) == '') {
         //檢查發票日期
-        _errorMsg += '請選擇發票日期,'
+        _errorMsg += '請選擇發票日期<br>'
       }
 
       //8.檢查手開發票號碼
       var _manual_voucher_number = _current_record.getValue({
-        fieldId: 'custpage_manual_voucher_number',
+        fieldId: 'custpage_manual_voucher_number'
       })
       if (stringutility.trim(_manual_voucher_number) != '') {
         //檢查發票號碼格式
         if (validate.validateEGUINumber(_manual_voucher_number) == false) {
-          _errorMsg += '手開發票號碼格式錯誤,'
+          _errorMsg += '手開發票號碼格式錯誤<br>'
         } else {
           //檢查手開發票
           var _ban = _current_record.getValue({
-            fieldId: 'custpage_company_ban',
+            fieldId: 'custpage_company_ban'
           })
           var _track = _manual_voucher_number.substr(0, 2)
           var _inv_number = _manual_voucher_number.substr(
@@ -509,7 +507,7 @@ define([
               _inv_number
             ) == false
           ) {
-            _errorMsg += '手開發票字軌號碼區間錯誤,'
+            _errorMsg += '手開發票字軌號碼區間錯誤<br>'
           } else {
             if (
               invoiceutility.checkInvoiceNumberDuplicate(
@@ -517,7 +515,7 @@ define([
                 _manual_voucher_number
               ) == true
             ) {
-              _errorMsg += '手開發票號碼重覆,'
+              _errorMsg += '手開發票號碼重覆<br>'
             }
           }
         }
@@ -525,7 +523,7 @@ define([
 
       //9.檢查折讓單扣抵發票號碼
       var _deduction_egui_number = _current_record.getValue({
-        fieldId: 'custpage_deduction_egui_number',
+        fieldId: 'custpage_deduction_egui_number'
       })
       if (stringutility.trim(_deduction_egui_number) != '') {
         //檢查發票號碼格式
@@ -533,7 +531,7 @@ define([
         for (var i = 0; i < _deduction_egui_number_ary.length; i++) {
           var _number = _deduction_egui_number_ary[i]
           if (validate.validateEGUINumber(_number) == false) {
-            _errorMsg += _number + ':折讓單扣抵發票號碼格式錯誤,'
+            _errorMsg += _number + ':折讓單扣抵發票號碼格式錯誤<br>'
           }
         }
       }
@@ -556,24 +554,24 @@ define([
     var _index_tax_code = ''
     var _check_tax_code_flag = true
     var _invoice_item_count = _current_record.getLineCount({
-      sublistId: _invoiceSublistId,
+      sublistId: _invoiceSublistId
     })
     if (typeof _invoice_item_count !== 'undefined') {
       for (var i = 0; i < _invoice_item_count; i++) {
         var _invoice_id = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'customer_search_invoice_id',
-          line: i,
+          line: i
         })
         var _invoice_seq = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'customer_search_invoice_seq',
-          line: i,
+          line: i
         })
         var _tax_code = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'customer_search_invoice_tax_code',
-          line: i,
+          line: i
         })
         if (_index_tax_code == '') _index_tax_code = _tax_code
         if (_index_tax_code != _tax_code) _check_tax_code_flag = false
@@ -581,70 +579,79 @@ define([
         var _tax_rate = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'customer_search_invoice_tax_rate',
-          line: i,
+          line: i
         })
         var _item_name = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'custpage_item_name',
-          line: i,
+          line: i
         })
         var _unit_price = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'custpage_unit_price',
-          line: i,
+          line: i
         })
         var _item_quantity = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'custpage_item_quantity',
-          line: i,
+          line: i
         })
         var _item_amount = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'custpage_item_amount',
-          line: i,
+          line: i
         })
         var _item_remark = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'custpage_item_remark',
-          line: i,
+          line: i
+        })
+        
+        var _item_unit = _current_record.getSublistValue({
+          sublistId: _invoiceSublistId,
+          fieldId: 'custpage_invoice_item_unit',
+          line: i
         })
         //Set value
         if (stringutility.checkByteLength(_item_name) > 256) {
-          _errorMsg += _invoice_id + ':Invoice商品名稱需小於256字元,'
+          _errorMsg += _item_name + ':Invoice商品名稱需小於256字元<br>'
         } else if (stringutility.checkByteLength(_item_name) == 0) {
-          _errorMsg += _invoice_id + ':Invoice商品名稱不可空白,'
+          _errorMsg += _item_name + ':Invoice商品名稱不可空白<br>'
         }
         if (stringutility.checkByteLength(_item_remark) > 40) {
-          _errorMsg += _invoice_id + ':Invoice明細備註需小於40字元,'
+          _errorMsg += _item_name + ':Invoice明細備註需小於等於40字元<br>'
         }
+        if (stringutility.checkByteLength(_item_unit) > 6) {
+            _errorMsg += _item_name + ':Invoice單位需小於等於6字元<br>'
+        } 
       }
     }
 
     //CreditMemo SubList
     var _creditmemo_item_count = _current_record.getLineCount({
-      sublistId: _creditMemoSublistId,
+      sublistId: _creditMemoSublistId
     })
     if (typeof _creditmemo_item_count !== 'undefined') {
       for (var i = 0; i < _creditmemo_item_count; i++) {
         var _creditmemo_id = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'customer_search_creditmemo_id',
-          line: i,
+          line: i
         })
         var _creditmemo_seq = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'customer_search_creditmemo_seq',
-          line: i,
+          line: i
         })
         var _creditmemo_seq = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'customer_search_creditmemo_seq',
-          line: i,
+          line: i
         })
         var _creditmemo_tax_code = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'customer_search_creditmemo_tax_code',
-          line: i,
+          line: i
         })
         if (_index_tax_code == '') _index_tax_code = _creditmemo_tax_code
         if (_index_tax_code != _creditmemo_tax_code)
@@ -653,35 +660,35 @@ define([
         var _creditmemo_tax_rate = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'customer_search_creditmemo_tax_rate',
-          line: i,
+          line: i
         })
         var _unit_price = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'custpage_unit_price',
-          line: i,
+          line: i
         })
         var _item_quantity = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'custpage_item_quantity',
-          line: i,
+          line: i
         })
         var _item_amount = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'custpage_item_amount',
-          line: i,
+          line: i
         })
         var _item_remark = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'custpage_item_remark',
-          line: i,
+          line: i
         })
         if (stringutility.checkByteLength(_item_name) > 256) {
-          _errorMsg += _creditmemo_id + ':CreditMemo商品名稱需小於256字元,'
+          _errorMsg += _creditmemo_id + ':CreditMemo商品名稱需小於256字元<br>'
         } else if (stringutility.checkByteLength(_item_name) > 256) {
-          _errorMsg += _creditmemo_id + ':CreditMemo商品名稱不可空白,'
+          _errorMsg += _creditmemo_id + ':CreditMemo商品名稱不可空白<br>'
         }
         if (stringutility.checkByteLength(_item_remark) > 40) {
-          _errorMsg += _creditmemo_id + ':CreditMemo明細備註需小於40字元,'
+          _errorMsg += _creditmemo_id + ':CreditMemo明細備註需小於40字元<br>'
         }
       }
     }
@@ -690,13 +697,13 @@ define([
       stringutility.trim(_manual_voucher_number) != '' &&
       _invoice_item_count + _creditmemo_item_count > 999
     ) {
-      _errorMsg += _manual_voucher_number + ':筆數不可超過999筆,'
+      _errorMsg += _manual_voucher_number + ':筆數不可超過999筆<br>'
     }
     if (
       stringutility.trim(_manual_voucher_number) != '' &&
       _check_tax_code_flag == false
     ) {
-      _errorMsg += _manual_voucher_number + ':不可開立不同稅別,'
+      _errorMsg += _manual_voucher_number + ':不可開立不同稅別<br>'
     }
 
     return _errorMsg
@@ -707,16 +714,16 @@ define([
     _current_record.setValue({
       fieldId: 'custpage_print_type',
       value: '熱感式印表機',
-      ignoreFieldChange: true,
+      ignoreFieldChange: true
     })
 
     //判斷憑證開立方式
     var _voucherOpenType = 'MERGE-'
     var _invoice_listid = _current_record.getValue({
-      fieldId: _invoice_hiddent_listid,
+      fieldId: _invoice_hiddent_listid
     })
     var _creditmemo_listid = _current_record.getValue({
-      fieldId: _creditmemo_hiddent_listid,
+      fieldId: _creditmemo_hiddent_listid
     })
     var _invoiceAry = []
     var _creditMemoAry = []
@@ -730,7 +737,7 @@ define([
 
     //_voucherOpenType = 'MERGE-';
     var _total_amount = _current_record.getValue({
-      fieldId: 'custpage_total_amount',
+      fieldId: 'custpage_total_amount'
     })
 
     if (_invoiceAry.length > 1 && _creditMemoAry.length > 1) {
@@ -757,7 +764,7 @@ define([
     _current_record.setValue({
       fieldId: 'custpage_voucher_open_type',
       value: _voucherOpenType,
-      ignoreFieldChange: true,
+      ignoreFieldChange: true
     })
 
     //var _customs_clearance_mark_field = _current_record.getField({fieldId: 'custpage_customs_clearance_mark'});
@@ -767,7 +774,7 @@ define([
     _npo_ban.isDisplay = false
 
     var _deduction_egui_number = _current_record.getField({
-      fieldId: 'custpage_deduction_egui_number',
+      fieldId: 'custpage_deduction_egui_number'
     })
     _deduction_egui_number.isDisplay = false //預設不顯示
   }
@@ -780,7 +787,7 @@ define([
   ) {
     try {
       var _buyer_identifier = _current_record.getValue({
-        fieldId: 'custpage_buyer_identifier',
+        fieldId: 'custpage_buyer_identifier'
       })
       if (
         mandatoryFlag === true ||
@@ -788,42 +795,42 @@ define([
           invoice_length + creditmemo_length - 2 <= 999)
       ) {
         var _carrier_type = _current_record.getField({
-          fieldId: 'custpage_carrier_type',
+          fieldId: 'custpage_carrier_type'
         })
         _carrier_type.isDisplay = false
         var _carrier_id = _current_record.getField({
-          fieldId: 'custpage_carrier_id',
+          fieldId: 'custpage_carrier_id'
         })
         _carrier_id.isDisplay = false
         var _npo_ban = _current_record.getField({ fieldId: 'custpage_npo_ban' })
         _carrier_id.isDisplay = false
         var _customs_clearance_mark_field = _current_record.getField({
-          fieldId: 'custpage_customs_clearance_mark',
+          fieldId: 'custpage_customs_clearance_mark'
         })
         _customs_clearance_mark_field.isDisplay = false
 
         var _custpage_egui_format_code = _current_record.getField({
-          fieldId: 'custpage_egui_format_code',
+          fieldId: 'custpage_egui_format_code'
         })
         _custpage_egui_format_code.isDisplay = false
 
         var _manual_voucher_number = _current_record.getField({
-          fieldId: 'custpage_manual_voucher_number',
+          fieldId: 'custpage_manual_voucher_number'
         })
         _manual_voucher_number.isDisplay = false
         var _dept_code = _current_record.getField({
-          fieldId: 'custpage_dept_code',
+          fieldId: 'custpage_dept_code'
         })
         _dept_code.isDisplay = false
         var _classification = _current_record.getField({
-          fieldId: 'custpage_classification',
+          fieldId: 'custpage_classification'
         })
         _classification.isDisplay = false
 
         _current_record.setValue({
           fieldId: 'custpage_allowance_log_type',
           value: 'NONE',
-          ignoreFieldChange: true,
+          ignoreFieldChange: true
         })
       }
     } catch (e) {
@@ -838,41 +845,38 @@ define([
   var _taxObjAry = []
 
   function loadAllTaxInformation() {
-    try {
-      var _group_type = 'TAX_TYPE'
+    _taxObjAry = invoiceutility.loadAllTaxInformation()
+    /**
+    try {		  
       var _mySearch = search.create({
-        type: _gw_voucher_properties,
-        columns: [
-          search.createColumn({ name: 'custrecord_gw_voucher_property_id' }), //TAX_WITH_TAX
-          search.createColumn({ name: 'custrecord_gw_voucher_property_value' }), //1
-          search.createColumn({ name: 'custrecord_gw_voucher_property_note' }), //應稅
-          search.createColumn({ name: 'custrecord_gw_netsuite_id_value' }), //8
-          search.createColumn({ name: 'custrecord_gw_netsuite_id_text' }), //VAT_TW TAX 5%-TW
+        type: 'customrecord_gw_ap_doc_tax_type_option',
+        columns: [ 
+          search.createColumn({ name: 'custrecord_gw_ap_doc_tax_type_value' }), //1
+          search.createColumn({ name: 'custrecord_gw_ap_doc_tax_type_text' }),  //應稅
+          search.createColumn({ name: 'custrecord_gw_tax_type_tax_code' })      //TAX CODES
         ],
       })
 
-      var _filterArray = []
-      _filterArray.push(['custrecord_gw_voucher_group_type', 'is', _group_type])
-      _mySearch.filterExpression = _filterArray
+      //var _filterArray = []
+      //_filterArray.push(['custrecord_gw_voucher_group_type', 'is', _group_type])
+      //_mySearch.filterExpression = _filterArray
       _mySearch.run().each(function (result) {
         var internalid = result.id
-
-        var _voucher_property_id = result.getValue({
-          name: 'custrecord_gw_voucher_property_id',
-        })
+		
+        var _voucher_property_id = 'TAX_TYPE'		
         var _voucher_property_value = result.getValue({
-          name: 'custrecord_gw_voucher_property_value',
+          name: 'custrecord_gw_ap_doc_tax_type_value',
         })
         var _voucher_property_note = result.getValue({
-          name: 'custrecord_gw_voucher_property_note',
-        })
-        var _netsuite_id_value = result.getValue({
-          name: 'custrecord_gw_netsuite_id_value',
-        })
-        var _netsuite_id_text = result.getValue({
-          name: 'custrecord_gw_netsuite_id_text',
-        })
-
+          name: 'custrecord_gw_ap_doc_tax_type_text',
+        }) 
+		var _netsuite_id_value = result.getValue({
+          name: 'custrecord_gw_tax_type_tax_code',
+        }) 
+		var _netsuite_id_text = result.getText({
+          name: 'custrecord_gw_tax_type_tax_code',
+        }) 
+		
         var _obj = {
           voucher_property_id: _voucher_property_id,
           voucher_property_value: _voucher_property_value,
@@ -880,13 +884,15 @@ define([
           netsuite_id_value: _netsuite_id_value,
           netsuite_id_text: _netsuite_id_text,
         }
-
+		
         _taxObjAry.push(_obj)
+		
         return true
       })
     } catch (e) {
       log.debug(e.name, e.message)
     }
+	*/
   }
 
   //取得稅別資料
@@ -1006,7 +1012,7 @@ define([
         type_1_amount: _discount_amount_SplitTaxType_1,
         type_2_amount: _discount_amount_SplitTaxType_2,
         type_3_amount: _discount_amount_SplitTaxType_3,
-        type_1_tax_amount: _discount_amount_SplitTaxAmount,
+        type_1_tax_amount: _discount_amount_SplitTaxAmount
       }
     } catch (e) {
       log.debug(e.name, e.message)
@@ -1019,7 +1025,7 @@ define([
     try {
       var options = {
         title: '憑證管理',
-        message: '是否開立憑證',
+        message: '是否開立憑證'
       }
 
       dialog.confirm(options).then(successTask).catch(failureTask)
@@ -1044,6 +1050,7 @@ define([
       var _title = '憑證管理'
       gwmessage.showErrorMessage(_title, _errorMsg)
       document.getElementById('custpage_forward_back_button').disabled = false
+      document.getElementById('custpage_create_voucher_button').disabled = false
       return
     }
 
@@ -1056,23 +1063,23 @@ define([
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //發票日期
     var _select_voucher_date = _current_record.getValue({
-      fieldId: 'custpage_select_voucher_date',
+      fieldId: 'custpage_select_voucher_date'
     })
     //手開發票號碼
     var _manual_voucher_number = _current_record.getValue({
-      fieldId: 'custpage_manual_voucher_number',
+      fieldId: 'custpage_manual_voucher_number'
     })
     //折讓單扣抵發票號碼
     var _deduction_egui_number = _current_record.getValue({
-      fieldId: 'custpage_deduction_egui_number',
+      fieldId: 'custpage_deduction_egui_number'
     })
     //折讓單折扣開立期別[this_period=>本期開始, early_period=>前期開始]
     var _allowanceDecutionPeriod = _current_record.getValue({
-      fieldId: 'custpage_allowance_deduction_period',
+      fieldId: 'custpage_allowance_deduction_period'
     })
     //開立方式 (ALL, EGUI, ALLOWANCE, NONE)
     var _assignLogType = _current_record.getValue({
-      fieldId: 'custpage_allowance_log_type',
+      fieldId: 'custpage_allowance_log_type'
     })
     if (stringutility.trim(_manual_voucher_number) != '') {
       _assignLogType = 'NONE' //手開發票不上傳
@@ -1080,22 +1087,22 @@ define([
 
     //開立方式==>MERGE-INVOICE, MERGE-CREDITMEMO, MERGE-ALL(INVOICE+CREDITMEMO), SINGLE(各別開)
     var _voucherOpenType = _current_record.getValue({
-      fieldId: 'custpage_voucher_open_type',
+      fieldId: 'custpage_voucher_open_type'
     })
 
     //取得DiscountItem List and Amount
     var _invoice_selected_listid = _current_record.getValue({
-      fieldId: _invoice_hiddent_listid,
+      fieldId: _invoice_hiddent_listid
     })
     var _creditmemo_selected_listid = _current_record.getValue({
-      fieldId: _creditmemo_hiddent_listid,
+      fieldId: _creditmemo_hiddent_listid
     })
 
     //處理年月
     var _formattedDate = format.format({
       value: _select_voucher_date,
       type: format.Type.DATETIME,
-      timezone: format.Timezone.ASIA_TAIPEI,
+      timezone: format.Timezone.ASIA_TAIPEI
     })
 
     var _year_month = dateutility.getTaxYearMonthByDateObj(_select_voucher_date) //10910
@@ -1171,7 +1178,7 @@ define([
         _creditTotalAmount_TaxType_1
       )
       if (_creditMemoAmountFlag_TaxType_1 == false)
-        _creditmemo_error_message += '(應稅)發票可折金額不足,'
+        _creditmemo_error_message += '(應稅)發票可折金額不足<br>'
     }
     //alert('_creditMemoAmountFlag_TaxType_1='+_creditMemoAmountFlag_TaxType_1);
     //Check 零稅部分
@@ -1205,7 +1212,7 @@ define([
         _creditTotalAmount_TaxType_2
       )
       if (_creditMemoAmountFlag_TaxType_2 == false)
-        _creditmemo_error_message += '(零稅率)發票可折金額不足,'
+        _creditmemo_error_message += '(零稅率)發票可折金額不足<br>'
     }
 
     //Check 免稅部分
@@ -1239,7 +1246,7 @@ define([
         _creditTotalAmount_TaxType_3
       )
       if (_creditMemoAmountFlag_TaxType_3 == false)
-        _creditmemo_error_message += '(免稅)發票可折金額不足,'
+        _creditmemo_error_message += '(免稅)發票可折金額不足<br>'
     }
 
     //TODO
@@ -1274,7 +1281,7 @@ define([
         _creditTotalAmount_TaxType_3
       )
       if (_creditMemoAmountFlag_TaxType_9 == false)
-        _creditmemo_error_message += '(免稅)發票可折金額不足,'
+        _creditmemo_error_message += '(免稅)發票可折金額不足<br>'
     }
     //alert('_creditMemoAmountFlag_TaxType_1='+JSON.stringify(_creditMemoAmountFlag_TaxType_1));
     //檢查折讓金額是否足夠-END
@@ -1526,7 +1533,7 @@ define([
 
       //客戶押金已折紀錄 =>[{"assign_document_id":"831","tax_type":"1","dedcuted_amount":952}]
       var _deposit_voucher_hiddent_listid = _current_record.getValue({
-        fieldId: 'custpage_deposit_voucher_hiddent_listid',
+        fieldId: 'custpage_deposit_voucher_hiddent_listid'
       })
 
       if (stringutility.trim(_deposit_voucher_hiddent_listid) != '') {
@@ -1546,14 +1553,14 @@ define([
           //forward to egui View
           var _params = {
             voucher_type: 'EGUI',
-            voucher_internal_id: _forward_voucher_main_id,
+            voucher_internal_id: _forward_voucher_main_id
           }
 
           window.location = url.resolveScript({
             scriptId: 'customscript_gw_egui_ui_view',
             deploymentId: 'customdeploy_gw_egui_ui_view',
             params: _params,
-            returnExternalUrl: false,
+            returnExternalUrl: false
           })
           ///////////////////////////////////////////////////////////////////
         } else if (_allowanceCount == 1 && _eGuiCount == 0) {
@@ -1561,14 +1568,14 @@ define([
           //forward to egui View
           var _params = {
             voucher_type: 'ALLOWANCE',
-            voucher_internal_id: _forward_voucher_main_id,
+            voucher_internal_id: _forward_voucher_main_id
           }
 
           window.location = url.resolveScript({
             scriptId: 'customscript_gw_allowance_ui_view',
             deploymentId: 'customdeploy_gw_allowance_ui_view',
             params: _params,
-            returnExternalUrl: false,
+            returnExternalUrl: false
           })
           ///////////////////////////////////////////////////////////////////
         }
@@ -1612,23 +1619,23 @@ define([
           type: _gwDepositVoucherRecordId,
           columns: [
             search.createColumn({
-              name: 'custrecord_gw_deposit_dedcuted_amount',
+              name: 'custrecord_gw_deposit_dedcuted_amount'
             }),
-            search.createColumn({ name: 'custrecord_gw_deposit_egui_amount' }),
-          ],
+            search.createColumn({ name: 'custrecord_gw_deposit_egui_amount' })
+          ]
         })
 
         var _filterArray = []
         _filterArray.push([
           'custrecord_gw_assign_document_id',
           search.Operator.EQUALTO,
-          _assign_document_id,
+          _assign_document_id
         ])
         _filterArray.push('and')
         _filterArray.push([
           'custrecord_gw_deposit_egui_tax_type',
           search.Operator.IS,
-          _tax_type,
+          _tax_type
         ])
         _mySearch.filterExpression = _filterArray
         //alert('Parse _filterArray='+JSON.stringify(_filterArray));
@@ -1637,10 +1644,10 @@ define([
           var _internalid = result.id
 
           var _deposit_egui_amount = result.getValue({
-            name: 'custrecord_gw_deposit_egui_amount',
+            name: 'custrecord_gw_deposit_egui_amount'
           })
           var _deposit_dedcuted_amount = result.getValue({
-            name: 'custrecord_gw_deposit_dedcuted_amount',
+            name: 'custrecord_gw_deposit_dedcuted_amount'
           })
 
           //
@@ -1665,8 +1672,8 @@ define([
             values: values,
             options: {
               enableSourcing: false,
-              ignoreMandatoryFields: true,
-            },
+              ignoreMandatoryFields: true
+            }
           })
           /////////////////////////////////////////////////////////////////////////////////
           return true
@@ -1681,16 +1688,16 @@ define([
     var _voucherApplyListRecord = record.load({
       type: _voucher_apply_list_record,
       id: parseInt(applyID),
-      isDynamic: true,
+      isDynamic: true
     })
 
     _voucherApplyListRecord.setValue({
       fieldId: 'custrecord_gw_gui_created_count',
-      value: guiCount,
+      value: guiCount
     })
     _voucherApplyListRecord.setValue({
       fieldId: 'custrecord_gw_allowance_created_count',
-      value: allowanceCount,
+      value: allowanceCount
     })
 
     try {
@@ -1734,102 +1741,102 @@ define([
     var _applyId = 0
     //2.取得頁面填寫資料(GUI或Allowance)
     var _company_ban = _current_record.getValue({
-      fieldId: 'custpage_company_ban',
+      fieldId: 'custpage_company_ban'
     })
     var _company_name = _current_record.getValue({
-      fieldId: 'custpage_company_name',
+      fieldId: 'custpage_company_name'
     })
     var _company_address = _current_record.getValue({
-      fieldId: 'custpage_company_address',
+      fieldId: 'custpage_company_address'
     })
     var _invoice_type = _current_record.getValue({
-      fieldId: 'custpage_invoice_type',
+      fieldId: 'custpage_invoice_type'
     })
     var _print_type = _current_record.getValue({
-      fieldId: 'custpage_print_type',
+      fieldId: 'custpage_print_type'
     })
     var _mig_type = _current_record.getValue({ fieldId: 'custpage_mig_type' })
     var _main_remark = _current_record.getValue({
-      fieldId: 'custpage_main_remark',
+      fieldId: 'custpage_main_remark'
     })
     var _customer_id = _current_record.getValue({
-      fieldId: 'custpage_customer_id',
+      fieldId: 'custpage_customer_id'
     })
     var _buyer_identifier = _current_record.getValue({
-      fieldId: 'custpage_buyer_identifier',
+      fieldId: 'custpage_buyer_identifier'
     })
     var _buyer_name = _current_record.getValue({
-      fieldId: 'custpage_buyer_name',
+      fieldId: 'custpage_buyer_name'
     })
     if (stringutility.trim(_buyer_name) == '') _buyer_name = _buyer_identifier
 
     var _buyer_email = _current_record.getValue({
-      fieldId: 'custpage_buyer_email',
+      fieldId: 'custpage_buyer_email'
     })
     var _buyer_address = _current_record.getValue({
-      fieldId: 'custpage_buyer_address',
+      fieldId: 'custpage_buyer_address'
     })
     var _carrier_type = _current_record.getValue({
-      fieldId: 'custpage_carrier_type',
+      fieldId: 'custpage_carrier_type'
     })
     var _carrier_id = _current_record.getValue({
-      fieldId: 'custpage_carrier_id',
+      fieldId: 'custpage_carrier_id'
     })
     var _npo_ban = _current_record.getValue({ fieldId: 'custpage_npo_ban' })
     var _customs_clearance_mark = _current_record.getValue({
-      fieldId: 'custpage_customs_clearance_mark',
+      fieldId: 'custpage_customs_clearance_mark'
     })
     var _dept_code = _current_record.getValue({ fieldId: 'custpage_dept_code' })
     var _classification = _current_record.getValue({
-      fieldId: 'custpage_classification',
+      fieldId: 'custpage_classification'
     })
     var _tax_type = _current_record.getValue({ fieldId: 'custpage_tax_type' })
     var _tax_rate = _current_record.getValue({ fieldId: 'custpage_tax_rate' })
     var _discountamount = _current_record.getValue({
-      fieldId: 'custpage_sales_discount_amount',
+      fieldId: 'custpage_sales_discount_amount'
     }) //折扣總金額(未稅)
     var _tax_amount = _current_record.getValue({
-      fieldId: 'custpage_tax_amount',
+      fieldId: 'custpage_tax_amount'
     })
     var _sales_amount = _current_record.getValue({
-      fieldId: 'custpage_sales_amount',
+      fieldId: 'custpage_sales_amount'
     })
     var _total_amount = _current_record.getValue({
-      fieldId: 'custpage_total_amount',
+      fieldId: 'custpage_total_amount'
     })
     var _gui_yearmonth_type = _current_record.getValue({
-      fieldId: 'custpage_allowance_deduction_period',
+      fieldId: 'custpage_allowance_deduction_period'
     })
     var _voucher_extra_memo = _current_record.getValue({
-      fieldId: 'custpage_voucher_extra_memo',
+      fieldId: 'custpage_voucher_extra_memo'
     })
     //20210118 walter 零稅率資訊
     //適用零稅率規定
     var _applicable_zero_tax = _current_record.getValue({
-      fieldId: 'custpage_applicable_zero_tax',
+      fieldId: 'custpage_applicable_zero_tax'
     })
     //海關出口單類別
     var _customs_export_category = _current_record.getValue({
-      fieldId: 'custpage_gw_customs_export_category',
+      fieldId: 'custpage_gw_customs_export_category'
     })
     //海關出口號碼
     var _customs_export_no = _current_record.getValue({
-      fieldId: 'custpage_gw_customs_export_no',
+      fieldId: 'custpage_gw_customs_export_no'
     })
     //輸出或結匯日期
     var _customs_export_date = _current_record.getValue({
-      fieldId: 'custpage_gw_customs_export_date',
+      fieldId: 'custpage_gw_customs_export_date'
     })
 
     //手開發票號碼
     var _manual_voucher_number = _current_record.getValue({
-      fieldId: 'custpage_manual_voucher_number',
+      fieldId: 'custpage_manual_voucher_number'
     })
 
     var _format_code = _invoceFormatCode //35
     //手開發票格式代號 31-01
     var _egui_format_code = _current_record.getValue({
-      fieldId: 'custpage_egui_format_code',
+      fieldId: 'custpage_egui_format_code'
     })
     if (stringutility.trim(_manual_voucher_number) != '') {
       var _format_code_ary = _egui_format_code.split('-')
@@ -1874,7 +1881,7 @@ define([
       customs_export_category: _customs_export_category,
       customs_export_no: _customs_export_no,
       customs_export_date: _customs_export_date,
-      voucher_open_type: 'SINGLE', //先設 default value
+      voucher_open_type: 'SINGLE' //先設 default value
     }
 
     return _applyMainObj
@@ -1896,73 +1903,73 @@ define([
 
     var _voucherApplyRecord = record.create({
       type: _voucher_apply_list_record,
-      isDynamic: true,
+      isDynamic: true
     })
 
     _voucherApplyRecord.setValue({ fieldId: 'name', value: 'VoucherApply' })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_apply_type',
-      value: 'APPLY',
+      value: 'APPLY'
     }) //APPLY (開立) / VOID (作廢)
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_open_type',
-      value: openType,
+      value: openType
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_apply_date',
-      value: new Date(),
+      value: new Date()
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_apply_time',
-      value: dateutility.getCompanyLocatTimeForClient(),
+      value: dateutility.getCompanyLocatTimeForClient()
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_apply_yearmonth',
-      value: applyMainObj.year_month,
+      value: applyMainObj.year_month
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_apply_seller',
-      value: applyMainObj.company_ban,
+      value: applyMainObj.company_ban
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_apply_seller_name',
-      value: applyMainObj.company_name,
+      value: applyMainObj.company_name
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_apply_buyer',
-      value: applyMainObj.buyer_identifier,
+      value: applyMainObj.buyer_identifier
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_apply_buyer_name',
-      value: applyMainObj.buyer_name,
+      value: applyMainObj.buyer_name
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_apply_dept_code',
-      value: applyMainObj.dept_code,
+      value: applyMainObj.dept_code
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_apply_dept_name',
-      value: applyMainObj.dept_code,
+      value: applyMainObj.dept_code
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_apply_class',
-      value: applyMainObj.classification,
+      value: applyMainObj.classification
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_apply_invoice_type',
-      value: applyMainObj.invoice_type,
+      value: applyMainObj.invoice_type
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_apply_mig_type',
-      value: applyMainObj.mig_type,
+      value: applyMainObj.mig_type
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_gui_yearmonth_type',
-      value: applyMainObj.gui_yearmonth_type,
+      value: applyMainObj.gui_yearmonth_type
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_apply_status',
-      value: _voucher_apply_atatus,
+      value: _voucher_apply_atatus
     })
 
     //作廢時使用
@@ -1973,48 +1980,48 @@ define([
 
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_closed_voucher',
-      value: _closed_voucher,
+      value: _closed_voucher
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_discountamount',
-      value: applyMainObj.discountamount,
+      value: applyMainObj.discountamount
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_apply_sales_amount',
-      value: applyMainObj.sales_amount,
+      value: applyMainObj.sales_amount
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_apply_tax_amount',
-      value: applyMainObj.tax_amount,
+      value: applyMainObj.tax_amount
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_apply_tax_type',
-      value: applyMainObj.tax_type,
+      value: applyMainObj.tax_type
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_apply_tax_rate',
-      value: applyMainObj.tax_rate,
+      value: applyMainObj.tax_rate
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_apply_total_amount',
-      value: applyMainObj.total_amount,
+      value: applyMainObj.total_amount
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_invoice_apply_list',
-      value: invoice_hiddent_listid,
+      value: invoice_hiddent_listid
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_creditmemo_apply_list',
-      value: creditmemo_hiddent_listid,
+      value: creditmemo_hiddent_listid
     })
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_need_upload_mig',
-      value: assignLogType,
+      value: assignLogType
     })
     //20201109 walter mofify
     _voucherApplyRecord.setValue({
       fieldId: 'custrecord_gw_voucher_apply_userid',
-      value: user_id,
+      value: user_id
     })
 
     try {
@@ -2141,7 +2148,7 @@ define([
 
           var _itemAry = {
             main: _main,
-            details: _details,
+            details: _details
           }
           if (_totalAmountSum > 0) {
             //開發票
@@ -2173,7 +2180,7 @@ define([
     var _resultObj = {
       CREDITMEMO_TOTAL_AMOUNT: _creditMemoTotalAmountSum,
       EGUI: _guiAry,
-      CREDITMEMO: _creditMemoAry,
+      CREDITMEMO: _creditMemoAry
     }
 
     return _resultObj
@@ -2273,6 +2280,9 @@ define([
            */
         var _tax_diff_error = checkVoucherTaxDifference(_details)
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        //20210909 walter modify
+        if (stringutility.convertToFloat(_main.tax_amount) <0)_tax_diff_error=true
+        
         //20201113 walter modify
         if (_tax_diff_error == true) {
           var _title = '發票管理'
@@ -2310,146 +2320,146 @@ define([
           ////////////////////////////////////////////////////////////////////////////////////////////////////////////
           var _voucherMainRecord = record.create({
             type: _voucher_main_record,
-            isDynamic: true,
+            isDynamic: true
           })
 
           _voucherMainRecord.setValue({
             fieldId: 'name',
-            value: 'VoucherMainRecord',
+            value: 'VoucherMainRecord'
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_apply_internal_id',
-            value: applyId.toString(),
+            value: applyId.toString()
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_type',
-            value: _voucher_type,
+            value: _voucher_type
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_number',
-            value: _invoiceNumber,
+            value: _invoiceNumber
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_date',
-            value: _documentDate,
+            value: _documentDate
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_time',
-            value: _documentTime,
+            value: _documentTime
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_yearmonth',
-            value: year_month,
+            value: year_month
           })
           //20201230 walter modify
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_voucher_sale_tax_apply_period',
-            value: _applyPeriod,
+            value: _applyPeriod
           })
 
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_seller',
-            value: _main.company_ban,
+            value: _main.company_ban
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_seller_name',
-            value: _main.company_name,
+            value: _main.company_name
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_seller_address',
-            value: stringutility.trim(_main.company_address),
+            value: stringutility.trim(_main.company_address)
           })
           //20201030 walter modify
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_original_buyer_id',
-            value: stringutility.trim(_main.customer_id),
+            value: stringutility.trim(_main.customer_id)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_buyer',
-            value: _main.buyer_identifier,
+            value: _main.buyer_identifier
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_buyer_name',
-            value: _main.buyer_name,
+            value: _main.buyer_name
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_buyer_address',
-            value: stringutility.trim(_main.buyer_address),
+            value: stringutility.trim(_main.buyer_address)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_buyer_email',
-            value: stringutility.trim(_main.buyer_email),
+            value: stringutility.trim(_main.buyer_email)
           })
           //_voucherMainRecord.setValue({fieldId:'custrecord_gw_buyer_dept_code',value:_main.dept_code});	//暫時不用
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_dept_code',
-            value: stringutility.trim(_main.dept_code),
+            value: stringutility.trim(_main.dept_code)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_dept_name',
-            value: stringutility.trim(_main.dept_code),
+            value: stringutility.trim(_main.dept_code)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_classification',
-            value: stringutility.trim(_main.classification),
+            value: stringutility.trim(_main.classification)
           })
 
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_invoice_type',
-            value: stringutility.trim(_main.invoice_type),
+            value: stringutility.trim(_main.invoice_type)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_mig_type',
-            value: stringutility.trim(_main.mig_type),
+            value: stringutility.trim(_main.mig_type)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_format_code',
-            value: stringutility.trim(_main.egui_format_code),
+            value: stringutility.trim(_main.egui_format_code)
           })
 
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_carrier_type',
-            value: stringutility.trim(_main.carrier_type),
+            value: stringutility.trim(_main.carrier_type)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_carrierid1',
-            value: stringutility.trim(_main.carrier_id),
+            value: stringutility.trim(_main.carrier_id)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_carrierid2',
-            value: stringutility.trim(_main.carrier_id),
+            value: stringutility.trim(_main.carrier_id)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_npoban',
-            value: stringutility.trim(_main.npo_ban),
+            value: stringutility.trim(_main.npo_ban)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_clearance_mark',
-            value: stringutility.trim(_main.customs_clearance_mark),
+            value: stringutility.trim(_main.customs_clearance_mark)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_main_remark',
-            value: stringutility.trim(_main.main_remark),
+            value: stringutility.trim(_main.main_remark)
           })
 
           //零稅率資訊
           if (stringutility.trim(_main.applicable_zero_tax) != '') {
             _voucherMainRecord.setValue({
               fieldId: 'custrecord_gw_applicable_zero_tax',
-              value: parseInt(_main.applicable_zero_tax),
+              value: parseInt(_main.applicable_zero_tax)
             })
           }
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_customs_export_category',
-            value: stringutility.trim(_main.customs_export_category),
+            value: stringutility.trim(_main.customs_export_category)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_customs_export_no',
-            value: stringutility.trim(_main.customs_export_no),
+            value: stringutility.trim(_main.customs_export_no)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_customs_export_date',
-            value: stringutility.trim(_main.customs_export_date),
+            value: stringutility.trim(_main.customs_export_date)
           })
 
           var _print_mark = 'N'
@@ -2462,88 +2472,311 @@ define([
             //TODO 要產生隨機碼
             _print_mark = 'Y'
           }
+		  /**
           var _random_number = Math.round(
             invoiceutility.getRandomNum(1000, 9999)
           )
+		  */
+		  var _random_number = invoiceutility.getRandomNumNew(_invoiceNumber, _main.company_ban)
+          
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_random_number',
-            value: _random_number,
+            value: _random_number
           })
 
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_print_mark',
-            value: _print_mark,
+            value: _print_mark
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_is_printed',
-            value: 'N',
+            value: 'N'
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_lock_transaction',
-            value: true,
+            value: true
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_discount_amount',
-            value: 0,
+            value: 0
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_discount_count',
-            value: '0',
+            value: '0'
           })
           //_voucherMainRecord.setValue({fieldId:'custrecord_gw_voucher_owner',value:'1'}); //折讓單專用欄位(1:買方, 2賣方)
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_status',
-            value: _status,
+            value: _status
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_upload_status',
-            value: _default_upload_status,
+            value: _default_upload_status
           })
 
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_sales_amount',
-            value: stringutility.convertToFloat(_main.sales_amount),
+            value: stringutility.convertToFloat(_main.sales_amount)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_free_sales_amount',
-            value: stringutility.convertToFloat(_main.free_sales_amount),
+            value: stringutility.convertToFloat(_main.free_sales_amount)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_zero_sales_amount',
-            value: stringutility.convertToFloat(_main.zero_sales_amount),
+            value: stringutility.convertToFloat(_main.zero_sales_amount)
           })
 
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_tax_amount',
-            value: _main.tax_amount,
+            value: _main.tax_amount
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_tax_type',
-            value: _main.tax_type,
+            value: _main.tax_type
           })
           var _main_tax_rate =
             stringutility.convertToFloat(_main.tax_rate) / 100
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_tax_rate',
-            value: _main_tax_rate,
+            value: _main_tax_rate
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_total_amount',
-            value: _main.total_amount,
+            value: _main.total_amount
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_extra_memo',
-            value: _main.extraMemo,
+            value: _main.extraMemo
           })
 
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_need_upload_egui_mig',
-            value: assignLogType,
+            value: assignLogType
           })
           //20201105 walter modify
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_main_apply_user_id',
-            value: user_id,
+            value: user_id
+          })
+
+          var voucherDetailSublistId =
+            'recmachcustrecord_gw_voucher_main_internal_id'
+          //20210514 walter modify
+          var _gw_ns_document_apply_id_ary = []
+
+          if (typeof _details !== 'undefined') {
+            for (var j = 0; j < _details.length; j++) {
+              var _obj = _details[j]
+
+              // var _voucherDetailRecord = record.create({
+              //   type: _voucher_details_record,
+              //   isDynamic: true
+              // })
+              _voucherMainRecord.selectNewLine({
+                sublistId: voucherDetailSublistId
+              })
+
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'name',
+                value: 'VoucherDetailRecord'
+              })
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_dtl_apply_internal_id',
+                value: applyId.toString()
+              })
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_voucher_main_internal_id',
+                value: _mainRecordId.toString()
+              })
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_dtl_voucher_type',
+                value: _voucher_type
+              })
+
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_item_description',
+                value: stringutility.trim(_obj.item_name)
+              })
+
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_unit_price',
+                value: stringutility.trim(_obj.unit_price)
+              })
+
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_item_unit',
+                value: stringutility.trim(_obj.item_unit)
+              })
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_item_quantity',
+                value: stringutility.trim(_obj.item_quantity)
+              })
+
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_item_amount',
+                value: stringutility.trim(_obj.item_amount)
+              })
+              //20201105 walter modify
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_item_tax_amount',
+                value: stringutility.trim(_obj.item_tax_amount)
+              })
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_item_total_amount',
+                value: stringutility.trim(_obj.item_total_amount)
+              })
+
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_dtl_item_tax_code',
+                value: stringutility.trim(_obj.tax_code)
+              })
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_dtl_item_tax_rate',
+                value: stringutility.trim(_obj.tax_rate)
+              })
+
+              _row++
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_item_seq',
+                value: _row.toString()
+              })
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_item_remark',
+                value: stringutility.trim(_obj.item_remark)
+              })
+
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_dtl_voucher_number',
+                value: _invoiceNumber
+              })
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_dtl_voucher_date',
+                value: _documentDate
+              })
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_dtl_voucher_time',
+                value: _documentTime
+              })
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_dtl_voucher_yearmonth',
+                value: year_month
+              })
+
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_dtl_voucher_status',
+                value: _status
+              })
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_dtl_voucher_upload_status',
+                value: _default_upload_status
+              })
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_ns_document_type',
+                value: _obj.document_type
+              })
+
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_ns_document_apply_id',
+                value: _obj.invoice_id
+              })
+              if (
+                _gw_ns_document_apply_id_ary
+                  .toString()
+                  .indexOf(_obj.invoice_id) == -1
+              ) {
+                _gw_ns_document_apply_id_ary.push(_obj.invoice_id)
+              }
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_ns_document_number',
+                value: _obj.invoice_number
+              })
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_ns_document_item_id',
+                value: _obj.invoice_seq
+              })
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_ns_document_items_seq',
+                value: _obj.invoice_seq
+              })
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_ns_item_discount_amount',
+                value: '0'
+              })
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_ns_item_discount_count',
+                value: '0'
+              })
+              //20210113 walter modify
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_dtl_voucher_apply_period',
+                value: _applyPeriod
+              })
+              _voucherMainRecord.commitLine({
+                sublistId: voucherDetailSublistId
+              })
+              // try {
+              //   var callId = _voucherDetailRecord.save()
+              // } catch (e) {
+              //   console.log(e.name + ':' + e.message)
+              // }
+            }
+
+            // try {
+            //   var values = {}
+            //   values['custrecord_gw_is_completed_detail'] = true
+            //   values[
+            //     'custrecord_gw_ns_transaction'
+            //   ] = _gw_ns_document_apply_id_ary.toString()
+            //
+            //   //alert('egui values='+JSON.stringify(values));
+            //   var _id = record.submitFields({
+            //     type: _voucher_main_record,
+            //     id: _mainRecordId,
+            //     values: values,
+            //     options: {
+            //       enableSourcing: false,
+            //       ignoreMandatoryFields: true
+            //     }
+            //   })
+            // } catch (e) {
+            //   //alert(' the eror='+e.name + ':' + e.message);
+            //   console.log(e.name + ':' + e.message)
+            // }
+          }
+          //End Details
+          _voucherMainRecord.setValue({
+            fieldId: 'custrecord_gw_is_completed_detail',
+            value: true
           })
 
           try {
@@ -2553,174 +2786,6 @@ define([
           } catch (e) {
             console.log(e.name + ':' + e.message)
           }
-
-          //20210514 walter modify
-          var _gw_ns_document_apply_id_ary = [];
-          
-          if (typeof _details !== 'undefined') {
-            for (var j = 0; j < _details.length; j++) {
-              var _obj = _details[j]
-
-              var _voucherDetailRecord = record.create({
-                type: _voucher_details_record,
-                isDynamic: true,
-              })
-              _voucherDetailRecord.setValue({
-                fieldId: 'name',
-                value: 'VoucherDetailRecord',
-              })
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_dtl_apply_internal_id',
-                value: applyId.toString(),
-              })
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_voucher_main_internal_id',
-                value: _mainRecordId.toString(),
-              })
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_dtl_voucher_type',
-                value: _voucher_type,
-              })
-
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_item_description',
-                value: stringutility.trim(_obj.item_name),
-              })
-
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_unit_price',
-                value: stringutility.trim(_obj.unit_price),
-              })
-
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_item_unit',
-                value: stringutility.trim(_obj.item_unit),
-              })
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_item_quantity',
-                value: stringutility.trim(_obj.item_quantity),
-              })
-
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_item_amount',
-                value: stringutility.trim(_obj.item_amount),
-              })
-              //20201105 walter modify
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_item_tax_amount',
-                value: stringutility.trim(_obj.item_tax_amount),
-              })
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_item_total_amount',
-                value: stringutility.trim(_obj.item_total_amount),
-              })
-
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_dtl_item_tax_code',
-                value: stringutility.trim(_obj.tax_code),
-              })
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_dtl_item_tax_rate',
-                value: stringutility.trim(_obj.tax_rate),
-              })
-
-              _row++
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_item_seq',
-                value: _row.toString(),
-              })
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_item_remark',
-                value: stringutility.trim(_obj.item_remark),
-              })
-
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_dtl_voucher_number',
-                value: _invoiceNumber,
-              })
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_dtl_voucher_date',
-                value: _documentDate,
-              })
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_dtl_voucher_time',
-                value: _documentTime,
-              })
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_dtl_voucher_yearmonth',
-                value: year_month,
-              })
-
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_dtl_voucher_status',
-                value: _status,
-              })
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_dtl_voucher_upload_status',
-                value: _default_upload_status,
-              })
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_ns_document_type',
-                value: _obj.document_type,
-              })
-
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_ns_document_apply_id',
-                value: _obj.invoice_id,
-              })
-              
-              _gw_ns_document_apply_id_ary.push(_obj.invoice_id);
-              
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_ns_document_number',
-                value: _obj.invoice_number,
-              })
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_ns_document_item_id',
-                value: _obj.invoice_seq,
-              })
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_ns_document_items_seq',
-                value: _obj.invoice_seq,
-              })
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_ns_item_discount_amount',
-                value: '0',
-              })
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_ns_item_discount_count',
-                value: '0',
-              })
-              //20210113 walter modify
-              _voucherDetailRecord.setValue({
-                fieldId: 'custrecord_gw_dtl_voucher_apply_period',
-                value: _applyPeriod,
-              })
-              try {
-                var callId = _voucherDetailRecord.save()
-              } catch (e) {
-                console.log(e.name + ':' + e.message)
-              }
-            }
-            alert('gw_ns_document_apply_id_ary 2 : '+_gw_ns_document_apply_id_ary.toString())
-            try {
-              var values = {}
-              values['custrecord_gw_is_completed_detail'] = true
-              values['custrecord_gw_ns_transaction'] = _gw_ns_document_apply_id_ary
-              var _id = record.submitFields({
-                type: _voucher_main_record,
-                id: _mainRecordId,
-                values: values,
-                options: {
-                  enableSourcing: false,
-                  ignoreMandatoryFields: true,
-                },
-              })
-            } catch (e) {
-              console.log(e.name + ':' + e.message)
-            }
-          }
-          //End Details
         }
       }
     }
@@ -2983,10 +3048,14 @@ define([
            */
         var _tax_diff_error = checkVoucherTaxDifference(_details)
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        //20210909 walter modify
+        if (_net_value * stringutility.convertToFloat(_main.tax_amount) <0)_tax_diff_error=true
+        
         //20201113 walter modify
         if (_tax_diff_error == true) {
           _error_message += '稅差超過(' + _tax_diff_balance + ')元 ,請重新調整!'
         }
+        
         if (_error_message.length != 0) {
           gwmessage.showErrorMessage(_title, _error_message)
           break
@@ -2999,222 +3068,222 @@ define([
           ////////////////////////////////////////////////////////////////////////////////////////////////////////////
           var _voucherMainRecord = record.create({
             type: _voucher_main_record,
-            isDynamic: true,
+            isDynamic: true
           })
 
           _voucherMainRecord.setValue({
             fieldId: 'name',
-            value: 'VoucherMainRecord',
+            value: 'VoucherMainRecord'
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_apply_internal_id',
-            value: applyId.toString(),
+            value: applyId.toString()
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_type',
-            value: _voucher_type,
+            value: _voucher_type
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_number',
-            value: _allowanceNumber,
+            value: _allowanceNumber
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_date',
-            value: _documentDate,
+            value: _documentDate
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_time',
-            value: _documentTime,
+            value: _documentTime
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_yearmonth',
-            value: year_month,
+            value: year_month
           })
           //20201230 walter modify
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_voucher_sale_tax_apply_period',
-            value: _applyPeriod,
+            value: _applyPeriod
           })
 
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_seller',
-            value: _main.company_ban,
+            value: _main.company_ban
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_seller_name',
-            value: _main.company_name,
+            value: _main.company_name
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_seller_address',
-            value: stringutility.trim(_main.company_address),
+            value: stringutility.trim(_main.company_address)
           })
           //20201030 walter modify
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_original_buyer_id',
-            value: stringutility.trim(_main.customer_id),
+            value: stringutility.trim(_main.customer_id)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_buyer',
-            value: _main.buyer_identifier,
+            value: _main.buyer_identifier
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_buyer_name',
-            value: _main.buyer_name,
+            value: _main.buyer_name
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_buyer_address',
-            value: stringutility.trim(_main.buyer_address),
+            value: stringutility.trim(_main.buyer_address)
           })
           //_voucherMainRecord.setValue({fieldId:'custrecord_gw_buyer_dept_code',value:_main.dept_code});	//暫時不用
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_dept_code',
-            value: stringutility.trim(_main.dept_code),
+            value: stringutility.trim(_main.dept_code)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_dept_name',
-            value: stringutility.trim(_main.dept_code),
+            value: stringutility.trim(_main.dept_code)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_classification',
-            value: stringutility.trim(_main.classification),
+            value: stringutility.trim(_main.classification)
           })
 
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_invoice_type',
-            value: stringutility.trim(_main.invoice_type),
+            value: stringutility.trim(_main.invoice_type)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_mig_type',
-            value: stringutility.trim(_main.mig_type),
+            value: stringutility.trim(_main.mig_type)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_format_code',
-            value: stringutility.trim(_creditMemoFormatCode),
+            value: stringutility.trim(_creditMemoFormatCode)
           })
 
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_carrier_type',
-            value: stringutility.trim(_main.carrier_type),
+            value: stringutility.trim(_main.carrier_type)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_carrierid1',
-            value: stringutility.trim(_main.carrier_id),
+            value: stringutility.trim(_main.carrier_id)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_carrierid2',
-            value: stringutility.trim(_main.carrier_id),
+            value: stringutility.trim(_main.carrier_id)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_npoban',
-            value: stringutility.trim(_main.npo_ban),
+            value: stringutility.trim(_main.npo_ban)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_clearance_mark',
-            value: stringutility.trim(_main.customs_clearance_mark),
+            value: stringutility.trim(_main.customs_clearance_mark)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_main_remark',
-            value: stringutility.trim(_main.main_remark),
+            value: stringutility.trim(_main.main_remark)
           })
 
           //零稅率資訊
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_applicable_zero_tax',
-            value: stringutility.trim(_main.applicable_zero_tax),
+            value: stringutility.trim(_main.applicable_zero_tax)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_customs_export_category',
-            value: stringutility.trim(_main.customs_export_category),
+            value: stringutility.trim(_main.customs_export_category)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_customs_export_no',
-            value: stringutility.trim(_main.customs_export_no),
+            value: stringutility.trim(_main.customs_export_no)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_customs_export_date',
-            value: stringutility.trim(_main.customs_export_date),
+            value: stringutility.trim(_main.customs_export_date)
           })
 
           if (_main.mig_type == 'C0401') {
             //TODO 要產生隨機碼
+			/**
             var _random_number = Math.round(
               invoiceutility.getRandomNum(1000, 9999)
             )
+			*/
+			var _random_number = invoiceutility.getRandomNumNew(_allowanceNumber, _main.company_ban)
+			
             _voucherMainRecord.setValue({
               fieldId: 'custrecord_gw_random_number',
-              value: _random_number,
+              value: _random_number
             })
           }
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_is_printed',
-            value: 'N',
+            value: 'N'
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_lock_transaction',
-            value: true,
+            value: true
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_discount_amount',
-            value: 0,
+            value: 0
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_discount_count',
-            value: '0',
+            value: '0'
           })
           //_voucherMainRecord.setValue({fieldId:'custrecord_gw_voucher_owner',value:'1'}); //折讓單專用欄位(1:買方, 2賣方)
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_status',
-            value: _status,
+            value: _status
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_upload_status',
-            value: _default_upload_status,
+            value: _default_upload_status
           })
 
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_sales_amount',
-            value:
-              _net_value * stringutility.convertToFloat(_main.sales_amount),
+            value: _net_value * stringutility.convertToFloat(_main.sales_amount)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_free_sales_amount',
             value:
-              _net_value *
-              stringutility.convertToFloat(_main.free_sales_amount),
+              _net_value * stringutility.convertToFloat(_main.free_sales_amount)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_zero_sales_amount',
             value:
-              _net_value *
-              stringutility.convertToFloat(_main.zero_sales_amount),
+              _net_value * stringutility.convertToFloat(_main.zero_sales_amount)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_tax_amount',
-            value: _net_value * stringutility.convertToFloat(_main.tax_amount),
+            value: _net_value * stringutility.convertToFloat(_main.tax_amount)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_tax_type',
-            value: _main.tax_type,
+            value: _main.tax_type
           })
           var _main_tax_rate =
             stringutility.convertToFloat(_main.tax_rate) / 100
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_tax_rate',
-            value: _main_tax_rate,
+            value: _main_tax_rate
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_total_amount',
-            value:
-              _net_value * stringutility.convertToFloat(_main.total_amount),
+            value: _net_value * stringutility.convertToFloat(_main.total_amount)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_need_upload_egui_mig',
-            value: assignLogType,
+            value: assignLogType
           })
 
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_main_apply_user_id',
-            value: user_id,
+            value: user_id
           })
 
           try {
@@ -3226,6 +3295,8 @@ define([
           }
           //處理detail 分發票開立 [MIX or SINGLE]
           var _item_voucher_open_type = _main.voucher_open_type
+
+          var _gw_ns_document_apply_id_ary = []
 
           if (_item_voucher_open_type === 'SINGLE') {
             //各自開立
@@ -3253,52 +3324,52 @@ define([
 
                     var _voucherDetailRecord = record.create({
                       type: _voucher_details_record,
-                      isDynamic: true,
+                      isDynamic: true
                     })
 
                     _voucherDetailRecord.setValue({
                       fieldId: 'name',
-                      value: 'VoucherDetailRecord',
+                      value: 'VoucherDetailRecord'
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_dtl_apply_internal_id',
-                      value: applyId.toString(),
+                      value: applyId.toString()
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_voucher_main_internal_id',
-                      value: _mainRecordId.toString(),
+                      value: _mainRecordId.toString()
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_dtl_voucher_type',
-                      value: _voucher_type,
+                      value: _voucher_type
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_item_description',
-                      value: stringutility.trim(_obj.item_name),
+                      value: stringutility.trim(_obj.item_name)
                     })
                     //_voucherDetailRecord.setValue({fieldId:'custrecord_gw_unit_price',value:stringutility.trim(_obj.unit_price)});
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_item_quantity',
                       value:
                         _net_value *
-                        stringutility.convertToFloat(_obj.item_quantity),
+                        stringutility.convertToFloat(_obj.item_quantity)
                     })
                     //紀錄票資料
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_original_gui_internal_id',
-                      value: _voucherObj.internalid,
+                      value: _voucherObj.internalid
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_original_gui_number',
-                      value: _voucherObj.voucher_number,
+                      value: _voucherObj.voucher_number
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_original_gui_date',
-                      value: _voucherObj.voucher_date,
+                      value: _voucherObj.voucher_date
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_original_gui_yearmonth',
-                      value: _voucherObj.voucher_yearmonth,
+                      value: _voucherObj.voucher_yearmonth
                     })
 
                     /////////////////////////////////////////////////////////////////////////////////
@@ -3335,7 +3406,7 @@ define([
                       fieldId: 'custrecord_gw_unit_price',
                       value:
                         _net_value *
-                        stringutility.convertToFloat(_obj.item_amount),
+                        stringutility.convertToFloat(_obj.item_amount)
                     })
                     _obj.item_total_amount =
                       stringutility.convertToFloat(_obj.item_amount) +
@@ -3346,99 +3417,108 @@ define([
                       fieldId: 'custrecord_gw_item_amount',
                       value:
                         _net_value *
-                        stringutility.convertToFloat(_obj.item_amount),
+                        stringutility.convertToFloat(_obj.item_amount)
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_item_tax_amount',
                       value:
-                        _net_value * stringutility.trim(_obj.item_tax_amount),
+                        _net_value * stringutility.trim(_obj.item_tax_amount)
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_item_total_amount',
                       value:
-                        _net_value * stringutility.trim(_obj.item_total_amount),
+                        _net_value * stringutility.trim(_obj.item_total_amount)
                     })
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_dtl_item_tax_code',
-                      value: stringutility.trim(_obj.tax_code),
+                      value: stringutility.trim(_obj.tax_code)
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_dtl_item_tax_rate',
-                      value: stringutility.trim(_obj.tax_rate),
+                      value: stringutility.trim(_obj.tax_rate)
                     })
 
                     _row++
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_item_seq',
-                      value: _row.toString(),
+                      value: _row.toString()
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_item_remark',
-                      value: stringutility.trim(_obj.item_remark),
+                      value: stringutility.trim(_obj.item_remark)
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_dtl_voucher_number',
-                      value: _allowanceNumber,
+                      value: _allowanceNumber
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_dtl_voucher_date',
-                      value: _documentDate,
+                      value: _documentDate
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_dtl_voucher_time',
-                      value: _documentTime,
+                      value: _documentTime
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_dtl_voucher_yearmonth',
-                      value: year_month,
+                      value: year_month
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_dtl_voucher_status',
-                      value: _status,
+                      value: _status
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_dtl_voucher_upload_status',
-                      value: _default_upload_status,
+                      value: _default_upload_status
                     })
 
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_ns_document_type',
-                      value: _obj.document_type,
+                      value: _obj.document_type
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_ns_document_apply_id',
-                      value: _obj.invoice_id,
+                      value: _obj.invoice_id
+                    })
+
+                    if (
+                      _gw_ns_document_apply_id_ary
+                        .toString()
+                        .indexOf(_obj.invoice_id) == -1
+                    ) {
+                      _gw_ns_document_apply_id_ary.push(_obj.invoice_id)
+                    }
+
+                    _voucherDetailRecord.setValue({
+                      fieldId: 'custrecord_gw_ns_document_number',
+                      value: _obj.invoice_number
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_ns_document_number',
-                      value: _obj.invoice_number,
-                    })
-                    _voucherDetailRecord.setValue({
-                      fieldId: 'custrecord_gw_ns_document_number',
-                      value: _obj.invoice_number,
+                      value: _obj.invoice_number
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_ns_document_item_id',
-                      value: _obj.invoice_seq,
+                      value: _obj.invoice_seq
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_ns_document_items_seq',
-                      value: _obj.invoice_seq,
+                      value: _obj.invoice_seq
                     })
 
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_ns_item_discount_amount',
-                      value: '0',
+                      value: '0'
                     })
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_ns_item_discount_count',
-                      value: '0',
+                      value: '0'
                     })
 
                     _voucherDetailRecord.setValue({
                       fieldId: 'custrecord_gw_dtl_voucher_apply_period',
-                      value: _applyPeriod,
+                      value: _applyPeriod
                     })
                     //20201123 walter modify 紀錄CreditMemo的發票號碼
                     if (_obj.document_type == 'CREDITMEMO') {
@@ -3473,20 +3553,20 @@ define([
                   var _eGUIRecord = record.load({
                     type: _voucher_main_record,
                     id: _internalid,
-                    isDynamic: true,
+                    isDynamic: true
                   })
 
                   _eGUIRecord.setValue({
                     fieldId: 'custrecord_gw_discount_sales_amount',
-                    value: _obj.discount_sales_amount,
+                    value: _obj.discount_sales_amount
                   })
                   _eGUIRecord.setValue({
                     fieldId: 'custrecord_gw_discount_zero_amount',
-                    value: _obj.discount_zero_amount,
+                    value: _obj.discount_zero_amount
                   })
                   _eGUIRecord.setValue({
                     fieldId: 'custrecord_gw_discount_free_amount',
-                    value: _obj.discount_free_amount,
+                    value: _obj.discount_free_amount
                   })
 
                   var _discount_amount =
@@ -3496,11 +3576,11 @@ define([
 
                   _eGUIRecord.setValue({
                     fieldId: 'custrecord_gw_discount_amount',
-                    value: _discount_amount,
+                    value: _discount_amount
                   })
                   _eGUIRecord.setValue({
                     fieldId: 'custrecord_gw_discount_count',
-                    value: _obj.discount_count,
+                    value: _obj.discount_count
                   })
                   try {
                     var callId = _eGUIRecord.save()
@@ -3514,14 +3594,20 @@ define([
             try {
               var values = {}
               values['custrecord_gw_is_completed_detail'] = true
+              values[
+                'custrecord_gw_ns_transaction'
+              ] = _gw_ns_document_apply_id_ary.toString()
+              //values['custrecord_gw_ns_transaction'] = _gw_ns_document_apply_id_ary
+
+              //alert('allowance values='+JSON.stringify(values));
               var _id = record.submitFields({
                 type: _voucher_main_record,
                 id: _mainRecordId,
                 values: values,
                 options: {
                   enableSourcing: false,
-                  ignoreMandatoryFields: true,
-                },
+                  ignoreMandatoryFields: true
+                }
               })
             } catch (e) {
               console.log(e.name + ':' + e.message)
@@ -3539,130 +3625,139 @@ define([
 
                 var _voucherDetailRecord = record.create({
                   type: _voucher_details_record,
-                  isDynamic: true,
+                  isDynamic: true
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'name',
-                  value: 'VoucherDetailRecord',
+                  value: 'VoucherDetailRecord'
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_dtl_apply_internal_id',
-                  value: applyId.toString(),
+                  value: applyId.toString()
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_voucher_main_internal_id',
-                  value: _mainRecordId.toString(),
+                  value: _mainRecordId.toString()
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_dtl_voucher_type',
-                  value: _voucher_type,
+                  value: _voucher_type
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_item_description',
-                  value: _item_description,
+                  value: _item_description
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_unit_price',
-                  value: stringutility.trim(_obj.deduction_amount),
+                  value: stringutility.trim(_obj.deduction_amount)
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_item_quantity',
-                  value: _item_quantity,
+                  value: _item_quantity
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_original_gui_internal_id',
-                  value: _obj.internalid,
+                  value: _obj.internalid
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_original_gui_number',
-                  value: _obj.voucher_number,
+                  value: _obj.voucher_number
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_original_gui_date',
-                  value: _obj.voucher_date,
+                  value: _obj.voucher_date
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_original_gui_yearmonth',
-                  value: _obj.voucher_yearmonth,
+                  value: _obj.voucher_yearmonth
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_item_amount',
-                  value: stringutility.trim(_obj.deduction_amount),
+                  value: stringutility.trim(_obj.deduction_amount)
                 })
                 //_voucherDetailRecord.setValue({fieldId:'custrecord_gw_dtl_item_tax_code',value:stringutility.trim(_obj.tax_code)});
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_dtl_item_tax_rate',
-                  value: stringutility.trim(_main.tax_rate),
+                  value: stringutility.trim(_main.tax_rate)
                 })
 
                 _row++
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_item_seq',
-                  value: _row.toString(),
+                  value: _row.toString()
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_item_remark',
-                  value: _item_remark,
+                  value: _item_remark
                 })
 
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_dtl_voucher_number',
-                  value: _allowanceNumber,
+                  value: _allowanceNumber
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_dtl_voucher_date',
-                  value: _documentDate,
+                  value: _documentDate
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_dtl_voucher_time',
-                  value: _documentTime,
+                  value: _documentTime
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_dtl_voucher_yearmonth',
-                  value: year_month,
+                  value: year_month
                 })
 
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_dtl_voucher_status',
-                  value: _status,
+                  value: _status
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_dtl_voucher_upload_status',
-                  value: _default_upload_status,
+                  value: _default_upload_status
                 })
 
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_ns_document_type',
-                  value: _obj.document_type,
+                  value: _obj.document_type
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_ns_document_apply_id',
-                  value: _obj.invoice_id,
+                  value: _obj.invoice_id
+                })
+
+                if (
+                  _gw_ns_document_apply_id_ary
+                    .toString()
+                    .indexOf(_obj.invoice_id) == -1
+                ) {
+                  _gw_ns_document_apply_id_ary.push(_obj.invoice_id)
+                }
+
+                _voucherDetailRecord.setValue({
+                  fieldId: 'custrecord_gw_ns_document_number',
+                  value: _obj.invoice_number
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_ns_document_number',
-                  value: _obj.invoice_number,
-                })
-                _voucherDetailRecord.setValue({
-                  fieldId: 'custrecord_gw_ns_document_number',
-                  value: _obj.invoice_number,
+                  value: _obj.invoice_number
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_ns_document_item_id',
-                  value: _obj.invoice_seq,
+                  value: _obj.invoice_seq
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_ns_document_items_seq',
-                  value: _obj.invoice_seq,
+                  value: _obj.invoice_seq
                 })
 
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_ns_item_discount_amount',
-                  value: '0',
+                  value: '0'
                 })
                 _voucherDetailRecord.setValue({
                   fieldId: 'custrecord_gw_ns_item_discount_count',
-                  value: '0',
+                  value: '0'
                 })
 
                 //20201123 walter modify 紀錄CreditMemo的發票號碼
@@ -3690,15 +3785,15 @@ define([
                 var _eGUIRecord = record.load({
                   type: _voucher_main_record,
                   id: _internalid,
-                  isDynamic: true,
+                  isDynamic: true
                 })
                 _eGUIRecord.setValue({
                   fieldId: 'custrecord_gw_discount_amount',
-                  value: _obj.discount_amount,
+                  value: _obj.discount_amount
                 })
                 _eGUIRecord.setValue({
                   fieldId: 'custrecord_gw_discount_count',
-                  value: _obj.discount_count,
+                  value: _obj.discount_count
                 })
                 try {
                   var callId = _eGUIRecord.save()
@@ -3711,14 +3806,18 @@ define([
             try {
               var values = {}
               values['custrecord_gw_is_completed_detail'] = true
+              values[
+                'custrecord_gw_ns_transaction'
+              ] = _gw_ns_document_apply_id_ary.toString()
+
               var _id = record.submitFields({
                 type: _voucher_main_record,
                 id: _mainRecordId,
                 values: values,
                 options: {
                   enableSourcing: false,
-                  ignoreMandatoryFields: true,
-                },
+                  ignoreMandatoryFields: true
+                }
               })
             } catch (e) {
               console.log(e.name + ':' + e.message)
@@ -3732,7 +3831,7 @@ define([
 
     var _resultJsonObj = {
       allowanceNumberAry: _allowanceNumberAry,
-      creditMemoGUINumberAry: _creditMemoGUINumberAry,
+      creditMemoGUINumberAry: _creditMemoGUINumberAry
     }
     //return _allowanceNumberAry;
     return _resultJsonObj
@@ -3833,7 +3932,7 @@ define([
       var _obj = {
         discountitem: discountItem,
         discountitemname: discountItemName,
-        discounttotal: discountAmount,
+        discounttotal: discountAmount
       }
       discountHistoryAry.push(_obj)
     }
@@ -3869,13 +3968,13 @@ define([
 
     var _discountItemAry = [] //折扣項目
     var _invoice_type = _current_record.getValue({
-      fieldId: 'custpage_invoice_type',
+      fieldId: 'custpage_invoice_type'
     }) //07, 08
     var _buyer_identifier = _current_record.getValue({
-      fieldId: 'custpage_buyer_identifier',
+      fieldId: 'custpage_buyer_identifier'
     }) //買方統編
     var _invoice_item_count = _current_record.getLineCount({
-      sublistId: _invoiceSublistId,
+      sublistId: _invoiceSublistId
     })
     if (typeof _invoice_item_count !== 'undefined' && _invoice_item_count > 0) {
       _accessType = 'INVOICE' //accessType=INVOICE[只處理Invoice]
@@ -3883,94 +3982,94 @@ define([
         var _invoice_id = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'customer_search_invoice_id',
-          line: i,
+          line: i
         })
         var _invoice_number = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'customer_search_invoice_number',
-          line: i,
+          line: i
         })
 
         var _invoice_seq = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'customer_search_invoice_seq',
-          line: i,
+          line: i
         })
         var _tax_code = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'customer_search_invoice_tax_code',
-          line: i,
+          line: i
         })
         var _deptcode = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'customer_search_invoice_deptcode',
-          line: i,
+          line: i
         })
         var _class = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'customer_search_invoice_class',
-          line: i,
+          line: i
         })
         var _discount = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'customer_search_invoice_discount',
-          line: i,
+          line: i
         })
         var _tax_rate = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'customer_search_invoice_tax_rate',
-          line: i,
+          line: i
         })
         var _item_name = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'custpage_item_name',
-          line: i,
+          line: i
         })
         var _unit_price = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'custpage_unit_price',
-          line: i,
+          line: i
         })
         var _item_quantity = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'custpage_item_quantity',
-          line: i,
+          line: i
         })
         var _item_unit = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'custpage_invoice_item_unit',
-          line: i,
+          line: i
         })
         var _item_amount = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'custpage_item_amount',
-          line: i,
+          line: i
         })
         var _item_remark = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'custpage_item_remark',
-          line: i,
+          line: i
         })
         var _item_tax_amount = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'custpage_invoice_item_tax_amount',
-          line: i,
+          line: i
         })
         var _item_total_amount = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'custpage_invoice_item_total_amount',
-          line: i,
+          line: i
         })
 
         var _total_tax_amount = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'custpage_invoice_total_tax_amount',
-          line: i,
+          line: i
         })
         var _total_sum_amount = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'custpage_invoice_total_sum_amount',
-          line: i,
+          line: i
         })
 
         var _document_type = 'INVOICE'
@@ -4003,7 +4102,7 @@ define([
           total_tax_amount: _total_tax_amount,
           total_sum_amount: _total_sum_amount,
           item_tax_amount: _item_tax_amount,
-          item_total_amount: _item_total_amount,
+          item_total_amount: _item_total_amount
         }
         //alert('item obj='+JSON.stringify(_obj));
         if (_taxObj.voucher_property_value == '3') {
@@ -4041,7 +4140,7 @@ define([
 
     //CreditMemo SubList
     var _creditmemo_item_count = _current_record.getLineCount({
-      sublistId: _creditMemoSublistId,
+      sublistId: _creditMemoSublistId
     })
     if (
       typeof _creditmemo_item_count !== 'undefined' &&
@@ -4058,93 +4157,93 @@ define([
         var _creditmemo_id = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'customer_search_creditmemo_id',
-          line: i,
+          line: i
         })
         var _creditmemo_number = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'customer_search_creditmemo_number',
-          line: i,
+          line: i
         })
         var _creditmemo_seq = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'customer_search_creditmemo_seq',
-          line: i,
+          line: i
         })
         var _tax_code = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'customer_search_creditmemo_tax_code',
-          line: i,
+          line: i
         })
         var _deptcode = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'customer_search_creditmemo_deptcode',
-          line: i,
+          line: i
         })
         var _class = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'customer_search_creditmemo_class',
-          line: i,
+          line: i
         })
         var _discount = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'customer_search_creditmemo_discount',
-          line: i,
+          line: i
         })
         var _tax_rate = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'customer_search_creditmemo_tax_rate',
-          line: i,
+          line: i
         })
         var _item_name = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'custpage_item_name',
-          line: i,
+          line: i
         })
         var _unit_price = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'custpage_unit_price',
-          line: i,
+          line: i
         })
         var _item_quantity = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'custpage_item_quantity',
-          line: i,
+          line: i
         })
         var _item_unit = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'custpage_creditmemo_item_unit',
-          line: i,
+          line: i
         })
         var _item_amount = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'custpage_item_amount',
-          line: i,
+          line: i
         })
         var _item_tax_amount = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'custpage_creditmemo_item_tax_amount',
-          line: i,
+          line: i
         })
         var _item_total_amount = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'custpage_creditmemo_item_total_amount',
-          line: i,
+          line: i
         })
         var _total_tax_amount = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'custpage_creditmemo_total_tax_amount',
-          line: i,
+          line: i
         })
         var _total_sum_amount = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'custpage_creditmemo_total_sum_amount',
-          line: i,
+          line: i
         })
 
         var _item_remark = _current_record.getSublistValue({
           sublistId: _creditMemoSublistId,
           fieldId: 'custpage_item_remark',
-          line: i,
+          line: i
         })
 
         //目前taxCode=10 [應稅] , taxCode=5 [免稅] ,
@@ -4174,7 +4273,7 @@ define([
           total_tax_amount: _total_tax_amount,
           total_sum_amount: _total_sum_amount,
           item_tax_amount: _item_tax_amount,
-          item_total_amount: _item_total_amount,
+          item_total_amount: _item_total_amount
         }
 
         if (_taxObj.voucher_property_value == '3') {
@@ -4225,7 +4324,7 @@ define([
       eDocument_TaxType_1_Ary: _eDocument_TaxType_1_Ary, //1=應稅 [5]
       eDocument_TaxType_2_Ary: _eDocument_TaxType_2_Ary, //2=零稅率 [0]
       eDocument_TaxType_3_Ary: _eDocument_TaxType_3_Ary, //3=免稅 [0]
-      eDocument_TaxType_9_Ary: _eDocument_TaxType_9_Ary, //9=混合 [1,2,5,15,25]
+      eDocument_TaxType_9_Ary: _eDocument_TaxType_9_Ary //9=混合 [1,2,5,15,25]
     }
 
     return _jsonDocumemtLists
@@ -4263,17 +4362,21 @@ define([
       columns: [
         search.createColumn({
           name: 'custrecord_gw_assignlog_businessno',
-          summary: search.Summary.GROUP,
+          summary: search.Summary.GROUP
         }),
         search.createColumn({
           name: 'custrecord_gw_assignlog_startno',
-          summary: search.Summary.COUNT,
+          summary: search.Summary.COUNT
+        }),
+        search.createColumn({
+          name: 'custrecord_gw_last_invoice_date',
+          summary: search.Summary.MAX
         }),
         search.createColumn({
           name: 'custrecord_gw_assignlog_usedcount',
-          summary: search.Summary.SUM,
-        }),
-      ],
+          summary: search.Summary.SUM
+        })
+      ]
     })
 
     var _filterArray = []
@@ -4282,13 +4385,13 @@ define([
     _filterArray.push([
       'custrecord_gw_egui_format_code',
       search.Operator.IS,
-      _invoceFormatCode,
+      _invoceFormatCode
     ])
     _filterArray.push('and')
     _filterArray.push([
       'custrecord_gw_assignlog_invoicetype',
       'is',
-      invoice_type,
+      invoice_type
     ])
 
     if (dept_code === '') {
@@ -4303,62 +4406,73 @@ define([
       _filterArray.push([
         'custrecord_gw_assignlog_classification',
         'isempty',
-        '',
+        ''
       ])
     } else {
       _filterArray.push('and')
       _filterArray.push([
         'custrecord_gw_assignlog_classification',
         'is',
-        classification,
+        classification
       ])
     }
     _filterArray.push('and')
     _filterArray.push(['custrecord_gw_assignlog_yearmonth', 'is', year_month])
-
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
     _filterArray.push('and')
     _filterArray.push([
       'custrecord_gw_last_invoice_date',
       search.Operator.LESSTHANOREQUALTO,
       parseInt(_voucher_date),
     ])
-
+	*/
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
     _filterArray.push('and')
     //_filterArray.push([['custrecord_gw_assignlog_status','is', '11'],'or',['custrecord_gw_assignlog_status','is', '12']]);
     if (assignLogType !== 'NONE') {
       _filterArray.push([
         ['custrecord_gw_assignlog_status', search.Operator.IS, '11'],
         'or',
-        ['custrecord_gw_assignlog_status', search.Operator.IS, '12'],
+        ['custrecord_gw_assignlog_status', search.Operator.IS, '12']
       ])
     } else {
       _filterArray.push([
         ['custrecord_gw_assignlog_status', search.Operator.IS, '21'],
         'or',
-        ['custrecord_gw_assignlog_status', search.Operator.IS, '22'],
+        ['custrecord_gw_assignlog_status', search.Operator.IS, '22']
       ])
     }
 
     _assignLogSearch.filterExpression = _filterArray
-
+    //alert('GET assign log filterArray: ' + JSON.stringify(_filterArray));
     var _totalCount = 0
     var _noCount = 0
     _assignLogSearch.run().each(function (result) {
       var _businessno = result.getValue({
         name: 'custrecord_gw_assignlog_businessno',
-        summary: search.Summary.GROUP,
+        summary: search.Summary.GROUP
       })
       _noCount += parseInt(
         result.getValue({
           name: 'custrecord_gw_assignlog_startno',
-          summary: search.Summary.COUNT,
+          summary: search.Summary.COUNT
         })
       )
+      //
+      var _lastInvoiceDate = result.getValue({
+        name: 'custrecord_gw_last_invoice_date',
+        summary: search.Summary.MAX
+      })
+
+      if (parseInt(_voucher_date) < parseInt(_lastInvoiceDate)) {
+        _noCount = 0
+      }
 
       var _usedCount = parseInt(
         result.getValue({
           name: 'custrecord_gw_assignlog_usedcount',
-          summary: search.Summary.SUM,
+          summary: search.Summary.SUM
         }),
         10
       )
@@ -4383,7 +4497,7 @@ define([
     var _ok = false
     var _assignLogSearch = search.create({
       type: _assignLogRecordId,
-      columns: ['internalid', 'custrecord_gw_assignlog_usedcount'],
+      columns: ['internalid', 'custrecord_gw_assignlog_usedcount']
     })
 
     var _filterArray = []
@@ -4392,7 +4506,7 @@ define([
     _filterArray.push([
       'custrecord_gw_assignlog_invoicetype',
       'is',
-      invoice_type,
+      invoice_type
     ])
 
     if (dept_code === '') {
@@ -4407,14 +4521,14 @@ define([
       _filterArray.push([
         'custrecord_gw_assignlog_classification',
         'isempty',
-        '',
+        ''
       ])
     } else {
       _filterArray.push('and')
       _filterArray.push([
         'custrecord_gw_assignlog_classification',
         'is',
-        classification,
+        classification
       ])
     }
     _filterArray.push('and')
@@ -4423,14 +4537,14 @@ define([
     _filterArray.push([
       ['custrecord_gw_assignlog_status', 'is', '11'],
       'or',
-      ['custrecord_gw_assignlog_status', 'is', '12'],
+      ['custrecord_gw_assignlog_status', 'is', '12']
     ])
     _assignLogSearch.filterExpression = _filterArray
 
     var _totalCount = 0
     _assignLogSearch.run().each(function (result) {
       var _usedCount = result.getValue({
-        name: 'custrecord_gw_assignlog_usedcount',
+        name: 'custrecord_gw_assignlog_usedcount'
       })
       _totalCount += 50 - parseInt(_usedCount)
 
@@ -4477,58 +4591,58 @@ define([
         columns: [
           search.createColumn({
             name: 'custrecord_gw_seller',
-            summary: search.Summary.GROUP,
+            summary: search.Summary.GROUP
           }),
           search.createColumn({
             name: 'custrecord_gw_sales_amount',
-            summary: search.Summary.SUM,
+            summary: search.Summary.SUM
           }),
           search.createColumn({
             name: 'custrecord_gw_free_sales_amount',
-            summary: search.Summary.SUM,
+            summary: search.Summary.SUM
           }),
           search.createColumn({
             name: 'custrecord_gw_zero_sales_amount',
-            summary: search.Summary.SUM,
+            summary: search.Summary.SUM
           }),
           search.createColumn({
             name: 'custrecord_gw_discount_sales_amount',
-            summary: search.Summary.SUM,
+            summary: search.Summary.SUM
           }),
           search.createColumn({
             name: 'custrecord_gw_discount_free_amount',
-            summary: search.Summary.SUM,
+            summary: search.Summary.SUM
           }),
           search.createColumn({
             name: 'custrecord_gw_discount_zero_amount',
-            summary: search.Summary.SUM,
+            summary: search.Summary.SUM
           }),
           search.createColumn({
             name: 'custrecord_gw_discount_amount',
-            summary: search.Summary.SUM,
-          }),
-        ],
+            summary: search.Summary.SUM
+          })
+        ]
       })
 
       var _filterArray = []
       _filterArray.push([
         'custrecord_gw_voucher_upload_status',
         search.Operator.IS,
-        'C',
+        'C'
       ])
 
       _filterArray.push('and')
       _filterArray.push([
         'custrecord_gw_voucher_type',
         search.Operator.IS,
-        'EGUI',
+        'EGUI'
       ])
 
       _filterArray.push('and')
       _filterArray.push([
         'custrecord_gw_buyer',
         search.Operator.IS,
-        buyer_identifier,
+        buyer_identifier
       ])
       //20201030 walter modify
       if (buyer_identifier == '0000000000') {
@@ -4536,7 +4650,7 @@ define([
         _filterArray.push([
           'custrecord_gw_original_buyer_id',
           search.Operator.IS,
-          buyer_id,
+          buyer_id
         ])
       }
       _filterArray.push('and')
@@ -4547,7 +4661,7 @@ define([
       _filterArray.push([
         'custrecord_gw_voucher_date',
         search.Operator.LESSTHANOREQUALTO,
-        parseInt(voucher_date),
+        parseInt(voucher_date)
       ])
 
       //指定發票不分Invoice_type
@@ -4556,7 +4670,7 @@ define([
         _filterArray.push([
           'custrecord_gw_invoice_type',
           search.Operator.IS,
-          invoiceType,
+          invoiceType
         ])
       }
       _filterArray.push('and')
@@ -4584,26 +4698,26 @@ define([
         _filterArray.push([
           'custrecord_gw_voucher_yearmonth',
           search.Operator.IS,
-          yearMonth,
+          yearMonth
         ])
         _filterArray.push('and')
         _filterArray.push([
           'custrecord_gw_voucher_format_code',
           search.Operator.IS,
-          _invoceFormatCode,
+          _invoceFormatCode
         ])
       } else if (period === 'early_period') {
         _filterArray.push('and')
         _filterArray.push([
           'custrecord_gw_voucher_yearmonth',
           search.Operator.LESSTHAN,
-          yearMonth,
+          yearMonth
         ])
         _filterArray.push('and')
         _filterArray.push([
           'custrecord_gw_voucher_format_code',
           search.Operator.IS,
-          _invoceFormatCode,
+          _invoceFormatCode
         ])
       } else {
         //指定發票
@@ -4632,28 +4746,28 @@ define([
       _filterArray.push([
         'sum(formulanumeric:{custrecord_gw_sales_amount}+{custrecord_gw_free_sales_amount}+{custrecord_gw_zero_sales_amount}-{custrecord_gw_discount_amount})',
         search.Operator.NOTEQUALTO,
-        0,
+        0
       ])
       if (disconutTaxType == '1') {
         _filterArray.push('and')
         _filterArray.push([
           'sum(formulanumeric:{custrecord_gw_sales_amount}-{custrecord_gw_discount_sales_amount})',
           search.Operator.NOTEQUALTO,
-          0,
+          0
         ])
       } else if (disconutTaxType == '2') {
         _filterArray.push('and')
         _filterArray.push([
           'sum(formulanumeric:{custrecord_gw_zero_sales_amount}-{custrecord_gw_discount_zero_amount})',
           search.Operator.NOTEQUALTO,
-          0,
+          0
         ])
       } else if (disconutTaxType == '3') {
         _filterArray.push('and')
         _filterArray.push([
           'sum(formulanumeric:{custrecord_gw_free_sales_amount}-{custrecord_gw_discount_free_amount})',
           search.Operator.NOTEQUALTO,
-          0,
+          0
         ])
       }
 
@@ -4671,13 +4785,13 @@ define([
       _search.run().each(function (result) {
         var _seller = result.getValue({
           name: 'custrecord_gw_seller',
-          summary: search.Summary.GROUP,
+          summary: search.Summary.GROUP
         })
 
         var _sales_amount = stringutility.convertToFloat(
           result.getValue({
             name: 'custrecord_gw_sales_amount',
-            summary: search.Summary.SUM,
+            summary: search.Summary.SUM
           }),
           10
         )
@@ -4685,7 +4799,7 @@ define([
         var _free_sales_amount = stringutility.convertToFloat(
           result.getValue({
             name: 'custrecord_gw_free_sales_amount',
-            summary: search.Summary.SUM,
+            summary: search.Summary.SUM
           }),
           10
         )
@@ -4693,7 +4807,7 @@ define([
         var _zero_sales_amount = stringutility.convertToFloat(
           result.getValue({
             name: 'custrecord_gw_zero_sales_amount',
-            summary: search.Summary.SUM,
+            summary: search.Summary.SUM
           }),
           10
         )
@@ -4701,7 +4815,7 @@ define([
         var _discount_sales_amount = stringutility.convertToFloat(
           result.getValue({
             name: 'custrecord_gw_discount_sales_amount',
-            summary: search.Summary.SUM,
+            summary: search.Summary.SUM
           }),
           10
         )
@@ -4709,7 +4823,7 @@ define([
         var _discount_free_amount = stringutility.convertToFloat(
           result.getValue({
             name: 'custrecord_gw_discount_free_amount',
-            summary: search.Summary.SUM,
+            summary: search.Summary.SUM
           }),
           10
         )
@@ -4717,7 +4831,7 @@ define([
         var _discount_zero_amount = stringutility.convertToFloat(
           result.getValue({
             name: 'custrecord_gw_discount_zero_amount',
-            summary: search.Summary.SUM,
+            summary: search.Summary.SUM
           }),
           10
         )
@@ -4725,7 +4839,7 @@ define([
         var _discount_amount = stringutility.convertToFloat(
           result.getValue({
             name: 'custrecord_gw_discount_amount',
-            summary: search.Summary.SUM,
+            summary: search.Summary.SUM
           }),
           10
         )
@@ -4791,7 +4905,7 @@ define([
       columns: [
         search.createColumn({
           name: 'custrecord_gw_voucher_date',
-          sort: search.Sort.DESC,
+          sort: search.Sort.DESC
         }),
         search.createColumn({ name: 'custrecord_gw_voucher_number' }), //憑證號碼
         search.createColumn({ name: 'custrecord_gw_voucher_yearmonth' }), //憑證期別
@@ -4802,29 +4916,29 @@ define([
         search.createColumn({ name: 'custrecord_gw_discount_sales_amount' }),
         search.createColumn({ name: 'custrecord_gw_discount_free_amount' }),
         search.createColumn({ name: 'custrecord_gw_discount_zero_amount' }),
-        search.createColumn({ name: 'custrecord_gw_discount_amount' }), //已扣抵未稅金額
-      ],
+        search.createColumn({ name: 'custrecord_gw_discount_amount' }) //已扣抵未稅金額
+      ]
     })
 
     var _filterArray = []
     _filterArray.push([
       'custrecord_gw_voucher_upload_status',
       search.Operator.IS,
-      'C',
+      'C'
     ])
 
     _filterArray.push('and')
     _filterArray.push([
       'custrecord_gw_voucher_type',
       search.Operator.IS,
-      'EGUI',
+      'EGUI'
     ])
 
     _filterArray.push('and')
     _filterArray.push([
       'custrecord_gw_buyer',
       search.Operator.IS,
-      buyer_identifier,
+      buyer_identifier
     ])
     //20201030 walter modify
     if (buyer_identifier == '0000000000') {
@@ -4832,7 +4946,7 @@ define([
       _filterArray.push([
         'custrecord_gw_original_buyer_id',
         search.Operator.IS,
-        buyer_id,
+        buyer_id
       ])
     }
     _filterArray.push('and')
@@ -4842,7 +4956,7 @@ define([
     _filterArray.push([
       'custrecord_gw_voucher_date',
       search.Operator.LESSTHANOREQUALTO,
-      parseInt(voucher_date),
+      parseInt(voucher_date)
     ])
 
     //指定發票不分Invoice_type
@@ -4851,7 +4965,7 @@ define([
       _filterArray.push([
         'custrecord_gw_invoice_type',
         search.Operator.IS,
-        invoiceType,
+        invoiceType
       ])
     }
     //_filterArray.push('and');
@@ -4862,7 +4976,7 @@ define([
       _filterArray.push([
         ['custrecord_gw_tax_type', search.Operator.IS, taxType],
         'or',
-        ['custrecord_gw_tax_type', search.Operator.IS, checkField],
+        ['custrecord_gw_tax_type', search.Operator.IS, checkField]
       ])
     } else if (checkField == '2') {
       //零稅欄位
@@ -4870,7 +4984,7 @@ define([
       _filterArray.push([
         ['custrecord_gw_tax_type', search.Operator.IS, taxType],
         'or',
-        ['custrecord_gw_tax_type', search.Operator.IS, checkField],
+        ['custrecord_gw_tax_type', search.Operator.IS, checkField]
       ])
     } else if (checkField == '3') {
       //免稅欄位
@@ -4878,7 +4992,7 @@ define([
       _filterArray.push([
         ['custrecord_gw_tax_type', search.Operator.IS, taxType],
         'or',
-        ['custrecord_gw_tax_type', search.Operator.IS, checkField],
+        ['custrecord_gw_tax_type', search.Operator.IS, checkField]
       ])
     }
 
@@ -4904,14 +5018,14 @@ define([
       _filterArray.push([
         'custrecord_gw_voucher_yearmonth',
         search.Operator.IS,
-        yearMonth,
+        yearMonth
       ])
     } else if (period === 'early_period') {
       _filterArray.push('and')
       _filterArray.push([
         'custrecord_gw_voucher_yearmonth',
         search.Operator.LESSTHAN,
-        yearMonth,
+        yearMonth
       ])
     } else {
       _filterArray.push('and')
@@ -4950,49 +5064,49 @@ define([
     var _count = 0
     var _result = _search.run().getRange({
       start: 0,
-      end: 1000,
+      end: 1000
     })
 
     for (var i = 0; i < _result.length; i++) {
       var _internalid = _result[i].id
       //發票號碼
       var _voucher_number = _result[i].getValue({
-        name: 'custrecord_gw_voucher_number',
+        name: 'custrecord_gw_voucher_number'
       })
       var _voucher_date = _result[i].getValue({
-        name: 'custrecord_gw_voucher_date',
+        name: 'custrecord_gw_voucher_date'
       })
       var _voucher_yearmonth = _result[i].getValue({
-        name: 'custrecord_gw_voucher_yearmonth',
+        name: 'custrecord_gw_voucher_yearmonth'
       })
       var _discount_count = _result[i].getValue({
-        name: 'custrecord_gw_discount_count',
+        name: 'custrecord_gw_discount_count'
       })
       //未稅金額
       var _sales_amount = _result[i].getValue({
-        name: 'custrecord_gw_sales_amount',
+        name: 'custrecord_gw_sales_amount'
       })
       //免稅金額
       var _free_sales_amount = _result[i].getValue({
-        name: 'custrecord_gw_free_sales_amount',
+        name: 'custrecord_gw_free_sales_amount'
       })
       //零稅金額
       var _zero_sales_amount = _result[i].getValue({
-        name: 'custrecord_gw_zero_sales_amount',
+        name: 'custrecord_gw_zero_sales_amount'
       })
       //已折金額(未稅)
       var _discount_amount = _result[i].getValue({
-        name: 'custrecord_gw_discount_amount',
+        name: 'custrecord_gw_discount_amount'
       })
 
       var _discount_sales_amount = _result[i].getValue({
-        name: 'custrecord_gw_discount_sales_amount',
+        name: 'custrecord_gw_discount_sales_amount'
       })
       var _discount_free_amount = _result[i].getValue({
-        name: 'custrecord_gw_discount_free_amount',
+        name: 'custrecord_gw_discount_free_amount'
       })
       var _discount_zero_amount = _result[i].getValue({
-        name: 'custrecord_gw_discount_zero_amount',
+        name: 'custrecord_gw_discount_zero_amount'
       })
       ///////////////////////////////////////////////////////////////////////////////////
       //可扣抵餘額
@@ -5031,7 +5145,7 @@ define([
           discount_sales_amount: 0, //扣抵應稅欄位
           discount_zero_amount: 0, //扣抵零稅欄位
           discount_free_amount: 0, //扣抵免稅欄位
-          discount_amount: 0, //折讓金額累計
+          discount_amount: 0 //折讓金額累計
         }
 
         if (checkField == '1') {
@@ -5078,7 +5192,7 @@ define([
           discount_sales_amount: 0, //扣抵應稅欄位
           discount_zero_amount: 0, //扣抵零稅欄位
           discount_free_amount: 0, //扣抵免稅欄位
-          discount_amount: 0,
+          discount_amount: 0
         }
         if (checkField == '1') {
           //應稅欄位
@@ -5114,7 +5228,7 @@ define([
 
     var _checkObj = {
       checkResult: _ok,
-      eGUIResult: _objAry,
+      eGUIResult: _objAry
     }
     //alert('_checkObj='+JSON.stringify(_checkObj));
     return _checkObj
@@ -5133,18 +5247,18 @@ define([
           'price',
           'onlineprice',
           'description',
-          'displayname',
+          'displayname'
         ],
-        filters: ['internalid', 'is', parseInt(itemId)],
+        filters: ['internalid', 'is', parseInt(itemId)]
       })
       .run()
       .each(function (result) {
         _itemName = result.getValue({
-          name: 'displayname',
+          name: 'displayname'
         })
         _itemUnitPrice = result.getValue({
           //折扣
-          name: 'price',
+          name: 'price'
         })
         return true
       })
@@ -5167,14 +5281,14 @@ define([
       var _record = record.load({
         type: search.Type.INVOICE,
         id: parseInt(internalId),
-        isDynamic: true,
+        isDynamic: true
       })
       _discountitem = _record.getValue({
-        fieldId: 'discountitem',
+        fieldId: 'discountitem'
       })
       if (typeof _discountitem !== 'undefined') {
         _discounttotal = _record.getValue({
-          fieldId: 'discounttotal',
+          fieldId: 'discounttotal'
         })
       }
     } else {
@@ -5182,21 +5296,21 @@ define([
       var _record = record.load({
         type: search.Type.CREDIT_MEMO,
         id: parseInt(internalId),
-        isDynamic: true,
+        isDynamic: true
       })
       _discountitem = _record.getValue({
-        fieldId: 'discountitem',
+        fieldId: 'discountitem'
       })
       if (typeof _discountitem !== 'undefined') {
         _discounttotal = _record.getValue({
-          fieldId: 'discounttotal',
+          fieldId: 'discounttotal'
         })
       }
     }
 
     if (typeof _discountitem !== 'undefined' && _discountitem !== '') {
       var _discounttotal = _record.getValue({
-        fieldId: 'discounttotal',
+        fieldId: 'discounttotal'
       })
 
       var _exist = false
@@ -5217,7 +5331,7 @@ define([
         var _discountJsonObj = {
           discountitem: _discountitem,
           discountitemname: _discountObj.itemName,
-          discounttotal: _discounttotal,
+          discounttotal: _discounttotal
         }
         discountHistoryAry.push(_discountJsonObj)
       }
@@ -5235,7 +5349,7 @@ define([
     creditMemoGUINumberAry
   ) {
     var _invoice_hiddent_listid = _current_record.getValue({
-      fieldId: invoice_hiddent_listid,
+      fieldId: invoice_hiddent_listid
     })
 
     var _invoce_control_field_value = gwconfigure.lockInvoceControlFieldId()
@@ -5274,8 +5388,8 @@ define([
               values: values,
               options: {
                 enableSourcing: false,
-                ignoreMandatoryFields: true,
-              },
+                ignoreMandatoryFields: true
+              }
             })
           } catch (e) {
             console.log(e.name + ':' + e.message)
@@ -5286,7 +5400,7 @@ define([
     //////////////////////////////////////////////////////////////////////////////////////////////
     //處理折讓單
     var _creditmemo_hiddent_listid = _current_record.getValue({
-      fieldId: creditmemo_hiddent_listid,
+      fieldId: creditmemo_hiddent_listid
     })
     var _credit_control_field_value = gwconfigure.lockCredMemoControlFieldId()
     if (typeof _creditmemo_hiddent_listid !== 'undefined') {
@@ -5350,8 +5464,8 @@ define([
               values: values,
               options: {
                 enableSourcing: false,
-                ignoreMandatoryFields: true,
-              },
+                ignoreMandatoryFields: true
+              }
             })
           } catch (e) {
             console.log(e.name + ':' + e.message)
@@ -5370,7 +5484,7 @@ define([
       window.location = url.resolveScript({
         scriptId: _invoiceEditScriptId,
         deploymentId: _invoiceEditDeployId,
-        returnExternalUrl: false,
+        returnExternalUrl: false
       })
     } catch (e) {
       console.log(e.name + ':' + e.message)
@@ -5382,6 +5496,6 @@ define([
     backToPage: backToPage,
     submitDocument: submitDocument,
     fieldChanged: fieldChanged,
-    sublistChanged: sublistChanged,
+    sublistChanged: sublistChanged
   }
 })
