@@ -245,7 +245,14 @@ define([
               _checkFlag = false
               break
             }
-            */
+            */       
+            if (_voucher_number.trim().length == 0) {
+                _error_message = ']:憑證-無號碼不可作廢憑證,請執行失敗解鎖!'
+                _error_message = '[' + _voucher_number + _error_message
+                _checkFlag = false
+                break
+            }
+            
             if (_need_upload_egui_mig != 'NONE' && 
 			    dateutility.checkVoucherEffectiveDate(_voucher_date)==false) {
 				_error_message = ']:憑證-已超過報稅期不可作廢!';

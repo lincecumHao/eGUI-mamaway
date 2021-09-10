@@ -448,6 +448,8 @@ define([
             ' style="text-decoration:none" target=_blank>' +
             _voucher_number +
             '</a>'
+            
+          if (_voucher_number.trim().length==0) _url_value=' '
           ///////////////////////////////////////////////////////////////////////
           subListObj.setSublistValue({
             id: 'customer_voucher_number',
