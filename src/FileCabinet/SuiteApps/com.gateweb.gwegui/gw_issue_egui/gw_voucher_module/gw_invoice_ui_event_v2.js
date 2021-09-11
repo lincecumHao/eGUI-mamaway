@@ -613,15 +613,15 @@ define([
           line: i
         })
         //Set value
-        if (stringutility.checkByteLength(_item_name) > 256) {
+        if (_item_name.length > 256) {
           _errorMsg += _item_name + ':Invoice商品名稱需小於256字元<br>'
         } else if (stringutility.checkByteLength(_item_name) == 0) {
           _errorMsg += _item_name + ':Invoice商品名稱不可空白<br>'
         }
-        if (stringutility.checkByteLength(_item_remark) > 40) {
+        if (_item_remark.length > 40) {
           _errorMsg += _item_name + ':Invoice明細備註需小於等於40字元<br>'
-        }
-        if (stringutility.checkByteLength(_item_unit) > 6) {
+        } 
+        if (_item_unit.length > 6) {
             _errorMsg += _item_name + ':Invoice單位需小於等於6字元<br>'
         } 
       }

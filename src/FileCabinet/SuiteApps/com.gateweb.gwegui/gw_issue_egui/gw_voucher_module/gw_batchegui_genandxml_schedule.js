@@ -598,6 +598,9 @@ define([
             }
 
             var _quantity = _result.values.quantity
+            //20210909 walter 預設值設為1
+            if (_quantity.trim().length==0)_quantity='1'
+            	
             var _taxItem_rate = _result.values['taxItem.rate'] //5.00%
             _taxItem_rate = _taxItem_rate.replace('%', '')
 
@@ -798,8 +801,9 @@ define([
 
             //discount 不放進來
             if (
-              stringutility.trim(_itemtype) != '' &&
-              stringutility.trim(_itemtype) != 'Discount'
+               stringutility.trim(_itemtype) != '' 
+               //20210908 walter modify => 折扣項目作進Item, 不另外處理
+               //&&  stringutility.trim(_itemtype) != 'Discount'
             ) {
               if (_tax_type == '1') {
                 _tax1_item_ary.push(_itemJsonObj)
@@ -813,10 +817,11 @@ define([
                 _tax3_item_ary.push(_itemJsonObj)
               }
             } else if (_itemtype == 'Discount') {
+            	//20210908 walter modify => 折扣項目作進Item, 不另外處理
               //紀錄折扣項目
-              _discountItemJsonObj = JSON.parse(JSON.stringify(_itemJsonObj))
-              _discountItemJsonObj.quantity = '1'
-              _discountItemJsonObj.itemUnit = '筆'
+              //_discountItemJsonObj = JSON.parse(JSON.stringify(_itemJsonObj))
+              //_discountItemJsonObj.quantity = '1'
+              //_discountItemJsonObj.itemUnit = '筆'
             }
 
             //MAIN Section
@@ -1723,6 +1728,7 @@ define([
           tax_diff_balance
         )
       }
+       
     } catch (e) {
       log.error(e.name, e.message)
     }
@@ -1797,6 +1803,16 @@ define([
         detail_item_ary
       )
       log.debug('檢查稅差-1', '_tax_diff_error=' + _tax_diff_error)
+      ///////////////////////////////////////////////////////////////////////////////////////////////////////
+      var _amountObj = jsonObj.amountObj
+      //20210909 walter modify 稅為負項就要alert
+      if (voucher_type == 'EGUI') {
+    	  //發票
+    	  if (_amountObj.taxAmount<0) _tax_diff_error = true
+      } else {
+    	  //折讓單
+    	  if (-1*_amountObj.taxAmount<0) _tax_diff_error = true
+      }
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////
       //default format code
@@ -1858,6 +1874,8 @@ define([
           _voucherFormatCode = _creditMemoFormatCode
         }
       }
+      
+      
       var _status = 'VOUCHER_SUCCESS'
       var _voucherMainRecord = record.create({
         type: _voucher_main_record,
@@ -2030,8 +2048,7 @@ define([
         value: _default_upload_status,
       })
 
-      //處理Amount
-      var _amountObj = jsonObj.amountObj
+      //處理Amount 
       if (voucher_type === 'EGUI' && _amountObj.zeroSalesAmount != 0) {
         _voucherMainRecord.setValue({
           fieldId: 'custrecord_gw_clearance_mark',
@@ -2232,10 +2249,15 @@ define([
               fieldId: 'custrecord_gw_item_unit',
               value: stringutility.trim(_detailObj.itemUnit),
             })
+            
+            var _item_quantity = _detailObj.quantity
+            //20210909 walter 預設值設為1
+            if (_item_quantity.trim().length==0)_item_quantity='1'
+            	
             _voucherDetailRecord.setValue({
               fieldId: 'custrecord_gw_item_quantity',
               value:
-                _net_value * stringutility.convertToFloat(_detailObj.quantity),
+                _net_value * stringutility.convertToFloat(_item_quantity),
             })
             _voucherDetailRecord.setValue({
               fieldId: 'custrecord_gw_item_amount',
@@ -2936,6 +2958,8 @@ define([
             }
 
             var _quantity = _result.values.quantity
+            //20210909 walter 預設值設為1
+            if (_quantity.trim().length==0)_quantity='1'
 
             var _taxItem_rate = _result.values['taxItem.rate'] //5.00%
 
@@ -3116,8 +3140,9 @@ define([
             }
             //discount 不放進來
             if (
-              stringutility.trim(_itemtype) != '' &&
-              stringutility.trim(_itemtype) != 'Discount'
+              stringutility.trim(_itemtype) != '' 
+              //20210908 walter modify => 折扣項目作進Item, 不另外處理
+              //&& stringutility.trim(_itemtype) != 'Discount'
             ) {
               if (_tax_type == '1') {
                 _tax1_item_ary.push(_itemJsonObj)
@@ -3127,10 +3152,11 @@ define([
                 _tax3_item_ary.push(_itemJsonObj)
               }
             } else if (stringutility.trim(_itemtype) == 'Discount') {
+           	  //20210908 walter modify => 折扣項目作進Item, 不另外處理
               //紀錄折扣項目
-              _discountItemJsonObj = JSON.parse(JSON.stringify(_itemJsonObj))
-              _discountItemJsonObj.quantity = '1'
-              _discountItemJsonObj.itemUnit = '筆'
+              //_discountItemJsonObj = JSON.parse(JSON.stringify(_itemJsonObj))
+              //_discountItemJsonObj.quantity = '1'
+              //_discountItemJsonObj.itemUnit = '筆'
             }
 
             //MAIN Section

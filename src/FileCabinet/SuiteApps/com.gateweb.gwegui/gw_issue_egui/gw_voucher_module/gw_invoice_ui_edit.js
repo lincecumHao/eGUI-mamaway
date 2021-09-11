@@ -758,6 +758,7 @@ define([
       value: '35-07',
       text: '35-一般稅額電子發票[裝訂數:50張]',
     })
+    _eguiFormatCode.defaultValue = '35-07'
 
     //人工輸入發票號碼
     var _manual_voucher_number = form.addField({
@@ -1060,11 +1061,15 @@ define([
       displayType: serverWidget.FieldDisplayType.HIDDEN,
     })
 
-    sublist.addField({
+    var _itemUnitField = sublist.addField({
       id: 'custpage_invoice_item_unit',
       type: serverWidget.FieldType.TEXT,
       label: '單位',
     })
+    _itemUnitField.updateDisplayType({
+      displayType: serverWidget.FieldDisplayType.ENTRY,
+    })
+    
     sublist.addField({
       id: 'custpage_unit_price',
       type: serverWidget.FieldType.TEXT,
@@ -1401,6 +1406,8 @@ define([
         _selectClassification = _class
       }
       var _quantity = _result.values.quantity
+      //20210909 walter 預設值設為1
+      if (_quantity.trim().length==0)_quantity='1'
 
       //單位
       var _unitabbreviation = _result.values.unitabbreviation
@@ -1415,10 +1422,11 @@ define([
       var _item_memo = _result.values.custcol_gw_item_memo
 
       if (_itemtype === 'Discount') {
-        //折扣項目
-        _sumDiscountAmount += stringutility.convertToFloat(_amount)
-        //Discount 要再紀錄近來,不然會少
-        _sumTaxAmount += stringutility.convertToFloat(_ns_item_tax_amount)
+    	 //20210908 walter modify => 折扣項目作進Item, 不另外處理
+         //折扣項目
+         //_sumDiscountAmount += stringutility.convertToFloat(_amount)
+         //Discount 要再紀錄近來,不然會少
+         //_sumTaxAmount += stringutility.convertToFloat(_ns_item_tax_amount)
       }
       //主檔才做
       if (_recordType == 'invoice' && _mainline == '*') {
@@ -1436,8 +1444,9 @@ define([
       //只放 Sales Items 進來 (Discount Item 要排除)
       if (
         _recordType == 'invoice' &&
-        _mainline != '*' &&
-        _itemtype != 'Discount'
+        _mainline != '*' 
+        //20210908 walter modify => 折扣項目作進Item, 不另外處理
+        //&&  _itemtype != 'Discount'
       ) {
         log.debug('get _taxObj', JSON.stringify(_taxObj))
         if (typeof _taxObj !== 'undefined') {
@@ -2393,13 +2402,16 @@ define([
       }
 
       var _quantity = _result.values.quantity
+      //20210909 walter 預設值設為1
+      if (_quantity.trim().length==0)_quantity='1'
       //單位
       var _unitabbreviation = _result.values.unitabbreviation
 
       if (_itemtype === 'Discount') {
-        //折扣項目
-        _sumDiscountAmount += stringutility.convertToFloat(_amount)
-        _sumTaxAmount += stringutility.convertToFloat(_ns_item_tax_amount)
+    	 //20210908 walter modify => 折扣項目作進Item, 不另外處理
+         //折扣項目
+         //_sumDiscountAmount += stringutility.convertToFloat(_amount)
+         //_sumTaxAmount += stringutility.convertToFloat(_ns_item_tax_amount)
       }
       //主檔才做
       if (_recordType == 'creditmemo' && _mainline == '*') {
@@ -2416,8 +2428,9 @@ define([
       //只放Sales進來
       if (
         _recordType === 'creditmemo' &&
-        _mainline != '*' &&
-        _itemtype != 'Discount'
+        _mainline != '*' 
+       	//20210908 walter modify => 折扣項目作進Item, 不另外處理
+        // &&  _itemtype != 'Discount'
       ) {
         //抓第1筆當部門
         if (_default_department_id.length == 0) {
