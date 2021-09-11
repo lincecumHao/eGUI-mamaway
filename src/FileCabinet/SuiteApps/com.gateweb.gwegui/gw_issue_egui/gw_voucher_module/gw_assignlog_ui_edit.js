@@ -387,6 +387,11 @@ define([
       id: 'status',
       type: serverWidget.FieldType.TEXT,
       label: '狀態',
+    }) 
+    _sublist.addField({
+      id: 'lastinvoicedate',
+      type: serverWidget.FieldType.TEXT,
+      label: '最後使用日期',
     })
     _sublist.addField({
       id: 'reason',
@@ -531,6 +536,7 @@ define([
           'custrecord_gw_assignlog_reason',
           'custrecord_gw_assignlog_usedcount',
           'custrecord_gw_assignlog_version',
+          'custrecord_gw_last_invoice_date'
         ],
       })
 
@@ -628,7 +634,17 @@ define([
           var _usedcount = result.getValue({
             name: 'custrecord_gw_assignlog_usedcount',
           })
+          
+          var _last_invoice_date = result.getValue({
+            name: 'custrecord_gw_last_invoice_date',
+          })
           //序號	internalid	 customer_search_assignlog_check_id
+          _sublist.setSublistValue({
+            id: 'lastinvoicedate',
+            line: _index,
+            value: _last_invoice_date,
+          })
+          
           _sublist.setSublistValue({
             id: 'customer_search_assignlog_id',
             line: _index,
