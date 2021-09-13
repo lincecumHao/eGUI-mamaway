@@ -128,8 +128,11 @@ define([
       fieldId: changeFieldId
     })
     //custpage_tax_rate
-    var _npo_ban = _current_record.getField({ fieldId: 'custpage_npo_ban' })
-    if (_custpage_mig_type === 'B2BS' || _custpage_mig_type === 'B2BE') {
+    var _npo_ban = _current_record.getField({ fieldId: 'custpage_npo_ban' })    
+    var _buyer_identifier = _current_record.getField({ fieldId: 'custpage_buyer_identifier' })
+    console.log(_buyer_identifier+' = '+_custpage_mig_type)
+    if ((_custpage_mig_type === 'B2BS' || _custpage_mig_type === 'B2BE')
+    	&& _buyer_identifier !='0000000000') {
       _npo_ban.isDisplay = false //不顯示捐贈碼
     } else {
       _npo_ban.isDisplay = true //顯示捐贈碼
@@ -763,9 +766,9 @@ define([
 
     //var _customs_clearance_mark_field = _current_record.getField({fieldId: 'custpage_customs_clearance_mark'});
     //_customs_clearance_mark_field.isDisplay = false;
-
+    var _buyer_identifier = _current_record.getField({ fieldId: 'custpage_buyer_identifier' })    
     var _npo_ban = _current_record.getField({ fieldId: 'custpage_npo_ban' })
-    _npo_ban.isDisplay = false
+    //if (_buyer_identifier!='0000000000') _npo_ban.isDisplay = false
 
     var _deduction_egui_number = _current_record.getField({
       fieldId: 'custpage_deduction_egui_number'

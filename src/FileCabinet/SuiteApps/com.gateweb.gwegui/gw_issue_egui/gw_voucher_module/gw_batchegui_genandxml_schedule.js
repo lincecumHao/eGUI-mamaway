@@ -15,6 +15,7 @@ define([
   '../gw_common_utility/gw_common_date_utility',
   '../gw_common_utility/gw_common_configure',
   '../../gw_dao/taxType/gw_dao_tax_type_21',
+  '../../gw_dao/carrierType/gw_dao_carrier_type_21',
 ], function (
   runtime,
   config,
@@ -25,7 +26,8 @@ define([
   invoiceutility,
   dateutility,
   gwconfigure,
-  taxyype21
+  taxyype21,
+  carriertypedao
 ) {
   var _invoceFormatCode = gwconfigure.getGwVoucherFormatInvoiceCode()
   var _creditMemoFormatCode = gwconfigure.getGwVoucherFormatAllowanceCode()
@@ -129,6 +131,53 @@ define([
     }
 
     return _taxObj
+  }
+  
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  var _carry_type_ary = []
+  function loadAllCarryTypeInfo() {
+    try {
+		  var _all_carry_types = carriertypedao.getAll()
+		  log.debug('get all_carry_types', JSON.stringify(_all_carry_types))
+	 
+		  for (var i=0; i<_all_carry_types.length; i++) {
+			   var _carry_json_obj = _all_carry_types[i]
+			   var _carry_id = _carry_json_obj.id
+			   var _carry_value = _carry_json_obj.value
+		 
+			   
+			   var _obj = {
+				  carry_id: _carry_id, //TAX_WITH_TAX
+				  carry_value: _carry_value
+			   }
+	
+			   _carry_type_ary.push(_obj)		   
+		  } 
+    } catch (e) {
+      log.error(e.name, e.message)
+    }
+  }
+  //取得載具資料
+  function getCarryTypeValue(id) {
+    var carry_value = ''
+    try {    	 
+    	  if (_carry_type_ary == null || _carry_type_ary.length==0)loadAllCarryTypeInfo()
+    	  
+	      if (_carry_type_ary != null) { 
+	         for (var i = 0; i < _carry_type_ary.length; i++) {
+	              var _obj = _carry_type_ary[i]
+	
+	              if (_obj.carry_id == id) {
+	        	      carry_value = _obj.carry_value
+	                  break
+	              }
+	         }
+	      }
+    } catch (e) {
+      log.error(e.name, e.message)
+    }
+
+    return carry_value
   }
 
   //轉換成民國年月日(2021/01/18)
@@ -712,6 +761,16 @@ define([
             )
             log.debug('_gw_customs_export_date', _gw_customs_export_date)
             ///////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //載具類別
+            var _gw_gui_carrier_type = ''
+            if (_result.values.custbody_gw_gui_carrier_type.length != 0) {
+		        _gw_gui_carrier_type = getCarryTypeValue(_result.values.custbody_gw_gui_carrier_type[0].value)  
+	        } 
+			var _gw_gui_carrier_id_1 = _result.values.custbody_gw_gui_carrier_id_1
+			var _gw_gui_carrier_id_2 = _result.values.custbody_gw_gui_carrier_id_2
+			//捐贈代碼
+			var _gw_gui_donation_code = _result.values.custbody_gw_gui_donation_code
 
             //取得資料-END
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -837,7 +896,11 @@ define([
               buyerEmail: _email,
               buyerAddress: _buyer_address,
               customs_clearance_mark: _gw_egui_clearance_mark_text,
-              mig_type: mig_type,
+              mig_type: mig_type,              
+              carrier_type: _gw_gui_carrier_type,
+              carrier_id_1: _gw_gui_carrier_id_1,
+              carrier_id_2: _gw_gui_carrier_id_2,
+              npo_ban: _gw_gui_donation_code,               
               taxType: _main_tax_type,
               taxRate: stringutility.convertToFloat(_taxItem_rate) / 100,
               department: _department_value,
@@ -1999,12 +2062,16 @@ define([
         value: stringutility.trim(jsonObj.extraMemo),
       })
 
-      //_voucherMainRecord.setValue({fieldId:'custrecord_gw_carrier_type',value:stringutility.trim(_main.carrier_type)});
-      //_voucherMainRecord.setValue({fieldId:'custrecord_gw_carrierid1',value:stringutility.trim(_main.carrier_id)});
-      //_voucherMainRecord.setValue({fieldId:'custrecord_gw_carrierid2',value:stringutility.trim(_main.carrier_id)});
-      //_voucherMainRecord.setValue({fieldId:'custrecord_gw_npoban',value:stringutility.trim(_main.npo_ban)});
-      //_voucherMainRecord.setValue({fieldId:'custrecord_gw_clearance_mark',value:stringutility.trim(_main.customs_clearance_mark)});
-      //_voucherMainRecord.setValue({fieldId:'custrecord_gw_main_remark',value:stringutility.trim(_main.main_remark)});
+      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      //20210913 walter modify
+      _voucherMainRecord.setValue({fieldId:'custrecord_gw_carrier_type',value:stringutility.trim(jsonObj.carrier_type)});
+      _voucherMainRecord.setValue({fieldId:'custrecord_gw_carrierid1',value:stringutility.trim(jsonObj.carrier_id_1)});
+      _voucherMainRecord.setValue({fieldId:'custrecord_gw_carrierid2',value:stringutility.trim(jsonObj.carrier_id_2)});
+      _voucherMainRecord.setValue({fieldId:'custrecord_gw_npoban',value:stringutility.trim(jsonObj.npo_ban)});
+      //_voucherMainRecord.setValue({fieldId:'custrecord_gw_clearance_mark',value:stringutility.trim(jsonObj.customs_clearance_mark)});
+      //_voucherMainRecord.setValue({fieldId:'custrecord_gw_main_remark',value:stringutility.trim(jsonObj.main_remark)});
+      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     
       var _random_number = ' '
       var _print_mark = 'N'
       if (mig_type == 'C0401' || mig_type == 'B2C') {
@@ -3076,8 +3143,17 @@ define([
               _result.values.custbody_gw_customs_export_date
             )
             log.debug('_gw_customs_export_date', _gw_customs_export_date)
-            ////////////////////////////////////////////////////////////
-
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //載具類別
+            var _gw_gui_carrier_type = ''
+            if (_result.values.custbody_gw_gui_carrier_type.length != 0) {
+		        _gw_gui_carrier_type = _result.values.custbody_gw_gui_carrier_type[0].value   
+	        } 
+			var _gw_gui_carrier_id_1 = _result.values.custbody_gw_gui_carrier_id_1
+			var _gw_gui_carrier_id_2 = _result.values.custbody_gw_gui_carrier_id_2
+			//捐贈代碼
+			var _gw_gui_donation_code = _result.values.custbody_gw_gui_donation_code
+		    
             //取得資料-END
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -3171,7 +3247,11 @@ define([
               buyerName: _entity_text,
               buyerEmail: _email,
               buyerAddress: _buyer_address,
-              mig_type: mig_type,
+              mig_type: mig_type, 
+              carrier_type: _gw_gui_carrier_type,
+              carrier_id_1: _gw_gui_carrier_id_1,
+              carrier_id_2: _gw_gui_carrier_id_2,
+              npo_ban: _gw_gui_donation_code, 
               taxType: _main_tax_type,
               taxRate: stringutility.convertToFloat(_taxItem_rate) / 100,
               department: _department_value,

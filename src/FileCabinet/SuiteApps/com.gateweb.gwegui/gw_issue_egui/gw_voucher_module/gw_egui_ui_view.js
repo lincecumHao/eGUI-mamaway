@@ -432,16 +432,15 @@ define([
     })
     _carrier_id_2.defaultValue = _voucher_record.getValue({
       fieldId: 'custrecord_gw_carrierid2',
-    })
-
+    }) 
     //捐贈碼
-    var _npo_ban = form.addField({
+    var _npo_ban_field = form.addField({
       id: 'custpage_npo_ban',
       type: serverWidget.FieldType.TEXT,
       label: '捐贈碼',
       container: 'row01_fieldgroupid',
     })
-    _npo_ban.defaultValue = _voucher_record.getValue({
+    _npo_ban_field.defaultValue = _voucher_record.getValue({
       fieldId: 'custrecord_gw_npoban',
     })
     //發票類型
