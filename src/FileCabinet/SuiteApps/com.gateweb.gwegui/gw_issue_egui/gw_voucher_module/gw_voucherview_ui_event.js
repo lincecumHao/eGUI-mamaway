@@ -348,8 +348,11 @@ define([
         var _carrier_type = _currentRecord.getValue({
           fieldId: 'custpage_carrier_type',
         })
-        var _carrier_id = _currentRecord.getValue({
-          fieldId: 'custpage_carrier_id',
+        var _carrier_id_1 = _currentRecord.getValue({
+          fieldId: 'custpage_carrier_id_1',
+        })
+        var _carrier_id_2 = _currentRecord.getValue({
+          fieldId: 'custpage_carrier_id_2',
         })
         var _npo_ban = _currentRecord.getValue({ fieldId: 'custpage_npo_ban' })
         var _main_remark = _currentRecord.getValue({
@@ -360,8 +363,8 @@ define([
         _values['custrecord_gw_buyer_email'] = _buyer_email
         _values['custrecord_gw_buyer_address'] = _buyer_address
         _values['custrecord_gw_carrier_type'] = _carrier_type
-        _values['custrecord_gw_carrierid1'] = _carrier_id
-        _values['custrecord_gw_carrierid2'] = _carrier_id
+        _values['custrecord_gw_carrierid1'] = _carrier_id_1
+        _values['custrecord_gw_carrierid2'] = _carrier_id_2
         _values['custrecord_gw_npoban'] = _npo_ban
         _values['custrecord_gw_main_remark'] = _main_remark
       } else {
