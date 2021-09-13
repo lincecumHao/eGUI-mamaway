@@ -15,6 +15,7 @@ define([
   '../gw_common_utility/gw_common_search_utility',
   '../gw_common_utility/gw_common_configure',  
   '../../gw_dao/taxType/gw_dao_tax_type_21',
+  '../../gw_dao/carrierType/gw_dao_carrier_type_21',
 ], function (
   config,
   serverWidget,
@@ -26,7 +27,8 @@ define([
   stringutility,
   searchutility,
   gwconfigure, 
-  taxyype21
+  taxyype21,
+  carriertypedao
 ) {
   var _numericToFixed = gwconfigure.getGwNumericToFixed() //小數點位數
   var _invoiceActionScriptId = gwconfigure.getGwInvoiceActionScriptId()
@@ -563,23 +565,36 @@ define([
       value: '',
       text: '-----',
     })
-    _carrier_type.addSelectOption({
-      value: '3J0002',
-      text: '手機條碼',
-    })
-    _carrier_type.addSelectOption({
-      value: 'CQ0001',
-      text: '自然人憑證',
-    })
+    ////////////////////////////////////////////////////////////////////
+    var _all_carry_types = carriertypedao.getAll()
+	log.debug('get _all_carry_types', JSON.stringify(_all_carry_types))
+	for (var i=0; i<_all_carry_types.length; i++) {
+		 var _carry_json_obj = _all_carry_types[i]
+		 var _carry_text = _carry_json_obj.text
+		 var _carry_id = _carry_json_obj.id
+		 
+		 _carrier_type.addSelectOption({
+		      value: _carry_id,
+		      text: _carry_text,
+	     }) 
+	} 
+    ////////////////////////////////////////////////////////////////////
     _carrier_type.updateBreakType({
       breakType: serverWidget.FieldBreakType.STARTCOL,
     })
 
+    //20210913 walter modify 預設抓Invoice
     //載具號碼
     var _carrier_id = form.addField({
-      id: 'custpage_carrier_id',
+      id: 'custpage_carrier_id_1',
       type: serverWidget.FieldType.TEXT,
-      label: '載具號碼',
+      label: '載具號碼-1',
+      container: 'row01_fieldgroupid',
+    })
+    var _carrier_id = form.addField({
+      id: 'custpage_carrier_id_2',
+      type: serverWidget.FieldType.TEXT,
+      label: '載具號碼-2',
       container: 'row01_fieldgroupid',
     })
 
@@ -1221,6 +1236,13 @@ define([
     //輸出或結匯日期
     var _gw_customs_export_date = ''
     ////////////////////////////////////////////////////////////
+    //載具類別
+    var _gw_gui_carrier_type = ''
+   	var _gw_gui_carrier_id_1 = ''
+    var _gw_gui_carrier_id_2 = ''
+    //捐贈代碼
+   	var _gw_gui_donation_code = ''
+    ////////////////////////////////////////////////////////////
 
     _mySearch.run().each(function (result) {
       var _result = JSON.parse(JSON.stringify(result))
@@ -1298,7 +1320,17 @@ define([
       }
 	  //客戶Email
 	  _customer_email  = _result.values['customer.email']
+	  ///////////////////////////////////////////////////////////////////////
+	  //載具類別 
+	  if (_result.values.custbody_gw_gui_carrier_type.length != 0) {
+		  _gw_gui_carrier_type = _result.values.custbody_gw_gui_carrier_type[0].value   
+	  } 
+	  _gw_gui_carrier_id_1 = _result.values.custbody_gw_gui_carrier_id_1
+	  _gw_gui_carrier_id_2 = _result.values.custbody_gw_gui_carrier_id_2
+	  //捐贈代碼
+	  _gw_gui_donation_code = _result.values.custbody_gw_gui_donation_code
 
+      ///////////////////////////////////////////////////////////////////////
       var _accountValue = '' //54
       var _accountText = '' //4000 Sales
       if (_result.values.account.length != 0) {
@@ -1771,6 +1803,17 @@ define([
     )
     //處理總計計部分-START
     /////////////////////////////////////////////////////////////////////////////////////////
+    //載具類別
+    var _gw_gui_carrier_type_field = form.getField({id: 'custpage_carrier_type'})
+    _gw_gui_carrier_type_field.defaultValue = _gw_gui_carrier_type
+    var _gw_gui_carrier_id_1_field = form.getField({id: 'custpage_carrier_id_1'})
+    _gw_gui_carrier_id_1_field.defaultValue = _gw_gui_carrier_id_1
+    var _gw_gui_carrier_id_w_field = form.getField({id: 'custpage_carrier_id_2'})
+    _gw_gui_carrier_id_w_field.defaultValue = _gw_gui_carrier_id_2
+    //捐贈代碼
+    var _gw_gui_donation_code_field = form.getField({id: 'custpage_npo_ban'})
+    _gw_gui_donation_code_field.defaultValue = _gw_gui_donation_code
+    
   }
 
   //處理客戶押金

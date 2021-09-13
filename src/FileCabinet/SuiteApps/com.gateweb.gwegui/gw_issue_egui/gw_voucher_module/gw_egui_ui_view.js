@@ -15,6 +15,7 @@ define([
   '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_search_utility',
   '../gw_common_utility/gw_common_configure',
+  '../../gw_dao/carrierType/gw_dao_carrier_type_21',
 ], function (
   config,
   serverWidget,
@@ -26,7 +27,8 @@ define([
   dateutility,
   stringutility,
   searchutility,
-  gwconfigure
+  gwconfigure,
+  carriertypedao
 ) {
   var _gw_voucher_properties = gwconfigure.getGwVoucherProperties() //設定檔
 
@@ -390,14 +392,21 @@ define([
       value: '',
       text: '-----',
     })
-    _carrier_type.addSelectOption({
-      value: '3J0002',
-      text: '手機條碼',
-    })
-    _carrier_type.addSelectOption({
-      value: 'CQ0001',
-      text: '自然人憑證',
-    })
+    /////////////////////////////////////////////////////////////////////////////////////////
+    //20210913 walter add
+    var _all_carry_types = carriertypedao.getAll()
+	log.debug('get _all_carry_types', JSON.stringify(_all_carry_types))
+	for (var i=0; i<_all_carry_types.length; i++) {
+		 var _carry_json_obj = _all_carry_types[i]
+		 var _carry_text = _carry_json_obj.text
+		 var _carry_value = _carry_json_obj.value
+		 
+		 _carrier_type.addSelectOption({
+		      value: _carry_value,
+		      text: _carry_text,
+	     }) 
+	} 
+    ///////////////////////////////////////////////////////////////////////////////////////// 
     _carrier_type.updateBreakType({
       breakType: serverWidget.FieldBreakType.STARTCOL,
     })
@@ -406,14 +415,23 @@ define([
     })
 
     //載具號碼
-    var _carrier_id = form.addField({
-      id: 'custpage_carrier_id',
+    var _carrier_id_1 = form.addField({
+      id: 'custpage_carrier_id_1',
       type: serverWidget.FieldType.TEXT,
-      label: '載具號碼',
+      label: '載具號碼-1',
       container: 'row01_fieldgroupid',
     })
-    _carrier_id.defaultValue = _voucher_record.getValue({
+    _carrier_id_1.defaultValue = _voucher_record.getValue({
       fieldId: 'custrecord_gw_carrierid1',
+    })
+    var _carrier_id_2 = form.addField({
+      id: 'custpage_carrier_id_2',
+      type: serverWidget.FieldType.TEXT,
+      label: '載具號碼-2',
+      container: 'row01_fieldgroupid',
+    })
+    _carrier_id_2.defaultValue = _voucher_record.getValue({
+      fieldId: 'custrecord_gw_carrierid2',
     })
 
     //捐贈碼

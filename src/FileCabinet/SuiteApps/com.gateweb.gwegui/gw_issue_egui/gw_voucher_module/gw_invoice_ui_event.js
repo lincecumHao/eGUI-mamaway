@@ -16,7 +16,7 @@ define([
   '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_configure',
   '../gw_common_utility/gw_common_invoice_utility',
-  '../gw_common_utility/gw_common_gwmessage_utility'
+  '../gw_common_utility/gw_common_gwmessage_utility' 
 ], function (
   runtime,
   dialog,
@@ -30,7 +30,7 @@ define([
   stringutility,
   gwconfigure,
   invoiceutility,
-  gwmessage
+  gwmessage 
 ) {
   var _invoceFormatCode = gwconfigure.getGwVoucherFormatInvoiceCode() //35
   var _creditMemoFormatCode = gwconfigure.getGwVoucherFormatAllowanceCode()
@@ -377,49 +377,43 @@ define([
         fieldId: 'custpage_customer_id'
       })
 
-      var _carrier_type = _current_record.getValue({
-        fieldId: 'custpage_carrier_type'
-      })
-
+      var _carrier_type = _current_record.getValue({fieldId: 'custpage_carrier_type'})
+      if (_carrier_type.length !=0) _carrier_type = getCarryTypeValueByID(_carrier_type)
+  
       if (_buyer_identifier != '0000000000' && _carrier_type === 'CQ0001') {
         _errorMsg += '輸入統編不得使用自然人(CQ0001)載具<br>'
       }
       //4.載具號碼錯誤! 手機條碼 自然人載具錯誤!
-      var _carrier_id = _current_record.getValue({
-        fieldId: 'custpage_carrier_id'
+      var _carrier_id_1 = _current_record.getValue({
+        fieldId: 'custpage_carrier_id_1'
+      })
+      var _carrier_id_2 = _current_record.getValue({
+        fieldId: 'custpage_carrier_id_2'
       })
 
-      if (_carrier_type === 'CQ0001') {
+      if (_carrier_type == 'CQ0001') {
         //自然人憑證
-        if (!validate.checkCarrier(_carrier_type, _carrier_id)) {
+        if (!validate.checkCarrier(_carrier_type, _carrier_id_1) || 
+        	!validate.checkCarrier(_carrier_type, _carrier_id_2)) {
           _errorMsg += '請輸入正確自然人憑證格式<br>'
         }
-      } else if (_carrier_type === '3J0002') {
+      } else if (_carrier_type == '3J0002') {
         //手機條碼
-        if (!validate.checkCarrier(_carrier_type, _carrier_id)) {
+        if (!validate.checkCarrier(_carrier_type, _carrier_id_1) ||
+        	!validate.checkCarrier(_carrier_type, _carrier_id_2)) {
           _errorMsg += '請輸入正確手機條碼格式<br>'
         }
       }
-      if (_carrier_type !== '' && _carrier_id == '') {
+      if (_carrier_type !== '' && (_carrier_id_1 == '' || _carrier_id_2=='')) {
         _errorMsg += '請輸入載具號碼<br>'
       }
-      if (_carrier_type == '' && _carrier_id != '') {
+      if (_carrier_type == '' && (_carrier_id_1 != '' || _carrier_id_2!='')) {
         _errorMsg += '請輸入載具類別<br>'
       }
       //5.Email格式錯誤!
       var _buyer_email = _current_record.getValue({
         fieldId: 'custpage_buyer_email'
-      })
-      /**
-         if (_buyer_email.length == 0) {
-			   _errorMsg += '請輸入Email<br>';
-		   } else {
-			   //TODO Check Format
-			   if (!validate.checkEmail(_buyer_email)) {
-				   _errorMsg += '請輸入正確Email格式<br>';
-			   }
-		   }
-         */
+      }) 
       if (_buyer_email.length != 0) {
         //TODO Check Format
         if (!validate.checkEmail(_buyer_email)) {
@@ -893,6 +887,31 @@ define([
       log.debug(e.name, e.message)
     }
 	*/
+  }
+  
+  function getCarryTypeValueByID(carry_id) { 
+    var _gw_ct_value = ''
+    try {		  
+      var _mySearch = search.create({
+        type: 'customrecord_gw_carrier_type',
+        columns: [ 
+          search.createColumn({ name: 'custrecord_gw_ct_text' }),  
+          search.createColumn({ name: 'custrecord_gw_ct_value' }) 
+        ],
+      })
+ 
+      var _filterArray = []
+      _filterArray.push(['internalid', 'is', carry_id])
+      _mySearch.filterExpression = _filterArray
+      
+      _mySearch.run().each(function (result) {       		 
+          _gw_ct_value = result.getValue({name: 'custrecord_gw_ct_value'})     				
+          return true
+      })
+    } catch (e) {
+      log.debug(e.name, e.message)
+    }
+	return _gw_ct_value
   }
 
   //取得稅別資料
@@ -1779,9 +1798,15 @@ define([
     var _carrier_type = _current_record.getValue({
       fieldId: 'custpage_carrier_type'
     })
-    var _carrier_id = _current_record.getValue({
-      fieldId: 'custpage_carrier_id'
+    if (_carrier_type.length !=0) _carrier_type = getCarryTypeValueByID(_carrier_type)
+    
+    var _carrier_id_1 = _current_record.getValue({
+      fieldId: 'custpage_carrier_id_1'
     })
+    var _carrier_id_2 = _current_record.getValue({
+      fieldId: 'custpage_carrier_id_2'
+    })
+    
     var _npo_ban = _current_record.getValue({ fieldId: 'custpage_npo_ban' })
     var _customs_clearance_mark = _current_record.getValue({
       fieldId: 'custpage_customs_clearance_mark'
@@ -1860,7 +1885,8 @@ define([
       buyer_email: _buyer_email,
       buyer_address: _buyer_address,
       carrier_type: _carrier_type,
-      carrier_id: _carrier_id,
+      carrier_id_1: _carrier_id_1,
+      carrier_id_2: _carrier_id_2,
       npo_ban: _npo_ban,
       customs_clearance_mark: _customs_clearance_mark,
       gui_yearmonth_type: _gui_yearmonth_type,
@@ -2423,11 +2449,11 @@ define([
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_carrierid1',
-            value: stringutility.trim(_main.carrier_id)
+            value: stringutility.trim(_main.carrier_id_1)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_carrierid2',
-            value: stringutility.trim(_main.carrier_id)
+            value: stringutility.trim(_main.carrier_id_2)
           })
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_npoban',
