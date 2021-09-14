@@ -2171,11 +2171,7 @@ define([
 				//折讓單處理
 				_voucherMainRecord.setValue({fieldId:'custrecord_gw_need_upload_egui_mig',value:'NONE'});
 			}
-         */
-      _voucherMainRecord.setValue({
-        fieldId: 'custrecord_gw_print_mark',
-        value: 'Y',
-      })
+         */ 
       _voucherMainRecord.setValue({
         fieldId: 'custrecord_gw_lock_transaction',
         value: true,
