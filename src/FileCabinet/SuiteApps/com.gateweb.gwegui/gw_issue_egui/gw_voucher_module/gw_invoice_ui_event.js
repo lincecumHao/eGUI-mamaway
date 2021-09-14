@@ -418,7 +418,7 @@ define([
         fieldId: 'custpage_buyer_email'
       }) 
       if (_buyer_email.length != 0) {
-        //TODO Check Format
+        // Check Format
         if (!validate.checkEmail(_buyer_email)) {
           _errorMsg += '請輸入正確Email格式<br>'
         }
@@ -453,6 +453,9 @@ define([
         if (_npo_ban.length != 0) {
           _errorMsg += '捐贈碼不可輸入<br>'
         }
+      }
+      if (_npo_ban.trim().length != 0 && _carrier_type.trim().length != 0) {
+    	  _errorMsg += '捐贈碼及載具不可同時輸入<br>'
       }
 
       //6.*請選擇通關方式(零稅必填!)-Done
@@ -2490,9 +2493,10 @@ define([
             fieldId: 'custrecord_gw_customs_export_date',
             value: stringutility.trim(_main.customs_export_date)
           })
-
-          var _print_mark = 'N'
+          //20210914 walter add
+          var _print_mark = invoiceutility.getPrintMark(_main.npo_ban, _main.carrier_type, _main.buyer_identifier)
           //捐贈碼 OR 載具編號
+          /**
           if (
             (_main.mig_type == 'C0401' || _main.mig_type == 'B2C') &&
             stringutility.trim(_main.npo_ban) == '' &&
@@ -2501,6 +2505,7 @@ define([
             //TODO 要產生隨機碼
             _print_mark = 'Y'
           }
+          */
 		  /**
           var _random_number = Math.round(
             invoiceutility.getRandomNum(1000, 9999)

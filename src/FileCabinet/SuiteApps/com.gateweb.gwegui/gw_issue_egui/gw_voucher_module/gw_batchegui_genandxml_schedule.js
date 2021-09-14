@@ -2073,13 +2073,15 @@ define([
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
      
       var _random_number = ' '
-      var _print_mark = 'N'
+      var _print_mark = invoiceutility.getPrintMark(jsonObj.npo_ban, jsonObj.carrier_type, jsonObj.buyerIdentifier)
+      
       if (mig_type == 'C0401' || mig_type == 'B2C') {
-        //TODO 要產生隨機碼
-        //_random_number = Math.round(invoiceutility.getRandomNum(1000, 9999))
-		_random_number = invoiceutility.getRandomNumNew(_documentNumber, jsonObj.sellerIdentifier)
-        _print_mark = 'Y'
-      }
+         //TODO 要產生隨機碼
+         //_random_number = Math.round(invoiceutility.getRandomNum(1000, 9999))
+		 _random_number = invoiceutility.getRandomNumNew(_documentNumber, jsonObj.sellerIdentifier)
+         //_print_mark = 'Y'
+      } 
+      
       _voucherMainRecord.setValue({
         fieldId: 'custrecord_gw_print_mark',
         value: _print_mark,

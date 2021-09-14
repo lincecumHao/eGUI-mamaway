@@ -13,6 +13,21 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
   var _gw_voucher_properties = 'customrecord_gw_voucher_properties'
   var invoceFormatCode = '35'
 
+  //檢查print_mark 	  
+  function getPrintMark(npo_ban, carry_type, buyer_ban) {
+	  var _print_mark = 'Y'
+	  if (npo_ban.trim().length !=0) {//捐贈碼
+		  _print_mark = 'N'
+	  } else if (carry_type.trim().length !=0) {
+		  if (buyer_ban == '0000000000') {
+			  _print_mark = 'N'
+		  }	else if (carry_type.trim() != '3J0002') {//手機條碼
+			  _print_mark = 'N'
+		  }
+	  }
+	  return _print_mark
+  }
+  
   //字串補0
   function getInvoiceTypeDesc(invoiceType) {
     var invoiceTypeDesc = ''
@@ -1324,6 +1339,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
     getAssignLogNumber: getAssignLogNumber,
     getRandomNum: getRandomNum,
     getSellerInfoBySubsidiary: getSellerInfoBySubsidiary,
-	getRandomNumNew: getRandomNumNew
+	getRandomNumNew: getRandomNumNew,
+	getPrintMark: getPrintMark
   }
 })

@@ -1081,10 +1081,11 @@ define([
       var _item_memo = _result.values.custcol_gw_item_memo
 
       if (_itemtype === 'Discount') {
-        //折扣項目
-        _sumDiscountAmount += stringutility.convertToFloat(_amount)
-        //Discount 要再紀錄近來,不然會少
-        _sumTaxAmount += stringutility.convertToFloat(_ns_item_tax_amount)
+    	  //20210913 walter modify 取消Discount 限制
+          //折扣項目
+          //_sumDiscountAmount += stringutility.convertToFloat(_amount)
+          //Discount 要再紀錄近來,不然會少
+          //_sumTaxAmount += stringutility.convertToFloat(_ns_item_tax_amount)
       }
       //主檔才做
       if (_recordType == 'cashsale' && _mainline == '*') {
@@ -1101,9 +1102,10 @@ define([
 
       //只放 Sales Items 進來 (Discount Item 要排除)
       if (
-        _recordType == 'cashsale' &&
-        _mainline != '*' &&
-        _itemtype != 'Discount'
+          _recordType == 'cashsale' &&
+          _mainline != '*' 
+          //20210913 walter modify 取消Discount 限制
+          //&& _itemtype != 'Discount'
       ) {
         log.debug('get _taxObj', JSON.stringify(_taxObj))
         if (typeof _taxObj !== 'undefined') {

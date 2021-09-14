@@ -1737,9 +1737,9 @@ define([
             //TODO 要產生隨機碼
             _print_mark = 'Y'
           }
-          var _random_number = Math.round(
-            invoiceutility.getRandomNum(1000, 9999)
-          )
+          
+          var _random_number = invoiceutility.getRandomNumNew(_invoiceNumber, _main.company_ban)
+          //var _random_number = Math.round(invoiceutility.getRandomNum(1000, 9999))
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_random_number',
             value: _random_number,
