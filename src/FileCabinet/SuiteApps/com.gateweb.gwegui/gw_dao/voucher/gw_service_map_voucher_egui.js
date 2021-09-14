@@ -47,7 +47,7 @@ define([
       const searchResults = composeBodyAndLinesFromResults(voucherSearchResults)
       return ramda.map((searchResult) => {
         var document = gwMapUtil.mapTo(searchResult, mainFields)
-
+        log.debug({ title: 'document transform result', details: document })
         document.lines = ramda.map((resultLine) => {
           let mappedLine = gwMapUtil.mapTo(resultLine, detailFields)
           let taxTypeObj = gwTaxTypeDao.getTaxTypeByTaxCode(mappedLine.taxCode)

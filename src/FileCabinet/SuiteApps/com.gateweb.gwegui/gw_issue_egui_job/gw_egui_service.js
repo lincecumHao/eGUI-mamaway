@@ -105,9 +105,9 @@ define([
       if (shouldIssueNewGui(eguiObj)) {
         eguiObj.documentNumber = this.getNewGuiNumber(eguiObj)
       }
-      eguiObj.randomNumber = getRandomNumber(
-        `${eguiObj.documentNumber}${eguiObj.sellerTaxId}`
-      )
+      eguiObj.randomNumber = eguiObj.randomNumber
+        ? eguiObj.randomNumber
+        : getRandomNumber(`${eguiObj.documentNumber}${eguiObj.sellerTaxId}`)
       eguiObj.uploadXmlFileName = `${migTypeOption.migType}-${
         eguiObj.documentNumber
       }-${new Date().getTime()}.xml`

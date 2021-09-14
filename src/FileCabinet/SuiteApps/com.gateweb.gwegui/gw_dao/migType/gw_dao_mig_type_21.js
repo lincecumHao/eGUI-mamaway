@@ -18,7 +18,7 @@ define([
   class MigType extends gwDao.DataAccessObject {
     constructor() {
       super(fieldConfig.recordId, fieldConfig)
-      this.eguiActionEnum = { ISSUE: 'ISSUE', CANCEL: 'CANCEL' }
+      this.eguiActionEnum = { ISSUE: 'ISSUE', CANCEL: 'CANCEL', VOID:'VOID' }
       this.eguiTypeEnum = { EGUI: 'EGUI', ALLOWANCE: 'Allowance' }
       this.businessTranTypeEnum = {
         B2C: 'B2C',
@@ -46,6 +46,13 @@ define([
     getIssueEguiMigType(businessType) {
       return this.getByBusinessTypeAndDocType(
         this.eguiActionEnum.ISSUE,
+        businessType,
+        this.eguiTypeEnum.EGUI
+      )
+    }
+    getVoidEguiMigType(businessType) {
+      return this.getByBusinessTypeAndDocType(
+        this.eguiActionEnum.VOID,
         businessType,
         this.eguiTypeEnum.EGUI
       )

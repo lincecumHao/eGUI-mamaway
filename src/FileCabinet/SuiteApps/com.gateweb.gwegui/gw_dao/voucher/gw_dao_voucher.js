@@ -1,5 +1,6 @@
 define([
   'N/record',
+  '../taxType/gw_dao_tax_type_21',
   '../migType/gw_dao_mig_type_21',
   '../busEnt/gw_dao_business_entity_21',
   './gw_service_map_egui_voucher',
@@ -12,6 +13,7 @@ define([
   './gw_service_map_voucher_allowance'
 ], (
   record,
+  gwTaxTypeDao,
   gwMigTypeDao,
   gwBusinessEntityDao,
   gwEguiVoucherMapper,
@@ -45,14 +47,22 @@ define([
     )
   }
 
+  function getCheckboxValue(value) {
+    if (typeof value === 'boolean') {
+      return value
+    }
+    return value === 'T'
+  }
+
   function updateEguiVoucherRecordObj(voucherMain, voucherDetail) {
     var mainObj = JSON.parse(JSON.stringify(voucherMain))
     mainObj['name'] = mainObj['custrecord_gw_voucher_number']
     mainObj['custrecord_gw_voucher_date'] = getDateStr(
       mainObj['custrecord_gw_voucher_date']
     )
-    mainObj['custrecord_gw_voucher_sales_tax_apply'] =
-      mainObj['custrecord_gw_voucher_sales_tax_apply'] === 'T'
+    mainObj['custrecord_gw_voucher_sales_tax_apply'] = getCheckboxValue(
+      mainObj['custrecord_gw_voucher_sales_tax_apply']
+    )
     mainObj['custrecord_gw_tax_rate'] =
       parseFloat(mainObj['custrecord_gw_tax_rate']) < 1
         ? parseFloat(mainObj['custrecord_gw_tax_rate']) * 100
@@ -82,7 +92,6 @@ define([
         mainObj['custrecord_gw_voucher_yearmonth']
       return detail
     }, voucherDetail)
-    log.debug({ title: 'mainObj lines', details: mainObj['lines'] })
     return mainObj
   }
 
@@ -92,6 +101,10 @@ define([
     mainObj['custrecord_gw_voucher_date'] = getDateStr(
       mainObj['custrecord_gw_voucher_date']
     )
+    log.debug({
+      title: 'voucher apply tax original value',
+      details: mainObj['custrecord_gw_voucher_sales_tax_apply']
+    })
     mainObj['custrecord_gw_voucher_sales_tax_apply'] =
       mainObj['custrecord_gw_voucher_sales_tax_apply'] === 'T'
     mainObj['custrecord_gw_tax_rate'] =
@@ -121,7 +134,7 @@ define([
         mainObj['custrecord_gw_voucher_yearmonth']
       return detail
     }, voucherDetail)
-    log.debug({ title: 'mainObj lines', details: mainObj['lines'] })
+    log.debug({title: 'mainObj lines', details: mainObj['lines']})
     return mainObj
   }
 
@@ -178,18 +191,18 @@ define([
     egui.taxRate = parseFloat(egui.taxRate) / 100
     egui.sellerProfile = gwBusinessEntityDao.getByTaxId(egui.sellerTaxId)
     if (isB2CEgui(egui)) {
-      egui.salesAmt = egui.totalAmt
+      var taxableSalesAmt = parseFloat(egui.salesAmt) + parseFloat(egui.taxAmt)
+      egui.salesAmt = taxableSalesAmt
       egui.taxAmt = 0
       egui.lines = updateB2CLines(egui)
     } else {
       egui.lines = updateB2BLines(egui)
     }
-    log.debug({ title: 'UpdateEguiObj', details: egui })
+    log.debug({title: 'UpdateEguiObj', details: egui})
     return egui
   }
 
   function updateB2CLines(eguiObj) {
-    log.debug({ title: 'updateB2CLines', details: eguiObj })
     var lines = JSON.parse(JSON.stringify(eguiObj.lines))
     return ramda.map(function (line) {
       line.taxAmt = 0
@@ -202,7 +215,6 @@ define([
   }
 
   function updateB2BLines(eguiObj) {
-    log.debug({ title: 'updateB2CLines', details: eguiObj })
     var lines = JSON.parse(JSON.stringify(eguiObj.lines))
     return ramda.map(function (line) {
       line.totalAmt = parseFloat(parseFloat(line.totalAmt).toFixed(7))
@@ -220,7 +232,6 @@ define([
 
   function updateAllowanceObj(allowanceObj) {
     var allowance = JSON.parse(JSON.stringify(allowanceObj))
-    log.debug({ title: 'UpdateAllowanceObj', details: allowance })
     allowance.migTypeOption = gwMigTypeDao.getById(
       allowance.migTypeOption.value
     )
@@ -229,6 +240,27 @@ define([
       allowance.sellerProfile.value
     )
     return egui
+  }
+
+  function getEguiNumbersSubfilter(eguiNumbers) {
+    var allSubfilters = ramda.map((eguiNumber) => {
+      return [
+        mainFields.fields.custrecord_gw_voucher_number.id,
+        'contains',
+        eguiNumber
+      ]
+    }, eguiNumbers)
+    var subFilter = ramda.reduce(
+      (subFilter, eguiSubfilter) => {
+        subFilter.push(eguiSubfilter)
+        subFilter.push('OR')
+        return subFilter
+      },
+      [],
+      allSubfilters
+    )
+    subFilter.pop()
+    return subFilter
   }
 
   class VoucherDao {
@@ -244,7 +276,6 @@ define([
         internalIds
       )
       internalIdFilters.pop()
-      log.debug({ title: 'internalIdFilters', details: internalIdFilters })
       searchFilters.push(internalIdFilters)
       var searchResults = searchLib.runSavedSearch(
         'customsearch_gw_voucher_main_search',
@@ -256,11 +287,39 @@ define([
       // }, gwVoucherEguiMapper.transformSearchResults(searchResults))
     }
 
+    searchVoucherByEguiNumbers(guiNumbers) {
+      var searchFilters = []
+      var eGuiNumberFilters = getEguiNumbersSubfilter(guiNumbers)
+      searchFilters.push(eGuiNumberFilters)
+      var searchResults = searchLib.runSavedSearch(
+        'customsearch_gw_voucher_main_search',
+        eGuiNumberFilters
+      )
+      return searchResults
+    }
+
     getGuiByVoucherId(voucherId) {
       var results = this.searchVoucherByIds([voucherId])
+      log.debug({title: 'results', details: results})
       return ramda.map((eguiObj) => {
         return updateEguiObj(eguiObj)
       }, gwVoucherEguiMapper.transformSearchResults(results))[0]
+    }
+
+    getGuiByGuiNumber(guiNumber) {
+      var results = this.searchVoucherByEguiNumbers([guiNumber])
+      log.debug({title: 'results', details: results})
+      return ramda.map((eguiObj) => {
+        return updateEguiObj(eguiObj)
+      }, gwVoucherEguiMapper.transformSearchResults(results))[0]
+    }
+
+    getGuiByGuiNumbers(guiNumbers) {
+      var results = this.searchVoucherByEguiNumbers(guiNumbers)
+      log.debug({title: 'results', details: results})
+      return ramda.map((eguiObj) => {
+        return updateEguiObj(eguiObj)
+      }, gwVoucherEguiMapper.transformSearchResults(results))
     }
 
     getAllowanceByVoucherId(voucherId) {
@@ -277,8 +336,24 @@ define([
       )
     }
 
+    transformEguiToVoucher(eguiObj) {
+      var voucherRecordObj = gwEguiVoucherMapper.transform(eguiObj)
+      log.debug({
+        title: 'transformEguiToVoucher voucherRecordObj',
+        details: voucherRecordObj
+      })
+      voucherRecordObj = updateEguiVoucherRecordObj(
+        voucherRecordObj,
+        voucherRecordObj.lines
+      )
+      log.debug({
+        title: 'transformEguiToVoucher updated voucherRecordObj',
+        details: voucherRecordObj
+      })
+      return voucherRecordObj
+    }
+
     saveEguiToRecord(eguiObj) {
-      log.debug({ title: 'eguiObj', details: eguiObj })
       var voucherRecordObj = gwEguiVoucherMapper.transform(eguiObj)
       voucherRecordObj = updateEguiVoucherRecordObj(
         voucherRecordObj,
@@ -290,7 +365,6 @@ define([
     }
 
     saveAllowanceToRecord(allowanceObj) {
-      log.debug({ title: 'allowanceObj', details: allowanceObj })
       var voucherRecordObj = gwAllowanceVoucherMapper.transform(allowanceObj)
       voucherRecordObj = updateAllowanceVoucherRecordObj(
         voucherRecordObj,
@@ -302,20 +376,17 @@ define([
     }
 
     eguiUploaded(voucherId, result) {
-      log.debug({ title: 'eguiUploaded voucherId', details: voucherId })
-      log.debug({ title: 'eguiUploaded result', details: result })
       var updateValue = {}
       var isSuccess = result.code === 200
       updateValue[
         mainFields.fields.custrecord_gw_voucher_upload_status.id
-      ] = isSuccess ? 'P' : 'E'
+        ] = isSuccess ? 'P' : 'E'
       updateValue[
         mainFields.fields.custrecord_gw_uploadstatus_messag.id
-      ] = isSuccess ? '' : result.body
+        ] = isSuccess ? '' : result.body
       updateValue[mainFields.fields.custrecord_gw_voucher_status.id] = isSuccess
         ? mainFields.voucherStatus.VOUCHER_SUCCESS
         : mainFields.voucherStatus.VOUCHER_ERROR
-      log.debug({ title: 'eguiUploaded updateValue', details: updateValue })
       record.submitFields({
         type: 'customrecord_gw_voucher_main',
         id: voucherId,
@@ -323,7 +394,8 @@ define([
       })
     }
 
-    allowanceUploaded(voucherId) {}
+    allowanceUploaded(voucherId) {
+    }
   }
 
   return new VoucherDao()

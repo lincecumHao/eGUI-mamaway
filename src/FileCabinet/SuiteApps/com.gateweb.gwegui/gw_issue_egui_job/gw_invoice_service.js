@@ -3,8 +3,16 @@ define([
   'N/search',
   '../library/ramda.min',
   '../gw_dao/transactionSearch/gw_transaction_fields',
-  '../gw_dao/evidenceIssueStatus/gw_dao_evidence_issue_status_21'
-], (record, search, ramda, transSearchFields, gwEvidenceIssueStatusDao) => {
+  '../gw_dao/evidenceIssueStatus/gw_dao_evidence_issue_status_21',
+  '../library/gw_lib_search'
+], (
+  record,
+  search,
+  ramda,
+  transSearchFields,
+  gwEvidenceIssueStatusDao,
+  searchLib
+) => {
   /**
    * Module Description...
    *
@@ -60,6 +68,19 @@ define([
       filters: searchFilters,
       columns: searchColumns
     })
+  }
+
+  function getInvoiceToIssueEguiById(internalId) {
+    var searchFilters = []
+    searchFilters.push(['internalid', 'is', internalId])
+    var searchColumns = JSON.parse(
+      JSON.stringify(transSearchFields.allFieldIds)
+    )
+    searchColumns.push('taxItem.rate')
+    searchColumns.push('customer.email')
+    searchColumns.push('item.displayname')
+    var results = searchLib.runSearch('invoice', searchColumns, searchFilters)
+    return results
   }
 
   function getInvoiceSearchResultDebugger(internalId) {
@@ -251,14 +272,31 @@ define([
       values: updateValues
     })
   }
+  function eguiVoided(invoiceId) {
+    var updateValues = {}
+    updateValues[
+      transSearchFields.fields.custbody_gw_evidence_issue_status.id
+    ] = gwEvidenceIssueStatusDao.getIssuedAndNotTransformedStatus().id
+    updateValues[
+      transSearchFields.fields.custbody_gw_lock_transaction.id
+    ] = true
+    updateValues[transSearchFields.fields.custbody_gw_gui_not_upload.id] = false
+    record.submitFields({
+      type: record.Type.INVOICE,
+      id: invoiceId,
+      values: updateValues
+    })
+  }
 
   exports.getInvoiceToIssueEguiSearch = getInvoiceToIssueEguiSearch
   exports.getInvoiceToIssueEguiSearchById = getInvoiceToIssueEguiSearchById
+  exports.getInvoiceToIssueEguiById = getInvoiceToIssueEguiById
   exports.getInvoiceSearchResultDebugger = getInvoiceSearchResultDebugger
   exports.composeInvObj = composeInvObj
   exports.lockInvoice = lockInvoice
   exports.unlockInvoice = unlockInvoice
   exports.eguiIssued = eguiIssued
   exports.eguiIssueFailed = eguiIssueFailed
+  exports.eguiVoided = eguiVoided
   return exports
 })

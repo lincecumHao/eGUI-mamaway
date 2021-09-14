@@ -19,6 +19,10 @@ define([
 
    */
   function getXmlTemplateFilePath(migTypeObj) {
+    log.debug({
+      title: 'getXmlTemplateFilePath migTypeObj',
+      details: migTypeObj
+    })
     var fileName = migTypeObj.xmlFileName
     var folder = '../../../gw_mig_xml/'
     if (runtime.executionContext === runtime.ContextType.DEBUGGER) {
@@ -42,7 +46,49 @@ define([
 
   class EguiUploadService {
     getXmlString(eguiObj) {
+      var xmlTmplFile = file.load({
+        id: getXmlTemplateFilePath(eguiObj.migTypeOption)
+      })
+      var xmlRenderer = render.create()
+      xmlRenderer.templateContent = xmlTmplFile.getContents()
+      xmlRenderer.addCustomDataSource({
+        format: render.DataSource.OBJECT,
+        alias: 'guiData',
+        data: eguiObj
+      })
+      return xmlRenderer.renderAsString()
+    }
+
+    getIssuanceXmlString(eguiObj) {
+      var xmlTmplFile = file.load({
+        id: getXmlTemplateFilePath(eguiObj.migTypeOption)
+      })
+      var xmlRenderer = render.create()
+      xmlRenderer.templateContent = xmlTmplFile.getContents()
+      xmlRenderer.addCustomDataSource({
+        format: render.DataSource.OBJECT,
+        alias: 'guiData',
+        data: eguiObj
+      })
+      return xmlRenderer.renderAsString()
+    }
+
+    getCancelXmlString(eguiObj) {
       log.debug({ title: 'Upload Service eguiObj', details: eguiObj })
+      var xmlTmplFile = file.load({
+        id: getXmlTemplateFilePath(eguiObj.migTypeOption)
+      })
+      var xmlRenderer = render.create()
+      xmlRenderer.templateContent = xmlTmplFile.getContents()
+      xmlRenderer.addCustomDataSource({
+        format: render.DataSource.OBJECT,
+        alias: 'guiData',
+        data: eguiObj
+      })
+      return xmlRenderer.renderAsString()
+    }
+
+    getVoidXmlString(eguiObj) {
       var xmlTmplFile = file.load({
         id: getXmlTemplateFilePath(eguiObj.migTypeOption)
       })

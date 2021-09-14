@@ -65,13 +65,21 @@ define([
     return eguiMain
   }
 
-  function updateBuyer() {}
+  function updateBuyer() {
+  }
 
   function updateGuiNumber(eguiMainObj) {
     var eguiMain = JSON.parse(JSON.stringify(eguiMainObj))
     eguiMain.manualGuiNumber = eguiMain.eguiNumStart
     eguiMain.documentNumber = eguiMain.eguiNumStart
     return eguiMain
+  }
+
+  function getCheckboxValue(value){
+    if (typeof value ==='boolean'){
+      return value
+    }
+    return value === 'T'
   }
 
   function updateCarrierAndDonation(eguiMainObj) {
@@ -81,8 +89,7 @@ define([
         eguiMain['carrierType'].value
       )
     }
-    eguiMain['needUploadMig'] =
-      eguiMain['isNotUploadEGui'] === 'F' ? 'ALL' : 'NONE'
+    eguiMain['needUploadMig'] = getCheckboxValue(eguiMain['isNotUploadEGui']) ? 'NONE':'ALL'
     eguiMain['printMark'] =
       !eguiMain['carrierType'] && !eguiMain['donationCode'] ? 'Y' : 'N'
     return eguiMain
@@ -121,23 +128,13 @@ define([
   // TBD: more scenarios might be applicable
   function getDocumentStatus(isIssueEgui, isNotUploadEgui) {
     var status = ''
-    var issueEgui = true
-    var uploadEgui = true
-    if (typeof isIssueEgui === 'boolean') {
-      issueEgui = isIssueEgui
-    } else {
-      issueEgui = isIssueEgui === 'T'
-    }
-    if (typeof isNotUploadEgui === 'boolean') {
-      uploadEgui = !isNotUploadEgui
-    } else {
-      uploadEgui = isNotUploadEgui === 'F'
-    }
+    var issueEgui = getCheckboxValue(isIssueEgui)
+    var uploadEgui = !getCheckboxValue(isNotUploadEgui)
+
     if (issueEgui && uploadEgui)
       status = mainFields.voucherStatus.VOUCHER_SUCCESS
     if (issueEgui && !uploadEgui)
       status = mainFields.voucherStatus.VOUCHER_SUCCESS
-    log.debug({ title: 'getDocumentStatus status', details: status })
     return status
   }
 
@@ -146,8 +143,8 @@ define([
   function transformLines(tranLines) {
     return ramda.map((line) => {
       var eguiLine = gwObjectMappingUtil.mapFrom(line, lineFields)
-      eguiLine['taxRate'] = line['rate.taxItem']
-      eguiLine['itemDisplayName'] = line['displayname.item']
+      eguiLine['taxRate'] = line['rate.taxItem'] || line['taxItem']['rate']
+      eguiLine['itemDisplayName'] = line['displayname.item'] || line['item']['displayname']
       eguiLine['itemName'] = eguiLine['itemDisplayName']
       return eguiLine
     }, tranLines)
@@ -172,7 +169,6 @@ define([
   }
 
   function convertDeductLine(line) {
-    log.debug({ title: 'convertDeductLine line', details: line })
     line.quantity = line.quantity ? Math.abs(parseFloat(line.quantity)) : 1
     line.nsAmt = Math.abs(parseFloat(line.nsAmt)) * -1
     let taxAmt = line.nsTaxAmt ? parseFloat(line.nsTaxAmt) : 0
@@ -182,7 +178,6 @@ define([
 
   function updateLine(eguiLine) {
     var line = JSON.parse(JSON.stringify(eguiLine))
-    log.debug({ title: 'isDeductLine', details: isDeductLine(line) })
 
     line = isDeductLine(line) ? convertDeductLine(line) : line
     line = gwRecalculateLineTax(line)
@@ -426,7 +421,7 @@ define([
 
     transform() {
       var eguiMain = gwObjectMappingUtil.mapFrom(this.invoice, mainFields)
-      eguiMain['buyerEmail'] = this.invoice['email.customer']
+      eguiMain['buyerEmail'] = this.invoice['email.customer'] || this.invoice['customer']['email']
       var lines = transformLines(this.invoice.lines)
       var taxLines = transformLines(this.invoice.taxLines)
       eguiMain = updateBodyValues(eguiMain)
