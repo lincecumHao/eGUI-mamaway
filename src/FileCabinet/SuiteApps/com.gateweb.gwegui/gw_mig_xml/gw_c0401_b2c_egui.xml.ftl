@@ -51,8 +51,12 @@
         <#if guiData.relateNumber !=''>
             <RelateNumber>${guiData.relateNumber}</RelateNumber>
         </#if>
-        <InvoiceType>${guiData.guiType.value}</InvoiceType> <!-- * 07,08 -->
-        <DonateMark>${guiData.donationMark}</DonateMark> <!-- * 0,1 -->
+        <InvoiceType>${guiData.guiType}</InvoiceType>
+        <#if guiData.donationCode !=''>
+            <DonateMark>1</DonateMark>
+        <#else>
+            <DonateMark>0</DonateMark>
+        </#if>
         <#if guiData.carrierType!=''>
             <CarrierType>${guiData.carrierType}</CarrierType>
         </#if>
@@ -62,11 +66,11 @@
         <#if guiData.carrierType!=''>
             <CarrierId2>${guiData.carrierId2}</CarrierId2>
         </#if>
-        <PrintMark>${guiData.printMark}</PrintMark> <!-- * Y or N -->
+        <PrintMark>${guiData.printMark}</PrintMark>
         <#if guiData.donationCode !=''>
             <NPOBAN>${guiData.donationCode}</NPOBAN>
         </#if>
-        <RandomNumber>${guiData.randomNumber}</RandomNumber> <!-- * -->
+        <RandomNumber>${guiData.randomNumber}</RandomNumber>
     </Main>
     <Details>
         <#list guiData.lines as eguiLine>
@@ -89,9 +93,9 @@
         <SalesAmount>${guiData.salesAmt}</SalesAmount>
         <FreeTaxSalesAmount>${guiData.taxExemptedSalesAmt}</FreeTaxSalesAmount>
         <ZeroTaxSalesAmount>${guiData.zeroTaxSalesAmt}</ZeroTaxSalesAmount>
-        <TaxType>${guiData.taxType.value}</TaxType>
+        <TaxType>${guiData.taxType}</TaxType>
         <TaxRate>${guiData.taxRate}</TaxRate>
-        <TaxAmount>${guiData.taxAmount}</TaxAmount>
-        <TotalAmount>${guiData.totalAmount}</TotalAmount>
+        <TaxAmount>${guiData.taxAmt}</TaxAmount>
+        <TotalAmount>${guiData.totalAmt}</TotalAmount>
     </Amount>
 </Invoice>
