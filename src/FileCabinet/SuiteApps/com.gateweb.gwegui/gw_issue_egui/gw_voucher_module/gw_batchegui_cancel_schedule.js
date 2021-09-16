@@ -80,6 +80,10 @@ define([
           search.createColumn({ name: 'custrecord_gw_voucher_void_comment' }),
           search.createColumn({ name: 'custrecord_gw_invoice_todo_list' }),
           search.createColumn({ name: 'custrecord_gw_invoice_apply_list' }),
+          //折讓單
+          search.createColumn({ name: 'custrecord_gw_creditmemo_apply_list' }),
+          search.createColumn({ name: 'custrecord_gw_creditmemo_todo_list' }),
+          
         ],
       })
       var _filterArray = []
@@ -126,6 +130,14 @@ define([
         var _invoice_todo_list = result.getValue({
           name: 'custrecord_gw_invoice_todo_list',
         })
+        //Credit Memo
+        var _creditmemo_apply_list = result.getValue({
+          name: 'custrecord_gw_creditmemo_apply_list',
+        })
+        var _creditmemo_todo_list = result.getValue({
+          name: 'custrecord_gw_creditmemo_todo_list',
+        })
+        
         var _voucher_open_type = result.getValue({
           name: 'custrecord_gw_voucher_open_type',
         })
@@ -135,17 +147,31 @@ define([
         })
 
         //抓ToDO ID List
+        //Invoice ToDo List
         if (stringutility.trim(_invoice_todo_list) !== '') {
           var _obj = {
             internalid: _internalid,
-            openType: _voucher_open_type,
-            invoiceType: _invoice_type,
+            openType: _voucher_open_type, //SINGLE-INVOICE-SCHEDULE
+            invoiceType: _invoice_type,   //CANCEL
             reason: _void_comment,
             applyId: _invoice_todo_list,
           }
 
           _voucherIdjAry.push(_obj)
         }
+        //Credit Memo ToDo List
+        if (stringutility.trim(_creditmemo_todo_list) !== '') {
+            var _obj = {
+              internalid: _internalid,
+              openType: _voucher_open_type, //SINGLE-ALLOWANCE-SCHEDULE
+              invoiceType: _invoice_type,   //CANCEL
+              reason: _void_comment,
+              applyId: _creditmemo_todo_list,
+            }
+
+            _voucherIdjAry.push(_obj)
+        }
+        
         return true
       })
     } catch (e) {
@@ -482,7 +508,7 @@ define([
     }
   }
 
-  function closeNSScheduleTask(internalId, _completedIDsAry) {
+  function closeNSScheduleTask(voucher_type, internalId, _completedIDsAry) {
     try {
       var _record = record.load({
         type: _voucher_apply_list_record,
@@ -490,10 +516,14 @@ define([
         isDynamic: true,
       })
 
+      var _record_todo_fieldId = 'custrecord_gw_invoice_todo_list'
       var _todo_ids_list = []
       if (_completedIDsAry != null) {
+    	if (voucher_type=='ALLOWANCE') _record_todo_fieldId ='custrecord_gw_creditmemo_todo_list'
+    	else _record_todo_fieldId ='custrecord_gw_invoice_todo_list'
+    		
         var _invoice_todo_list = _record.getValue({
-          fieldId: 'custrecord_gw_invoice_todo_list',
+          fieldId: _record_todo_fieldId,
         })
         var _invoice_todo_ary = _invoice_todo_list.split(',')
 
@@ -514,7 +544,7 @@ define([
           }
         }
         _record.setValue({
-          fieldId: 'custrecord_gw_invoice_todo_list',
+          fieldId: _record_todo_fieldId,
           value: stringutility.trim(_todo_ids_list.toString()),
         })
       }
@@ -561,7 +591,7 @@ define([
           )
           log.debug('completedIDsAry', JSON.stringify(_completedIDsAry))
           //4. close task
-          closeNSScheduleTask(_internalid, _completedIDsAry)
+          closeNSScheduleTask(voucher_type, _internalid, _completedIDsAry)
         }
       }
     } catch (e) {
