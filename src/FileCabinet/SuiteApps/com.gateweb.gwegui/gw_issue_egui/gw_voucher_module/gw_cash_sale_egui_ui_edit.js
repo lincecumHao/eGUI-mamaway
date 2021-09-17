@@ -1099,7 +1099,8 @@ define([
         _selectClassification = _class
       }
       var _quantity = _result.values.quantity
-
+      //default
+      if (_quantity.trim().length==0)_quantity='1'
       //單位
       var _unitabbreviation = _result.values.unitabbreviation
 

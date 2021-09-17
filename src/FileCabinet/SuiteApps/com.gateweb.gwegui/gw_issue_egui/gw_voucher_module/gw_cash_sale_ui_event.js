@@ -833,7 +833,7 @@ define([
 
     //1.依稅(TaxCode)分流稅別資料(INVOICE+CREDITMEMO)混在一起
     var _jsonDocumemtLists = splitDocumentDetail(_mig_type)
-    alert('_jsonDocumemtLists='+JSON.stringify(_jsonDocumemtLists));
+    //alert('_jsonDocumemtLists='+JSON.stringify(_jsonDocumemtLists));
 
     //紀錄折扣項目清單及金額
     var _discountItemAry = _jsonDocumemtLists.discountItemAry
