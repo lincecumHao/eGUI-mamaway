@@ -833,7 +833,7 @@ define([
 
     //1.依稅(TaxCode)分流稅別資料(INVOICE+CREDITMEMO)混在一起
     var _jsonDocumemtLists = splitDocumentDetail(_mig_type)
-    //alert('_jsonDocumemtLists='+JSON.stringify(_jsonDocumemtLists));
+    alert('_jsonDocumemtLists='+JSON.stringify(_jsonDocumemtLists));
 
     //紀錄折扣項目清單及金額
     var _discountItemAry = _jsonDocumemtLists.discountItemAry
@@ -879,8 +879,7 @@ define([
       _eDocument_TaxType_3_Ary
     )
     var _guiAry_TaxType_3 = _organisedAry_TaxType_3.EGUI
-
-    //TODO
+ 
     //Check 混合稅部分
     var _organisedAry_TaxType_9 = organisingDocument(
       _applyMainObj,
@@ -1967,9 +1966,10 @@ define([
                 fieldId: 'custrecord_gw_ns_document_apply_id',
                 value: _obj.invoice_id,
               })
-			  
-			  _gw_ns_document_apply_id_ary.push(_obj.invoice_id)
-			  
+              
+              if (_gw_ns_document_apply_id_ary.toString().indexOf(_obj.invoice_id) == -1) {
+            	  _gw_ns_document_apply_id_ary.push(_obj.invoice_id)
+              } 
               _voucherDetailRecord.setValue({
                 fieldId: 'custrecord_gw_ns_document_number',
                 value: _obj.invoice_number,
