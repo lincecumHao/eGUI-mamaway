@@ -1841,6 +1841,7 @@ define([
     var _voucher_extra_memo = _current_record.getValue({
       fieldId: 'custpage_voucher_extra_memo'
     })
+    if (_voucher_extra_memo == 'undefined')_voucher_extra_memo=''  
     //20210118 walter 零稅率資訊
     //適用零稅率規定
     var _applicable_zero_tax = _current_record.getValue({

@@ -1191,8 +1191,8 @@ define([
     })
     var _voucher_extra_memo = _current_record.getValue({
       fieldId: 'custpage_voucher_extra_memo',
-    })
-
+    }) 
+    if (_voucher_extra_memo == 'undefined')_voucher_extra_memo=''    	 
     //手開發票號碼
     var _manual_voucher_number = _current_record.getValue({
       fieldId: 'custpage_manual_voucher_number',
