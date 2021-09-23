@@ -1041,9 +1041,9 @@ define([
       var _itemtype = _result.values.itemtype //InvtPart
 
       var _memo = _result.values['memo']
-      var _item_salesdescription = _result.values['item.salesdescription']
+      //var _item_salesdescription = _result.values['item.salesdescription']
       var _item_displayname = _result.values['item.displayname'] //SONY電視機
-      if (stringutility.trim(_memo) != '') _item_displayname = _memo
+      //if (stringutility.trim(_memo) != '') _item_displayname = _memo
 
       var _item_taxItem_rate = _result.values['taxItem.rate'] //5.00%
       if (_item_taxItem_rate == '') {
