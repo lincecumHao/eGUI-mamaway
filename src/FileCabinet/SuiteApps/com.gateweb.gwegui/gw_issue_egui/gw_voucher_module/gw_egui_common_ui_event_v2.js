@@ -44,11 +44,12 @@ define([
         null
       }
     }
-
+    /**
     var _changeFieldId = context.fieldId
     console.log('_changeFieldId=' + _changeFieldId)
     if (_changeFieldId == 'custpage_status') {
     }
+    */
   }
 
   function sublistChanged(context) {
