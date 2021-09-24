@@ -9,6 +9,7 @@ define([
   'N/ui/serverWidget',
   'N/record',
   'N/search',
+  '../gw_common_utility/gw_common_invoice_utility',
   '../gw_common_utility/gw_common_date_utility',
   '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_search_utility',
@@ -20,6 +21,7 @@ define([
   serverWidget,
   record,
   search,
+  invoiceutility,
   dateutility,
   stringutility,
   searchutility,
@@ -36,6 +38,9 @@ define([
 
   //放公司基本資料
   var _companyObjAry = []
+
+  //商品名稱欄位
+  var _ns_item_name_field = invoiceutility.getConfigureValue('ITEM_GROUP', 'ITEM_NAME_FIELD')
 
   //取得公司資料
   function getCustomerRecord(businessNo) {
@@ -1040,9 +1045,15 @@ define([
       var _line = _result.values.line //1
       var _itemtype = _result.values.itemtype //InvtPart
 
+      var _prodcut_id = ''
+	  var _prodcut_text = ''
+	  if (_result.values.item.length != 0) {
+	    _prodcut_id = _result.values.item[0].value //10519
+	    _prodcut_text = _result.values.item[0].text //NI20200811000099
+	  }
       var _memo = _result.values['memo']
       //var _item_salesdescription = _result.values['item.salesdescription']
-      var _item_displayname = _result.values['item.displayname'] //SONY電視機
+      var _item_displayname = _prodcut_text+_result.values[_ns_item_name_field] //SONY電視機
       //if (stringutility.trim(_memo) != '') _item_displayname = _memo
 
       var _item_taxItem_rate = _result.values['taxItem.rate'] //5.00%

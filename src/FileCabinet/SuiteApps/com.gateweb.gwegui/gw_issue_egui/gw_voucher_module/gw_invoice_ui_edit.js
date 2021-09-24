@@ -42,6 +42,9 @@ define([
   var _customer_deposit_text = '顧客押金'
   //部門代碼
   var _default_department_id = ''
+	
+  //商品名稱欄位
+  var _ns_item_name_field = invoiceutility.getConfigureValue('ITEM_GROUP', 'ITEM_NAME_FIELD')
 
   //放公司基本資料
   var _companyObjAry = []
@@ -1380,7 +1383,8 @@ define([
         _prodcut_id = _result.values.item[0].value //10519
         _prodcut_text = _result.values.item[0].text //NI20200811000099
       }
-      var _item_displayname = _result.values['item.displayname'] //SONY電視機
+      log.debug('ns_item_name_field', _ns_item_name_field)
+      var _item_displayname = _result.values[_ns_item_name_field] //SONY電視機
 	  _item_displayname = _prodcut_text+_item_displayname
       //if (stringutility.trim(_memo) != '') _item_displayname = _memo
 
@@ -2397,7 +2401,8 @@ define([
         _prodcut_id = _result.values.item[0].value //10519
         _prodcut_text = _result.values.item[0].text //NI20200811000099
       }
-      var _item_displayname = _result.values['item.displayname'] //SONY電視機
+      log.debug('ns_item_name_field', _ns_item_name_field)
+      var _item_displayname = _result.values[_ns_item_name_field] //SONY電視機
 	  _item_displayname = _prodcut_text+_item_displayname
       //if (stringutility.trim(_memo) != '') _item_displayname = _memo
 

@@ -69,6 +69,9 @@ define([
   var _deduction_egui_number_field = 'custbody_gw_creditmemo_deduction_list'
 
   var _allowance_pre_code = invoiceutility.getConfigureValue('ALLOWANCE_GROUP', 'ALLOWANCE_PRE_CODE')
+  
+  //商品名稱欄位
+  var _ns_item_name_field = invoiceutility.getConfigureValue('ITEM_GROUP', 'ITEM_NAME_FIELD')
 	  
   //放公司基本資料
   var _companyObjAry = []
@@ -607,7 +610,7 @@ define([
 				_prodcut_id = _result.values.item[0].value //10519
 				_prodcut_text = _result.values.item[0].text //NI20200811000099
 			}
-            var _item_displayname = _result.values['item.displayname'] //新客戶折扣
+            var _item_displayname = _result.values[_ns_item_name_field] //新客戶折扣
 			_item_displayname = _prodcut_text+_item_displayname
             //if (stringutility.trim(_memo) != '') _item_displayname = _memo
 
@@ -2979,7 +2982,7 @@ define([
 				_prodcut_id = _result.values.item[0].value //10519
 				_prodcut_text = _result.values.item[0].text //NI20200811000099
 			}
-            var _item_displayname = _result.values['item.displayname'] //新客戶折扣
+            var _item_displayname = _result.values[_ns_item_name_field] //新客戶折扣
 			_item_displayname = _prodcut_text+_item_displayname
             //if (stringutility.trim(_memo) != '') _item_displayname = _memo
 

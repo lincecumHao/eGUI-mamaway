@@ -36,6 +36,8 @@ define([
   var _final_remaining_usage = 0
   
   var _allowance_pre_code = invoiceutility.getConfigureValue('ALLOWANCE_GROUP', 'ALLOWANCE_PRE_CODE')
+  //商品名稱欄位
+  var _ns_item_name_field = invoiceutility.getConfigureValue('ITEM_GROUP', 'ITEM_NAME_FIELD')
   
   //1. 取得待處理的Credit_Memo資料 
   function executeScript(context) {
@@ -289,7 +291,7 @@ define([
 	log.debug('setAllowanceDetailItem', '處理Allowance Item')	
     var _item_json_obj	
     try {
-		 var _item_displayname = result_obj.values['item.displayname'] //新客戶折扣
+		 var _item_displayname = result_obj.values[_ns_item_name_field] //新客戶折扣
 		 var _item_salestaxcode_value = '' //5
 		 var _item_salestaxcode_text = result_obj.values['taxItem.itemid'] //UNDEF-TW
 
