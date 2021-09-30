@@ -3,9 +3,22 @@ define([
   'N/file',
   'N/render',
   'N/email',
+  'N/encode',
   '../../../library/ramda.min',
   '../../../gw_dao/voucher/gw_dao_voucher',
-], (runtime, file, render, email, ramda, gwVoucherDao) => {
+  '../gw_egui_service',
+  '../../../gw_library/gw_api/gw_api'
+], (
+  runtime,
+  file,
+  render,
+  email,
+  encode,
+  ramda,
+  gwVoucherDao,
+  eguiService,
+  GwApi
+) => {
   /**
    * Module Description...
    *
@@ -43,37 +56,94 @@ define([
     return eguiObjClone
   }
 
+  function isNullOrEmpty(input) {
+    if (typeof input === 'undefined' || input == null) return true
+    return input.replace(/\s/g, '').length < 1
+  }
+
+  function isB2B(taxId) {
+    return !isNullOrEmpty(taxId) && taxId !== '0000000000'
+  }
+
   class EmailService {
     getEmailBody(eguiObj) {
       var htmlTemplateFile = file.load({
-        id: getHtmlTemplateFile(),
+        id: getHtmlTemplateFile()
       })
       var htmlRenderer = render.create()
       htmlRenderer.templateContent = htmlTemplateFile.getContents()
       htmlRenderer.addCustomDataSource({
         format: render.DataSource.OBJECT,
         alias: 'guiData',
-        data: eguiObj,
+        data: eguiObj
       })
       return htmlRenderer.renderAsString()
     }
 
     sendByVoucherId(subject, voucherId) {
       var eguiObj = gwVoucherDao.getGuiByVoucherId(voucherId)
-      return this.send(subject, eguiObj)
+      var eguiObjUpdated = updateEguiObj(eguiObj)
+      var emailContentObj = {
+        author: this.getAuthor(eguiObjUpdated),
+        body: this.getEmailContent(eguiObjUpdated),
+        recipients: this.getRecipients(eguiObjUpdated),
+        subject: subject
+      }
+
+      log.debug({ title: 'isB2B', details: isB2B(eguiObjUpdated.buyerTaxId) })
+      log.debug({ title: 'buyerTaxId', details: eguiObjUpdated.buyerTaxId })
+      if (isB2B(eguiObjUpdated.buyerTaxId)) {
+        emailContentObj.attachments = this.getAttachmentFiles(eguiObjUpdated)
+      }
+      return this.send(subject, emailContentObj)
     }
 
-    send(subject, eguiObj) {
-      var eguiObjUpdated = updateEguiObj(eguiObj)
-      log.debug({ title: 'send email eguiObjUpdated', details: eguiObjUpdated })
-      var buyerEmail = eguiObjUpdated.buyerEmail || 'se10@gateweb.com.tw'
-      var emailContent = this.getEmailBody(eguiObjUpdated)
-      return email.send({
-        author: eguiObjUpdated.sellerProfile.contactEmployee.value,
-        body: emailContent,
-        recipients: [buyerEmail],
-        subject: subject,
+    send(subject, emailContentObj) {
+      return email.send(emailContentObj)
+    }
+
+    getEmailContent(eguiObj) {
+      return this.getEmailBody(eguiObj)
+    }
+
+    getAuthor(eguiObj) {
+      return eguiObj.sellerProfile.contactEmployee.value
+    }
+
+    getRecipients(eguiObj) {
+      var recipients = []
+      var recipient = eguiObj.buyerEmail || 'se10@gateweb.com.tw'
+      recipients.push(recipient)
+      return recipients
+    }
+
+    getAttachmentFiles(eguiObj) {
+      var attachments = []
+      var fileContent = this.getEguiPdf(eguiObj)
+      var filenameParts = eguiObj.uploadXmlFileName.split('-') //0:C0401, 1:eguiNumber, 2: timestamp
+      var filename = ''
+      var pdfAttachment = file.create({
+        name: eguiObj.uploadXmlFileName.replace('.xml', '') + '.pdf',
+        fileType: file.Type.PDF,
+        contents: fileContent
       })
+      attachments.push(pdfAttachment)
+
+      return attachments
+    }
+
+    getEguiPdf(eguiObj) {
+      var xmlString = eguiService.genXml(eguiObj)
+      var pdfParams = {
+        filename: eguiObj.uploadXmlFileName,
+        xml: xmlString,
+        docType: 'invoice',
+        docStatus: 2,
+        uploadDocument: eguiObj.needUploadMig,
+        reprint: false
+      }
+      var pdfResponse = GwApi.downloadEGuiPdf(pdfParams)
+      return pdfResponse.body
     }
   }
 

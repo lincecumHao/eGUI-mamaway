@@ -57,7 +57,6 @@ define([
   }
 
   function getGuiStatus(filename) {
-    log.debug({ title: 'getGuiStatue', details: filename })
     var responseObj = {
       code: 0,
       body: ''
@@ -71,19 +70,12 @@ define([
     var authHeaders = GwApiAuth.genAuthHeader(null, null, null)
     headers = { ...headers, ...authHeaders }
 
-    log.debug({ title: 'getGuiStatus headers', details: headers })
     var response = https.get({
       url: url,
       headers: headers
     })
-    log.debug({ title: 'getGuiStatus response success' })
     responseObj.code = response.code
-    log.debug({
-      title: 'getGuiStatus response code',
-      details: responseObj.code
-    })
     responseObj.body = JSON.parse(response.body)
-    log.debug({ title: 'getGuiStatus response body', details: responseObj })
     return responseObj
   }
 
@@ -100,7 +92,6 @@ define([
     var headers = getHeaders()
     var authHeaders = GwApiAuth.genAuthHeader(null, null, null)
     headers = { ...headers, ...authHeaders }
-    log.debug({ title: 'uploadGuiXml headers', details: headers })
     var response = https.post({
       url: url,
       body: xmlString,
@@ -117,7 +108,6 @@ define([
   }
 
   function getFilenameParts(filename) {
-    log.debug({ title: 'getFilenameParts filename', details: filename })
     var fileNameRegEx = /^((\w\d+)-(\w+\d+)-\d+)(.xml)$/gm
     var regExGroupResult = fileNameRegEx.exec(filename)
     var resultObj = {
