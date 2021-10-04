@@ -509,8 +509,15 @@ define([
 			}
 			
 			var _balance_amount_error = _egui_obj==null?true:_egui_obj.data_error
+					
+			var _tax_diff_error = invoiceutility.checkTaxDifference(
+																	 allowance_obj.sales_amount,
+																	 allowance_obj.taxRate,
+																	 allowance_obj.tax_amount,
+																	 tax_diff_balance
+																   )
 			
-			var _main_record_id = saveVoucherMainRecord(_apply_internal_id, allowance_obj, _balance_amount_error)
+			var _main_record_id = saveVoucherMainRecord(_apply_internal_id, allowance_obj, _balance_amount_error, _tax_diff_error)
 			saveVoucherDetailRecord(_apply_internal_id, _main_record_id, allowance_obj, _egui_obj)
 			
 			if (_balance_amount_error==false) {
@@ -593,7 +600,7 @@ define([
   }
   
   //產生折讓單(Main資料)
-  function saveVoucherMainRecord(apply_internal_id, allowance_obj, balance_amount_error) {
+  function saveVoucherMainRecord(apply_internal_id, allowance_obj, balance_amount_error, tax_diff_error) {
     log.debug('saveVoucherMainRecord', '產生折讓單(Main資料)')	 
     var _main_record_id = -1	    
     try {		
@@ -780,12 +787,7 @@ define([
 			fieldId: 'custrecord_gw_lock_transaction',
 			value: true,
 		  })		  
-		  var _tax_diff_error = invoiceutility.checkTaxDifference(
-			  allowance_obj.sales_amount,
-			  allowance_obj.taxRate,
-			  allowance_obj.tax_amount,
-			  tax_diff_balance
-			)
+		  
           //檢查結果處理
 		  if (balance_amount_error == true ) {
 			   _voucher_main_record.setValue({
@@ -800,7 +802,7 @@ define([
 				  fieldId: 'custrecord_gw_uploadstatus_messag',
 				  value: '折讓扣抵發票金額不足',
 			   })
-		  } else if (_tax_diff_error == true) {
+		  } else if (tax_diff_error == true) {
 			   //檢查稅差超過
 			   _voucher_main_record.setValue({
 				  fieldId: 'custrecord_gw_need_upload_egui_mig',
