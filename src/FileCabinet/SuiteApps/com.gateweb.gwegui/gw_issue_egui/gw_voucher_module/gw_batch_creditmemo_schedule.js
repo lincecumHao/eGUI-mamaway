@@ -520,7 +520,7 @@ define([
 			var _main_record_id = saveVoucherMainRecord(_apply_internal_id, allowance_obj, _balance_amount_error, _tax_diff_error)
 			saveVoucherDetailRecord(_apply_internal_id, _main_record_id, allowance_obj, _egui_obj)
 			
-			if (_balance_amount_error==false) {
+			if (_balance_amount_error==false && _tax_diff_error==false) {
 				updateEGUIDiscountFields(_egui_obj)  
 			}
 			//Lock CM
