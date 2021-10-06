@@ -16,7 +16,7 @@ define([
   '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_configure',
   '../gw_common_utility/gw_common_invoice_utility',
-  '../gw_common_utility/gw_common_gwmessage_utility' 
+  '../gw_common_utility/gw_common_gwmessage_utility'
 ], function (
   runtime,
   dialog,
@@ -30,8 +30,25 @@ define([
   stringutility,
   gwconfigure,
   invoiceutility,
-  gwmessage 
+  gwmessage
 ) {
+  function initializeVar() {
+    _allowance_pre_code = getAllowancePreCode()
+    _tax_diff_balance = getTaxDiffBalance()
+  }
+
+  function checkVarExists() {
+    return _allowance_pre_code !== '' && _tax_diff_balance !== ''
+  }
+
+  function constructorWrapper(func) {
+    return function () {
+      if (!checkVarExists()) {
+        initializeVar()
+      }
+      return func.apply(this, arguments)
+    }
+  }
   var _invoceFormatCode = gwconfigure.getGwVoucherFormatInvoiceCode() //35
   var _creditMemoFormatCode = gwconfigure.getGwVoucherFormatAllowanceCode()
 
@@ -60,13 +77,21 @@ define([
   var _defaultAssignLogType = 'TYPE_1'
 
   var _default_upload_status = 'A' //A->P->C,E
-
+  var _tax_diff_balance = ''
   //稅差
-  var _tax_diff_balance = stringutility.convertToFloat(
-    invoiceutility.getConfigureValue('TAX_GROUP', 'TAX_DIFF_BALANCE')
-  )
-  
-  var _allowance_pre_code = invoiceutility.getConfigureValue('ALLOWANCE_GROUP', 'ALLOWANCE_PRE_CODE')
+  function getTaxDiffBalance() {
+    _tax_diff_balance = stringutility.convertToFloat(
+      invoiceutility.getConfigureValue('TAX_GROUP', 'TAX_DIFF_BALANCE')
+    )
+  }
+
+  var _allowance_pre_code = ''
+  function getAllowancePreCode() {
+    _allowance_pre_code = invoiceutility.getConfigureValue(
+      'ALLOWANCE_GROUP',
+      'ALLOWANCE_PRE_CODE'
+    )
+  }
 
   var _invoiceEditScriptId = 'customscript_gw_document_ui_list'
   var _invoiceEditDeployId = 'customdeploy_gw_document_ui_list'
@@ -128,11 +153,15 @@ define([
       fieldId: changeFieldId
     })
     //custpage_tax_rate
-    var _npo_ban = _current_record.getField({ fieldId: 'custpage_npo_ban' })    
-    var _buyer_identifier = _current_record.getField({ fieldId: 'custpage_buyer_identifier' })
-    console.log(_buyer_identifier+' = '+_custpage_mig_type)
-    if ((_custpage_mig_type === 'B2BS' || _custpage_mig_type === 'B2BE')
-    	&& _buyer_identifier !='0000000000') {
+    var _npo_ban = _current_record.getField({ fieldId: 'custpage_npo_ban' })
+    var _buyer_identifier = _current_record.getField({
+      fieldId: 'custpage_buyer_identifier'
+    })
+    console.log(_buyer_identifier + ' = ' + _custpage_mig_type)
+    if (
+      (_custpage_mig_type === 'B2BS' || _custpage_mig_type === 'B2BE') &&
+      _buyer_identifier != '0000000000'
+    ) {
       _npo_ban.isDisplay = false //不顯示捐贈碼
     } else {
       _npo_ban.isDisplay = true //顯示捐贈碼
@@ -380,9 +409,12 @@ define([
         fieldId: 'custpage_customer_id'
       })
 
-      var _carrier_type = _current_record.getValue({fieldId: 'custpage_carrier_type'})
-      if (_carrier_type.length !=0) _carrier_type = getCarryTypeValueByID(_carrier_type)
-  
+      var _carrier_type = _current_record.getValue({
+        fieldId: 'custpage_carrier_type'
+      })
+      if (_carrier_type.length != 0)
+        _carrier_type = getCarryTypeValueByID(_carrier_type)
+
       if (_buyer_identifier != '0000000000' && _carrier_type === 'CQ0001') {
         _errorMsg += '輸入統編不得使用自然人(CQ0001)載具<br>'
       }
@@ -396,27 +428,34 @@ define([
 
       if (_carrier_type == 'CQ0001') {
         //自然人憑證
-        if (!validate.checkCarrier(_carrier_type, _carrier_id_1) || 
-        	!validate.checkCarrier(_carrier_type, _carrier_id_2)) {
+        if (
+          !validate.checkCarrier(_carrier_type, _carrier_id_1) ||
+          !validate.checkCarrier(_carrier_type, _carrier_id_2)
+        ) {
           _errorMsg += '請輸入正確自然人憑證格式<br>'
         }
       } else if (_carrier_type == '3J0002') {
         //手機條碼
-        if (!validate.checkCarrier(_carrier_type, _carrier_id_1) ||
-        	!validate.checkCarrier(_carrier_type, _carrier_id_2)) {
+        if (
+          !validate.checkCarrier(_carrier_type, _carrier_id_1) ||
+          !validate.checkCarrier(_carrier_type, _carrier_id_2)
+        ) {
           _errorMsg += '請輸入正確手機條碼格式<br>'
         }
       }
-      if (_carrier_type !== '' && (_carrier_id_1 == '' || _carrier_id_2=='')) {
+      if (
+        _carrier_type !== '' &&
+        (_carrier_id_1 == '' || _carrier_id_2 == '')
+      ) {
         _errorMsg += '請輸入載具號碼<br>'
       }
-      if (_carrier_type == '' && (_carrier_id_1 != '' || _carrier_id_2!='')) {
+      if (_carrier_type == '' && (_carrier_id_1 != '' || _carrier_id_2 != '')) {
         _errorMsg += '請輸入載具類別<br>'
       }
       //5.Email格式錯誤!
       var _buyer_email = _current_record.getValue({
         fieldId: 'custpage_buyer_email'
-      }) 
+      })
       if (_buyer_email.length != 0) {
         // Check Format
         if (!validate.checkEmail(_buyer_email)) {
@@ -455,7 +494,7 @@ define([
         }
       }
       if (_npo_ban.trim().length != 0 && _carrier_type.trim().length != 0) {
-    	  _errorMsg += '捐贈碼及載具不可同時輸入<br>'
+        _errorMsg += '捐贈碼及載具不可同時輸入<br>'
       }
 
       //6.*請選擇通關方式(零稅必填!)-Done
@@ -606,7 +645,7 @@ define([
           fieldId: 'custpage_item_remark',
           line: i
         })
-        
+
         var _item_unit = _current_record.getSublistValue({
           sublistId: _invoiceSublistId,
           fieldId: 'custpage_invoice_item_unit',
@@ -620,10 +659,10 @@ define([
         }
         if (_item_remark.length > 40) {
           _errorMsg += _item_name + ':Invoice明細備註需小於等於40字元<br>'
-        } 
+        }
         if (_item_unit.length > 6) {
-            _errorMsg += _item_name + ':Invoice單位需小於等於6字元<br>'
-        } 
+          _errorMsg += _item_name + ':Invoice單位需小於等於6字元<br>'
+        }
       }
     }
 
@@ -769,7 +808,9 @@ define([
 
     //var _customs_clearance_mark_field = _current_record.getField({fieldId: 'custpage_customs_clearance_mark'});
     //_customs_clearance_mark_field.isDisplay = false;
-    var _buyer_identifier = _current_record.getField({ fieldId: 'custpage_buyer_identifier' })    
+    var _buyer_identifier = _current_record.getField({
+      fieldId: 'custpage_buyer_identifier'
+    })
     var _npo_ban = _current_record.getField({ fieldId: 'custpage_npo_ban' })
     //if (_buyer_identifier!='0000000000') _npo_ban.isDisplay = false
 
@@ -894,30 +935,30 @@ define([
     }
 	*/
   }
-  
-  function getCarryTypeValueByID(carry_id) { 
+
+  function getCarryTypeValueByID(carry_id) {
     var _gw_ct_value = ''
-    try {		  
+    try {
       var _mySearch = search.create({
         type: 'customrecord_gw_carrier_type',
-        columns: [ 
-          search.createColumn({ name: 'custrecord_gw_ct_text' }),  
-          search.createColumn({ name: 'custrecord_gw_ct_value' }) 
-        ],
+        columns: [
+          search.createColumn({ name: 'custrecord_gw_ct_text' }),
+          search.createColumn({ name: 'custrecord_gw_ct_value' })
+        ]
       })
- 
+
       var _filterArray = []
       _filterArray.push(['internalid', 'is', carry_id])
       _mySearch.filterExpression = _filterArray
-      
-      _mySearch.run().each(function (result) {       		 
-          _gw_ct_value = result.getValue({name: 'custrecord_gw_ct_value'})     				
-          return true
+
+      _mySearch.run().each(function (result) {
+        _gw_ct_value = result.getValue({ name: 'custrecord_gw_ct_value' })
+        return true
       })
     } catch (e) {
       log.debug(e.name, e.message)
     }
-	return _gw_ct_value
+    return _gw_ct_value
   }
 
   //取得稅別資料
@@ -1804,15 +1845,16 @@ define([
     var _carrier_type = _current_record.getValue({
       fieldId: 'custpage_carrier_type'
     })
-    if (_carrier_type.length !=0) _carrier_type = getCarryTypeValueByID(_carrier_type)
-    
+    if (_carrier_type.length != 0)
+      _carrier_type = getCarryTypeValueByID(_carrier_type)
+
     var _carrier_id_1 = _current_record.getValue({
       fieldId: 'custpage_carrier_id_1'
     })
     var _carrier_id_2 = _current_record.getValue({
       fieldId: 'custpage_carrier_id_2'
     })
-    
+
     var _npo_ban = _current_record.getValue({ fieldId: 'custpage_npo_ban' })
     var _customs_clearance_mark = _current_record.getValue({
       fieldId: 'custpage_customs_clearance_mark'
@@ -1841,7 +1883,7 @@ define([
     var _voucher_extra_memo = _current_record.getValue({
       fieldId: 'custpage_voucher_extra_memo'
     })
-    if (_voucher_extra_memo == 'undefined')_voucher_extra_memo=''  
+    if (_voucher_extra_memo == 'undefined') _voucher_extra_memo = ''
     //20210118 walter 零稅率資訊
     //適用零稅率規定
     var _applicable_zero_tax = _current_record.getValue({
@@ -2314,8 +2356,9 @@ define([
         var _tax_diff_error = checkVoucherTaxDifference(_details)
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
         //20210909 walter modify
-        if (stringutility.convertToFloat(_main.tax_amount) <0)_tax_diff_error=true
-        
+        if (stringutility.convertToFloat(_main.tax_amount) < 0)
+          _tax_diff_error = true
+
         //20201113 walter modify
         if (_tax_diff_error == true) {
           var _title = '發票管理'
@@ -2495,7 +2538,11 @@ define([
             value: stringutility.trim(_main.customs_export_date)
           })
           //20210914 walter add
-          var _print_mark = invoiceutility.getPrintMark(_main.npo_ban, _main.carrier_type, _main.buyer_identifier)
+          var _print_mark = invoiceutility.getPrintMark(
+            _main.npo_ban,
+            _main.carrier_type,
+            _main.buyer_identifier
+          )
           //捐贈碼 OR 載具編號
           /**
           if (
@@ -2507,13 +2554,16 @@ define([
             _print_mark = 'Y'
           }
           */
-		  /**
+          /**
           var _random_number = Math.round(
             invoiceutility.getRandomNum(1000, 9999)
           )
 		  */
-		  var _random_number = invoiceutility.getRandomNumNew(_invoiceNumber, _main.company_ban)
-          
+          var _random_number = invoiceutility.getRandomNumNew(
+            _invoiceNumber,
+            _main.company_ban
+          )
+
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_random_number',
             value: _random_number
@@ -3084,20 +3134,24 @@ define([
         var _tax_diff_error = checkVoucherTaxDifference(_details)
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
         //20210909 walter modify
-        if (_net_value * stringutility.convertToFloat(_main.tax_amount) <0)_tax_diff_error=true
-        
+        if (_net_value * stringutility.convertToFloat(_main.tax_amount) < 0)
+          _tax_diff_error = true
+
         //20201113 walter modify
         if (_tax_diff_error == true) {
           _error_message += '稅差超過(' + _tax_diff_balance + ')元 ,請重新調整!'
         }
-        
+
         if (_error_message.length != 0) {
           gwmessage.showErrorMessage(_title, _error_message)
           break
         } else {
           //1.取得折讓單號
           var _today = dateutility.getCompanyLocatDateForClient() //alert('allowance _today='+_today);
-          var _allowanceNumber = invoiceutility.getAllowanceNumber(_allowance_pre_code, _today)
+          var _allowanceNumber = invoiceutility.getAllowanceNumber(
+            _allowance_pre_code,
+            _today
+          )
           _allowanceNumberAry.push(_allowanceNumber)
 
           ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3241,13 +3295,16 @@ define([
 
           if (_main.mig_type == 'C0401') {
             //TODO 要產生隨機碼
-			/**
+            /**
             var _random_number = Math.round(
               invoiceutility.getRandomNum(1000, 9999)
             )
 			*/
-			var _random_number = invoiceutility.getRandomNumNew(_allowanceNumber, _main.company_ban)
-			
+            var _random_number = invoiceutility.getRandomNumNew(
+              _allowanceNumber,
+              _main.company_ban
+            )
+
             _voucherMainRecord.setValue({
               fieldId: 'custrecord_gw_random_number',
               value: _random_number
@@ -5527,10 +5584,10 @@ define([
   }
 
   return {
-    pageInit: pageInit,
-    backToPage: backToPage,
-    submitDocument: submitDocument,
-    fieldChanged: fieldChanged,
-    sublistChanged: sublistChanged
+    pageInit: constructorWrapper(pageInit),
+    backToPage: constructorWrapper(backToPage),
+    submitDocument: constructorWrapper(submitDocument),
+    fieldChanged: constructorWrapper(fieldChanged),
+    sublistChanged: constructorWrapper(sublistChanged)
   }
 })
