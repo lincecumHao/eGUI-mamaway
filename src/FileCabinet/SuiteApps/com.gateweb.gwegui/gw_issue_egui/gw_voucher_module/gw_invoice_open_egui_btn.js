@@ -16,7 +16,11 @@ define(['N/runtime','N/record','../gw_common_utility/gw_common_invoice_utility']
     })
 	var _subsidiary = _current_record.getValue({
 		  fieldId: 'subsidiary',
-	})		
+	})	
+	//20211006 walter modify
+	var _gw_is_issue_egui = _current_record.getValue({
+	      fieldId: 'custbody_gw_is_issue_egui',
+	})
 	
 	var _auth = false;
 	var _user_obj    = runtime.getCurrentUser()
@@ -30,12 +34,14 @@ define(['N/runtime','N/record','../gw_common_utility/gw_common_invoice_utility']
     	}
     } 
    
-    log.debug('_lock_transaction', '_lock_transaction:' + _lock_transaction)
-	log.debug('_auth', '_auth:' + _auth)
+    log.debug('lock_transaction', 'lock_transaction:' + _lock_transaction)
+	log.debug('auth', 'auth:' + _auth)
+	log.debug('gw_is_issue_egui', 'gw_is_issue_egui:' + _gw_is_issue_egui)
 	
     if (
       context.type == context.UserEventType.VIEW &&
 	  _auth == true &&
+	  _gw_is_issue_egui == true &&
       _lock_transaction == false
     ) {
       frm.addButton({
