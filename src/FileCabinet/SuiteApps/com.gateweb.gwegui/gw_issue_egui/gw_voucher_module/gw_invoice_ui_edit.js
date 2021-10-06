@@ -13,9 +13,9 @@ define([
   '../gw_common_utility/gw_common_date_utility',
   '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_search_utility',
-  '../gw_common_utility/gw_common_configure',  
+  '../gw_common_utility/gw_common_configure',
   '../../gw_dao/taxType/gw_dao_tax_type_21',
-  '../../gw_dao/carrierType/gw_dao_carrier_type_21',
+  '../../gw_dao/carrierType/gw_dao_carrier_type_21'
 ], function (
   config,
   serverWidget,
@@ -26,7 +26,7 @@ define([
   dateutility,
   stringutility,
   searchutility,
-  gwconfigure, 
+  gwconfigure,
   taxyype21,
   carriertypedao
 ) {
@@ -42,9 +42,12 @@ define([
   var _customer_deposit_text = '顧客押金'
   //部門代碼
   var _default_department_id = ''
-	
+
   //商品名稱欄位
-  var _ns_item_name_field = invoiceutility.getConfigureValue('ITEM_GROUP', 'ITEM_NAME_FIELD')
+  var _ns_item_name_field = invoiceutility.getConfigureValue(
+    'ITEM_GROUP',
+    'ITEM_NAME_FIELD'
+  )
 
   //放公司基本資料
   var _companyObjAry = []
@@ -53,40 +56,43 @@ define([
   function getSellerInfo(businessNo) {
     var _companyObj
     try {
-		 var _businessSearch = search
-				  .create({
-					type: 'customrecord_gw_business_entity',
-					columns: ['custrecord_gw_be_tax_id_number', 'custrecord_gw_be_gui_title', 'custrecord_gw_be_business_address', 'custrecord_gw_be_contact_email'],
-					filters: ['custrecord_gw_be_tax_id_number', 'is', businessNo]
-				  })
-				  .run()
-				  .each(function (result) {
-					var _internalid = result.id
+      var _businessSearch = search
+        .create({
+          type: 'customrecord_gw_business_entity',
+          columns: [
+            'custrecord_gw_be_tax_id_number',
+            'custrecord_gw_be_gui_title',
+            'custrecord_gw_be_business_address',
+            'custrecord_gw_be_contact_email'
+          ],
+          filters: ['custrecord_gw_be_tax_id_number', 'is', businessNo]
+        })
+        .run()
+        .each(function (result) {
+          var _internalid = result.id
 
-					var _tax_id_number = result.getValue({
-					  name: 'custrecord_gw_be_tax_id_number',
-					})
-					var _be_gui_title = result.getValue({
-					  name: 'custrecord_gw_be_gui_title',
-					})
-					var _business_address = result.getValue({
-					  name: 'custrecord_gw_be_business_address',
-					})
-					var _contact_email = result.getValue({
-					  name: 'custrecord_gw_be_contact_email',
-					})
-					
-					_companyObj = {
-						'tax_id_number':_tax_id_number,
-						'be_gui_title':_be_gui_title,
-						'business_address':_business_address,
-						'contact_email':_contact_email
-					}
- 
-					return true
-				  }) 
-	  
-       
+          var _tax_id_number = result.getValue({
+            name: 'custrecord_gw_be_tax_id_number'
+          })
+          var _be_gui_title = result.getValue({
+            name: 'custrecord_gw_be_gui_title'
+          })
+          var _business_address = result.getValue({
+            name: 'custrecord_gw_be_business_address'
+          })
+          var _contact_email = result.getValue({
+            name: 'custrecord_gw_be_contact_email'
+          })
+
+          _companyObj = {
+            tax_id_number: _tax_id_number,
+            be_gui_title: _be_gui_title,
+            business_address: _business_address,
+            contact_email: _contact_email
+          }
+
+          return true
+        })
     } catch (e) {
       log.error(e.name, e.message)
     }
@@ -120,36 +126,35 @@ define([
 
   function loadAllTaxInformation() {
     try {
-	  var _all_tax_types = taxyype21.getAll()
-	  log.debug('get all_tax_types', JSON.stringify(_all_tax_types))
- 
-	  for (var i=0; i<_all_tax_types.length; i++) {
-		   var _tax_json_obj = _all_tax_types[i]
-		   var _ns_tax_json_obj = _tax_json_obj.taxCodes
-		   log.debug('get _ns_tax_json_obj', JSON.stringify(_ns_tax_json_obj))
-		   var _netsuite_id_value = ''
-		   var _netsuite_id_text = ''
-		   if (_ns_tax_json_obj.length != 0) {
-              _netsuite_id_value = _ns_tax_json_obj.value //111;
-              _netsuite_id_text = _ns_tax_json_obj.text //Jul 2020;
-           }
-		   
-		   var _obj = {
-			  voucher_property_id: _tax_json_obj.name, //TAX_WITH_TAX
-			  voucher_property_value: _tax_json_obj.value, //1
-			  voucher_property_note: _tax_json_obj.text, //應稅
-			  netsuite_id_value: _netsuite_id_value, //8(NS internalID)
-			  netsuite_id_text: _netsuite_id_text,   //VAT_TW TAX 5%-TW(NS Text)
-		   }
+      var _all_tax_types = taxyype21.getAll()
+      log.debug('get all_tax_types', JSON.stringify(_all_tax_types))
 
-		   _taxObjAry.push(_obj)
-		   
-	  } 
+      for (var i = 0; i < _all_tax_types.length; i++) {
+        var _tax_json_obj = _all_tax_types[i]
+        var _ns_tax_json_obj = _tax_json_obj.taxCodes
+        log.debug('get _ns_tax_json_obj', JSON.stringify(_ns_tax_json_obj))
+        var _netsuite_id_value = ''
+        var _netsuite_id_text = ''
+        if (_ns_tax_json_obj.length != 0) {
+          _netsuite_id_value = _ns_tax_json_obj.value //111;
+          _netsuite_id_text = _ns_tax_json_obj.text //Jul 2020;
+        }
+
+        var _obj = {
+          voucher_property_id: _tax_json_obj.name, //TAX_WITH_TAX
+          voucher_property_value: _tax_json_obj.value, //1
+          voucher_property_note: _tax_json_obj.text, //應稅
+          netsuite_id_value: _netsuite_id_value, //8(NS internalID)
+          netsuite_id_text: _netsuite_id_text //VAT_TW TAX 5%-TW(NS Text)
+        }
+
+        _taxObjAry.push(_obj)
+      }
     } catch (e) {
       log.error(e.name, e.message)
     }
   }
-   
+
   //取得稅別資料
   function getTaxInformation(netsuiteId) {
     var _taxObj
@@ -221,8 +226,8 @@ define([
           search.createColumn({ name: 'custrecord_gw_voucher_property_value' }), //1
           search.createColumn({ name: 'custrecord_gw_voucher_property_note' }), //應稅
           search.createColumn({ name: 'custrecord_gw_netsuite_id_value' }), //8
-          search.createColumn({ name: 'custrecord_gw_netsuite_id_text' }), //VAT_TW TAX 5%-TW
-        ],
+          search.createColumn({ name: 'custrecord_gw_netsuite_id_text' }) //VAT_TW TAX 5%-TW
+        ]
       })
 
       var _filterArray = []
@@ -231,7 +236,7 @@ define([
       _filterArray.push([
         'custrecord_gw_voucher_property_id',
         'is',
-        voucher_property_id,
+        voucher_property_id
       ])
 
       _mySearch.filterExpression = _filterArray
@@ -239,7 +244,7 @@ define([
         var internalid = result.id
 
         _account = result.getValue({
-          name: 'custrecord_gw_netsuite_id_value',
+          name: 'custrecord_gw_netsuite_id_value'
         })
 
         return true
@@ -258,27 +263,27 @@ define([
     var _customerRecord = record.load({
       type: record.Type.CUSTOMER,
       id: customer_id,
-      isDynamic: true,
+      isDynamic: true
     })
 
     var entityid = _customerRecord.getValue({
-      fieldId: 'entityid',
+      fieldId: 'entityid'
     })
     var _customer_buyer_name = _customerRecord.getValue({
-      fieldId: 'companyname',
+      fieldId: 'companyname'
     })
     var _customer_buyer_email = _customerRecord.getValue({
-      fieldId: 'email',
+      fieldId: 'email'
     })
     var _customer_buyer_identifier = _customerRecord.getValue({
-      fieldId: 'vatregnumber',
+      fieldId: 'vatregnumber'
     })
     //統一編號
     var _gw_ban_number = _customerRecord.getValue({
-      fieldId: 'custentity_gw_tax_id_number',
+      fieldId: 'custentity_gw_tax_id_number'
     })
     var _customer_address = _customerRecord.getValue({
-      fieldId: 'defaultaddress',
+      fieldId: 'defaultaddress'
     })
 
     var _jsonObj = {
@@ -286,7 +291,7 @@ define([
       companyname: _customer_buyer_name,
       email: _customer_buyer_email,
       vatregnumber: _gw_ban_number,
-      defaultaddress: _customer_address,
+      defaultaddress: _customer_address
     }
 
     return _jsonObj
@@ -296,7 +301,7 @@ define([
   function createFormHeader(apply_business_no, form) {
     /////////////////////////////////////////////////////////////
     //load company information
-	var _seller_obj = getSellerInfo(apply_business_no) 
+    var _seller_obj = getSellerInfo(apply_business_no)
     var _taxid = _seller_obj.tax_id_number
     var _companyname = _seller_obj.be_gui_title
     var _mainaddress_text = _seller_obj.business_address
@@ -308,42 +313,42 @@ define([
     var _applicable_zero_tax_field = form.addField({
       id: 'custpage_applicable_zero_tax',
       type: serverWidget.FieldType.TEXT,
-      label: '適用零稅率規定',
+      label: '適用零稅率規定'
     })
     _applicable_zero_tax_field.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     //海關出口單類別
     var _customs_export_category_field = form.addField({
       id: 'custpage_gw_customs_export_category',
       type: serverWidget.FieldType.TEXT,
-      label: '海關出口單類別',
+      label: '海關出口單類別'
     })
     _customs_export_category_field.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     //海關出口號碼
     var _customs_export_no_field = form.addField({
       id: 'custpage_gw_customs_export_no',
       type: serverWidget.FieldType.TEXT,
-      label: '海關出口號碼',
+      label: '海關出口號碼'
     })
     _customs_export_no_field.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     //輸出或結匯日期
     var _customs_export_date = form.addField({
       id: 'custpage_gw_customs_export_date',
       type: serverWidget.FieldType.TEXT,
-      label: '輸出或結匯日期',
+      label: '輸出或結匯日期'
     })
     _customs_export_no_field.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     ////////////////////////////////////////////////////////////////////////////////////////////////
     var _row01_fieldgroupid = form.addFieldGroup({
       id: 'row01_fieldgroupid',
-      label: '憑證資訊',
+      label: '憑證資訊'
     })
 
     //公司統編
@@ -351,33 +356,33 @@ define([
       id: 'custpage_company_ban',
       type: serverWidget.FieldType.TEXT,
       label: '公司統編',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     _company_ban.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     //公司地址
     var _company_address = form.addField({
       id: 'custpage_company_address',
       type: serverWidget.FieldType.TEXT,
       label: '公司地址',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     _company_address.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     //公司名稱
     var _company_name = form.addField({
       id: 'custpage_company_name',
       type: serverWidget.FieldType.TEXT,
       label: '公司名稱',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     _company_name.updateBreakType({
-      breakType: serverWidget.FieldBreakType.STARTROW,
+      breakType: serverWidget.FieldBreakType.STARTROW
     })
     log.debug('_mainaddress_text=' + _mainaddress_text)
-    
+
     //_company_ban.defaultValue = _ban
     _company_ban.defaultValue = apply_business_no
     _company_address.defaultValue = _mainaddress_text
@@ -388,11 +393,11 @@ define([
       id: 'custpage_invoice_type',
       type: serverWidget.FieldType.SELECT,
       label: '發票類型',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     _invoice_type.addSelectOption({
       value: '07',
-      text: '一般稅發票',
+      text: '一般稅發票'
     })
     /**
        _invoice_type.addSelectOption({
@@ -405,10 +410,10 @@ define([
       id: 'custpage_print_type',
       type: serverWidget.FieldType.TEXT,
       label: '印表機類別',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     _print_type.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
 
     //發票資料格式
@@ -416,11 +421,11 @@ define([
       id: 'custpage_mig_type',
       type: serverWidget.FieldType.SELECT,
       label: '發票資料格式',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     _mig_type.addSelectOption({
       value: 'B2C',
-      text: '存證',
+      text: '存證'
     })
     /**
        _mig_type.addSelectOption({
@@ -433,7 +438,7 @@ define([
       id: 'custpage_main_remark',
       type: serverWidget.FieldType.TEXT,
       label: '發票備註',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
 
     //字軌使用方式 _defaultAssignLogType
@@ -441,15 +446,15 @@ define([
       id: 'custpage_allowance_log_type',
       type: serverWidget.FieldType.SELECT,
       label: '是否上傳憑證',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     _selectDeductionPeriod.addSelectOption({
       value: 'ALL',
-      text: '上傳',
+      text: '上傳'
     })
     _selectDeductionPeriod.addSelectOption({
       value: 'NONE',
-      text: '不上傳',
+      text: '不上傳'
     })
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -458,7 +463,8 @@ define([
       id: 'custpage_customer_id',
       type: serverWidget.FieldType.SELECT,
       label: '客戶代碼',
-      container: 'row01_fieldgroupid',
+      source: 'CUSTOMER',
+      container: 'row01_fieldgroupid'
     })
     var _type = search.Type.CUSTOMER
     var _filters = []
@@ -467,28 +473,28 @@ define([
       'companyname',
       'custentity_gw_tax_id_number',
       'address',
-      'email',
+      'email'
     ]
     var _allCustomers = searchutility.getSearchResult(_type, _filters, _columns)
     _allCustomers.forEach(function (result) {
       var _internalid = result.id
-      
+
       log.debug('get CUSTOMER result', JSON.stringify(result))
 
       var _entityid = result.getValue({
-        name: 'entityid',
+        name: 'entityid'
       })
       var _name = result.getValue({
-        name: 'companyname',
+        name: 'companyname'
       })
       var _ban = result.getValue({
-        name: 'custentity_gw_tax_id_number',
+        name: 'custentity_gw_tax_id_number'
       })
       var _email = result.getValue({
-        name: 'email',
+        name: 'email'
       })
       var _address = result.getValue({
-        name: 'address',
+        name: 'address'
       })
 
       var _obj = {
@@ -497,32 +503,32 @@ define([
         ban: _ban,
         companyname: _name,
         email: _email,
-        address: _address,
+        address: _address
       }
       _companyObjAry.push(_obj)
 
-      _customer_id.addSelectOption({
-        value: _internalid,
-        text: _internalid + '-' + _name,
-      })
+      // _customer_id.addSelectOption({
+      //   value: _internalid.toString(),
+      //   text: _internalid + '-' + _name
+      // })
       return true
     })
 
     _customer_id.updateBreakType({
-      breakType: serverWidget.FieldBreakType.STARTCOL,
+      breakType: serverWidget.FieldBreakType.STARTCOL
     })
     _customer_id.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.DISABLED,
+      displayType: serverWidget.FieldDisplayType.DISABLED
     })
     //公司統編
     var _buyer_identifier = form.addField({
       id: 'custpage_buyer_identifier',
       type: serverWidget.FieldType.TEXT,
       label: '買方公司統編',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     _buyer_identifier.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.DISABLED,
+      displayType: serverWidget.FieldDisplayType.DISABLED
     })
 
     //公司名稱
@@ -530,10 +536,10 @@ define([
       id: 'custpage_buyer_name',
       type: serverWidget.FieldType.TEXT,
       label: '買方公司名稱',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     _buyer_name.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.DISABLED,
+      displayType: serverWidget.FieldDisplayType.DISABLED
     })
 
     //買方E-mail
@@ -541,10 +547,10 @@ define([
       id: 'custpage_buyer_email',
       type: serverWidget.FieldType.EMAIL,
       label: '買方E-mail',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     _buyer_email.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.DISABLED,
+      displayType: serverWidget.FieldDisplayType.DISABLED
     })
 
     //買方地址
@@ -552,10 +558,10 @@ define([
       id: 'custpage_buyer_address',
       type: serverWidget.FieldType.TEXT,
       label: '買方地址',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     _customs_buyer_address.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.DISABLED,
+      displayType: serverWidget.FieldDisplayType.DISABLED
     })
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -564,28 +570,28 @@ define([
       id: 'custpage_carrier_type',
       type: serverWidget.FieldType.SELECT,
       label: '載具類別',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     _carrier_type.addSelectOption({
       value: '',
-      text: '-----',
+      text: '-----'
     })
     ////////////////////////////////////////////////////////////////////
     var _all_carry_types = carriertypedao.getAll()
-	log.debug('get _all_carry_types', JSON.stringify(_all_carry_types))
-	for (var i=0; i<_all_carry_types.length; i++) {
-		 var _carry_json_obj = _all_carry_types[i]
-		 var _carry_text = _carry_json_obj.text
-		 var _carry_id = _carry_json_obj.id
-		 
-		 _carrier_type.addSelectOption({
-		      value: _carry_id,
-		      text: _carry_text,
-	     }) 
-	} 
+    log.debug('get _all_carry_types', JSON.stringify(_all_carry_types))
+    for (var i = 0; i < _all_carry_types.length; i++) {
+      var _carry_json_obj = _all_carry_types[i]
+      var _carry_text = _carry_json_obj.text
+      var _carry_id = _carry_json_obj.id
+
+      _carrier_type.addSelectOption({
+        value: _carry_id,
+        text: _carry_text
+      })
+    }
     ////////////////////////////////////////////////////////////////////
     _carrier_type.updateBreakType({
-      breakType: serverWidget.FieldBreakType.STARTCOL,
+      breakType: serverWidget.FieldBreakType.STARTCOL
     })
 
     //20210913 walter modify 預設抓Invoice
@@ -594,13 +600,13 @@ define([
       id: 'custpage_carrier_id_1',
       type: serverWidget.FieldType.TEXT,
       label: '載具號碼-1',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     var _carrier_id = form.addField({
       id: 'custpage_carrier_id_2',
       type: serverWidget.FieldType.TEXT,
       label: '載具號碼-2',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
 
     //捐贈碼
@@ -608,25 +614,25 @@ define([
       id: 'custpage_npo_ban',
       type: serverWidget.FieldType.TEXT,
       label: '捐贈碼',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     //通關註記
     var _customs_clearance_mark = form.addField({
       id: 'custpage_customs_clearance_mark',
       type: serverWidget.FieldType.SELECT,
       label: '通關註記',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     _customs_clearance_mark.addSelectOption({
       value: '1',
-      text: '經海關',
+      text: '經海關'
     })
     _customs_clearance_mark.addSelectOption({
       value: '2',
-      text: '不經海關',
+      text: '不經海關'
     })
     _customs_clearance_mark.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
 
     //課稅別
@@ -634,30 +640,30 @@ define([
       id: 'custpage_tax_type',
       type: serverWidget.FieldType.SELECT,
       label: '課稅別',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     _tax_type.addSelectOption({
       value: '1',
-      text: '應稅(一般稅率)',
+      text: '應稅(一般稅率)'
     })
     _tax_type.addSelectOption({
       value: '2',
-      text: '零稅率',
+      text: '零稅率'
     })
     _tax_type.addSelectOption({
       value: '3',
-      text: '免稅',
+      text: '免稅'
     })
     _tax_type.addSelectOption({
       value: '4',
-      text: '特種稅',
+      text: '特種稅'
     })
     _tax_type.addSelectOption({
       value: '9',
-      text: '混合稅',
+      text: '混合稅'
     })
     _tax_type.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.DISABLED,
+      displayType: serverWidget.FieldDisplayType.DISABLED
     })
 
     //稅率
@@ -665,18 +671,18 @@ define([
       id: 'custpage_tax_rate',
       type: serverWidget.FieldType.SELECT,
       label: '稅率%',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     _tax_rate.addSelectOption({
       value: '5',
-      text: '5',
+      text: '5'
     })
     _tax_rate.addSelectOption({
       value: '0',
-      text: '0',
+      text: '0'
     })
     _tax_rate.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.DISABLED,
+      displayType: serverWidget.FieldDisplayType.DISABLED
     })
     //////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -684,10 +690,10 @@ define([
       id: 'custpage_voucher_extra_memo',
       type: serverWidget.FieldType.RICHTEXT,
       label: 'Extra Memo',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     _hidden_voucher_extra_memo.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     //////////////////////////////////////////////////////////////////////////////////////////////
     //未稅銷售額
@@ -695,33 +701,33 @@ define([
       id: 'custpage_sales_amount',
       type: serverWidget.FieldType.TEXT,
       label: '銷售額',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     _sales_amount.updateBreakType({
-      breakType: serverWidget.FieldBreakType.STARTCOL,
+      breakType: serverWidget.FieldBreakType.STARTCOL
     })
     _sales_amount.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.DISABLED,
+      displayType: serverWidget.FieldDisplayType.DISABLED
     })
     //折讓金額
     var _sales_discount_amount = form.addField({
       id: 'custpage_sales_discount_amount',
       type: serverWidget.FieldType.TEXT,
       label: '折扣金額',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     _sales_discount_amount.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.DISABLED,
+      displayType: serverWidget.FieldDisplayType.DISABLED
     })
     //總稅額
     var _tax_amount = form.addField({
       id: 'custpage_tax_amount',
       type: serverWidget.FieldType.TEXT,
       label: '稅額',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     _tax_amount.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.DISABLED,
+      displayType: serverWidget.FieldDisplayType.DISABLED
     })
 
     //總金額
@@ -729,10 +735,10 @@ define([
       id: 'custpage_total_amount',
       type: serverWidget.FieldType.TEXT,
       label: '總金額',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     _total_amount.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.DISABLED,
+      displayType: serverWidget.FieldDisplayType.DISABLED
     })
 
     //憑證日期
@@ -740,43 +746,43 @@ define([
       id: 'custpage_select_voucher_date',
       type: serverWidget.FieldType.DATE,
       label: '憑證日期',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     ///////////////////////////////////////////////////////////////////////////////////
     //發票使用區間
     var _row02_fieldgroupid = form.addFieldGroup({
       id: 'row02_fieldgroupid',
-      label: '手開發票開立條件',
+      label: '手開發票開立條件'
     })
     var _eguiFormatCode = form.addField({
       id: 'custpage_egui_format_code',
       type: serverWidget.FieldType.SELECT,
       label: '格式代號 *',
-      container: 'row02_fieldgroupid',
+      container: 'row02_fieldgroupid'
     })
     _eguiFormatCode.addSelectOption({
       value: '31-01',
-      text: '31-銷項三聯式[裝訂數:50張]',
+      text: '31-銷項三聯式[裝訂數:50張]'
     })
     _eguiFormatCode.addSelectOption({
       value: '31-05',
-      text: '31-銷項電子計算機統一發票[裝訂數:50張]',
+      text: '31-銷項電子計算機統一發票[裝訂數:50張]'
     })
     _eguiFormatCode.addSelectOption({
       value: '32-02',
-      text: '32-銷項二聯式[裝訂數:50張]',
+      text: '32-銷項二聯式[裝訂數:50張]'
     })
     _eguiFormatCode.addSelectOption({
       value: '32-03',
-      text: '32-銷項二聯式收銀機統一發票[裝訂數:250張]',
+      text: '32-銷項二聯式收銀機統一發票[裝訂數:250張]'
     })
     _eguiFormatCode.addSelectOption({
       value: '35-06',
-      text: '35-銷項三聯式收銀機統一發票[裝訂數:250張]',
+      text: '35-銷項三聯式收銀機統一發票[裝訂數:250張]'
     })
     _eguiFormatCode.addSelectOption({
       value: '35-07',
-      text: '35-一般稅額電子發票[裝訂數:50張]',
+      text: '35-一般稅額電子發票[裝訂數:50張]'
     })
     _eguiFormatCode.defaultValue = '35-07'
 
@@ -785,43 +791,43 @@ define([
       id: 'custpage_manual_voucher_number',
       type: serverWidget.FieldType.TEXT,
       label: '手開發票號碼',
-      container: 'row02_fieldgroupid',
+      container: 'row02_fieldgroupid'
     })
     ///////////////////////////////////////////////////////////////////////////////////
     //字軌使用方式
     var _row05_fieldgroupid = form.addFieldGroup({
       id: 'row05_fieldgroupid',
-      label: '字軌分配條件',
+      label: '字軌分配條件'
     })
     //部門代碼
     var _dept_code = form.addField({
       id: 'custpage_dept_code',
       type: serverWidget.FieldType.SELECT,
       label: '發票部門',
-      container: 'row05_fieldgroupid',
+      container: 'row05_fieldgroupid'
     })
     _dept_code.addSelectOption({
       value: '',
-      text: 'NONE',
+      text: 'NONE'
     })
     var _deptCodeSearch = search
       .create({
         type: search.Type.DEPARTMENT,
-        columns: ['internalid', 'name'],
+        columns: ['internalid', 'name']
       })
       .run()
       .each(function (result) {
         var _internalid = result.id
         var _entityid = result.getValue({
-          name: 'internalid',
+          name: 'internalid'
         })
         var _name = result.getValue({
-          name: 'name',
+          name: 'name'
         })
 
         _dept_code.addSelectOption({
           value: _internalid,
-          text: _internalid + '-' + _name,
+          text: _internalid + '-' + _name
         })
         return true
       })
@@ -830,30 +836,30 @@ define([
       id: 'custpage_classification',
       type: serverWidget.FieldType.SELECT,
       label: '發票分類',
-      container: 'row05_fieldgroupid',
+      container: 'row05_fieldgroupid'
     })
     _selectClassification.addSelectOption({
       value: '',
-      text: 'NONE',
+      text: 'NONE'
     })
     var _classificationSearch = search
       .create({
         type: search.Type.CLASSIFICATION,
-        columns: ['internalid', 'name'],
+        columns: ['internalid', 'name']
       })
       .run()
       .each(function (result) {
         var _internalid = result.id
         var _entityid = result.getValue({
-          name: 'internalid',
+          name: 'internalid'
         })
         var _name = result.getValue({
-          name: 'name',
+          name: 'name'
         })
 
         _selectClassification.addSelectOption({
           value: _internalid,
-          text: _internalid + '-' + _name,
+          text: _internalid + '-' + _name
         })
         return true
       })
@@ -862,33 +868,33 @@ define([
     //折讓單使用區間
     var _row03_fieldgroupid = form.addFieldGroup({
       id: 'row03_fieldgroupid',
-      label: '折讓單開立條件',
+      label: '折讓單開立條件'
     })
     //折讓單發票扣抵期間
     var _selectDeductionPeriod = form.addField({
       id: 'custpage_allowance_deduction_period',
       type: serverWidget.FieldType.SELECT,
       label: '發票扣抵期間',
-      container: 'row03_fieldgroupid',
+      container: 'row03_fieldgroupid'
     })
     _selectDeductionPeriod.addSelectOption({
       value: 'this_period',
-      text: '本期開始',
+      text: '本期開始'
     })
     _selectDeductionPeriod.addSelectOption({
       value: 'early_period',
-      text: '前期開始',
+      text: '前期開始'
     })
     _selectDeductionPeriod.addSelectOption({
       value: 'user_selected',
-      text: '自選發票',
+      text: '自選發票'
     })
     //人工輸入發票號碼
     var _deduction_voucher_number = form.addField({
       id: 'custpage_deduction_egui_number',
       type: serverWidget.FieldType.TEXT,
       label: '扣抵發票號碼',
-      container: 'row03_fieldgroupid',
+      container: 'row03_fieldgroupid'
     })
 
     ///////////////////////////////////////////////////////////////////////////////////
@@ -897,10 +903,10 @@ define([
       id: 'custpage_voucher_open_type',
       type: serverWidget.FieldType.TEXT,
       label: '憑證開立方式',
-      container: 'row01_fieldgroupid',
+      container: 'row01_fieldgroupid'
     })
     _voucherOpenTypeField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
   }
 
@@ -920,7 +926,7 @@ define([
     amount_taxtype_5: 0,
     amount_taxtype_15: 0,
     amount_taxtype_25: 0,
-    amount_taxtype_total: 0,
+    amount_taxtype_total: 0
   }
 
   //重新計算稅額
@@ -996,159 +1002,159 @@ define([
     var sublist = form.addSublist({
       id: 'invoicesublistid',
       type: serverWidget.SublistType.LIST,
-      label: 'NS Invoice 商品清單',
+      label: 'NS Invoice 商品清單'
     })
     //sublist.addMarkAllButtons();
 
     var _idField = sublist.addField({
       id: 'customer_search_invoice_id',
       label: 'Internal ID',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _idField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     var _numberField = sublist.addField({
       id: 'customer_search_invoice_number',
       label: 'Invoice Number',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _numberField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     //放dept_code
     var _deptCodeField = sublist.addField({
       id: 'customer_search_invoice_deptcode',
       label: 'Internal ID',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _deptCodeField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     //放classfication
     var _classficationField = sublist.addField({
       id: 'customer_search_invoice_class',
       label: 'Internal ID',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _classficationField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     //Discount
     var _discountField = sublist.addField({
       id: 'customer_search_invoice_discount',
       label: 'Discount Item',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _discountField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     var _seqField = sublist.addField({
       id: 'customer_search_invoice_seq',
       type: serverWidget.FieldType.TEXT,
-      label: '順序',
+      label: '順序'
     })
 
     var _itemNameField = sublist.addField({
       id: 'custpage_item_name',
       type: serverWidget.FieldType.TEXT,
-      label: '名稱',
+      label: '名稱'
     })
     _itemNameField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.ENTRY,
+      displayType: serverWidget.FieldDisplayType.ENTRY
     })
 
     var _taxRateField = sublist.addField({
       id: 'customer_search_invoice_tax_rate',
       label: '稅率%',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _taxRateField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     var _taxRateNoteField = sublist.addField({
       id: 'customer_search_invoice_tax_rate_note',
       label: '稅率%',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
 
     var _taxCodeField = sublist.addField({
       id: 'customer_search_invoice_tax_code',
       label: '稅別',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _taxCodeField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
 
     var _itemUnitField = sublist.addField({
       id: 'custpage_invoice_item_unit',
       type: serverWidget.FieldType.TEXT,
-      label: '單位',
+      label: '單位'
     })
     _itemUnitField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.ENTRY,
+      displayType: serverWidget.FieldDisplayType.ENTRY
     })
-    
+
     sublist.addField({
       id: 'custpage_unit_price',
       type: serverWidget.FieldType.TEXT,
-      label: '單價',
+      label: '單價'
     })
     sublist.addField({
       id: 'custpage_item_quantity',
       type: serverWidget.FieldType.TEXT,
-      label: '數量',
+      label: '數量'
     })
     sublist.addField({
       id: 'custpage_item_amount',
       type: serverWidget.FieldType.TEXT,
-      label: '小計(未稅)',
+      label: '小計(未稅)'
     })
     var _itemRemarkField = sublist.addField({
       id: 'custpage_item_remark',
       type: serverWidget.FieldType.TEXT,
-      label: '明細備註',
+      label: '明細備註'
     })
     _itemRemarkField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.ENTRY,
+      displayType: serverWidget.FieldDisplayType.ENTRY
     })
     /////////////////////////////////////////////////////////////////////////////////////////
     //20201105 walter modify
     var _itemTaxAmountField = sublist.addField({
       id: 'custpage_invoice_item_tax_amount',
       label: 'Item Tax Amount',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _itemTaxAmountField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
 
     var _itemTotalAmountField = sublist.addField({
       id: 'custpage_invoice_item_total_amount',
       label: 'Item Toatl Amount',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _itemTotalAmountField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
 
     var _totalTaxAmountField = sublist.addField({
       id: 'custpage_invoice_total_tax_amount',
       label: 'Total Tax Amount',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _totalTaxAmountField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
 
     var _itemTotalAmountField = sublist.addField({
       id: 'custpage_invoice_total_sum_amount',
       label: 'Sum Toatl Amount',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _itemTotalAmountField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
 
     /////////////////////////////////////////////////////////////////////////////////////////
@@ -1156,7 +1162,7 @@ define([
     var _selectDepartment = ''
     var _selectClassification = ''
     var _mySearch = search.load({
-      id: _gw_invoice_detail_search_id,
+      id: _gw_invoice_detail_search_id
     })
     var _filterArray = []
     //_filterArray.push(['internalid','is', 948]);
@@ -1195,7 +1201,7 @@ define([
     //地址
     var _companyObj
     var _customer_ban = ''
-	var _customer_email = ''
+    var _customer_email = ''
     var _company_name = ''
     var _company_address = ''
 
@@ -1243,10 +1249,10 @@ define([
     ////////////////////////////////////////////////////////////
     //載具類別
     var _gw_gui_carrier_type = ''
-   	var _gw_gui_carrier_id_1 = ''
+    var _gw_gui_carrier_id_1 = ''
     var _gw_gui_carrier_id_2 = ''
     //捐贈代碼
-   	var _gw_gui_donation_code = ''
+    var _gw_gui_donation_code = ''
     ////////////////////////////////////////////////////////////
 
     _mySearch.run().each(function (result) {
@@ -1323,17 +1329,18 @@ define([
         _company_name = _result.values.custbody_gw_gui_title
         _company_address = _result.values.custbody_gw_gui_address
       }
-	  //客戶Email
-	  _customer_email  = _result.values['customer.email']
-	  ///////////////////////////////////////////////////////////////////////
-	  //載具類別 
-	  if (_result.values.custbody_gw_gui_carrier_type.length != 0) {
-		  _gw_gui_carrier_type = _result.values.custbody_gw_gui_carrier_type[0].value   
-	  } 
-	  _gw_gui_carrier_id_1 = _result.values.custbody_gw_gui_carrier_id_1
-	  _gw_gui_carrier_id_2 = _result.values.custbody_gw_gui_carrier_id_2
-	  //捐贈代碼
-	  _gw_gui_donation_code = _result.values.custbody_gw_gui_donation_code
+      //客戶Email
+      _customer_email = _result.values['customer.email']
+      ///////////////////////////////////////////////////////////////////////
+      //載具類別
+      if (_result.values.custbody_gw_gui_carrier_type.length != 0) {
+        _gw_gui_carrier_type =
+          _result.values.custbody_gw_gui_carrier_type[0].value
+      }
+      _gw_gui_carrier_id_1 = _result.values.custbody_gw_gui_carrier_id_1
+      _gw_gui_carrier_id_2 = _result.values.custbody_gw_gui_carrier_id_2
+      //捐贈代碼
+      _gw_gui_donation_code = _result.values.custbody_gw_gui_donation_code
 
       ///////////////////////////////////////////////////////////////////////
       var _accountValue = '' //54
@@ -1349,10 +1356,11 @@ define([
         _sales_order_number = _result.values.createdfrom[0].text //sales order  #42
       }
 
-      var _amount = stringutility.convertToFloat(_result.values.amount) //31428.57(未稅)	  
-	  //20210707 walter modify
-	  if (stringutility.convertToFloat(_result.values.quantity) <0) _amount = -1*_amount
-	  
+      var _amount = stringutility.convertToFloat(_result.values.amount) //31428.57(未稅)
+      //20210707 walter modify
+      if (stringutility.convertToFloat(_result.values.quantity) < 0)
+        _amount = -1 * _amount
+
       //20201105 walter modify
       //NS 的總稅額
       var _ns_total_tax_amount = stringutility.convertToFloat(
@@ -1371,7 +1379,8 @@ define([
       var _ns_item_total_amount = stringutility.convertToFloat(
         _result.values.formulacurrency
       ) //Item金額小計
-	  if (stringutility.convertToFloat(_result.values.quantity) <0) _ns_item_total_amount = -1*_ns_item_total_amount
+      if (stringutility.convertToFloat(_result.values.quantity) < 0)
+        _ns_item_total_amount = -1 * _ns_item_total_amount
 
       var _linesequencenumber = _result.values.linesequencenumber //1
       var _line = _result.values.line //1
@@ -1379,15 +1388,15 @@ define([
 
       var _memo = _result.values['memo']
       //var _item_salesdescription = _result.values['item.salesdescription']
-	  var _prodcut_id = ''
-	  var _prodcut_text = ''
-	  if (_result.values.item.length != 0) {
+      var _prodcut_id = ''
+      var _prodcut_text = ''
+      if (_result.values.item.length != 0) {
         _prodcut_id = _result.values.item[0].value //10519
         _prodcut_text = _result.values.item[0].text //NI20200811000099
       }
       log.debug('ns_item_name_field', _ns_item_name_field)
       var _item_displayname = _result.values[_ns_item_name_field] //SONY電視機
-	  _item_displayname = _prodcut_text+_item_displayname
+      _item_displayname = _prodcut_text + _item_displayname
       //if (stringutility.trim(_memo) != '') _item_displayname = _memo
 
       var _item_taxItem_rate = _result.values['taxItem.rate'] //5.00%
@@ -1445,7 +1454,7 @@ define([
       }
       var _quantity = _result.values.quantity
       //20210909 walter 預設值設為1
-      if (_quantity.trim().length==0)_quantity='1'
+      if (_quantity.trim().length == 0) _quantity = '1'
 
       //單位
       var _unitabbreviation = _result.values.unitabbreviation
@@ -1460,11 +1469,11 @@ define([
       var _item_memo = _result.values.custcol_gw_item_memo
 
       if (_itemtype === 'Discount') {
-    	 //20210908 walter modify => 折扣項目作進Item, 不另外處理
-         //折扣項目
-         //_sumDiscountAmount += stringutility.convertToFloat(_amount)
-         //Discount 要再紀錄近來,不然會少
-         //_sumTaxAmount += stringutility.convertToFloat(_ns_item_tax_amount)
+        //20210908 walter modify => 折扣項目作進Item, 不另外處理
+        //折扣項目
+        //_sumDiscountAmount += stringutility.convertToFloat(_amount)
+        //Discount 要再紀錄近來,不然會少
+        //_sumTaxAmount += stringutility.convertToFloat(_ns_item_tax_amount)
       }
       //主檔才做
       if (_recordType == 'invoice' && _mainline == '*') {
@@ -1482,7 +1491,7 @@ define([
       //只放 Sales Items 進來 (Discount Item 要排除)
       if (
         _recordType == 'invoice' &&
-        _mainline != '*' 
+        _mainline != '*'
         //20210908 walter modify => 折扣項目作進Item, 不另外處理
         //&&  _itemtype != 'Discount'
       ) {
@@ -1505,45 +1514,45 @@ define([
         sublist.setSublistValue({
           id: 'customer_search_invoice_id',
           line: row,
-          value: _id,
+          value: _id
         })
         sublist.setSublistValue({
           id: 'customer_search_invoice_number',
           line: row,
-          value: stringutility.trimOrAppendBlank(_tranid),
+          value: stringutility.trimOrAppendBlank(_tranid)
         })
         sublist.setSublistValue({
           id: 'customer_search_invoice_seq',
           line: row,
-          value: _linesequencenumber,
+          value: _linesequencenumber
         })
         sublist.setSublistValue({
           id: 'customer_search_invoice_deptcode',
           line: row,
-          value: stringutility.trimOrAppendBlank(_department),
+          value: stringutility.trimOrAppendBlank(_department)
         })
         sublist.setSublistValue({
           id: 'customer_search_invoice_class',
           line: row,
-          value: stringutility.trimOrAppendBlank(_class),
+          value: stringutility.trimOrAppendBlank(_class)
         })
 
         sublist.setSublistValue({
           id: 'custpage_invoice_item_unit',
           line: row,
-          value: stringutility.trimOrAppendBlank(_unitabbreviation),
+          value: stringutility.trimOrAppendBlank(_unitabbreviation)
         })
 
         sublist.setSublistValue({
           id: 'customer_search_invoice_discount',
           line: row,
-          value: stringutility.trimOrAppendBlank(_itemtype),
+          value: stringutility.trimOrAppendBlank(_itemtype)
         })
 
         sublist.setSublistValue({
           id: 'customer_search_invoice_tax_code',
           line: row,
-          value: stringutility.trimOrAppendBlank(_item_salestaxcodeValue),
+          value: stringutility.trimOrAppendBlank(_item_salestaxcodeValue)
         })
 
         if (typeof _taxObj !== 'undefined') {
@@ -1554,63 +1563,63 @@ define([
           sublist.setSublistValue({
             id: 'customer_search_invoice_tax_rate_note',
             line: row,
-            value: stringutility.trimOrAppendBlank(_tax_rate_note),
+            value: stringutility.trimOrAppendBlank(_tax_rate_note)
           })
         }
 
         sublist.setSublistValue({
           id: 'customer_search_invoice_tax_rate',
           line: row,
-          value: stringutility.trimOrAppendBlank(_item_taxItem_rate),
+          value: stringutility.trimOrAppendBlank(_item_taxItem_rate)
         })
 
         sublist.setSublistValue({
           id: 'custpage_item_name',
           line: row,
-          value: stringutility.trimOrAppendBlank(_item_displayname),
+          value: stringutility.trimOrAppendBlank(_item_displayname)
         })
 
         sublist.setSublistValue({
           id: 'custpage_unit_price',
           line: row,
-          value: stringutility.trimOrAppendBlank(_rate),
+          value: stringutility.trimOrAppendBlank(_rate)
         })
         sublist.setSublistValue({
           id: 'custpage_item_quantity',
           line: row,
-          value: stringutility.trimOrAppendBlank(_quantity),
+          value: stringutility.trimOrAppendBlank(_quantity)
         })
         sublist.setSublistValue({
           id: 'custpage_item_amount',
           line: row,
-          value: stringutility.trimOrAppendBlank(_amount),
+          value: stringutility.trimOrAppendBlank(_amount)
         })
         sublist.setSublistValue({
           id: 'custpage_item_remark',
           line: row,
-          value: stringutility.trimOrAppendBlank(_item_memo),
+          value: stringutility.trimOrAppendBlank(_item_memo)
         })
 
         sublist.setSublistValue({
           id: 'custpage_invoice_item_tax_amount',
           line: row,
-          value: stringutility.trimOrAppendBlank(_ns_item_tax_amount),
+          value: stringutility.trimOrAppendBlank(_ns_item_tax_amount)
         })
         sublist.setSublistValue({
           id: 'custpage_invoice_item_total_amount',
           line: row,
-          value: stringutility.trimOrAppendBlank(_ns_item_total_amount),
+          value: stringutility.trimOrAppendBlank(_ns_item_total_amount)
         })
 
         sublist.setSublistValue({
           id: 'custpage_invoice_total_tax_amount',
           line: row,
-          value: stringutility.trimOrAppendBlank(_ns_total_tax_amount),
+          value: stringutility.trimOrAppendBlank(_ns_total_tax_amount)
         })
         sublist.setSublistValue({
           id: 'custpage_invoice_total_sum_amount',
           line: row,
-          value: stringutility.trimOrAppendBlank(_ns_total_sum_amount),
+          value: stringutility.trimOrAppendBlank(_ns_total_sum_amount)
         })
 
         row++
@@ -1677,57 +1686,56 @@ define([
     //紀錄客戶押金-END
     /////////////////////////////////////////////////////////////////////////////////////////
     var _select_voucher_date = form.getField({
-      id: 'custpage_select_voucher_date',
+      id: 'custpage_select_voucher_date'
     })
     _select_voucher_date.defaultValue = _index_trandate
     ////////////////////////////////////////////////////////////////////////////////////////
     //2. 處理Header的客戶資料
     //客戶代碼
     var _custpage_customer_id = form.getField({
-      id: 'custpage_customer_id',
+      id: 'custpage_customer_id'
     })
-    //_custpage_customer_id.defaultValue = _customer_id.toString()
     _custpage_customer_id.defaultValue = _customer_id
 
     var _dept_codeField = form.getField({
-      id: 'custpage_dept_code',
+      id: 'custpage_dept_code'
     })
     _dept_codeField.defaultValue = _default_department_id
 
     var _classificationField = form.getField({
-      id: 'custpage_classification',
+      id: 'custpage_classification'
     })
     _classificationField.defaultValue = _selectClassification
 
     var _voucherExtraMemoField = form.getField({
-      id: 'custpage_voucher_extra_memo',
+      id: 'custpage_voucher_extra_memo'
     })
     _voucherExtraMemoField.defaultValue = _total_extra_memo
     ////////////////////////////////////////////////////////////////////////////////////////
     //紀錄零稅率資料
     //適用零稅率規定
     var _applicable_zero_tax_field = form.getField({
-      id: 'custpage_applicable_zero_tax',
+      id: 'custpage_applicable_zero_tax'
     })
     _applicable_zero_tax_field.defaultValue = _gw_applicable_zero_tax_text
     //海關出口單類別
     var _customs_export_category_field = form.getField({
-      id: 'custpage_gw_customs_export_category',
+      id: 'custpage_gw_customs_export_category'
     })
     _customs_export_category_field.defaultValue = _gw_customs_export_category_text
     //海關出口號碼
     var _customs_export_no_field = form.getField({
-      id: 'custpage_gw_customs_export_no',
+      id: 'custpage_gw_customs_export_no'
     })
     _customs_export_no_field.defaultValue = _gw_customs_export_no
     //輸出或結匯日期
     var _customs_export_date_field = form.getField({
-      id: 'custpage_gw_customs_export_date',
+      id: 'custpage_gw_customs_export_date'
     })
     _customs_export_date_field.defaultValue = _gw_customs_export_date
     //通關註記
     var _customs_export_date_field = form.getField({
-      id: 'custpage_customs_clearance_mark',
+      id: 'custpage_customs_clearance_mark'
     })
     _customs_export_date_field.defaultValue = _gw_egui_clearance_mark_text
 
@@ -1744,20 +1752,20 @@ define([
     //客戶資料
     if (_customer_id > 0) {
       var _custpage_buyer_identifier = form.getField({
-        id: 'custpage_buyer_identifier',
+        id: 'custpage_buyer_identifier'
       })
       _custpage_buyer_identifier.defaultValue = _customer_ban
 
       var _custpage_buyer_name = form.getField({
-        id: 'custpage_buyer_name',
+        id: 'custpage_buyer_name'
       })
       _custpage_buyer_name.defaultValue = _company_name
 
       var _custpage_buyer_email = form.getField({
-        id: 'custpage_buyer_email',
+        id: 'custpage_buyer_email'
       })
       var _custpage_buyer_address = form.getField({
-        id: 'custpage_buyer_address',
+        id: 'custpage_buyer_address'
       })
       _custpage_buyer_address.defaultValue = _company_address
       /**
@@ -1765,32 +1773,32 @@ define([
         _custpage_buyer_email.defaultValue = _companyObj.email
       }
 	  */
-	  _custpage_buyer_email.defaultValue = _customer_email	  
+      _custpage_buyer_email.defaultValue = _customer_email
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////
     //控制通關註記選項
     if (_hasZeroTax == true) {
       var _custpage_customs_clearance_mark = form.getField({
-        id: 'custpage_customs_clearance_mark',
+        id: 'custpage_customs_clearance_mark'
       })
       _custpage_customs_clearance_mark.updateDisplayType({
-        displayType: serverWidget.FieldDisplayType.NORMAL,
+        displayType: serverWidget.FieldDisplayType.NORMAL
       })
     }
     var _custpage_tax_type = form.getField({
-      id: 'custpage_tax_type',
+      id: 'custpage_tax_type'
     })
     _custpage_tax_type.defaultValue = _ns_tax_type_code
     log.debug('ns_tax_type_code', _ns_tax_type_code)
     /////////////////////////////////////////////////////////////////////////////////////////////////
     //處理總計計部分-START
     var _sales_amount_field = form.getField({
-      id: 'custpage_sales_amount',
+      id: 'custpage_sales_amount'
     })
     _sales_amount_field.defaultValue = _sumSalesAmount.toFixed(_numericToFixed)
 
     var _sales_discount_amount = form.getField({
-      id: 'custpage_sales_discount_amount',
+      id: 'custpage_sales_discount_amount'
     })
     _sales_discount_amount.defaultValue = _sumDiscountAmount.toFixed(
       _numericToFixed
@@ -1798,12 +1806,12 @@ define([
 
     //3. 重新計算稅額
     var _tax_amount_field = form.getField({
-      id: 'custpage_tax_amount',
+      id: 'custpage_tax_amount'
     })
     _tax_amount_field.defaultValue = _ns_SumTaxAmount
 
     var _toatl_amount_field = form.getField({
-      id: 'custpage_total_amount',
+      id: 'custpage_total_amount'
     })
     _toatl_amount_field.defaultValue = _ns_SumTotalAmount.toFixed(
       _numericToFixed
@@ -1811,16 +1819,21 @@ define([
     //處理總計計部分-START
     /////////////////////////////////////////////////////////////////////////////////////////
     //載具類別
-    var _gw_gui_carrier_type_field = form.getField({id: 'custpage_carrier_type'})
+    var _gw_gui_carrier_type_field = form.getField({
+      id: 'custpage_carrier_type'
+    })
     _gw_gui_carrier_type_field.defaultValue = _gw_gui_carrier_type
-    var _gw_gui_carrier_id_1_field = form.getField({id: 'custpage_carrier_id_1'})
+    var _gw_gui_carrier_id_1_field = form.getField({
+      id: 'custpage_carrier_id_1'
+    })
     _gw_gui_carrier_id_1_field.defaultValue = _gw_gui_carrier_id_1
-    var _gw_gui_carrier_id_w_field = form.getField({id: 'custpage_carrier_id_2'})
+    var _gw_gui_carrier_id_w_field = form.getField({
+      id: 'custpage_carrier_id_2'
+    })
     _gw_gui_carrier_id_w_field.defaultValue = _gw_gui_carrier_id_2
     //捐贈代碼
-    var _gw_gui_donation_code_field = form.getField({id: 'custpage_npo_ban'})
+    var _gw_gui_donation_code_field = form.getField({ id: 'custpage_npo_ban' })
     _gw_gui_donation_code_field.defaultValue = _gw_gui_donation_code
-    
   }
 
   //處理客戶押金
@@ -1904,7 +1917,7 @@ define([
           var _deductedAmountObj = {
             assign_document_id: _assign_document_id,
             tax_type: _tax_type,
-            dedcuted_amount: Math.abs(_deduction_amount),
+            dedcuted_amount: Math.abs(_deduction_amount)
           }
           _deductedAmountObjAry.push(_deductedAmountObj)
 
@@ -1912,79 +1925,79 @@ define([
           sublist.setSublistValue({
             id: 'customer_search_invoice_id',
             line: row,
-            value: _assign_document_id,
+            value: _assign_document_id
           })
           sublist.setSublistValue({
             id: 'customer_search_invoice_number',
             line: row,
-            value: stringutility.trimOrAppendBlank(_sales_order_number),
+            value: stringutility.trimOrAppendBlank(_sales_order_number)
           })
           sublist.setSublistValue({
             id: 'customer_search_invoice_seq',
             line: row,
-            value: _seq_no,
+            value: _seq_no
           })
 
           sublist.setSublistValue({
             id: 'customer_search_invoice_deptcode',
             line: row,
-            value: stringutility.trimOrAppendBlank(dept_code),
+            value: stringutility.trimOrAppendBlank(dept_code)
           })
           sublist.setSublistValue({
             id: 'customer_search_invoice_class',
             line: row,
-            value: stringutility.trimOrAppendBlank(classfication),
+            value: stringutility.trimOrAppendBlank(classfication)
           })
           sublist.setSublistValue({
             id: 'custpage_invoice_item_unit',
             line: row,
-            value: '筆',
+            value: '筆'
           })
           sublist.setSublistValue({
             id: 'customer_search_invoice_discount',
             line: row,
-            value: stringutility.trimOrAppendBlank('SALES_ORDER'),
+            value: stringutility.trimOrAppendBlank('SALES_ORDER')
           })
           sublist.setSublistValue({
             id: 'customer_search_invoice_tax_code',
             line: row,
-            value: stringutility.trimOrAppendBlank(_ns_tax_code),
+            value: stringutility.trimOrAppendBlank(_ns_tax_code)
           })
           sublist.setSublistValue({
             id: 'customer_search_invoice_tax_rate_note',
             line: row,
-            value: _tax_rate_note,
+            value: _tax_rate_note
           })
           sublist.setSublistValue({
             id: 'customer_search_invoice_tax_rate',
             line: row,
-            value: _tax_rate,
+            value: _tax_rate
           })
           sublist.setSublistValue({
             id: 'custpage_item_name',
             line: row,
-            value: _customer_deposit_text,
+            value: _customer_deposit_text
           })
           //放未稅金額
           sublist.setSublistValue({
             id: 'custpage_unit_price',
             line: row,
-            value: Math.abs(_deduction_amount),
+            value: Math.abs(_deduction_amount)
           })
           sublist.setSublistValue({
             id: 'custpage_item_quantity',
             line: row,
-            value: '1',
+            value: '1'
           })
           sublist.setSublistValue({
             id: 'custpage_item_amount',
             line: row,
-            value: _deduction_amount,
+            value: _deduction_amount
           })
           sublist.setSublistValue({
             id: 'custpage_item_remark',
             line: row,
-            value: stringutility.trimOrAppendBlank(''),
+            value: stringutility.trimOrAppendBlank('')
           })
 
           //計算稅及金額合計
@@ -1992,22 +2005,22 @@ define([
           sublist.setSublistValue({
             id: 'custpage_invoice_item_tax_amount',
             line: row,
-            value: _deduction_tax_amount,
+            value: _deduction_tax_amount
           })
           sublist.setSublistValue({
             id: 'custpage_invoice_item_total_amount',
             line: row,
-            value: _deduction_amount + _deduction_tax_amount,
+            value: _deduction_amount + _deduction_tax_amount
           })
           sublist.setSublistValue({
             id: 'custpage_invoice_total_tax_amount',
             line: row,
-            value: _deduction_tax_amount,
+            value: _deduction_tax_amount
           })
           sublist.setSublistValue({
             id: 'custpage_invoice_total_sum_amount',
             line: row,
-            value: _deduction_amount + _deduction_tax_amount,
+            value: _deduction_amount + _deduction_tax_amount
           })
 
           sumSalesAmount += _deduction_amount
@@ -2023,7 +2036,7 @@ define([
           sumTaxAmount: sumTaxAmount,
           sumTotalAmount: sumTotalAmount,
           nsSumTaxAmount: _ns_SumTaxAmount,
-          nsSumTotalAmount: _ns_SumTotalAmount,
+          nsSumTotalAmount: _ns_SumTotalAmount
         }
 
         //將物件轉成String 放入 Hiddent Element
@@ -2036,7 +2049,7 @@ define([
             JSON.stringify(_deductedAmountObjAry)
           )
           var _deposit_voucher_hiddent_listid = form.getField({
-            id: 'custpage_deposit_voucher_hiddent_listid',
+            id: 'custpage_deposit_voucher_hiddent_listid'
           })
           _deposit_voucher_hiddent_listid.defaultValue = JSON.stringify(
             _deductedAmountObjAry
@@ -2055,161 +2068,161 @@ define([
     var sublist = form.addSublist({
       id: 'creditmemosublistid',
       type: serverWidget.SublistType.LIST,
-      label: 'NS Credit Memo 商品清單',
+      label: 'NS Credit Memo 商品清單'
     })
     //sublist.addMarkAllButtons();
 
     var _idField = sublist.addField({
       id: 'customer_search_creditmemo_id',
       label: 'Internal ID',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _idField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     var _numberField = sublist.addField({
       id: 'customer_search_creditmemo_number',
       label: 'Credit Memo Number',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _numberField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
 
     //放dept_code
     var _deptCodeField = sublist.addField({
       id: 'customer_search_creditmemo_deptcode',
       label: 'Internal ID',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _deptCodeField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     //放classfication
     var _classficationField = sublist.addField({
       id: 'customer_search_creditmemo_class',
       label: 'Internal ID',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _classficationField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     //Discount
     var _discountField = sublist.addField({
       id: 'customer_search_creditmemo_discount',
       label: 'Discount Item',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _discountField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     var _seqField = sublist.addField({
       id: 'customer_search_creditmemo_seq',
       type: serverWidget.FieldType.TEXT,
-      label: '順序',
+      label: '順序'
     })
 
     var _itemNameField = sublist.addField({
       id: 'custpage_item_name',
       type: serverWidget.FieldType.TEXT,
-      label: '名稱',
+      label: '名稱'
     })
     _itemNameField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.ENTRY,
+      displayType: serverWidget.FieldDisplayType.ENTRY
     })
 
     var _taxRateField = sublist.addField({
       id: 'customer_search_creditmemo_tax_rate',
       label: '稅率%',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _taxRateField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     var _taxRateNoteField = sublist.addField({
       id: 'customer_search_creditmemo_tax_rate_note',
       label: '稅率%',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
 
     var _taxCodeField = sublist.addField({
       id: 'customer_search_creditmemo_tax_code',
       label: '稅別',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _taxCodeField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
 
     sublist.addField({
       id: 'custpage_creditmemo_item_unit',
       type: serverWidget.FieldType.TEXT,
-      label: '單位',
+      label: '單位'
     })
     sublist.addField({
       id: 'custpage_unit_price',
       type: serverWidget.FieldType.TEXT,
-      label: '單價',
+      label: '單價'
     })
     sublist.addField({
       id: 'custpage_item_quantity',
       type: serverWidget.FieldType.TEXT,
-      label: '數量',
+      label: '數量'
     })
     sublist.addField({
       id: 'custpage_item_amount',
       type: serverWidget.FieldType.TEXT,
-      label: '小計(未稅)',
+      label: '小計(未稅)'
     })
     var _itemRemarkField = sublist.addField({
       id: 'custpage_item_remark',
       type: serverWidget.FieldType.TEXT,
-      label: '明細備註',
+      label: '明細備註'
     })
     _itemRemarkField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.ENTRY,
+      displayType: serverWidget.FieldDisplayType.ENTRY
     })
     ////////////////////////////////////////////////////////////////////////////////////////
     //20201105 walter modify
     var _itemTaxAmountField = sublist.addField({
       id: 'custpage_creditmemo_item_tax_amount',
       label: 'Item Tax Amount',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _itemTaxAmountField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     var _itemTotalAmountField = sublist.addField({
       id: 'custpage_creditmemo_item_total_amount',
       label: 'Item Toatl Amount',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _itemTotalAmountField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
 
     var _totalTaxAmountField = sublist.addField({
       id: 'custpage_creditmemo_total_tax_amount',
       label: 'Item Tax Amount',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _totalTaxAmountField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     var _totalAmountField = sublist.addField({
       id: 'custpage_creditmemo_total_sum_amount',
       label: 'Item Toatl Amount',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXT
     })
     _totalAmountField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     /////////////////////////////////////////////////////////////////////////////////////////
     //1.處理 CreditMemo Detail Items
     var _selectDepartment = ''
     var _selectClassification = ''
     var _mySearch = search.load({
-      id: _gw_creditmemo_detail_search_id,
+      id: _gw_creditmemo_detail_search_id
     })
     var _filterArray = []
     //_filterArray.push(['internalid','is', 948]);
@@ -2242,7 +2255,7 @@ define([
     //公司地址
     var _companyObj
     var _customer_ban = ''
-	var _customer_email = ''
+    var _customer_email = ''
     var _company_name = ''
     var _company_address = ''
 
@@ -2294,7 +2307,7 @@ define([
         var _customs_export_category_record = record.load({
           type: 'customrecord_gw_customs_export_category',
           id: parseInt(_gw_customs_export_category_value, 10),
-          isDynamic: true,
+          isDynamic: true
         })
         _gw_customs_export_category_text = _customs_export_category_record.getValue(
           { fieldId: 'custrecord_gw_customers_export_cate_id' }
@@ -2307,10 +2320,10 @@ define([
         var _ap_doc_exempt_option_record = record.load({
           type: 'customrecord_gw_ap_doc_exempt_option',
           id: parseInt(_gw_applicable_zero_tax_value, 10),
-          isDynamic: true,
+          isDynamic: true
         })
         _gw_applicable_zero_tax_text = _ap_doc_exempt_option_record.getValue({
-          fieldId: 'custrecord_gw_ap_doc_exempt_value',
+          fieldId: 'custrecord_gw_ap_doc_exempt_value'
         })
       }
       if (_result.values.custbody_gw_egui_clearance_mark.length != 0) {
@@ -2320,10 +2333,10 @@ define([
         var _ap_doc_custom_option_record = record.load({
           type: 'customrecord_gw_ap_doc_custom_option',
           id: parseInt(_gw_egui_clearance_mark_value, 10),
-          isDynamic: true,
+          isDynamic: true
         })
         _gw_egui_clearance_mark_text = _ap_doc_custom_option_record.getValue({
-          fieldId: 'custrecord_gw_ap_doc_custom_value',
+          fieldId: 'custrecord_gw_ap_doc_custom_value'
         })
       }
       //海關出口號碼 : AA123456789012
@@ -2364,8 +2377,8 @@ define([
           //_entityValue     = stringutility.convertToInt(_companyObj.internalid);
         }
       }
-	  //客戶Email
-      _customer_email  = _result.values['customer.email']
+      //客戶Email
+      _customer_email = _result.values['customer.email']
 
       var _accountValue = '' //54
       var _accountText = '' //4000 Sales
@@ -2398,15 +2411,15 @@ define([
 
       var _memo = _result.values['memo'] //雅結~~
       //var _item_salesdescription = _result.values['item.salesdescription']
-	  var _prodcut_id = ''
-	  var _prodcut_text = ''
-	  if (_result.values.item.length != 0) {
+      var _prodcut_id = ''
+      var _prodcut_text = ''
+      if (_result.values.item.length != 0) {
         _prodcut_id = _result.values.item[0].value //10519
         _prodcut_text = _result.values.item[0].text //NI20200811000099
       }
       log.debug('ns_item_name_field', _ns_item_name_field)
       var _item_displayname = _result.values[_ns_item_name_field] //SONY電視機
-	  _item_displayname = _prodcut_text+_item_displayname
+      _item_displayname = _prodcut_text + _item_displayname
       //if (stringutility.trim(_memo) != '') _item_displayname = _memo
 
       var _item_taxItem_rate = _result.values['taxItem.rate'] //5.00%
@@ -2454,15 +2467,15 @@ define([
 
       var _quantity = _result.values.quantity
       //20210909 walter 預設值設為1
-      if (_quantity.trim().length==0)_quantity='1'
+      if (_quantity.trim().length == 0) _quantity = '1'
       //單位
       var _unitabbreviation = _result.values.unitabbreviation
 
       if (_itemtype === 'Discount') {
-    	 //20210908 walter modify => 折扣項目作進Item, 不另外處理
-         //折扣項目
-         //_sumDiscountAmount += stringutility.convertToFloat(_amount)
-         //_sumTaxAmount += stringutility.convertToFloat(_ns_item_tax_amount)
+        //20210908 walter modify => 折扣項目作進Item, 不另外處理
+        //折扣項目
+        //_sumDiscountAmount += stringutility.convertToFloat(_amount)
+        //_sumTaxAmount += stringutility.convertToFloat(_ns_item_tax_amount)
       }
       //主檔才做
       if (_recordType == 'creditmemo' && _mainline == '*') {
@@ -2479,8 +2492,8 @@ define([
       //只放Sales進來
       if (
         _recordType === 'creditmemo' &&
-        _mainline != '*' 
-       	//20210908 walter modify => 折扣項目作進Item, 不另外處理
+        _mainline != '*'
+        //20210908 walter modify => 折扣項目作進Item, 不另外處理
         // &&  _itemtype != 'Discount'
       ) {
         //抓第1筆當部門
@@ -2493,39 +2506,39 @@ define([
         sublist.setSublistValue({
           id: 'customer_search_creditmemo_id',
           line: row,
-          value: _id,
+          value: _id
         })
         sublist.setSublistValue({
           id: 'customer_search_creditmemo_number',
           line: row,
-          value: _tranid,
+          value: _tranid
         })
         sublist.setSublistValue({
           id: 'customer_search_creditmemo_seq',
           line: row,
-          value: _linesequencenumber,
+          value: _linesequencenumber
         })
         sublist.setSublistValue({
           id: 'customer_search_creditmemo_deptcode',
           line: row,
-          value: stringutility.trimOrAppendBlank(_department),
+          value: stringutility.trimOrAppendBlank(_department)
         })
 
         sublist.setSublistValue({
           id: 'custpage_creditmemo_item_unit',
           line: row,
-          value: stringutility.trimOrAppendBlank(_unitabbreviation),
+          value: stringutility.trimOrAppendBlank(_unitabbreviation)
         })
 
         sublist.setSublistValue({
           id: 'customer_search_creditmemo_class',
           line: row,
-          value: stringutility.trimOrAppendBlank(_class),
+          value: stringutility.trimOrAppendBlank(_class)
         })
         sublist.setSublistValue({
           id: 'customer_search_creditmemo_discount',
           line: row,
-          value: stringutility.trimOrAppendBlank(_itemtype),
+          value: stringutility.trimOrAppendBlank(_itemtype)
         })
 
         if (typeof _taxObj !== 'undefined') {
@@ -2536,63 +2549,63 @@ define([
           sublist.setSublistValue({
             id: 'customer_search_creditmemo_tax_rate_note',
             line: row,
-            value: stringutility.trimOrAppendBlank(_tax_rate_note),
+            value: stringutility.trimOrAppendBlank(_tax_rate_note)
           })
         }
 
         sublist.setSublistValue({
           id: 'customer_search_creditmemo_tax_code',
           line: row,
-          value: stringutility.trimOrAppendBlank(_item_salestaxcodeValue),
+          value: stringutility.trimOrAppendBlank(_item_salestaxcodeValue)
         })
         sublist.setSublistValue({
           id: 'customer_search_creditmemo_tax_rate',
           line: row,
-          value: stringutility.trimOrAppendBlank(_item_taxItem_rate),
+          value: stringutility.trimOrAppendBlank(_item_taxItem_rate)
         })
 
         sublist.setSublistValue({
           id: 'custpage_item_name',
           line: row,
-          value: stringutility.trimOrAppendBlank(_item_displayname),
+          value: stringutility.trimOrAppendBlank(_item_displayname)
         })
 
         sublist.setSublistValue({
           id: 'custpage_unit_price',
           line: row,
-          value: stringutility.trimOrAppendBlank(_rate),
+          value: stringutility.trimOrAppendBlank(_rate)
         })
         sublist.setSublistValue({
           id: 'custpage_item_quantity',
           line: row,
-          value: stringutility.trimOrAppendBlank(_quantity),
+          value: stringutility.trimOrAppendBlank(_quantity)
         })
         sublist.setSublistValue({
           id: 'custpage_item_amount',
           line: row,
-          value: stringutility.trimOrAppendBlank(_amount),
+          value: stringutility.trimOrAppendBlank(_amount)
         })
 
         sublist.setSublistValue({
           id: 'custpage_creditmemo_item_tax_amount',
           line: row,
-          value: stringutility.trimOrAppendBlank(_ns_item_tax_amount),
+          value: stringutility.trimOrAppendBlank(_ns_item_tax_amount)
         })
         sublist.setSublistValue({
           id: 'custpage_creditmemo_item_total_amount',
           line: row,
-          value: stringutility.trimOrAppendBlank(_ns_item_total_amount),
+          value: stringutility.trimOrAppendBlank(_ns_item_total_amount)
         })
 
         sublist.setSublistValue({
           id: 'custpage_creditmemo_total_tax_amount',
           line: row,
-          value: stringutility.trimOrAppendBlank(_ns_total_tax_amount),
+          value: stringutility.trimOrAppendBlank(_ns_total_tax_amount)
         })
         sublist.setSublistValue({
           id: 'custpage_creditmemo_total_sum_amount',
           line: row,
-          value: stringutility.trimOrAppendBlank(_ns_total_sum_amount),
+          value: stringutility.trimOrAppendBlank(_ns_total_sum_amount)
         })
 
         row++
@@ -2605,62 +2618,62 @@ define([
       return true
     })
     var _select_voucher_date = form.getField({
-      id: 'custpage_select_voucher_date',
+      id: 'custpage_select_voucher_date'
     })
     _select_voucher_date.defaultValue = _index_trandate
     ////////////////////////////////////////////////////////////////////////////////////////
     //2. 處理Header的客戶資料
     if (_hasZeroTax == true) {
       var _custpage_customs_clearance_mark = form.getField({
-        id: 'custpage_customs_clearance_mark',
+        id: 'custpage_customs_clearance_mark'
       })
       _custpage_customs_clearance_mark.updateDisplayType({
-        displayType: serverWidget.FieldDisplayType.NORMAL,
+        displayType: serverWidget.FieldDisplayType.NORMAL
       })
     }
     ////////////////////////////////////////////////////////////////////////////////////////
     //紀錄零稅率資料
     //適用零稅率規定
     var _applicable_zero_tax_field = form.getField({
-      id: 'custpage_applicable_zero_tax',
+      id: 'custpage_applicable_zero_tax'
     })
     _applicable_zero_tax_field.defaultValue = _gw_applicable_zero_tax_text
     //海關出口單類別
     var _customs_export_category_field = form.getField({
-      id: 'custpage_gw_customs_export_category',
+      id: 'custpage_gw_customs_export_category'
     })
     _customs_export_category_field.defaultValue = _gw_customs_export_category_text
     //海關出口號碼
     var _customs_export_no_field = form.getField({
-      id: 'custpage_gw_customs_export_no',
+      id: 'custpage_gw_customs_export_no'
     })
     _customs_export_no_field.defaultValue = _gw_customs_export_no
     //輸出或結匯日期
     var _customs_export_date_field = form.getField({
-      id: 'custpage_gw_customs_export_date',
+      id: 'custpage_gw_customs_export_date'
     })
     _customs_export_date_field.defaultValue = _gw_customs_export_date
     //通關註記
     var _customs_export_date_field = form.getField({
-      id: 'custpage_customs_clearance_mark',
+      id: 'custpage_customs_clearance_mark'
     })
     _customs_export_date_field.defaultValue = _gw_egui_clearance_mark_text
 
     ////////////////////////////////////////////////////////////////////////////////////////
     //客戶代碼
     var _custpage_customer_id = form.getField({
-      id: 'custpage_customer_id',
+      id: 'custpage_customer_id'
     })
     //_custpage_customer_id.defaultValue = _customer_id.toString()
     _custpage_customer_id.defaultValue = _customer_id
 
     var _dept_codeField = form.getField({
-      id: 'custpage_dept_code',
+      id: 'custpage_dept_code'
     })
     _dept_codeField.defaultValue = _default_department_id
 
     var _classificationField = form.getField({
-      id: 'custpage_classification',
+      id: 'custpage_classification'
     })
     _classificationField.defaultValue = _selectClassification
     log.debug(
@@ -2675,42 +2688,42 @@ define([
 
     if (_customer_id > 0) {
       var _custpage_buyer_identifier = form.getField({
-        id: 'custpage_buyer_identifier',
+        id: 'custpage_buyer_identifier'
       })
       _custpage_buyer_identifier.defaultValue = _customer_ban
 
       var _custpage_buyer_name = form.getField({
-        id: 'custpage_buyer_name',
+        id: 'custpage_buyer_name'
       })
       _custpage_buyer_name.defaultValue = _company_name
 
       var _custpage_buyer_email = form.getField({
-        id: 'custpage_buyer_email',
+        id: 'custpage_buyer_email'
       })
-	  /**
+      /**
       if (typeof _companyObj !== 'undefined') {
         _custpage_buyer_email.defaultValue = _companyObj.email
       }
 	  */
-	  _custpage_buyer_email.defaultValue = _customer_email
-	  
+      _custpage_buyer_email.defaultValue = _customer_email
+
       var _custpage_buyer_address = form.getField({
-        id: 'custpage_buyer_address',
+        id: 'custpage_buyer_address'
       })
       _custpage_buyer_address.defaultValue = _company_address
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     var _custpage_tax_type = form.getField({
-      id: 'custpage_tax_type',
+      id: 'custpage_tax_type'
     })
     _custpage_tax_type.defaultValue = _ns_tax_type_code
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     var _sales_amount_field = form.getField({
-      id: 'custpage_sales_amount',
+      id: 'custpage_sales_amount'
     })
     _sales_amount_field.defaultValue = _sumSalesAmount.toFixed(_numericToFixed)
     var _sales_discount_amount = form.getField({
-      id: 'custpage_sales_discount_amount',
+      id: 'custpage_sales_discount_amount'
     })
     _sales_discount_amount.defaultValue = _sumDiscountAmount.toFixed(
       _numericToFixed
@@ -2719,12 +2732,12 @@ define([
     //3. 重新計算稅額
     //_sumTaxAmount = recaculateTaxContainDiscountItem(Math.abs(_sumDiscountAmount));
     var _tax_amount_field = form.getField({
-      id: 'custpage_tax_amount',
+      id: 'custpage_tax_amount'
     })
     _tax_amount_field.defaultValue = _ns_SumTaxAmount
 
     var _toatl_amount_field = form.getField({
-      id: 'custpage_total_amount',
+      id: 'custpage_total_amount'
     })
     _toatl_amount_field.defaultValue = _ns_SumTotalAmount.toFixed(
       _numericToFixed
@@ -2733,17 +2746,20 @@ define([
   }
 
   function onRequest(context) {
-	//取得開立統編
-	var _selected_business_no = context.request.parameters.custpage_businessno
-	  log.debug('_selected_business_no', '_selected_business_no=' + _selected_business_no)
+    //取得開立統編
+    var _selected_business_no = context.request.parameters.custpage_businessno
+    log.debug(
+      '_selected_business_no',
+      '_selected_business_no=' + _selected_business_no
+    )
     var _selected_invoice_Id = context.request.parameters.invoice_hiddent_listid
     var _selected_creditmemo_Id =
       context.request.parameters.creditmemo_hiddent_listid
     log.debug(
       'parameters',
       ' selected_business_no:' +
-      _selected_business_no +
-      ' ,selected_invoice_Id:' +
+        _selected_business_no +
+        ' ,selected_invoice_Id:' +
         _selected_invoice_Id +
         ' ,selected_creditmemo_Id=' +
         _selected_creditmemo_Id
@@ -2758,45 +2774,45 @@ define([
     //做畫面-START
     ///////////////////////////////////////////////////////////////////////////////////////////
     var form = serverWidget.createForm({
-      title: '電子發票開立作業（憑證開立）',
+      title: '電子發票開立作業（憑證開立）'
     })
     //Hiddent Element
     var _hiddenfield = form.addField({
       id: 'custpage_invoice_hiddent_buttontype',
       type: serverWidget.FieldType.TEXT,
-      label: 'HIDDEN',
+      label: 'HIDDEN'
     })
     _hiddenfield.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     //紀錄可扣餘額
     var _hidden_deposit_voucher_field = form.addField({
       id: 'custpage_deposit_voucher_hiddent_listid',
       type: serverWidget.FieldType.TEXT,
-      label: 'HIDDEN',
+      label: 'HIDDEN'
     })
     _hidden_deposit_voucher_field.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     //////////////////////////////////////////////////////////////////////////////////////////
     //發票List
     var _hiddeninvoicelistld = form.addField({
       id: 'custpage_invoice_hiddent_listid',
       type: serverWidget.FieldType.TEXTAREA,
-      label: 'HIDDEN',
+      label: 'HIDDEN'
     })
     _hiddeninvoicelistld.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     _hiddeninvoicelistld.defaultValue = _selected_invoice_Id
     //折讓單List
     var _hiddencreditmemolistld = form.addField({
       id: 'custpage_creditmemo_hiddent_listid',
       type: serverWidget.FieldType.TEXTAREA,
-      label: 'HIDDEN',
+      label: 'HIDDEN'
     })
     _hiddencreditmemolistld.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN,
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     _hiddencreditmemolistld.defaultValue = _selected_creditmemo_Id
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -2826,12 +2842,12 @@ define([
         _invoiceActionScriptId +
         '","' +
         _invoiceActionDeploymentId +
-        '")',
+        '")'
     })
     form.addButton({
       id: 'custpage_forward_back_button',
       label: '回前一頁',
-      functionName: 'backToPage()',
+      functionName: 'backToPage()'
     })
 
     ////////////////////////////////////////////////////////////////////////////////////////////
@@ -2839,11 +2855,11 @@ define([
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     //form.clientScriptModulePath = './gw_invoice_ui_event_v2.js'
-    form.clientScriptModulePath = './gw_invoice_ui_event.js';
+    form.clientScriptModulePath = './gw_invoice_ui_event.js'
     context.response.writePage(form)
   } //End onRequest
 
   return {
-    onRequest: onRequest,
+    onRequest: onRequest
   }
 })
