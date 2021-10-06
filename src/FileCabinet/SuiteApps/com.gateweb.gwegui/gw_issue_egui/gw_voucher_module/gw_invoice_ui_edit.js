@@ -472,6 +472,8 @@ define([
     var _allCustomers = searchutility.getSearchResult(_type, _filters, _columns)
     _allCustomers.forEach(function (result) {
       var _internalid = result.id
+      
+      log.debug('get CUSTOMER result', JSON.stringify(result))
 
       var _entityid = result.getValue({
         name: 'entityid',
@@ -1684,7 +1686,8 @@ define([
     var _custpage_customer_id = form.getField({
       id: 'custpage_customer_id',
     })
-    _custpage_customer_id.defaultValue = _customer_id.toString()
+    //_custpage_customer_id.defaultValue = _customer_id.toString()
+    _custpage_customer_id.defaultValue = _customer_id
 
     var _dept_codeField = form.getField({
       id: 'custpage_dept_code',
@@ -2648,7 +2651,8 @@ define([
     var _custpage_customer_id = form.getField({
       id: 'custpage_customer_id',
     })
-    _custpage_customer_id.defaultValue = _customer_id.toString()
+    //_custpage_customer_id.defaultValue = _customer_id.toString()
+    _custpage_customer_id.defaultValue = _customer_id
 
     var _dept_codeField = form.getField({
       id: 'custpage_dept_code',
