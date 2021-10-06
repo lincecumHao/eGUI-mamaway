@@ -63,6 +63,21 @@ define(['../../library/ramda.min'], function (ramda) {
       id: 'custrecord_gw_conf_allowance_init_fmt',
       sourceField: '',
       outputField: 'defaultAllowanceFormat'
+    },
+    custrecord_gw_config_item_field: {
+      id: 'custrecord_gw_config_item_field',
+      sourceField: '',
+      outputField: 'itemNameFieldId'
+    },
+    custrecord_gw_config_temp_folder_id: {
+      id: 'custrecord_gw_config_temp_folder_id',
+      sourceField: '',
+      outputField: 'gwTempFolderId'
+    },
+    custrecord_gw_config_allowance_prefix: {
+      id: 'custrecord_gw_config_allowance_prefix',
+      sourceField: '',
+      outputField: 'allowancePrefix'
     }
   }
 

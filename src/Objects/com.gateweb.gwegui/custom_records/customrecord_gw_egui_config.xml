@@ -389,6 +389,123 @@
             <storevalue>T</storevalue>
             <subtab></subtab>
         </customrecordcustomfield>
+        <customrecordcustomfield scriptid="custrecord_gw_config_item_field">
+            <accesslevel>2</accesslevel>
+            <allowquickadd>F</allowquickadd>
+            <applyformatting>F</applyformatting>
+            <checkspelling>F</checkspelling>
+            <defaultchecked>F</defaultchecked>
+            <defaultselection></defaultselection>
+            <defaultvalue></defaultvalue>
+            <description></description>
+            <displayheight></displayheight>
+            <displaytype>NORMAL</displaytype>
+            <displaywidth></displaywidth>
+            <dynamicdefault></dynamicdefault>
+            <encryptatrest>F</encryptatrest>
+            <fieldtype>TEXT</fieldtype>
+            <globalsearch>F</globalsearch>
+            <help></help>
+            <isformula>F</isformula>
+            <ismandatory>F</ismandatory>
+            <isparent>F</isparent>
+            <label>Item Name Internal Id</label>
+            <linktext></linktext>
+            <maxlength></maxlength>
+            <maxvalue></maxvalue>
+            <minvalue></minvalue>
+            <onparentdelete></onparentdelete>
+            <parentsubtab></parentsubtab>
+            <rolerestrict>F</rolerestrict>
+            <searchcomparefield></searchcomparefield>
+            <searchdefault></searchdefault>
+            <searchlevel>2</searchlevel>
+            <selectrecordtype></selectrecordtype>
+            <showinlist>T</showinlist>
+            <sourcefilterby></sourcefilterby>
+            <sourcefrom></sourcefrom>
+            <sourcelist></sourcelist>
+            <storevalue>T</storevalue>
+            <subtab></subtab>
+        </customrecordcustomfield>
+        <customrecordcustomfield scriptid="custrecord_gw_config_temp_folder_id">
+            <accesslevel>2</accesslevel>
+            <allowquickadd>F</allowquickadd>
+            <applyformatting>F</applyformatting>
+            <checkspelling>F</checkspelling>
+            <defaultchecked>F</defaultchecked>
+            <defaultselection></defaultselection>
+            <defaultvalue></defaultvalue>
+            <description></description>
+            <displayheight></displayheight>
+            <displaytype>NORMAL</displaytype>
+            <displaywidth></displaywidth>
+            <dynamicdefault></dynamicdefault>
+            <encryptatrest>F</encryptatrest>
+            <fieldtype>TEXT</fieldtype>
+            <globalsearch>F</globalsearch>
+            <help></help>
+            <isformula>F</isformula>
+            <ismandatory>F</ismandatory>
+            <isparent>F</isparent>
+            <label>Gateweb Temp Folder</label>
+            <linktext></linktext>
+            <maxlength></maxlength>
+            <maxvalue></maxvalue>
+            <minvalue></minvalue>
+            <onparentdelete></onparentdelete>
+            <parentsubtab></parentsubtab>
+            <rolerestrict>F</rolerestrict>
+            <searchcomparefield></searchcomparefield>
+            <searchdefault></searchdefault>
+            <searchlevel>2</searchlevel>
+            <selectrecordtype></selectrecordtype>
+            <showinlist>T</showinlist>
+            <sourcefilterby></sourcefilterby>
+            <sourcefrom></sourcefrom>
+            <sourcelist></sourcelist>
+            <storevalue>T</storevalue>
+            <subtab></subtab>
+        </customrecordcustomfield>
+        <customrecordcustomfield scriptid="custrecord_gw_config_allowance_prefix">
+            <accesslevel>2</accesslevel>
+            <allowquickadd>F</allowquickadd>
+            <applyformatting>F</applyformatting>
+            <checkspelling>F</checkspelling>
+            <defaultchecked>F</defaultchecked>
+            <defaultselection></defaultselection>
+            <defaultvalue></defaultvalue>
+            <description></description>
+            <displayheight></displayheight>
+            <displaytype>NORMAL</displaytype>
+            <displaywidth></displaywidth>
+            <dynamicdefault></dynamicdefault>
+            <encryptatrest>F</encryptatrest>
+            <fieldtype>TEXT</fieldtype>
+            <globalsearch>F</globalsearch>
+            <help></help>
+            <isformula>F</isformula>
+            <ismandatory>F</ismandatory>
+            <isparent>F</isparent>
+            <label>Allowance Prefix</label>
+            <linktext></linktext>
+            <maxlength></maxlength>
+            <maxvalue></maxvalue>
+            <minvalue></minvalue>
+            <onparentdelete></onparentdelete>
+            <parentsubtab></parentsubtab>
+            <rolerestrict>F</rolerestrict>
+            <searchcomparefield></searchcomparefield>
+            <searchdefault></searchdefault>
+            <searchlevel>2</searchlevel>
+            <selectrecordtype></selectrecordtype>
+            <showinlist>T</showinlist>
+            <sourcefilterby></sourcefilterby>
+            <sourcefrom></sourcefrom>
+            <sourcelist></sourcelist>
+            <storevalue>T</storevalue>
+            <subtab></subtab>
+        </customrecordcustomfield>
     </customrecordcustomfields>
     <instances>
         <instance scriptid="val_9598_2130928_280">

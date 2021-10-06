@@ -17,48 +17,63 @@ define(['../../library/ramda.min'], function (ramda) {
     name: {
       id: 'name',
       sourceField: '',
-      outputField: 'name',
+      outputField: 'name'
     },
     custrecord_gw_conf_ns_acct_id: {
       id: 'custrecord_gw_conf_ns_acct_id',
       sourceField: '',
-      outputField: 'nsAcctId',
+      outputField: 'nsAcctId'
     },
     custrecord_gw_conf_print_base_url: {
       id: 'custrecord_gw_conf_print_base_url',
       sourceField: '',
-      outputField: 'printBaseUrl',
+      outputField: 'printBaseUrl'
     },
     custrecord_gw_config_dl_base_url: {
       id: 'custrecord_gw_config_dl_base_url',
       sourceField: '',
-      outputField: 'downloadBaseUrl',
+      outputField: 'downloadBaseUrl'
     },
     custrecord_gw_conf_turnkey_base_url: {
       id: 'custrecord_gw_conf_turnkey_base_url',
       sourceField: '',
-      outputField: 'turkeyBaseUrl',
+      outputField: 'turkeyBaseUrl'
     },
     custrecord_gw_conf_active: {
       id: 'custrecord_gw_conf_active',
       sourceField: '',
-      outputField: 'isActive',
+      outputField: 'isActive'
     },
     custrecord_gw_conf_tax_calc_method: {
       id: 'custrecord_gw_conf_tax_calc_method',
       sourceField: '',
-      outputField: 'taxCalcMethod',
+      outputField: 'taxCalcMethod'
     },
     custrecord_gw_conf_egui_init_fmt: {
       id: 'custrecord_gw_conf_egui_init_fmt',
       sourceField: '',
-      outputField: 'defaultEGuiFormat',
+      outputField: 'defaultEGuiFormat'
     },
     custrecord_gw_conf_allowance_init_fmt: {
       id: 'custrecord_gw_conf_allowance_init_fmt',
       sourceField: '',
-      outputField: 'defaultAllowanceFormat',
+      outputField: 'defaultAllowanceFormat'
     },
+    custrecord_gw_config_item_field: {
+      id: 'custrecord_gw_config_item_field',
+      sourceField: '',
+      outputField: 'itemNameFieldId'
+    },
+    custrecord_gw_config_temp_folder_id: {
+      id: 'custrecord_gw_config_temp_folder_id',
+      sourceField: '',
+      outputField: 'gwTempFolderId'
+    },
+    custrecord_gw_config_allowance_prefix: {
+      id: 'custrecord_gw_config_allowance_prefix',
+      sourceField: '',
+      outputField: 'allowancePrefix'
+    }
   }
 
   var fieldInputMapping = ramda.reduce(
