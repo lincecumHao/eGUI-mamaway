@@ -373,7 +373,7 @@ define([
     //發票備註
     var _main_remark = form.addField({
       id: 'custpage_main_remark',
-      type: serverWidget.FieldType.TEXT,
+      type: serverWidget.FieldType.TEXTAREA,
       label: '發票備註',
       container: 'row01_fieldgroupid',
     })
