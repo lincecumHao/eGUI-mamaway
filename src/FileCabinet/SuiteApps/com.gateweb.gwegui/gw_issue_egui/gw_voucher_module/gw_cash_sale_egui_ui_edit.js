@@ -944,6 +944,9 @@ define([
     var _index_tranid = ''
     var _index_date = '0'
     var _index_trandate
+    
+    //發票備註
+    var _gw_gui_main_memo = ''
 
     //地址
     var _companyObj
@@ -997,6 +1000,9 @@ define([
         _entityValue = _result.values.entity[0].value //529
         _entityText = _result.values.entity[0].text //11 se06_company公司
       }
+      
+      _gw_gui_main_memo = _result.values.custbody_gw_gui_main_memo
+      
       //Invoice統編
       _customer_ban = _result.values.custbody_gw_tax_id_number //99999997
       if (stringutility.trim(_company_name) == '') {
@@ -1309,7 +1315,12 @@ define([
       id: 'custpage_customer_id',
     })
     _custpage_customer_id.defaultValue = _customer_id.toString()
-
+ 
+    var _custpage_main_remark = form.getField({
+        id: 'custpage_main_remark'
+    })
+    _custpage_main_remark.defaultValue = _gw_gui_main_memo
+    
     var _dept_codeField = form.getField({
       id: 'custpage_dept_code',
     })

@@ -401,6 +401,15 @@ define([
       } else if (stringutility.checkByteLength(_custpage_company_name) > 60) {
         _errorMsg += '公司名稱長度不可超過30個中文字或60個英文字<br>'
       }
+      
+      var _custpage_main_remark = _current_record.getValue({
+          fieldId: 'custpage_main_remark'
+      })
+      //檢查發票備註
+      if (_custpage_main_remark.length > 200) {
+          _errorMsg += '發票備註長度不可超過200字元<br>'
+      }
+      
       //3.載具格式錯誤, 請輸入載具類別, 輸入統編不得使用自然人(CQ0001)載具!
       var _buyer_identifier = _current_record.getValue({
         fieldId: 'custpage_buyer_identifier'

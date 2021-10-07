@@ -908,7 +908,7 @@ define([
               taxRate: stringutility.convertToFloat(_taxItem_rate) / 100,
               department: _department_value,
               classId: _class_value,
-              extraMemo: _gw_gui_main_memo,
+              mainRemark: _gw_gui_main_memo,
               applicable_zero_tax: _gw_applicable_zero_tax_text,
               customs_export_category: _gw_customs_export_category_text,
               customs_export_no: _gw_customs_export_no,
@@ -2061,8 +2061,8 @@ define([
         value: stringutility.trim(_voucherFormatCode),
       })
       _voucherMainRecord.setValue({
-        fieldId: 'custrecord_gw_voucher_extra_memo',
-        value: stringutility.trim(jsonObj.extraMemo),
+        fieldId: 'custrecord_gw_main_remark',
+        value: stringutility.trim(jsonObj.mainRemark),
       })
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

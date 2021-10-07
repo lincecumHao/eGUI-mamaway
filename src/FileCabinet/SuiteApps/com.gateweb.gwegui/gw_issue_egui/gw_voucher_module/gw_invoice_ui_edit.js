@@ -1226,6 +1226,8 @@ define([
     var _invoice_zero_sales_amonut = 0
 
     ////////////////////////////////////////////////////////////
+    //發票備註
+    var _gw_gui_main_memo = ''
     //處理零稅率資訊
     //海關出口單類別
     var _gw_customs_export_category_value = ''
@@ -1323,6 +1325,10 @@ define([
         _entityValue = _result.values.entity[0].value //529
         _entityText = _result.values.entity[0].text //11 se06_company公司
       }
+      
+      //20211007 walter modify
+      _gw_gui_main_memo = _result.values.custbody_gw_gui_main_memo  
+      
       //Invoice統編
       _customer_ban = _result.values.custbody_gw_tax_id_number //99999997
       if (stringutility.trim(_company_name) == '') {
@@ -1774,6 +1780,12 @@ define([
       }
 	  */
       _custpage_buyer_email.defaultValue = _customer_email
+      
+      //20211007 walter modify
+      var _custpage_main_remark = form.getField({
+          id: 'custpage_main_remark'
+      })
+      _custpage_main_remark.defaultValue = _gw_gui_main_memo
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////
     //控制通關註記選項
@@ -2263,7 +2275,7 @@ define([
     var _taxObj
     var _hasZeroTax = false
 
-    ////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////// 
     //處理零稅率資訊
     //海關出口單類別
     var _gw_customs_export_category_value = ''
@@ -2365,7 +2377,7 @@ define([
         _entityValue = _result.values.entity[0].value //529
         _entityText = _result.values.entity[0].text //11 se06_company公司
       }
-
+ 
       //Invoice統編
       _customer_ban = _result.values.custbody_gw_tax_id_number //99999997
       if (stringutility.trim(_company_name) == '') {
