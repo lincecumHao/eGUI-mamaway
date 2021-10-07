@@ -269,6 +269,7 @@ define([
       id: 'custpage_customer_id',
       type: serverWidget.FieldType.SELECT,
       label: '客戶代碼',
+      source: 'CUSTOMER',
       container: 'row01_fieldgroupid',
     })
     var _type = search.Type.CUSTOMER
@@ -308,11 +309,12 @@ define([
         email: _email,
         address: _address,
       }
-
+      /**
       _customer_id.addSelectOption({
         value: _internalid,
         text: _internalid + '-' + _name,
       })
+      */
       return true
     })
     _customer_id.updateBreakType({
