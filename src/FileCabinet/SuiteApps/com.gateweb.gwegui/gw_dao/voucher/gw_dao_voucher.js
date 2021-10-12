@@ -10,7 +10,8 @@ define([
   '../../library/gw_lib_search',
   '../../library/ramda.min',
   './gw_service_map_allowance_voucher',
-  './gw_service_map_voucher_allowance'
+  './gw_service_map_voucher_allowance',
+  '../../library/moment-with-locales'
 ], (
   record,
   gwTaxTypeDao,
@@ -23,7 +24,8 @@ define([
   searchLib,
   ramda,
   gwAllowanceVoucherMapper,
-  gwVoucherAllowanceMapper
+  gwVoucherAllowanceMapper,
+  moment
 ) => {
   /**
    * Module Description...
@@ -38,12 +40,20 @@ define([
 
    */
 
-  function getDateStr(dateStr) {
+  function getDateStrObsolete(dateStr) {
     var date = new Date(dateStr)
     return (
       date.getFullYear().toString() +
       (date.getMonth() + 1).toString().padStart(2, '0') +
       date.getDate().toString().padStart(2, '0')
+    )
+  }
+  function getDateStr(dateStr) {
+    var date = moment(dateStr, 'YYYY-MM-DD').utcOffset(8)
+    return (
+      date.year().toString() +
+      (date.month() + 1).toString().padStart(2, '0') +
+      date.date().toString().padStart(2, '0')
     )
   }
 
@@ -134,7 +144,7 @@ define([
         mainObj['custrecord_gw_voucher_yearmonth']
       return detail
     }, voucherDetail)
-    log.debug({title: 'mainObj lines', details: mainObj['lines']})
+    log.debug({ title: 'mainObj lines', details: mainObj['lines'] })
     return mainObj
   }
 
@@ -180,9 +190,7 @@ define([
   }
 
   function isB2CEgui(eguiObj) {
-    return (
-      eguiObj.buyerTaxId === '0000000000'
-    )
+    return eguiObj.buyerTaxId === '0000000000'
   }
 
   function updateEguiObj(eguiObj) {
@@ -198,7 +206,7 @@ define([
     } else {
       egui.lines = updateB2BLines(egui)
     }
-    log.debug({title: 'UpdateEguiObj', details: egui})
+    log.debug({ title: 'UpdateEguiObj', details: egui })
     return egui
   }
 
@@ -300,7 +308,7 @@ define([
 
     getGuiByVoucherId(voucherId) {
       var results = this.searchVoucherByIds([voucherId])
-      log.debug({title: 'results', details: results})
+      log.debug({ title: 'results', details: results })
       return ramda.map((eguiObj) => {
         return updateEguiObj(eguiObj)
       }, gwVoucherEguiMapper.transformSearchResults(results))[0]
@@ -308,7 +316,7 @@ define([
 
     getGuiByGuiNumber(guiNumber) {
       var results = this.searchVoucherByEguiNumbers([guiNumber])
-      log.debug({title: 'results', details: results})
+      log.debug({ title: 'results', details: results })
       return ramda.map((eguiObj) => {
         return updateEguiObj(eguiObj)
       }, gwVoucherEguiMapper.transformSearchResults(results))[0]
@@ -316,7 +324,7 @@ define([
 
     getGuiByGuiNumbers(guiNumbers) {
       var results = this.searchVoucherByEguiNumbers(guiNumbers)
-      log.debug({title: 'results', details: results})
+      log.debug({ title: 'results', details: results })
       return ramda.map((eguiObj) => {
         return updateEguiObj(eguiObj)
       }, gwVoucherEguiMapper.transformSearchResults(results))
@@ -380,10 +388,10 @@ define([
       var isSuccess = result.code === 200
       updateValue[
         mainFields.fields.custrecord_gw_voucher_upload_status.id
-        ] = isSuccess ? 'P' : 'E'
+      ] = isSuccess ? 'P' : 'E'
       updateValue[
         mainFields.fields.custrecord_gw_uploadstatus_messag.id
-        ] = isSuccess ? '' : result.body
+      ] = isSuccess ? '' : result.body
       updateValue[mainFields.fields.custrecord_gw_voucher_status.id] = isSuccess
         ? mainFields.voucherStatus.VOUCHER_SUCCESS
         : mainFields.voucherStatus.VOUCHER_ERROR
@@ -394,8 +402,7 @@ define([
       })
     }
 
-    allowanceUploaded(voucherId) {
-    }
+    allowanceUploaded(voucherId) {}
   }
 
   return new VoucherDao()
