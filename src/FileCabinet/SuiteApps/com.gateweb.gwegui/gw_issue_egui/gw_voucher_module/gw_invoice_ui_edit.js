@@ -1402,7 +1402,7 @@ define([
       }
       log.debug('ns_item_name_field', _ns_item_name_field)
       var _item_displayname = _result.values[_ns_item_name_field] //SONY電視機
-      _item_displayname = _prodcut_text + _item_displayname
+      //_item_displayname = _prodcut_text + _item_displayname
       //if (stringutility.trim(_memo) != '') _item_displayname = _memo
 
       var _item_taxItem_rate = _result.values['taxItem.rate'] //5.00%
@@ -2431,7 +2431,7 @@ define([
       }
       log.debug('ns_item_name_field', _ns_item_name_field)
       var _item_displayname = _result.values[_ns_item_name_field] //SONY電視機
-      _item_displayname = _prodcut_text + _item_displayname
+      //_item_displayname = _prodcut_text + _item_displayname
       //if (stringutility.trim(_memo) != '') _item_displayname = _memo
 
       var _item_taxItem_rate = _result.values['taxItem.rate'] //5.00%
