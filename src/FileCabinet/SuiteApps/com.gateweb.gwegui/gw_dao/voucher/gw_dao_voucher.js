@@ -49,12 +49,7 @@ define([
     )
   }
   function getDateStr(dateStr) {
-    var date = moment(dateStr, 'YYYY-MM-DD').utcOffset(8)
-    return (
-      date.year().toString() +
-      (date.month() + 1).toString().padStart(2, '0') +
-      date.date().toString().padStart(2, '0')
-    )
+    return moment(dateStr).format('YYYYMMDD')
   }
 
   function getCheckboxValue(value) {
