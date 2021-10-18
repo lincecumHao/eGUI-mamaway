@@ -198,7 +198,7 @@ define([
 
   /**
    *
-   * @param {{filename: string, xml: string, docType: string, reprint: boolean, docStatus: int, extramemo: string, uploadDocument: boolean}} xmlFileObject
+   * @param {{filename: string, xml: string, docType: string, reprint: boolean, docStatus: int, extramemo: string, uploadDocument: boolean, linePrintSpace: string}} xmlFileObject
    * @param {{id: int, name: string, printerKey: string, printerType: {id:int, text: string}, department:{id:int, text:string}, printDetail: boolean, printContact: boolean, lineSpacing: int}} printerSetting
    */
   function getPostBody(xmlFileObject, printerSetting) {
@@ -208,6 +208,9 @@ define([
       inputEncoding: encode.Encoding.UTF_8,
       outputEncoding: encode.Encoding.BASE_64
     })
+    var lineSpace = xmlFileObject.linePrintSpace
+      ? parseInt(xmlFileObject.linePrintSpace)
+      : 2
     var body = {
       url: '',
       payload: {
@@ -225,7 +228,7 @@ define([
         //printerType: '', // GENERAL  ACLAS WINPOS POSIFLEX
         //// FOR LAYOUT
         // GENERAL
-        lineSpacing: 2, // 1,2,3,6
+        lineSpacing: lineSpace, // 1,2,3,6
         // ACLAS WINPOS POSIFLEX
         printDetail: false,
         // ACLAS WINPOS POSIFLEX
