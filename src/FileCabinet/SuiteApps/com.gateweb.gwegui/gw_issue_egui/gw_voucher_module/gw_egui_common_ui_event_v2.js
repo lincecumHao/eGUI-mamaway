@@ -887,6 +887,10 @@ define([
       var _b2c_xml = _currentRecord.getValue({
         fieldId: 'custpage_b2c_xml_field',
       })
+      
+      var _line_print_space = _currentRecord.getValue({
+        fieldId: 'custpage_select_line_print_space',
+      })
 
       var _genxml_toftp_result = 'Y'
       var _genxml_toftp_message = ''
@@ -966,6 +970,7 @@ define([
             extramemo: _extra_memo,
             uploadDocument: _need_upload_egui_status,
             reprint: _reprint,
+            linePrintSpace: _line_print_space
           })
           ///////////////////////////////////////////////////////////////////////////////////////
           //Update MAIN print pdf flag is true _apply_id

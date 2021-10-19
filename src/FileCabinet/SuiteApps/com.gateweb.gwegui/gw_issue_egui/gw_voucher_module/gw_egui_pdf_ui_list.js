@@ -970,6 +970,38 @@ define([
       height: _field_height,
       width: _field_text_width,
     })
+    
+    //PDF列印行數
+    var _selectLinePrintSpaceField = form.addField({
+      id: 'custpage_select_line_print_space',
+      type: serverWidget.FieldType.SELECT,
+      label: 'PDF列印行數',
+    }) 
+    _selectLinePrintSpaceField.addSelectOption({
+      value: '1',
+      text: '1',
+    })
+    _selectLinePrintSpaceField.addSelectOption({
+      value: '2',
+      text: '2',
+    })
+    _selectLinePrintSpaceField.addSelectOption({
+      value: '3',
+      text: '3',
+    })
+    _selectLinePrintSpaceField.addSelectOption({
+      value: '6',
+      text: '6',
+    })     
+    _selectLinePrintSpaceField.updateLayoutType({
+      layoutType: serverWidget.FieldLayoutType.OUTSIDEBELOW,
+    })
+    _selectLinePrintSpaceField.updateDisplaySize({
+      height: _field_height,
+      width: _field_width,
+    })
+    //default calue=2行
+    _selectLinePrintSpaceField.defaultValue = '2'    
   }
 
   //發票明細
@@ -1232,6 +1264,8 @@ define([
         context.request.parameters.custpage_select_voucher_status
       var _select_voucher_print_type =
         context.request.parameters.custpage_select_voucher_print_type
+      var _select_line_print_space =
+            context.request.parameters.custpage_select_line_print_space
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       var _scriptObj = runtime.getCurrentScript()
@@ -1334,6 +1368,12 @@ define([
         id: 'custpage_select_voucher_print_type',
       })
       voucherPrintTypeField.defaultValue = _select_voucher_print_type
+      
+      var linePrintSpaceField = form.getField({
+          id: 'custpage_select_line_print_space',
+      })
+      linePrintSpaceField.defaultValue = _select_line_print_space
+      
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       //1.Get Invoice LIST _invoiceSubList
