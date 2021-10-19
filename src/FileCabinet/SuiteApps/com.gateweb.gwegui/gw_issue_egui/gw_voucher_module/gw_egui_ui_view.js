@@ -15,6 +15,7 @@ define([
   '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_search_utility',
   '../gw_common_utility/gw_common_configure',
+  '../gw_common_utility/gw_syncegui_to_document_utility',
   '../../gw_dao/carrierType/gw_dao_carrier_type_21',
 ], function (
   config,
@@ -28,6 +29,7 @@ define([
   stringutility,
   searchutility,
   gwconfigure,
+  synceguidocument,
   carriertypedao
 ) {
   var _gw_voucher_properties = gwconfigure.getGwVoucherProperties() //設定檔
@@ -630,10 +632,13 @@ define([
     })
     _total_balance_tax_amount.defaultValue = _balance_tax_amount
     ///////////////////////////////////////////////////////////////////////////////////
+    
+    return _voucher_record
   } //End Function
 
   //發票明細
   function searchEGUIDetails(form, _selected_voucher_internal_id) {
+	var _document_list_ary = []
     //處理Detail
     var sublist = form.addSublist({
       id: 'invoicesublistid',
@@ -714,6 +719,8 @@ define([
         search.createColumn({ name: 'custrecord_gw_item_amount' }),
         search.createColumn({ name: 'custrecord_gw_item_remark' }),
         search.createColumn({ name: 'custrecord_gw_dtl_item_tax_rate' }),
+        search.createColumn({ name: 'custrecord_gw_ns_document_type' }),
+        search.createColumn({ name: 'custrecord_gw_ns_document_apply_id' })
       ],
     })
 
@@ -740,7 +747,20 @@ define([
       var _item_amount = _result.values.custrecord_gw_item_amount
       var _item_remark = _result.values.custrecord_gw_item_remark
       var _item_tax_rate = _result.values.custrecord_gw_dtl_item_tax_rate
-
+      
+      //////////////////////////////////////////////////////////////////////////////////////////
+      var _ns_document_type = _result.values.custrecord_gw_ns_document_type       
+      var _ns_document_apply_id = -1
+      if (_result.values.custrecord_gw_ns_document_apply_id.length != 0) {
+    	  _ns_document_apply_id = _result.values.custrecord_gw_ns_document_apply_id[0].value 
+      }
+      
+      var _ns_document_type_id = _ns_document_type+'_'+_ns_document_apply_id
+      if (_document_list_ary.toString().indexOf(_ns_document_type_id) ==-1) {
+          _document_list_ary.push(_ns_document_type_id) 
+      }
+      //////////////////////////////////////////////////////////////////////////////////////////
+      
       sublist.setSublistValue({
         id: 'customer_search_internal_id',
         line: row,
@@ -792,7 +812,8 @@ define([
 
       return true
     })
-    /////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////// 
+    return _document_list_ary
   }
 
   //折讓單明細
@@ -1283,9 +1304,11 @@ define([
       functionName: 'printPDFSelected("EGUI","PAPER")',
     })
     /////////////////////////////////////////////////////////////////////////////////////////
-    createFormHeader(form, _selected_voucher_internal_id)
+    var _voucher_main_record = createFormHeader(form, _selected_voucher_internal_id)
     //發票明細
-    searchEGUIDetails(form, _selected_voucher_internal_id)
+    var _document_list_ary = searchEGUIDetails(form, _selected_voucher_internal_id)
+    //同步資料
+    synceguidocument.syncEguiInfoToNetsuiteDoc(_voucher_main_record, _document_list_ary)
     //上傳紀錄
     searchUploadLogDetails(form, _selected_voucher_internal_id)
     //折讓單明細

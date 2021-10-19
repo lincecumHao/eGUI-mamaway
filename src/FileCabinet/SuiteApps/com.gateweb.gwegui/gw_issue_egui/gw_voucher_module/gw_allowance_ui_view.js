@@ -14,6 +14,7 @@ define([
   '../gw_common_utility/gw_common_date_utility',
   '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_search_utility',
+  '../gw_common_utility/gw_syncegui_to_document_utility',
   '../gw_common_utility/gw_common_configure',
 ], function (
   config,
@@ -26,6 +27,7 @@ define([
   dateutility,
   stringutility,
   searchutility,
+  synceguidocument,
   gwconfigure
 ) {
   var _gw_voucher_properties = gwconfigure.getGwVoucherProperties() //設定檔
@@ -465,10 +467,12 @@ define([
       fieldId: 'custrecord_gw_tax_amount',
     })
     ///////////////////////////////////////////////////////////////////////////////////
+    return _voucher_record
   } //End Function
 
   //發票明細
   function searchAllowanceDetails(form, _selected_voucher_internal_id) {
+	var _document_list_ary = []
     //處理 Detail
     var sublist = form.addSublist({
       id: 'invoicesublistid',
@@ -534,6 +538,8 @@ define([
         search.createColumn({ name: 'custrecord_gw_item_tax_amount' }),
         search.createColumn({ name: 'custrecord_gw_dtl_item_tax_code' }),
         search.createColumn({ name: 'custrecord_gw_original_gui_number' }),
+        search.createColumn({ name: 'custrecord_gw_ns_document_type' }),
+        search.createColumn({ name: 'custrecord_gw_ns_document_apply_id' })
       ],
     })
 
@@ -562,6 +568,19 @@ define([
       var _item_tax_amount = _result.values.custrecord_gw_item_tax_amount
       var _item_tax_code = _result.values.custrecord_gw_dtl_item_tax_code
       var _gui_number = _result.values.custrecord_gw_original_gui_number
+      
+      //////////////////////////////////////////////////////////////////////////////////////////
+      var _ns_document_type = _result.values.custrecord_gw_ns_document_type       
+      var _ns_document_apply_id = -1
+      if (_result.values.custrecord_gw_ns_document_apply_id.length != 0) {
+    	  _ns_document_apply_id = _result.values.custrecord_gw_ns_document_apply_id[0].value 
+      }
+      
+      var _ns_document_type_id = _ns_document_type+'_'+_ns_document_apply_id
+      if (_document_list_ary.toString().indexOf(_ns_document_type_id) ==-1) {
+          _document_list_ary.push(_ns_document_type_id) 
+      }
+      //////////////////////////////////////////////////////////////////////////////////////////
 
       if (stringutility.trim(_item_tax_amount) == '') {
         _item_tax_amount = (
@@ -634,6 +653,7 @@ define([
       return true
     })
     /////////////////////////////////////////////////////////////////////////////////////////
+    return _document_list_ary
   }
 
   //發票明細
@@ -1082,9 +1102,11 @@ define([
     })
     /////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////
-    createFormHeader(form, _selected_voucher_internal_id)
+    var _voucher_main_record = createFormHeader(form, _selected_voucher_internal_id)
     //折讓單明細
-    searchAllowanceDetails(form, _selected_voucher_internal_id)
+    var _document_list_ary = searchAllowanceDetails(form, _selected_voucher_internal_id)
+    //同步資料
+    synceguidocument.syncEguiInfoToNetsuiteDoc(_voucher_main_record, _document_list_ary)
     //上傳紀錄
     searchUploadLogDetails(form, _selected_voucher_internal_id)
     //發票明細
