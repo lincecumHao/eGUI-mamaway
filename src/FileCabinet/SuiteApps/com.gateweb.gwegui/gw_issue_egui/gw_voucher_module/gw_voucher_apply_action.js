@@ -10,6 +10,7 @@ define([
   'N/record',
   'N/search',
   'N/redirect',
+  '../gw_common_utility/gw_syncegui_to_document_utility',
   '../gw_common_utility/gw_common_date_utility',
   '../gw_common_utility/gw_common_invoice_utility',
   '../gw_common_utility/gw_common_string_utility',
@@ -21,6 +22,7 @@ define([
   record,
   search,
   redirect,
+  synceguidocument,
   dateutility,
   invoiceutility,
   stringutility,
@@ -177,6 +179,7 @@ define([
           _record.save()
         }
       }
+       
     } catch (e) {
       log.error(e.name, e.message)
     }
@@ -225,6 +228,9 @@ define([
           })
         }
       }
+      
+      synceguidocument.syncEguiUploadStatusToNSEvidenceStatus(voucher_status, upload_status, 'ALL', _idsAry)
+      
     } catch (e) {
       log.error(e.name, e.message)
     }
@@ -289,6 +295,8 @@ define([
           })
         }
       }
+      
+      synceguidocument.syncEguiUploadStatusToNSEvidenceStatus(voucher_status, upload_status, 'ALL', _idsAry)
 
       //////////////////////////////////////////////////////////////////////////////////
       //2.作廢憑證資料

@@ -1271,7 +1271,7 @@ define([
         }
       }
       //將發票或折讓單狀態回寫回NS Document
-      syncEguiUploadStatusToNSEvidenceStatus('CANCEL_ISSUE', 'A', 'ALL', _idAry)
+      syncEguiUploadStatusToNSEvidenceStatus('CANCEL_ISSUE', 'A', 'ALL', '', _idAry)
       
     } catch (e) {
       console.log(e.name + ':' + e.message)
@@ -1279,7 +1279,7 @@ define([
   }
     
   //voucher_status = [VOUCHER_SUCCESS, CANCELL_APPROVE]
-  function syncEguiUploadStatusToNSEvidenceStatus(voucher_status, voucher_upload_status, need_upload_egui_mig, voucher_main_internalid_ary) {  	
+  function syncEguiUploadStatusToNSEvidenceStatus(voucher_status, voucher_upload_status, need_upload_egui_mig, gui_apply_period, voucher_main_internalid_ary) {  	
     try { 
     	 if (voucher_main_internalid_ary.length !=0) {
     		 var _my_search = search.load({
@@ -1313,6 +1313,9 @@ define([
   		    	 
   		    	 var values = {}   
   		  	     values['custbody_gw_evidence_issue_status'] = _evidence_status_id
+  		  	     if (gui_apply_period.length !=0) {
+  		  	    	 values['custbody_gw_gui_apply_period'] = gui_apply_period
+  		  	     }
   		  	     
   		    	 var _id = record.submitFields({
   		             type: _record_type_id,
@@ -1676,6 +1679,11 @@ define([
               ignoreMandatoryFields: true,
             },
           })
+          
+          //將發票或折讓單狀態回寫回NS Document
+          var _id_ary = [_internalId] 
+          syncEguiUploadStatusToNSEvidenceStatus('VOUCHER_SUCCESS', 'A', voucher_upload_type, _year_month, _id_ary)
+          
         }
       }
     } catch (e) {
