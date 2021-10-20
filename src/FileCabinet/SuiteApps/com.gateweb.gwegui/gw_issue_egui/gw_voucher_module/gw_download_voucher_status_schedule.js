@@ -13,6 +13,7 @@ define([
   '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_invoice_utility',
   '../gw_common_utility/gw_common_configure',
+  '../gw_common_utility/gw_syncegui_to_document_utility',
   '../services/email/gw_service_egui_email',
 ], function (
   runtime,
@@ -24,6 +25,7 @@ define([
   stringutility,
   invoiceutility,
   gwconfigure,
+  synceguidocument,
   gwEmailService
 ) {
   var _voucher_main_record = gwconfigure.getGwVoucherMainRecord()
@@ -656,6 +658,57 @@ define([
       log.error(e.name, e.message)
     }
   }
+  
+  //custbody_gw_evidence_issue_status
+  function syncTransactionVoucherStatus(voucher_status, evidence_issue_status, transaction_ids_Ary) {
+    try {
+		 log.debug('syncTransactionVoucherStatus', ' transaction_ids_Ary =' + JSON.stringify(transaction_ids_Ary))
+				
+		 if (typeof transaction_ids_Ary !== 'undefined' && transaction_ids_Ary.length != 0) {
+		    var _recordTypeID = record.Type.INVOICE
+		
+		    for (var i = 0; i < transaction_ids_Ary.length; i++) {
+		      var _documentID = transaction_ids_Ary[i] //INVOICE-1102
+		
+		      var _documentID_Ary = _documentID.split('-')
+		
+		      var _ns_document_type = _documentID_Ary[0]
+		      var _internalid = _documentID_Ary[1]
+		
+		      var values = {}
+		      if (_ns_document_type == 'INVOICE') {
+		          _recordTypeID = record.Type.INVOICE		        
+		      } else if (_ns_document_type == 'CREDITMEMO') {
+		          _recordTypeID = record.Type.CREDIT_MEMO		        
+		      } else if (_ns_document_type == 'CUSTOMER_DEPOSIT') {
+		          _recordTypeID = record.Type.CUSTOMER_DEPOSIT		        
+		      } else if (_ns_document_type == 'CASH_SALE') {
+		    	  _recordTypeID = record.Type.CASH_SALE
+		      }
+		
+		      var _issue_status = synceguidocument.getGwEvidenceStatus(voucher_status, evidence_issue_status, 'ALL')
+		  
+		      values['custbody_gw_evidence_issue_status'] = _issue_status
+		      log.debug('syncTransactionVoucherStatus', 'update values =' + JSON.stringify(values))
+		      try {
+			       record.submitFields({
+			          type: _recordTypeID,
+			          id: parseInt(_internalid),
+			          values: values,
+			          options: {
+			            enableSourcing: false,
+			            ignoreMandatoryFields: true,
+			          },
+			       })
+		      } catch (e) {
+		        log.debug(e.name, e.message)
+		      }
+		    }
+		 }
+    } catch (e) {
+      log.error(e.name, e.message)
+    }
+  }
 
   function checkDepositVoucherRecordAndReturnAmount(
     voucher_main_id,
@@ -915,6 +968,11 @@ define([
               //unlockTransactionCheckStatus(_customer_deposit_ids_Ary);
               //unlockTransactionCheckStatus(_creditmemo_ids_Ary);
             }
+            
+            syncTransactionVoucherStatus(_voucher_status, _status, _invoice_ids_Ary)
+            syncTransactionVoucherStatus(_voucher_status, _status, _customer_deposit_ids_Ary)
+            syncTransactionVoucherStatus(_voucher_status, _status, _creditmemo_ids_Ary)
+            syncTransactionVoucherStatus(_voucher_status, _status, _sales_order_ids_Ary)
             ///////////////////////////////////////////////////////////////////////////////////////////////////////
             if ((_ns_document_type = 'CUSTOMER_DEPOSIT')) {
               //更新 GW_Deposit_Voucher_Record 的Status (C/E)

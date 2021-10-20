@@ -14,7 +14,9 @@ define([
   '../gw_common_utility/gw_common_invoice_utility',
   '../gw_common_utility/gw_common_date_utility',
   '../gw_common_utility/gw_common_configure',
+  '../gw_common_utility/gw_syncegui_to_document_utility',
   '../../gw_dao/taxType/gw_dao_tax_type_21',
+  '../../gw_dao/docFormat/gw_dao_doc_format_21', 
   '../../gw_dao/carrierType/gw_dao_carrier_type_21',
 ], function (
   runtime,
@@ -26,7 +28,9 @@ define([
   invoiceutility,
   dateutility,
   gwconfigure,
+  synceguidocument,
   taxyype21,
+  doc_format_21,
   carriertypedao
 ) {
   var _invoceFormatCode = gwconfigure.getGwVoucherFormatInvoiceCode()
@@ -2509,6 +2513,7 @@ define([
       //2. lock invoice
       log.debug('START LOCK')
       lockNSInvoiceRecord(
+    	_voucherMainRecord,
         voucher_type,
         jsonObj.applyId,
         _documentNumber,
@@ -2759,6 +2764,7 @@ define([
 
   //20: for transaction records
   function lockNSInvoiceRecord(
+	voucher_main_record,
     voucher_type,
     internalId,
     documentNumber,
@@ -2793,6 +2799,9 @@ define([
         values[_gw_gui_num_start_field] = documentNumber
         values[_gw_gui_num_end_field] = documentNumber
       }
+      
+      syncToNetsuiteDocument(voucher_main_record, values)
+      
       log.debug(
         'lockNSInvoiceRecord',
         'voucher_type=' +
@@ -2824,6 +2833,81 @@ define([
       log.error(e.name, e.message)
     }
   }
+  
+  function syncToNetsuiteDocument(voucher_main_record, values) { 	
+    try { 	
+    	//有資料就不再更新           	
+    	//_access_model NETSUITE / GATEWEB
+    	var _access_model = voucher_main_record.getValue({fieldId: 'custrecord_gw_upload_access_model'}) 
+    	//應稅銷售額
+    	var _gui_sales_amt = voucher_main_record.getValue({fieldId: 'custrecord_gw_sales_amount'})
+    	//稅額
+    	var _gui_tax_amt = voucher_main_record.getValue({fieldId: 'custrecord_gw_tax_amount'})
+    	//總計
+    	var _gui_total_amt = voucher_main_record.getValue({fieldId: 'custrecord_gw_total_amount'})
+    	if (_access_model=='GATEWEB') {
+    		_gui_total_amt = (stringutility.convertToFloat(_gui_total_amt)-stringutility.convertToFloat(_gui_tax_amt)).toString()
+    		//稅率 tax_rate = 0.05
+    		var _tax_rate = voucher_main_record.getValue({fieldId: 'custrecord_gw_tax_rate'})
+    		_gui_tax_amt = Math.round(stringutility.convertToFloat(_sales_amount) * stringutility.convertToFloat(_tax_rate)).toString()
+    		
+    		_gui_total_amt = (stringutility.convertToFloat(_gui_total_amt)+stringutility.convertToFloat(_gui_tax_amt)).toString()  
+    	} 
+    	//稅額
+  	    values['custbody_gw_gui_tax_amt'] = _gui_tax_amt
+  	    //發票期別
+	    values['custbody_gw_gui_tax_file_date'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_yearmonth'}) 
+	    //稅率  
+	    values['custbody_gw_gui_tax_rate'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_tax_rate'})	
+	    //課稅別  
+	    values['custbody_gw_gui_tax_type'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_tax_type'})	
+	    //總計
+	    values['custbody_gw_gui_total_amt'] = _gui_total_amt
+	    //發票日期  
+	    var _gw_voucher_date = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_date'})
+        values['custbody_gw_gui_date'] = convertStringToDate(_gw_voucher_date.toString())
+	    //發票不上傳
+	    if (_need_upload_egui_mig=='NONE') values['custbody_gw_gui_not_upload'] = true 
+	    //應稅銷售額
+	    values['custbody_gw_gui_sales_amt'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_sales_amount'})    
+	    //免稅銷售額	
+	    values['custbody_gw_gui_sales_amt_tax_exempt'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_free_sales_amount'}) 
+	    //零稅銷售額 
+	    values['custbody_gw_gui_sales_amt_tax_zero'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_zero_sales_amount'})	 
+	    //發票部門
+	    values['custbody_gw_gui_department'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_dept_code'}) 
+	    //發票分類
+	    values['custbody_gw_gui_class'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_classification'}) 
+	    //營業稅申報期別  
+	    values['custbody_gw_gui_apply_period'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_yearmonth'})  
+	    
+	    //開立狀態   
+	    var _gw_voucher_status = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_status'})
+	    var _gw_voucher_upload_status = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_upload_status'})
+	    var _need_upload_egui_mig = voucher_main_record.getValue({fieldId: 'custrecord_gw_need_upload_egui_mig'})
+	        	    
+	    values['custbody_gw_evidence_issue_status'] = synceguidocument.getGwEvidenceStatus(_gw_voucher_status, _gw_voucher_upload_status, _need_upload_egui_mig)
+	    //憑證格式代號 
+	    var _mof_code = voucher_main_record.getValue({fieldId: 'custrecord_gw_invoice_type'})
+	    var _format_code = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_format_code'})
+	    log.debug('custbody_gw_gui_format', 'mof_code='+_mof_code+',format_code='+_format_code)
+	    
+	    var _gw_gui_format_obj = doc_format_21.getByValueAndMofCode(_format_code, _mof_code)
+	    values['custbody_gw_gui_format'] = _gw_gui_format_obj.id		
+	  
+    } catch (e) {
+        log.error(e.name, e.message)
+    } 
+  }
+  
+  function convertStringToDate(date_str) {   
+	 log.debug('convertStringToDate', 'date_str='+date_str) 	 
+	 var _year  = parseInt(date_str.substring(0, 4)) 
+	 var _month = parseInt(date_str.substring(4, 6))-1
+	 var _day   = parseInt(date_str.substring(6, 8))
+	    
+	 return new Date(_year,_month,_day) 
+  }	
 
   //處理發票資料-END
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
