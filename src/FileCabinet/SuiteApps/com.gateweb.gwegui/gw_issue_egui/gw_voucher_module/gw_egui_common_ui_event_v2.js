@@ -7,7 +7,7 @@ define([
   'N/search',
   'N/currentRecord',
   'N/record',
-  '../../gw_print/gw_download_pdf/gw_api_client',
+  '../../gw_print/gw_download_pdf/gw_api_client',      
   '../gw_common_utility/gw_common_configure',
   '../gw_common_utility/gw_common_date_utility',
   '../gw_common_utility/gw_common_string_utility',
@@ -18,7 +18,7 @@ define([
   search,
   currentRecord,
   record,
-  gwapiclient,
+  gwapiclient,   
   gwconfigure,
   dateutility,
   stringutility,
@@ -1270,11 +1270,169 @@ define([
           }
         }
       }
+      //將發票或折讓單狀態回寫回NS Document
+      syncEguiUploadStatusToNSEvidenceStatus('CANCEL_ISSUE', 'A', 'ALL', _idAry)
+      
     } catch (e) {
       console.log(e.name + ':' + e.message)
     }
   }
-
+    
+  //voucher_status = [VOUCHER_SUCCESS, CANCELL_APPROVE]
+  function syncEguiUploadStatusToNSEvidenceStatus(voucher_status, voucher_upload_status, need_upload_egui_mig, voucher_main_internalid_ary) {  	
+    try { 
+    	 if (voucher_main_internalid_ary.length !=0) {
+    		 var _my_search = search.load({
+   			     id: 'customsearch_gw_voucher_main_search',
+   		     }) 
+   		     
+   		     var _filter_array = [] 
+    		 _filter_array.push(['internalId', search.Operator.ANYOF, voucher_main_internalid_ary]) 
+  		     _my_search.filterExpression = _filter_array
+  		   
+  		     _my_search.run().each(function(result) {	  
+  		    	 var _result = JSON.parse(JSON.stringify(result))
+  		    	
+  		      	 var _voucher_type         = _result.values.custrecord_gw_voucher_type //EGUI, ALLOWANCE
+  		    	 var _ns_document_type     = _result.values['CUSTRECORD_GW_VOUCHER_MAIN_INTERNAL_ID.custrecord_gw_ns_document_type'].toUpperCase()
+  		    	 var _ns_document_apply_id_obj = _result.values['CUSTRECORD_GW_VOUCHER_MAIN_INTERNAL_ID.custrecord_gw_ns_document_apply_id']
+  			   	 var _ns_document_apply_id = _ns_document_apply_id_obj[0].value
+  		    	
+  		    	 var _evidence_status_id = getGwEvidenceStatus(voucher_status, voucher_upload_status, need_upload_egui_mig)
+  			
+  		    	 var _record_type_id = ''
+		    	 if (_ns_document_type == 'INVOICE') {
+		    		 _record_type_id = record.Type.INVOICE		              
+		         } else if (_ns_document_type == 'CREDITMEMO') {
+		        	 _record_type_id = record.Type.CREDIT_MEMO	
+		         } else if (_ns_document_type == 'CASH_SALE') {
+		        	 _record_type_id = record.Type.CASH_SALE		               
+		         } else if (_ns_document_type == 'CUSTOMER_DEPOSIT') {
+		        	 _record_type_id = record.Type.CUSTOMER_DEPOSIT		               
+		         }
+  		    	 
+  		    	 var values = {}   
+  		  	     values['custbody_gw_evidence_issue_status'] = _evidence_status_id
+  		  	     
+  		    	 var _id = record.submitFields({
+  		             type: _record_type_id,
+  		             id: _ns_document_apply_id,
+  		             values: values,
+  		             options: {
+  		               enableSourcing: false,
+  		               ignoreMandatoryFields: true
+  		             }
+  		         })
+  		    	 
+  			     return true;
+  		     })	   		     
+    	 }
+ 
+    } catch (e) {
+    	console.log(e.name + ':' + e.message)
+    } 
+  }
+   
+  function getGwEvidenceStatus(gw_voucher_status, voucher_upload_status, need_upload_egui_mig) {   	
+	var _gw_evidence_status_id = -1
+    try {      	
+    	 var _gw_evidence_status = ''
+    	 if (gw_voucher_status.toUpperCase().indexOf('CANCEL') !=-1) {
+    		 //CE	憑證作廢上傳已失敗
+        	 //CC	憑證作廢上傳已成功
+        	 //CP	憑證作廢已上傳
+        	 //CI	憑證作廢待審核
+        	 //CA	憑證已作廢
+        	 //PC	憑證已作廢, 未進入關網系統
+    		 if (need_upload_egui_mig == 'NONE') {
+    			 _gw_evidence_status ='PC'
+    		 } else if (gw_voucher_status.toUpperCase().indexOf('CANCEL_ISSUE') !=-1) {
+    			 _gw_evidence_status ='CI'
+    		 } else if (gw_voucher_status.toUpperCase().indexOf('CANCEL_APPROVE') !=-1) {
+    			 _gw_evidence_status ='CP'
+    		 } else if (gw_voucher_status.toUpperCase().indexOf('CANCEL_SUCCESS') !=-1) {
+    			 _gw_evidence_status ='CC'
+    		 } else if (gw_voucher_status.toUpperCase().indexOf('CANCEL_ERROR') !=-1 ||
+    				    voucher_upload_status =='E') {
+    			 _gw_evidence_status ='CE'
+    		 }
+    			 
+    	 } else {
+    		 //A	憑證已開立
+        	 //PA	憑證已開立, 未進入關網系統
+        	 //I	憑證未開立
+        	 //IE	憑證開立上傳已失敗
+        	 //IC	憑證開立上傳已成功
+        	 //IP	憑證開立已上傳 
+    		 if (need_upload_egui_mig == 'NONE') {
+    			 _gw_evidence_status = 'PA'
+    		 } else if (voucher_upload_status == 'A') {
+    			 _gw_evidence_status = voucher_upload_status
+    		 } else { 
+    			 _gw_evidence_status = 'I'+voucher_upload_status
+    		 }
+    		 
+    	 } 
+    	 
+    	 _gw_evidence_status_id = getByStatusCode(_gw_evidence_status) 
+    	 
+    } catch (e) {
+    	console.log(e.name + ':' + e.message)
+    } 
+    
+    return _gw_evidence_status_id
+  }
+  
+  var _gw_evidence_status_ary = []
+  function getByStatusCode(gw_evidence_status) {   	
+	var _gw_evidence_status_id = -1
+    try {      	    	
+    	if (_gw_evidence_status_ary.length !=0) {
+    		for (var i=0; i<_gw_evidence_status_ary.length; i++) {
+    			 var _obj  = _gw_evidence_status_ary[i]
+    			 if (_obj.status_value == gw_evidence_status) {
+    				 _gw_evidence_status_id = _obj.internal_id
+    				 break
+    			 }
+    		}
+    	}
+     	 
+    	if (_gw_evidence_status_id == -1) {
+	    	var _my_search = search.create({
+	            type: 'customrecord_gw_evidence_status',
+	            columns: [
+	              search.createColumn({ name: 'custrecord_gw_evidence_status_value' }), //CE
+	              search.createColumn({ name: 'custrecord_gw_evidence_status_text' }),  //憑證作廢上傳已失敗
+	            ],
+	        })
+	        
+	        var _filter_array = []
+	    	_filter_array.push(['custrecord_gw_evidence_status_value', search.Operator.IS, gw_evidence_status])
+		    _my_search.filterExpression = _filter_array 
+		     
+		    _my_search.run().each(function (result) {	
+		    	var _result = JSON.parse(JSON.stringify(result)) 
+		    			    	
+	        	var _internalid = _result.id 	        	
+	        	var _evidence_status_value = _result.values.custrecord_gw_evidence_status_value
+	        	
+	        	var _obj = {
+	        		'internal_id': _internalid,
+	        		'status_value': _evidence_status_value
+	        	}		    	
+	        	_gw_evidence_status_ary.push(_obj)	        
+	        	_gw_evidence_status_id = _internalid
+	        	
+	        	return true
+	        })
+    	}
+    } catch (e) {
+    	console.log(e.name + ':' + e.message)
+    } 
+    
+    return _gw_evidence_status_id
+  }
+    
   //作廢作業-END
   ////////////////////////////////////////////////////////////////////////////////////////
   function mark(

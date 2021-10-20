@@ -5,9 +5,10 @@
  */
 define(['N/record', 
 	    'N/format', 
+	    'N/search',
 	    '../../gw_dao/docFormat/gw_dao_doc_format_21', 
 	    '../../gw_dao/evidenceIssueStatus/gw_dao_evidence_issue_status_21'], 
-	    function (record, format, doc_format_21, issue_status_21) { 
+	    function (record, format, search, doc_format_21, issue_status_21) {  
   /////////////////////////////////////////////////////////////////////////////////////////////
   function syncEguiInfoToNetsuiteDoc(voucher_main_record, document_ary) {  
 	log.debug('syncEguiInfoToNetsuiteDoc', 'voucher_main_record='+JSON.stringify(voucher_main_record))
@@ -132,7 +133,7 @@ define(['N/record',
   
   //YYYYMMDD TO DATE
   function convertStringToDate(date_str) {   
-	 log.debug('convertStringToDate', 'date_str='+date_str) 	 
+	 //log.debug('convertStringToDate', 'date_str='+date_str) 	 
 	 var _year  = parseInt(date_str.substring(0, 4)) 
 	 var _month = parseInt(date_str.substring(4, 6))-1
 	 var _day   = parseInt(date_str.substring(6, 8))
@@ -140,8 +141,7 @@ define(['N/record',
 	 return new Date(_year,_month,_day) 
   }	
   
-  function getGwEvidenceStatus(gw_voucher_status, voucher_upload_status, need_upload_egui_mig) {   
-	log.debug('getGwEvidenceStatus', 'gw_voucher_status='+gw_voucher_status+', voucher_upload_status='+voucher_upload_status)
+  function getGwEvidenceStatus(gw_voucher_status, voucher_upload_status, need_upload_egui_mig) {   	
 	var _gw_evidence_status_id = -1
     try {      	
     	 var _gw_evidence_status = ''
@@ -191,11 +191,68 @@ define(['N/record',
     
     return _gw_evidence_status_id
   }
+  
+  //voucher_status = [VOUCHER_SUCCESS, CANCELL_APPROVE]
+  function syncEguiUploadStatusToNSEvidenceStatus(voucher_status, voucher_upload_status, need_upload_egui_mig, voucher_main_internalid_ary) {  	
+	  log.debug('syncEguiUploadStatusToNSEvidenceStatus', 'voucher_status='+voucher_status+',voucher_upload_status='+voucher_upload_status)
+	  try { 
+    	 if (voucher_main_internalid_ary.length !=0) {
+    		 var _my_search = search.load({
+   			     id: 'customsearch_gw_voucher_main_search',
+   		     }) 
+   		     
+   		     var _filter_array = [] 
+    		 _filter_array.push(['internalId', search.Operator.ANYOF, voucher_main_internalid_ary]) 
+  		     _my_search.filterExpression = _filter_array
+  		   
+  		     _my_search.run().each(function(result) {		 
+  		    	 var _result = JSON.parse(JSON.stringify(result)) 
+  		    	  
+  		    	 var _voucher_type             = _result.values.custrecord_gw_voucher_type //EGUI, ALLOWANCE
+  		    	 var _ns_document_type         = _result.values['CUSTRECORD_GW_VOUCHER_MAIN_INTERNAL_ID.custrecord_gw_ns_document_type'].toUpperCase()
+  		    	 var _ns_document_apply_id_obj = _result.values['CUSTRECORD_GW_VOUCHER_MAIN_INTERNAL_ID.custrecord_gw_ns_document_apply_id']
+  		    	 var _ns_document_apply_id     = _ns_document_apply_id_obj[0].value
+  		    	 
+  		    	 var _evidence_status_id       = getGwEvidenceStatus(voucher_status, voucher_upload_status, need_upload_egui_mig)
+  			  
+  		    	 var _record_type_id = ''
+		    	 if (_ns_document_type == 'INVOICE') {
+		    		 _record_type_id = record.Type.INVOICE		              
+		         } else if (_ns_document_type == 'CREDITMEMO') {
+		        	 _record_type_id = record.Type.CREDIT_MEMO	
+		         } else if (_ns_document_type == 'CASH_SALE') {
+		        	 _record_type_id = record.Type.CASH_SALE		               
+		         } else if (_ns_document_type == 'CUSTOMER_DEPOSIT') {
+		        	 _record_type_id = record.Type.CUSTOMER_DEPOSIT		               
+		         }
+  		    	 
+  		    	 var values = {}   
+  		  	     values['custbody_gw_evidence_issue_status'] = _evidence_status_id
+  		  	     log.debug('ns_document_apply_id result', 'ns_document_apply_id='+_ns_document_apply_id+' ,evidence_status_id='+_evidence_status_id)
+  		  	     
+  		    	 var _id = record.submitFields({
+  		             type: _record_type_id,
+  		             id: _ns_document_apply_id,
+  		             values: values,
+  		             options: {
+  		               enableSourcing: false,
+  		               ignoreMandatoryFields: true
+  		             }
+  		         })
+  		    	 
+  			     return true;
+  		     })	   		     
+    	 }
+ 
+    } catch (e) {
+        log.error(e.name, e.message)
+    } 
+  }
 
   /////////////////////////////////////////////////////////////////////////////////////////////
-
   return {
 	  syncEguiInfoToNetsuiteDoc: syncEguiInfoToNetsuiteDoc, 
+	  syncEguiUploadStatusToNSEvidenceStatus: syncEguiUploadStatusToNSEvidenceStatus,
 	  getGwEvidenceStatus: getGwEvidenceStatus
   }
 })
