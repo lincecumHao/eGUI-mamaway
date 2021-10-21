@@ -102,11 +102,12 @@ define([
 			  _result.values[
 				'CUSTRECORD_GW_VOUCHER_MAIN_INTERNAL_ID.custrecord_gw_ns_document_type'
 			  ] //INVOICE, CREDITMEMO
-			var _ns_document_apply_id =
+			var _ns_document_apply_id_obj =
 			  _result.values[
 				'CUSTRECORD_GW_VOUCHER_MAIN_INTERNAL_ID.custrecord_gw_ns_document_apply_id'
 			  ] //Netsuite internalId
-
+			var _ns_document_apply_id = _ns_document_apply_id_obj[0].value
+			
 			var _original_gui_internal_id =
 			  _result.values[
 				'CUSTRECORD_GW_VOUCHER_MAIN_INTERNAL_ID.custrecord_gw_original_gui_internal_id'
@@ -662,7 +663,7 @@ define([
   //custbody_gw_evidence_issue_status
   function syncTransactionVoucherStatus(voucher_status, evidence_issue_status, transaction_ids_Ary) {
     try {
-		 log.debug('syncTransactionVoucherStatus', ' transaction_ids_Ary =' + JSON.stringify(transaction_ids_Ary))
+		 log.debug('syncTransactionVoucherStatus', ' transaction_ids_Ary =' + transaction_ids_Ary.toString())
 				
 		 if (typeof transaction_ids_Ary !== 'undefined' && transaction_ids_Ary.length != 0) {
 		    var _recordTypeID = record.Type.INVOICE
@@ -672,9 +673,9 @@ define([
 		
 		      var _documentID_Ary = _documentID.split('-')
 		
-		      var _ns_document_type = _documentID_Ary[0]
+		      var _ns_document_type = _documentID_Ary[0].toUpperCase()
 		      var _internalid = _documentID_Ary[1]
-		
+		      log.debug('documentID', '_documentID=' + _documentID)
 		      var values = {}
 		      if (_ns_document_type == 'INVOICE') {
 		          _recordTypeID = record.Type.INVOICE		        
