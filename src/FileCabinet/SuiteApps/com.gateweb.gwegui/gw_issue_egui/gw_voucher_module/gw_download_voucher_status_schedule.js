@@ -934,7 +934,10 @@ define([
           var _deposit_zero_amount = _voucherJsonObj.deposit_zero_amount
           var _deposit_free_amount = _voucherJsonObj.deposit_free_amount
 
-          //處理回傳值
+          //處理回傳值 custrecord_upload_xml_file_name
+          if (_voucher_status.indexOf('CANCEL') !=-1 && _file_name.indexOf('C0401') !=-1) {
+        	  _file_name = _upload_mig_type + '-' + _voucher_number + '-' + _applyId + '.xml'
+          }
           var _response = gwapi.getGuiStatus(_file_name)
           log.debug('_response', JSON.stringify(_response))
           var _code = _response.code

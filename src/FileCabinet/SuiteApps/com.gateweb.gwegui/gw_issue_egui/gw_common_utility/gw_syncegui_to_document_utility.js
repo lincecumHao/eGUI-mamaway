@@ -59,9 +59,9 @@ define(['N/record',
 	    	var _access_model = voucher_main_record.getValue({fieldId: 'custrecord_gw_upload_access_model'}) 
 	    	
 	    	//應稅銷售額
-	    	var _gui_sales_amt = voucher_main_record.getValue({fieldId: 'custbody_gw_gui_sales_amt'})
+	    	var _gui_sales_amt = voucher_main_record.getValue({fieldId: 'custrecord_gw_sales_amount'})
 	    	//稅額
-	    	var _gui_tax_amt = voucher_main_record.getValue({fieldId: 'custbody_gw_gui_tax_amt'})
+	    	var _gui_tax_amt = voucher_main_record.getValue({fieldId: 'custrecord_gw_tax_amount'})
 	    	//總計
 	    	var _gui_total_amt = voucher_main_record.getValue({fieldId: 'custrecord_gw_total_amount'})
 	    	if (_access_model=='GATEWEB') {
@@ -158,6 +158,8 @@ define(['N/record',
     			 _gw_evidence_status ='CI'
     		 } else if (gw_voucher_status.toUpperCase().indexOf('CANCEL_APPROVE') !=-1) {
     			 _gw_evidence_status ='CP'
+    		 } else if (gw_voucher_status.toUpperCase().indexOf('CANCEL_UPLOAD') !=-1) {
+    			 _gw_evidence_status ='CP'
     		 } else if (gw_voucher_status.toUpperCase().indexOf('CANCEL_SUCCESS') !=-1) {
     			 _gw_evidence_status ='CC'
     		 } else if (gw_voucher_status.toUpperCase().indexOf('CANCEL_ERROR') !=-1 ||
@@ -181,7 +183,7 @@ define(['N/record',
     		 }
     		 
     	 } 
-    	 
+    	 log.debug('issue_status_21.getByStatusCode', 'gw_evidence_status='+_gw_evidence_status)
     	 var _obj = issue_status_21.getByStatusCode(_gw_evidence_status)
     	 _gw_evidence_status_id = _obj.id
     	 

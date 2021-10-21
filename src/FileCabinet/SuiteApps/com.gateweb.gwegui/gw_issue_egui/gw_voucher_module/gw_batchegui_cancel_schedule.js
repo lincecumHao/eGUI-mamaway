@@ -9,6 +9,7 @@ define([
   'N/search',
   'N/record',
   'N/format',
+  '../gw_common_utility/gw_syncegui_to_document_utility',
   '../gw_common_utility/gw_common_date_utility',
   '../gw_common_utility/gw_common_string_utility',
   '../../gw_library/gw_api/gw_api',
@@ -19,6 +20,7 @@ define([
   search,
   record,
   format,
+  synceguidocument,
   dateutility,
   stringutility,
   gwapi,
@@ -324,11 +326,11 @@ define([
             _upload_mig_type = 'B0201'
           }
         }
-        _file_name =
-          _upload_mig_type + '-' + _voucher_number + '-' + _internalid + '.xml'
+        //_file_name = _upload_mig_type + '-' + _voucher_number + '-' + _internalid + '.xml'
+        _file_name = _upload_mig_type + '-' + _voucher_number + '-' + new Date().getTime()      
         log.debug('cancel file_name', _file_name)
 
-        var _response = gwapi.uploadGuiXml(_xml, _file_name)
+        var _response = gwapi.uploadGuiXml(_xml, _file_name+'.xml')
         var _code = _response.code // see https.ClientResponse.code
         var _message = _response.body // see https.ClientResponse.body
         log.debug('cancel _code', _code + ' : ' + _message)
@@ -341,6 +343,7 @@ define([
           _message,
           _completedIDsAry,
           _upload_mig_type,
+          _file_name,
           _xml
         )
 
@@ -457,6 +460,7 @@ define([
     message,
     completedIDsAry,
     upload_mig_type,
+    file_name,
     xml
   ) {
     try {
@@ -465,18 +469,21 @@ define([
         id: parseInt(internalId),
         isDynamic: true,
       })
+      
+      var _upload_status = 'P'
       if (
         stringutility.convertToFloat(code) < 200 ||
         stringutility.convertToFloat(code) > 299
       ) {
         //有錯誤時
+    	_upload_status = 'E'
         _record.setValue({
           fieldId: 'custrecord_gw_voucher_status',
           value: 'CANCEL_ERROR',
         })
         _record.setValue({
           fieldId: 'custrecord_gw_voucher_upload_status',
-          value: 'E',
+          value: _upload_status,
         })
         _record.setValue({
           fieldId: 'custrecord_gw_uploadstatus_messag',
@@ -489,9 +496,13 @@ define([
         })
         _record.setValue({
           fieldId: 'custrecord_gw_voucher_upload_status',
-          value: 'P',
+          value: _upload_status,
         })
-      }
+      }      
+      _record.setValue({
+          fieldId: 'custrecord_upload_xml_file_name',
+          value: file_name,
+      })
 
       try {
         _record.save()
@@ -500,6 +511,16 @@ define([
         //寫入日誌檔
         var _recordObj = JSON.parse(JSON.stringify(_record))
         updateXmlUploadLog(_recordObj, upload_mig_type, xml, code, message)
+        
+        
+        //回寫狀態到NS Document    
+        if (_upload_status != 'E'){ 
+  	        var _voucher_status = _record.getValue({fieldId: 'custrecord_gw_voucher_status'})
+  	        var _need_upload_egui_mig = _record.getValue({fieldId: 'custrecord_gw_need_upload_egui_mig'})
+  	       
+  	        var _voucher_main_internalid_ary = [internalId]
+  	        synceguidocument.syncEguiUploadStatusToNSEvidenceStatus(_voucher_status, _upload_status, _need_upload_egui_mig, _voucher_main_internalid_ary)
+  	    }
       } catch (e) {
         log.debug(e.name, e.message)
       }

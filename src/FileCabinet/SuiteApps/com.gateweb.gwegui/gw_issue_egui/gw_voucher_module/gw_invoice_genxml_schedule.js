@@ -11,6 +11,7 @@ define([
   'N/https',
   'N/file',
   '../../gw_library/gw_api/gw_api',
+  '../gw_common_utility/gw_syncegui_to_document_utility',
   '../gw_common_utility/gw_common_date_utility',
   '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_invoice_utility',
@@ -24,6 +25,7 @@ define([
   https,
   file,
   gwapi,
+  synceguidocument,
   dateutility,
   stringutility,
   invoiceutility,
@@ -1259,6 +1261,15 @@ define([
       //寫入日誌檔
       var _recordObj = JSON.parse(JSON.stringify(_record))
       updateXmlUploadLog(_recordObj, mig_type, mig_xml, statusId, message)
+      
+      //回寫狀態到NS Document    
+      if (_upload_status != 'E'){ 
+	      var _voucher_status = _record.getValue({fieldId: 'custrecord_gw_voucher_status'})
+	      var _need_upload_egui_mig = _record.getValue({fieldId: 'custrecord_gw_need_upload_egui_mig'})
+	       
+	      var _voucher_main_internalid_ary = [applyID]
+	      synceguidocument.syncEguiUploadStatusToNSEvidenceStatus(_voucher_status, _upload_status, _need_upload_egui_mig, _voucher_main_internalid_ary)
+	  }
     } catch (e) {
       log.error(e.name, e.message)
     }
