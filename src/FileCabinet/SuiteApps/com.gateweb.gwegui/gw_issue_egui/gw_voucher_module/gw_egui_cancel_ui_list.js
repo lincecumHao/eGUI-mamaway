@@ -7,7 +7,7 @@
 define([
   'N/runtime',
   'N/ui/serverWidget',
-  'N/redirect',
+  'N/redirect',  
   'N/search',
   'N/format',
   'N/record',
@@ -19,7 +19,7 @@ define([
 ], function (
   runtime,
   serverWidget,
-  redirect,
+  redirect,  
   search,
   format,
   record,
@@ -71,7 +71,7 @@ define([
 
     return _text
   }
-
+   
   /**
    * voucher_type : 憑證類別(EGUI/ALLOWANCE)
    * customerid : 客戶代碼
@@ -1185,6 +1185,11 @@ define([
       functionName: 'unLockSelected()',
     })
     form.addButton({
+      id: 'custpage_mail_document_button',
+      label: '重傳發票E-Mail',
+      functionName: 'submitEmailProcess("EGUI")',
+    })
+    form.addButton({
       id: 'custpage_search_document_button',
       label: '查詢',
       functionName: 'searchResults()',
@@ -1192,7 +1197,31 @@ define([
 
     //form.clientScriptModulePath = './gw_egui_common_ui_event.js'
     form.clientScriptModulePath = './gw_egui_common_ui_event_v2.js'
-
+    	
+    var _email_task_title = context.request.parameters.email_task_title
+    var _email_task_message = context.request.parameters.email_task_message    
+    var _hidden_email_task_title = form.addField({
+        id: 'hidden_email_task_title',
+        type: serverWidget.FieldType.TEXT,
+        label: 'HIDDEN',
+    })
+    _hidden_email_task_title.updateDisplayType({
+        displayType: serverWidget.FieldDisplayType.HIDDEN,
+    })
+    _hidden_email_task_title.defaultValue=_email_task_title
+    
+    var _hidden_email_task_message = form.addField({
+        id: 'hidden_email_task_message',
+        type: serverWidget.FieldType.TEXT,
+        label: 'HIDDEN',
+    })
+    _hidden_email_task_message.updateDisplayType({
+        displayType: serverWidget.FieldDisplayType.HIDDEN,
+    })
+    _hidden_email_task_message.defaultValue=_email_task_message
+     
+    log.debug('Cancel Load: ', 'email_task_title='+_email_task_title+' ,email_task_message='+_email_task_message)
+     
     context.response.writePage(form)
 
     if (context.request.method === 'POST') {

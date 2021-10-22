@@ -1105,12 +1105,19 @@ define([
       id: 'custpage_cancel_document_button',
       label: '作廢折讓單',
       functionName: 'submitCancelProcess("SINGLE-ALLOWANCE-SCHEDULE")',
-    })
+    }) 
     form.addButton({
       id: 'custpage_unlock_document_button',
       label: '失敗解鎖',
       functionName: 'unLockSelected()',
     })
+     
+    //form.addButton({
+      //id: 'custpage_mail_document_button',
+      //label: '重傳折讓單E-Mail',
+      //functionName: 'submitEmailProcess("ALLOWANCE")',
+    //})
+    
     form.addButton({
       id: 'custpage_search_document_button',
       label: '查詢',
@@ -1119,6 +1126,31 @@ define([
 
     //form.clientScriptModulePath = './gw_egui_common_ui_event.js';
     form.clientScriptModulePath = './gw_egui_common_ui_event_v2.js'
+    
+	var _email_task_title = context.request.parameters.email_task_title
+    var _email_task_message = context.request.parameters.email_task_message 
+    var _hidden_email_task_title = form.addField({
+        id: 'hidden_email_task_title',
+        type: serverWidget.FieldType.TEXT,
+        label: 'HIDDEN',
+    })
+    _hidden_email_task_title.updateDisplayType({
+        displayType: serverWidget.FieldDisplayType.HIDDEN,
+    })
+    _hidden_email_task_title.defaultValue=_email_task_title
+    
+    var _hidden_email_task_message = form.addField({
+        id: 'hidden_email_task_message',
+        type: serverWidget.FieldType.TEXT,
+        label: 'HIDDEN',
+    })
+    _hidden_email_task_message.updateDisplayType({
+        displayType: serverWidget.FieldDisplayType.HIDDEN,
+    })
+    _hidden_email_task_message.defaultValue=_email_task_message
+    
+    log.debug('Cancel Load: ', 'email_task_title='+_email_task_title+' ,email_task_message='+_email_task_message)
+    
     context.response.writePage(form)
 
     if (context.request.method === 'POST') {

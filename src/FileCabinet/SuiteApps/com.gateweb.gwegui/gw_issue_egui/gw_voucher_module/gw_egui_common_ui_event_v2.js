@@ -7,6 +7,7 @@ define([
   'N/search',
   'N/currentRecord',
   'N/record',
+  'N/url',
   '../../gw_print/gw_download_pdf/gw_api_client',      
   '../gw_common_utility/gw_common_configure',
   '../gw_common_utility/gw_common_date_utility',
@@ -18,6 +19,7 @@ define([
   search,
   currentRecord,
   record,
+  url,
   gwapiclient,   
   gwconfigure,
   dateutility,
@@ -1809,11 +1811,54 @@ define([
 
   //重傳作業-END
   ////////////////////////////////////////////////////////////////////////////////////////
+  
 
+  ////////////////////////////////////////////////////////////////////////////////////////
+  //重傳作業-START
+  function submitEmailProcess(selected_task) {
+      console.log('submitEmailProcess selected_task:' + selected_task)
+      try {       
+	      var _title = '憑證重傳Mail管理'
+    	  var _voucher_selected_ids = _currentRecord.getValue({fieldId: 'custpage_voucher_hiddent_listid'})
+          var _voucher_id_ary = _voucher_selected_ids.split(',')
+      	  var _check_flag = true
+    	  var _error_message = ''
+	      if (_voucher_id_ary.length == 1) {
+	          //沒選取
+	    	  _check_flag = false
+	          _error_message = '請選取重傳Mail憑證資料!'
+	      } 
+	      if (_check_flag) { 
+	    	  var _params = {
+	    		  'selected_task': selected_task,
+    	          'selected_hiddent_listid': _voucher_selected_ids
+    	      }
+	    	  
+    	      window.location = url.resolveScript({
+    	          scriptId: 'customscript_gw_send_email_action',
+    	          deploymentId: 'customdeploy_gw_send_email_action',
+    	          params: _params,
+    	          returnExternalUrl: false,
+    	      })	     
+	      } else {
+	          gwmessage.showErrorMessage(_title, _error_message)
+	      }
+      } catch (e) {
+          console.log(e.name + ':' + e.message)
+      }
+  }
+  //重傳作業-END
+  ////////////////////////////////////////////////////////////////////////////////////////////
   function pageInit() {
-    try {
+    try {    	
+    	var _email_task_title   = _currentRecord.getValue({fieldId: 'hidden_email_task_title'})
+    	var _email_task_message = _currentRecord.getValue({fieldId: 'hidden_email_task_message'})
+    	
+    	if (_email_task_title.length !=0) {
+    		gwmessage.showInformationMessage(_email_task_title, _email_task_message)
+    	}     	
     } catch (e) {
-      console.log(e.name + ':' + e.message)
+        console.log(e.name + ':' + e.message)
     }
   }
 
@@ -1823,6 +1868,7 @@ define([
     fieldChanged: fieldChanged,
     sublistChanged: sublistChanged,
     unLockSelected: unLockSelected,
+    submitEmailProcess: submitEmailProcess,
     submitCancelProcess: submitCancelProcess,
     reSendToGWProcess: reSendToGWProcess,
     reportTxtNotUpload: reportTxtNotUpload,
