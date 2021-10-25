@@ -114,7 +114,9 @@ define([
          } else if (_upload_mig_type=='D0501') {//折讓單作廢
              _email_sublect = '折讓單作廢通知'
          }
-          
+         
+         log.debug('EmailService send_email_task', 'internal_id='+_internal_id+', email_sublect='+_email_sublect)      
+           
          gwEmailService.sendByVoucherId(_email_sublect, _internal_id)
         	   
     } catch (e) {

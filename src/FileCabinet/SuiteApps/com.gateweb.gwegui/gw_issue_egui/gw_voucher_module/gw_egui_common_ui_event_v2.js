@@ -1817,17 +1817,15 @@ define([
   //重傳作業-START
   function submitEmailProcess(selected_task) {
       console.log('submitEmailProcess selected_task:' + selected_task)
-      try {       
+      try {     
 	      var _title = '憑證重傳Mail管理'
+	    	  
+	      var _check_result  = validateSendEmailTask()
+	      var _check_flag    = _check_result.checkflag
+	      var _error_message = _check_result.message
+	        
     	  var _voucher_selected_ids = _currentRecord.getValue({fieldId: 'custpage_voucher_hiddent_listid'})
-          var _voucher_id_ary = _voucher_selected_ids.split(',')
-      	  var _check_flag = true
-    	  var _error_message = ''
-	      if (_voucher_id_ary.length == 1) {
-	          //沒選取
-	    	  _check_flag = false
-	          _error_message = '請選取重傳Mail憑證資料!'
-	      } 
+         
 	      if (_check_flag) { 
 	    	  var _params = {
 	    		  'selected_task': selected_task,
@@ -1846,6 +1844,55 @@ define([
       } catch (e) {
           console.log(e.name + ':' + e.message)
       }
+  }
+  
+  function validateSendEmailTask() {
+    var _json_result
+    try {
+         var _check_flag = true
+         var _error_message = ''
+	     var _voucher_selected_ids = _currentRecord.getValue({fieldId: 'custpage_voucher_hiddent_listid'})
+	
+	     var _voucher_id_ary = _voucher_selected_ids.split(',')
+	     if (_voucher_id_ary.length == 1) {
+	         //沒選取
+	    	 _check_flag = false
+	         _error_message = '請選取重傳Mail憑證資料!'
+	     } else {
+	        for (var i = 0; i < _voucher_id_ary.length; i++) {
+	          var _internal_id = _voucher_id_ary[i]
+	
+	          if (parseInt(_internal_id) > 0) {
+	            //取得 sublist 的 entityid(客戶代碼)
+	            var _voucher_upload_status = getSublistColumnValue(
+		              'vouchersublistid',
+		              'customer_search_voucher_id',
+		              'customer_voucher_upload_status',
+		              _internal_id
+	            )	   
+	            var _voucher_number = getSublistColumnValue(
+		              'vouchersublistid',
+		              'customer_search_voucher_id',
+		              'customer_voucher_number',
+		              _internal_id
+	            ) 
+	             
+	            if (_voucher_upload_status == 'E') {
+	            	_check_flag = false
+	                _error_message += _voucher_number + '-請勿寄送開立錯誤的憑證,'
+	            }
+	          }
+	        }
+	     }
+	     
+         _json_result = {
+	        'checkflag': _check_flag,
+	        'message': _error_message
+	     }
+    } catch (e) {
+       console.log(e.name + ':' + e.message)
+    }
+    return _json_result
   }
   //重傳作業-END
   ////////////////////////////////////////////////////////////////////////////////////////////
