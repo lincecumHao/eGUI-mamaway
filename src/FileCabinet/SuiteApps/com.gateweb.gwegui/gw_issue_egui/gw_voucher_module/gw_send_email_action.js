@@ -160,14 +160,14 @@ define([
 	         //作完回原畫面 
 	         forwardToNextSuitelet(_search_customscript_id, 
 	        		               _search_customdeploy_id, 
-	        		               'successful', _done_count)
+	        		               '重傳成功', _done_count)
 		 }
     } catch (e) {
          log.error(e.name, e.message)  
          
          forwardToNextSuitelet(_search_customscript_id, 
         		               _search_customdeploy_id, 
-        		               'error', -1)
+        		               '重傳時發生錯誤', -1)
     }
   } //End onRequest
 
