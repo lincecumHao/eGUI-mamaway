@@ -473,8 +473,8 @@ define([
 	  var _year  = _temp_ary[0]
 	  var _month = _temp_ary[1]
 	  var _day   = _temp_ary[2]
-	  if (stringutility.convertToFloat(_month)<10)_month='0'+_month
-	  if (stringutility.convertToFloat(_day)  <10)_day='0'+_day
+	  if (stringutility.convertToFloat(_month)<10)_month='0'+stringutility.convertToInt(_month)
+	  if (stringutility.convertToFloat(_day)  <10)_day='0'+stringutility.convertToInt(_day)
 	  
 	  return _year+''+_month+''+_day
   }
