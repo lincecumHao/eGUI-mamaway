@@ -11,8 +11,7 @@ define([
   'N/format',
   '../gw_common_utility/gw_common_invoice_utility',
   '../gw_common_utility/gw_common_date_utility',
-  '../gw_common_utility/gw_common_string_utility',
-  '../gw_common_utility/gw_common_search_utility',
+  '../gw_common_utility/gw_common_string_utility',  
   '../gw_common_utility/gw_common_configure',
   '../../gw_dao/taxType/gw_dao_tax_type_21',
   '../../gw_dao/carrierType/gw_dao_carrier_type_21'
@@ -24,8 +23,7 @@ define([
   format,
   invoiceutility,
   dateutility,
-  stringutility,
-  searchutility,
+  stringutility, 
   gwconfigure,
   taxyype21,
   carriertypedao
@@ -465,53 +463,6 @@ define([
       label: '客戶代碼',
       source: 'CUSTOMER',
       container: 'row01_fieldgroupid'
-    })
-    var _type = search.Type.CUSTOMER
-    var _filters = []
-    var _columns = [
-      'entityid',
-      'companyname',
-      'custentity_gw_tax_id_number',
-      'address',
-      'email'
-    ]
-    var _allCustomers = searchutility.getSearchResult(_type, _filters, _columns)
-    _allCustomers.forEach(function (result) {
-      var _internalid = result.id
-
-      log.debug('get CUSTOMER result', JSON.stringify(result))
-
-      var _entityid = result.getValue({
-        name: 'entityid'
-      })
-      var _name = result.getValue({
-        name: 'companyname'
-      })
-      var _ban = result.getValue({
-        name: 'custentity_gw_tax_id_number'
-      })
-      var _email = result.getValue({
-        name: 'email'
-      })
-      var _address = result.getValue({
-        name: 'address'
-      })
-
-      var _obj = {
-        internalid: _internalid,
-        entityid: _entityid,
-        ban: _ban,
-        companyname: _name,
-        email: _email,
-        address: _address
-      }
-      _companyObjAry.push(_obj)
-
-      // _customer_id.addSelectOption({
-      //   value: _internalid.toString(),
-      //   text: _internalid + '-' + _name
-      // })
-      return true
     })
 
     _customer_id.updateBreakType({
@@ -2386,7 +2337,7 @@ define([
         _company_name = _result.values.custbody_gw_gui_title
         _company_address = _result.values.custbody_gw_gui_address
         //公司名稱
-        _companyObj = getCustomerRecord(_customer_ban)
+        //_companyObj = getCustomerRecord(_customer_ban)
         if (typeof _companyObj !== 'undefined') {
           //_entityValue     = stringutility.convertToInt(_companyObj.internalid);
         }
