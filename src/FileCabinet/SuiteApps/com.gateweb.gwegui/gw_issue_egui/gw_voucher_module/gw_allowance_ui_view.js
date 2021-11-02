@@ -12,8 +12,7 @@ define([
   'N/file',
   '../gw_common_utility/gw_common_invoice_utility',
   '../gw_common_utility/gw_common_date_utility',
-  '../gw_common_utility/gw_common_string_utility',
-  '../gw_common_utility/gw_common_search_utility',
+  '../gw_common_utility/gw_common_string_utility',  
   '../gw_common_utility/gw_syncegui_to_document_utility',
   '../gw_common_utility/gw_common_configure',
 ], function (
@@ -25,8 +24,7 @@ define([
   file,
   invoiceutility,
   dateutility,
-  stringutility,
-  searchutility,
+  stringutility, 
   synceguidocument,
   gwconfigure
 ) {
@@ -371,42 +369,7 @@ define([
       source: 'CUSTOMER',
       container: 'row01_fieldgroupid',
     })
-    var _type = search.Type.CUSTOMER
-    var _filters = []
-    var _columns = [
-      'entityid',
-      'companyname',
-      'custentity_gw_tax_id_number',
-      'address',
-      'email',
-    ]
-    var _allCustomers = searchutility.getSearchResult(_type, _filters, _columns)
-    _allCustomers.forEach(function (result) {
-      var _internalid = result.id
-
-      var _entityid = result.getValue({
-        name: 'entityid',
-      })
-      var _name = result.getValue({
-        name: 'companyname',
-      })
-      var _ban = result.getValue({
-        name: 'custentity_gw_tax_id_number',
-      })
-      var _email = result.getValue({
-        name: 'email',
-      })
-      var _address = result.getValue({
-        name: 'address',
-      })
-      /**
-      _customer_id.addSelectOption({
-        value: _internalid,
-        text: _internalid + '-' + _name,
-      })
-      */
-      return true
-    })
+    
     _customer_id.updateDisplayType({
       displayType: serverWidget.FieldDisplayType.DISABLED,
     })
