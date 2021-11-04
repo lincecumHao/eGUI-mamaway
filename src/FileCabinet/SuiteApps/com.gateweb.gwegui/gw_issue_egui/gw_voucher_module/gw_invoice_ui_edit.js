@@ -11,10 +11,11 @@ define([
   'N/format',
   '../gw_common_utility/gw_common_invoice_utility',
   '../gw_common_utility/gw_common_date_utility',
-  '../gw_common_utility/gw_common_string_utility',  
+  '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_configure',
   '../../gw_dao/taxType/gw_dao_tax_type_21',
-  '../../gw_dao/carrierType/gw_dao_carrier_type_21'
+  '../../gw_dao/carrierType/gw_dao_carrier_type_21',
+  '../../gw_dao/busEnt/gw_dao_business_entity_21'
 ], function (
   config,
   serverWidget,
@@ -23,10 +24,11 @@ define([
   format,
   invoiceutility,
   dateutility,
-  stringutility, 
+  stringutility,
   gwconfigure,
   taxyype21,
-  carriertypedao
+  carriertypedao,
+  businessEntityDao
 ) {
   var _numericToFixed = gwconfigure.getGwNumericToFixed() //小數點位數
   var _invoiceActionScriptId = gwconfigure.getGwInvoiceActionScriptId()
@@ -54,62 +56,12 @@ define([
   function getSellerInfo(businessNo) {
     var _companyObj
     try {
-      var _businessSearch = search
-        .create({
-          type: 'customrecord_gw_business_entity',
-          columns: [
-            'custrecord_gw_be_tax_id_number',
-            'custrecord_gw_be_gui_title',
-            'custrecord_gw_be_business_address',
-            'custrecord_gw_be_contact_email'
-          ],
-          filters: ['custrecord_gw_be_tax_id_number', 'is', businessNo]
-        })
-        .run()
-        .each(function (result) {
-          var _internalid = result.id
-
-          var _tax_id_number = result.getValue({
-            name: 'custrecord_gw_be_tax_id_number'
-          })
-          var _be_gui_title = result.getValue({
-            name: 'custrecord_gw_be_gui_title'
-          })
-          var _business_address = result.getValue({
-            name: 'custrecord_gw_be_business_address'
-          })
-          var _contact_email = result.getValue({
-            name: 'custrecord_gw_be_contact_email'
-          })
-
-          _companyObj = {
-            tax_id_number: _tax_id_number,
-            be_gui_title: _be_gui_title,
-            business_address: _business_address,
-            contact_email: _contact_email
-          }
-
-          return true
-        })
-    } catch (e) {
-      log.error(e.name, e.message)
-    }
-
-    return _companyObj
-  }
-  //取得公司資料
-  function getCustomerRecord(businessNo) {
-    var _companyObj
-    try {
-      if (_companyObjAry != null) {
-        for (var i = 0; i < _companyObjAry.length; i++) {
-          var _obj = JSON.parse(JSON.stringify(_companyObjAry[i]))
-
-          if (_obj.ban == businessNo) {
-            _companyObj = _obj
-            break
-          }
-        }
+      var businessEntity = businessEntityDao.getByTaxId(businessNo)
+      _companyObj = {
+        tax_id_number: businessEntity.taxId, //_tax_id_number,
+        be_gui_title: businessEntity.title, // _be_gui_title,
+        business_address: businessEntity.address, //_business_address,
+        contact_email: businessEntity.repEmail // _contact_email
       }
     } catch (e) {
       log.error(e.name, e.message)
@@ -257,43 +209,43 @@ define([
   ///////////////////////////////////////////////////////////////////////////////////////////
 
   //取得客戶資料
-  function getCustomerInformation(customer_id) {
-    var _customerRecord = record.load({
-      type: record.Type.CUSTOMER,
-      id: customer_id,
-      isDynamic: true
-    })
-
-    var entityid = _customerRecord.getValue({
-      fieldId: 'entityid'
-    })
-    var _customer_buyer_name = _customerRecord.getValue({
-      fieldId: 'companyname'
-    })
-    var _customer_buyer_email = _customerRecord.getValue({
-      fieldId: 'email'
-    })
-    var _customer_buyer_identifier = _customerRecord.getValue({
-      fieldId: 'vatregnumber'
-    })
-    //統一編號
-    var _gw_ban_number = _customerRecord.getValue({
-      fieldId: 'custentity_gw_tax_id_number'
-    })
-    var _customer_address = _customerRecord.getValue({
-      fieldId: 'defaultaddress'
-    })
-
-    var _jsonObj = {
-      entityid: entityid,
-      companyname: _customer_buyer_name,
-      email: _customer_buyer_email,
-      vatregnumber: _gw_ban_number,
-      defaultaddress: _customer_address
-    }
-
-    return _jsonObj
-  }
+  // function getCustomerInformation(customer_id) {
+  //   var _customerRecord = record.load({
+  //     type: record.Type.CUSTOMER,
+  //     id: customer_id,
+  //     isDynamic: true
+  //   })
+  //
+  //   var entityid = _customerRecord.getValue({
+  //     fieldId: 'entityid'
+  //   })
+  //   var _customer_buyer_name = _customerRecord.getValue({
+  //     fieldId: 'companyname'
+  //   })
+  //   var _customer_buyer_email = _customerRecord.getValue({
+  //     fieldId: 'email'
+  //   })
+  //   var _customer_buyer_identifier = _customerRecord.getValue({
+  //     fieldId: 'vatregnumber'
+  //   })
+  //   統一編號
+  // var _gw_ban_number = _customerRecord.getValue({
+  //   fieldId: 'custentity_gw_tax_id_number'
+  // })
+  // var _customer_address = _customerRecord.getValue({
+  //   fieldId: 'defaultaddress'
+  // })
+  //
+  // var _jsonObj = {
+  //   entityid: entityid,
+  //   companyname: _customer_buyer_name,
+  //   email: _customer_buyer_email,
+  //   vatregnumber: _gw_ban_number,
+  //   defaultaddress: _customer_address
+  // }
+  //
+  // return _jsonObj
+  // }
 
   //顯示畫面
   function createFormHeader(apply_business_no, form) {
@@ -754,66 +706,18 @@ define([
     var _dept_code = form.addField({
       id: 'custpage_dept_code',
       type: serverWidget.FieldType.SELECT,
+      source: 'DEPARTMENT',
       label: '發票部門',
       container: 'row05_fieldgroupid'
     })
-    _dept_code.addSelectOption({
-      value: '',
-      text: 'NONE'
-    })
-    var _deptCodeSearch = search
-      .create({
-        type: search.Type.DEPARTMENT,
-        columns: ['internalid', 'name']
-      })
-      .run()
-      .each(function (result) {
-        var _internalid = result.id
-        var _entityid = result.getValue({
-          name: 'internalid'
-        })
-        var _name = result.getValue({
-          name: 'name'
-        })
-
-        _dept_code.addSelectOption({
-          value: _internalid,
-          text: _internalid + '-' + _name
-        })
-        return true
-      })
     //類別代碼
     var _selectClassification = form.addField({
       id: 'custpage_classification',
       type: serverWidget.FieldType.SELECT,
       label: '發票分類',
+      source: 'CLASSIFICATION',
       container: 'row05_fieldgroupid'
     })
-    _selectClassification.addSelectOption({
-      value: '',
-      text: 'NONE'
-    })
-    var _classificationSearch = search
-      .create({
-        type: search.Type.CLASSIFICATION,
-        columns: ['internalid', 'name']
-      })
-      .run()
-      .each(function (result) {
-        var _internalid = result.id
-        var _entityid = result.getValue({
-          name: 'internalid'
-        })
-        var _name = result.getValue({
-          name: 'name'
-        })
-
-        _selectClassification.addSelectOption({
-          value: _internalid,
-          text: _internalid + '-' + _name
-        })
-        return true
-      })
     ///////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////
     //折讓單使用區間
@@ -1276,10 +1180,10 @@ define([
         _entityValue = _result.values.entity[0].value //529
         _entityText = _result.values.entity[0].text //11 se06_company公司
       }
-      
+
       //20211007 walter modify
-      _gw_gui_main_memo = _result.values.custbody_gw_gui_main_memo  
-      
+      _gw_gui_main_memo = _result.values.custbody_gw_gui_main_memo
+
       //Invoice統編
       _customer_ban = _result.values.custbody_gw_tax_id_number //99999997
       if (stringutility.trim(_company_name) == '') {
@@ -1353,8 +1257,8 @@ define([
       }
       log.debug('ns_item_name_field', _ns_item_name_field)
       var _item_displayname = _result.values[_ns_item_name_field] //SONY電視機
-      if (_ns_item_name_field=='item.displayname') {
-      	  _item_displayname = _prodcut_text+_item_displayname
+      if (_ns_item_name_field == 'item.displayname') {
+        _item_displayname = _prodcut_text + _item_displayname
       }
       //if (stringutility.trim(_memo) != '') _item_displayname = _memo
 
@@ -1733,10 +1637,10 @@ define([
       }
 	  */
       _custpage_buyer_email.defaultValue = _customer_email
-      
+
       //20211007 walter modify
       var _custpage_main_remark = form.getField({
-          id: 'custpage_main_remark'
+        id: 'custpage_main_remark'
       })
       _custpage_main_remark.defaultValue = _gw_gui_main_memo
     }
@@ -2228,7 +2132,7 @@ define([
     var _taxObj
     var _hasZeroTax = false
 
-    //////////////////////////////////////////////////////////// 
+    ////////////////////////////////////////////////////////////
     //處理零稅率資訊
     //海關出口單類別
     var _gw_customs_export_category_value = ''
@@ -2330,7 +2234,7 @@ define([
         _entityValue = _result.values.entity[0].value //529
         _entityText = _result.values.entity[0].text //11 se06_company公司
       }
- 
+
       //Invoice統編
       _customer_ban = _result.values.custbody_gw_tax_id_number //99999997
       if (stringutility.trim(_company_name) == '') {
@@ -2384,8 +2288,8 @@ define([
       }
       log.debug('ns_item_name_field', _ns_item_name_field)
       var _item_displayname = _result.values[_ns_item_name_field] //SONY電視機
-      if (_ns_item_name_field=='item.displayname') {
-      	  _item_displayname = _prodcut_text+_item_displayname
+      if (_ns_item_name_field == 'item.displayname') {
+        _item_displayname = _prodcut_text + _item_displayname
       }
       //if (stringutility.trim(_memo) != '') _item_displayname = _memo
 
