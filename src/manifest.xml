@@ -12,7 +12,7 @@
             <feature required="true">DEPARTMENTS</feature>
             <feature required="true">ACCOUNTING</feature>
             <feature required="true">SUBSIDIARIES</feature>
-            <feature required="true">LOCATION</feature>
+            <feature required="false">LOCATIONS</feature>
             <feature required="false">MULTILANGUAGE</feature>
             <feature required="false">RECEIVABLES</feature>
             <feature required="false">EXPREPORTS</feature>
