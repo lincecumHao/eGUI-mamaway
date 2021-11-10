@@ -487,6 +487,7 @@ define([
 		        search.createColumn({ name: 'internalid' }),
 		        search.createColumn({ name: 'name' }),
 		        search.createColumn({ name: 'custrecord_gw_assignlog_lastinvnumbe' }),
+		        search.createColumn({ name: 'custrecord_gw_assignlog_endno' }),
 		        search.createColumn({ name: 'custrecord_gw_assignlog_usedcount' }),
 		        search.createColumn({ name: 'custrecord_gw_last_invoice_date' }) 
 		      ]
@@ -527,6 +528,7 @@ define([
 		    for (var i = 0; i < _assignLogSearchResult.length; i++) {
 		         var _internal_id = _assignLogSearchResult[i].id
 		         
+		         var _assignlog_endno = _assignLogSearchResult[i].getValue({name: 'custrecord_gw_assignlog_endno'})
 		         var _usedcount = _assignLogSearchResult[i].getValue({name: 'custrecord_gw_assignlog_usedcount'})
 			      		      
 		         var _last_invoice_number = _assignLogSearchResult[i].getValue({name: 'custrecord_gw_assignlog_lastinvnumbe'})
@@ -539,8 +541,12 @@ define([
 		        	 
 		        	 var values = {}
                      values['custrecord_gw_assignlog_lastinvnumbe'] = _index_invoice_number
-                     values['custrecord_gw_last_invoice_date'] = voucher_date
+                     values['custrecord_gw_last_invoice_date'] = voucher_date                     
                      values['custrecord_gw_assignlog_usedcount'] = parseInt(_usedcount)+1
+                                          
+                     if(_index_invoice_number == _assignlog_endno){
+                     	values['custrecord_gw_assignlog_status'] = '23'
+                     }
                      
 		        	 var _id = record.submitFields({
 			                type: 'customrecord_gw_assignlog',
