@@ -125,16 +125,15 @@ define([
 
     return _taxObj
   }
-
   //取得稅別資料
-  function getTaxInformationByPropertyValue(propertyValue) {
+  function getTaxInformationByTaxId(taxId) {
     var _taxObj
     try {
       if (_taxObjAry != null) {
         for (var i = 0; i < _taxObjAry.length; i++) {
           var _obj = JSON.parse(JSON.stringify(_taxObjAry[i]))
 
-          if (_obj.voucher_property_value == propertyValue) {
+          if (_obj.voucher_property_value == taxId) {
             _taxObj = _obj
             break
           }
@@ -145,7 +144,7 @@ define([
     }
 
     return _taxObj
-  }
+  } 
 
   //轉換成民國年月日(2021/01/18)
   function convertExportDate(export_date) {
@@ -163,90 +162,9 @@ define([
     }
 
     return _tradition_date
-  }
-
-  //取得會計科目
-  function getNSInvoiceAccount(group_type, voucher_property_id) {
-    var _account = ''
-    try {
-      var _mySearch = search.create({
-        type: _gw_voucher_properties,
-        columns: [
-          search.createColumn({ name: 'custrecord_gw_voucher_property_id' }), //TAX_WITH_TAX
-          search.createColumn({ name: 'custrecord_gw_voucher_property_value' }), //1
-          search.createColumn({ name: 'custrecord_gw_voucher_property_note' }), //應稅
-          search.createColumn({ name: 'custrecord_gw_netsuite_id_value' }), //8
-          search.createColumn({ name: 'custrecord_gw_netsuite_id_text' }) //VAT_TW TAX 5%-TW
-        ]
-      })
-
-      var _filterArray = []
-      _filterArray.push(['custrecord_gw_voucher_group_type', 'is', group_type])
-      _filterArray.push('and')
-      _filterArray.push([
-        'custrecord_gw_voucher_property_id',
-        'is',
-        voucher_property_id
-      ])
-
-      _mySearch.filterExpression = _filterArray
-      _mySearch.run().each(function (result) {
-        var internalid = result.id
-
-        _account = result.getValue({
-          name: 'custrecord_gw_netsuite_id_value'
-        })
-
-        return true
-      })
-    } catch (e) {
-      log.error(e.name, e.message)
-    }
-
-    return _account
-  }
-
+  } 
   ///////////////////////////////////////////////////////////////////////////////////////////
-
-  //取得客戶資料
-  // function getCustomerInformation(customer_id) {
-  //   var _customerRecord = record.load({
-  //     type: record.Type.CUSTOMER,
-  //     id: customer_id,
-  //     isDynamic: true
-  //   })
-  //
-  //   var entityid = _customerRecord.getValue({
-  //     fieldId: 'entityid'
-  //   })
-  //   var _customer_buyer_name = _customerRecord.getValue({
-  //     fieldId: 'companyname'
-  //   })
-  //   var _customer_buyer_email = _customerRecord.getValue({
-  //     fieldId: 'email'
-  //   })
-  //   var _customer_buyer_identifier = _customerRecord.getValue({
-  //     fieldId: 'vatregnumber'
-  //   })
-  //   統一編號
-  // var _gw_ban_number = _customerRecord.getValue({
-  //   fieldId: 'custentity_gw_tax_id_number'
-  // })
-  // var _customer_address = _customerRecord.getValue({
-  //   fieldId: 'defaultaddress'
-  // })
-  //
-  // var _jsonObj = {
-  //   entityid: entityid,
-  //   companyname: _customer_buyer_name,
-  //   email: _customer_buyer_email,
-  //   vatregnumber: _gw_ban_number,
-  //   defaultaddress: _customer_address
-  // }
-  //
-  // return _jsonObj
-  // }
-
+  
   //顯示畫面
   function createFormHeader(apply_business_no, form) {
     /////////////////////////////////////////////////////////////
@@ -349,12 +267,6 @@ define([
       value: '07',
       text: '一般稅發票'
     })
-    /**
-       _invoice_type.addSelectOption({
-				value: '08',
-				text: '特種稅發票'
-			});
-       */
     //印表機類別
     var _print_type = form.addField({
       id: 'custpage_print_type',
@@ -377,12 +289,6 @@ define([
       value: 'B2C',
       text: '存證'
     })
-    /**
-       _mig_type.addSelectOption({
-				value: 'B2BE',
-				text: '交換'
-			});
-       */
     //發票備註
     var _main_remark = form.addField({
       id: 'custpage_main_remark',
@@ -479,7 +385,7 @@ define([
       value: '',
       text: '-----'
     })
-    ////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////     
     var _all_carry_types = carriertypedao.getAll()
     log.debug('get _all_carry_types', JSON.stringify(_all_carry_types))
     for (var i = 0; i < _all_carry_types.length; i++) {
@@ -491,7 +397,7 @@ define([
         value: _carry_id,
         text: _carry_text
       })
-    }
+    }     
     ////////////////////////////////////////////////////////////////////
     _carrier_type.updateBreakType({
       breakType: serverWidget.FieldBreakType.STARTCOL
@@ -1019,14 +925,13 @@ define([
     var _mySearch = search.load({
       id: _gw_invoice_detail_search_id
     })
-    var _filterArray = []
-    //_filterArray.push(['internalid','is', 948]);
+    var _filterArray = []    
     if (_selected_invoice_Id != null) {
       var _internalIdAry = _selected_invoice_Id.split(',')
       _filterArray.push(['internalid', 'anyof', _internalIdAry])
     }
     ////////////////////////////////////////////////////////////////
-    //TODO check this issue 20201028
+    //check this issue 20201028
     _filterArray.push('and')
     _filterArray.push(['recordtype', 'is', 'invoice'])
     //_filterArray.push('and');
@@ -1063,14 +968,7 @@ define([
     //稅別資料
     var _taxObj
     var _hasZeroTax = false
-
-    //var _nsAccountReceiveValue = getNSInvoiceAccount('INVOICE_ACCOUNT', 'INVOICE_MAIN_ACCOUNT');
-    //var _nsSalesAccountValue   = getNSInvoiceAccount('INVOICE_ACCOUNT', 'INVOICE_DETAIL_ACCOUNT');
-
-    var _nsTaxWithTaxValue = getNSInvoiceAccount('TAX_TYPE', 'TAX_WITH_TAX') //8
-    var _nsTaxFreeTaxValue = getNSInvoiceAccount('TAX_TYPE', 'TAX_FREE_TAX')
-    var _nsTaxZeroTaxValue = getNSInvoiceAccount('TAX_TYPE', 'TAX_ZERO_TAX')
-
+ 
     var _last_id = -1
     var _sales_order_id = -1
     var _sales_order_number = ''
@@ -1505,10 +1403,7 @@ define([
         sublist,
         row,
         _selectDepartment,
-        _selectClassification,
-        _nsTaxWithTaxValue,
-        _nsTaxFreeTaxValue,
-        _nsTaxZeroTaxValue,
+        _selectClassification, 
         _invoice_sales_amount,
         _invoice_free_sales_amount,
         _invoice_zero_sales_amonut,
@@ -1711,10 +1606,7 @@ define([
     sublist,
     row,
     dept_code,
-    classfication,
-    nsTaxWithTaxValue,
-    nsTaxFreeTaxValue,
-    nsTaxZeroTaxValue,
+    classfication,    
     invoice_sales_amount,
     invoice_free_sales_amount,
     invoice_zero_sales_amonut,
@@ -1747,7 +1639,7 @@ define([
           var _total_amount = _jsonObj.total_amount
           var _dedcuted_amount = _jsonObj.dedcuted_amount //已扣金額
           /////////////////////////////////////////////////////////////////////////////////
-          var _ns_tax_code = nsTaxWithTaxValue
+          var _ns_tax_code = getTaxInformationByTaxId(_tax_type)
           var _tax_rate = 5
           var _tax_rate_note = '應稅'
 
@@ -1755,16 +1647,14 @@ define([
           var _balance_amount = _amount + _dedcuted_amount
           var _deduction_amount = _balance_amount
 
-          if (_tax_type == '2') {
-            _ns_tax_code = nsTaxZeroTaxValue
+          if (_tax_type == '2') { 
             _tax_rate = 0
             _tax_rate_note = '零稅'
             if (invoice_zero_sales_amonut < Math.abs(_balance_amount)) {
               _deduction_amount = -1 * invoice_zero_sales_amonut
             }
             invoice_zero_sales_amonut += _deduction_amount
-          } else if (_tax_type == '3') {
-            _ns_tax_code = nsTaxFreeTaxValue
+          } else if (_tax_type == '3') { 
             _tax_rate = 0
             _tax_rate_note = '免稅'
             if (invoice_free_sales_amount < Math.abs(_balance_amount)) {
@@ -2093,14 +1983,13 @@ define([
     var _mySearch = search.load({
       id: _gw_creditmemo_detail_search_id
     })
-    var _filterArray = []
-    //_filterArray.push(['internalid','is', 948]);
+    var _filterArray = []   
     if (_selected_creditmemo_Id != null) {
       var _internalIdAry = _selected_creditmemo_Id.split(',')
       _filterArray.push(['internalid', 'anyof', _internalIdAry])
     }
     ////////////////////////////////////////////////////////////////
-    //TODO check this issue 20201028
+    //check this issue 20201028
     _filterArray.push('and')
     _filterArray.push(['recordtype', 'is', 'creditmemo'])
     //_filterArray.push('and');

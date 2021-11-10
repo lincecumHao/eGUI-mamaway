@@ -895,54 +895,7 @@ define([
   var _taxObjAry = []
 
   function loadAllTaxInformation() {
-    _taxObjAry = invoiceutility.loadAllTaxInformation()
-    /**
-    try {		  
-      var _mySearch = search.create({
-        type: 'customrecord_gw_ap_doc_tax_type_option',
-        columns: [ 
-          search.createColumn({ name: 'custrecord_gw_ap_doc_tax_type_value' }), //1
-          search.createColumn({ name: 'custrecord_gw_ap_doc_tax_type_text' }),  //應稅
-          search.createColumn({ name: 'custrecord_gw_tax_type_tax_code' })      //TAX CODES
-        ],
-      })
-
-      //var _filterArray = []
-      //_filterArray.push(['custrecord_gw_voucher_group_type', 'is', _group_type])
-      //_mySearch.filterExpression = _filterArray
-      _mySearch.run().each(function (result) {
-        var internalid = result.id
-		
-        var _voucher_property_id = 'TAX_TYPE'		
-        var _voucher_property_value = result.getValue({
-          name: 'custrecord_gw_ap_doc_tax_type_value',
-        })
-        var _voucher_property_note = result.getValue({
-          name: 'custrecord_gw_ap_doc_tax_type_text',
-        }) 
-		var _netsuite_id_value = result.getValue({
-          name: 'custrecord_gw_tax_type_tax_code',
-        }) 
-		var _netsuite_id_text = result.getText({
-          name: 'custrecord_gw_tax_type_tax_code',
-        }) 
-		
-        var _obj = {
-          voucher_property_id: _voucher_property_id,
-          voucher_property_value: _voucher_property_value,
-          voucher_property_note: _voucher_property_note,
-          netsuite_id_value: _netsuite_id_value,
-          netsuite_id_text: _netsuite_id_text,
-        }
-		
-        _taxObjAry.push(_obj)
-		
-        return true
-      })
-    } catch (e) {
-      log.debug(e.name, e.message)
-    }
-	*/
+    _taxObjAry = invoiceutility.loadAllTaxInformation() 
   }
 
   function getCarryTypeValueByID(carry_id) {
