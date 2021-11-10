@@ -6,6 +6,7 @@
 define([  
   'N/runtime',
   'N/file',  
+  'N/search',
   'N/record',
   'N/format', 
   'N/redirect',
@@ -16,6 +17,7 @@ define([
 ], function ( 
   runtime,
   file, 
+  search,
   record,
   format,  
   redirect,
@@ -466,6 +468,99 @@ define([
       } catch (e) { 
     	   log.error(e.name, e.message)
       }
+       
+      var _seller       = voucher_main_record.getValue({fieldId: 'custrecord_gw_seller'}) 
+      var _invoice_type = voucher_main_record.getValue({fieldId: 'custrecord_gw_invoice_type'}) 
+      var _format_code  = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_format_code'}) 
+      var _egui_number  = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_number'}) 
+      var _voucher_date = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_date'}) 
+      var _year_month   = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_yearmonth'}) 
+      
+      updateAssignLog(_seller, _invoice_type, _format_code, _year_month, _egui_number ,_voucher_date)
+  }
+  
+  function updateAssignLog(ban, invoice_type, format_code, year_month, voucher_number, voucher_date) {
+	  try {		  
+		  var _assignLogSearch = search.create({
+		      type: 'customrecord_gw_assignlog',
+		      columns: [
+		        search.createColumn({ name: 'internalid' }),
+		        search.createColumn({ name: 'name' }),
+		        search.createColumn({ name: 'custrecord_gw_assignlog_lastinvnumbe' }),
+		        search.createColumn({ name: 'custrecord_gw_assignlog_usedcount' }),
+		        search.createColumn({ name: 'custrecord_gw_last_invoice_date' }) 
+		      ]
+		    })
+
+		    var _filterArray = []
+		    _filterArray.push(['custrecord_gw_assignlog_businessno', search.Operator.IS, ban])
+		    _filterArray.push('and')
+		    _filterArray.push(['custrecord_gw_egui_format_code', search.Operator.IS, format_code])
+		    _filterArray.push('and')
+		    _filterArray.push(['custrecord_gw_assignlog_invoicetype', search.Operator.IS, invoice_type])
+		    _filterArray.push('and')
+		    _filterArray.push(['custrecord_gw_assignlog_yearmonth', search.Operator.IS, year_month])
+		    
+		    var _invoice_track       = voucher_number.substring(0,2)
+		    var _index_invoice_number = parseInt(voucher_number.substring(2,voucher_number.length))
+		    
+		    _filterArray.push('and')
+		    _filterArray.push(['custrecord_gw_assignlog_invoicetrack', search.Operator.IS, _invoice_track])
+		    
+		    _filterArray.push('and')
+		    _filterArray.push(['custrecord_gw_assignlog_startno', search.Operator.LESSTHANOREQUALTO, _index_invoice_number])		    
+		    _filterArray.push('and')
+		    _filterArray.push(['custrecord_gw_assignlog_endno', search.Operator.GREATERTHANOREQUALTO, _index_invoice_number])
+   
+		    /**
+            _filterArray.push([
+            	              ['custrecord_gw_assignlog_status', search.Operator.IS, '21'],
+						        'or',
+						        ['custrecord_gw_assignlog_status', search.Operator.IS, '22']
+						      ])
+			*/	      
+			//alert('_filterArray:' + JSON.stringify(_filterArray))			      
+		    _assignLogSearch.filterExpression = _filterArray
+		    
+		    var _assignLogSearchResult = _assignLogSearch.run().getRange({start: 0, end: 1})
+		     //alert('_assignLogSearchResult.length:' + _assignLogSearchResult.length)
+		    for (var i = 0; i < _assignLogSearchResult.length; i++) {
+		         var _internal_id = _assignLogSearchResult[i].id
+		         
+		         var _usedcount = _assignLogSearchResult[i].getValue({name: 'custrecord_gw_assignlog_usedcount'})
+			      		      
+		         var _last_invoice_number = _assignLogSearchResult[i].getValue({name: 'custrecord_gw_assignlog_lastinvnumbe'})
+		         var _check_invoice_number = 0
+		         if (_last_invoice_number!=''){
+		        	 _check_invoice_number = parseInt(_last_invoice_number.substring(2,_last_invoice_number.length-1))
+		         }
+		         if (_index_invoice_number>_check_invoice_number){		        	 
+		        	 _index_invoice_number = padding('' + _index_invoice_number, 8)
+		        	 
+		        	 var values = {}
+                     values['custrecord_gw_assignlog_lastinvnumbe'] = _index_invoice_number
+                     values['custrecord_gw_last_invoice_date'] = voucher_date
+                     values['custrecord_gw_assignlog_usedcount'] = parseInt(_usedcount)+1
+                     
+		        	 var _id = record.submitFields({
+			                type: 'customrecord_gw_assignlog',
+			                id: _internal_id,
+			                values: values,
+			                options: {
+			                  enableSourcing: false,
+			                  ignoreMandatoryFields: true
+			                }
+		              })
+		         }		         
+		    }
+            
+      } catch (e) {
+           console.log(e.name + ':' + e.message)
+      }
+  }
+  
+  function padding(str, length) {
+    return (Array(length).join('0') + str).slice(-length)
   }
   
   function convertVoucherDate (voucher_date) { 
