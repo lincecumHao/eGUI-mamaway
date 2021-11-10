@@ -642,7 +642,7 @@ define([
           _sublist.setSublistValue({
             id: 'lastinvoicedate',
             line: _index,
-            value: _last_invoice_date,
+            value: stringutility.trimOrAppendBlank(_last_invoice_date),
           })
           
           _sublist.setSublistValue({
