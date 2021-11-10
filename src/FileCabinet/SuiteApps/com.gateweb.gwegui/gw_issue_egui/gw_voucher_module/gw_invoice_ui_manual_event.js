@@ -1180,6 +1180,7 @@ define([
 		        search.createColumn({ name: 'internalid' }),
 		        search.createColumn({ name: 'name' }),
 		        search.createColumn({ name: 'custrecord_gw_assignlog_lastinvnumbe' }),
+		        search.createColumn({ name: 'custrecord_gw_assignlog_startno' }),
 		        search.createColumn({ name: 'custrecord_gw_assignlog_endno' }),
 		        search.createColumn({ name: 'custrecord_gw_assignlog_usedcount' }),
 		        search.createColumn({ name: 'custrecord_gw_last_invoice_date' }) 
@@ -1221,6 +1222,7 @@ define([
 		    for (var i = 0; i < _assignLogSearchResult.length; i++) {
 		         var _internal_id = _assignLogSearchResult[i].id
 		         
+		         var _assignlog_startno = _assignLogSearchResult[i].getValue({name: 'custrecord_gw_assignlog_startno'})
 		         var _assignlog_endno = _assignLogSearchResult[i].getValue({name: 'custrecord_gw_assignlog_endno'})
 			      
 		         var _usedcount = _assignLogSearchResult[i].getValue({name: 'custrecord_gw_assignlog_usedcount'})
@@ -1230,13 +1232,13 @@ define([
 		         if (_last_invoice_number!=''){
 		        	 _check_invoice_number = parseInt(_last_invoice_number.substring(2,_last_invoice_number.length-1))
 		         }
-		         if (_index_invoice_number>_check_invoice_number){		        	 
+		         if (_index_invoice_number >= _check_invoice_number){		        	 
 		        	 _index_invoice_number = padding('' + _index_invoice_number, 8)
 		        	 
 		        	 var values = {}
                      values['custrecord_gw_assignlog_lastinvnumbe'] = _index_invoice_number
                      values['custrecord_gw_last_invoice_date'] = voucher_date
-                     values['custrecord_gw_assignlog_usedcount'] = parseInt(_usedcount)+1
+                     values['custrecord_gw_assignlog_usedcount'] = _index_invoice_number-_assignlog_startno+1
                      
                      if(_index_invoice_number == _assignlog_endno){
                     	values['custrecord_gw_assignlog_status'] = '23'
