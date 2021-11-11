@@ -135,30 +135,43 @@ define(['N/ui/serverWidget', 'N/runtime', 'N/config', 'N/file', '../gw_common_ut
 				label: '手開(不上傳)字軌-未使用',
 				container : 'assign_log_field_id'
 			});
+			_select_manual_unused.updateDisplayType({
+			    displayType: serverWidget.FieldDisplayType.HIDDEN
+			})
 			var _select_manual_used = form.addField({
 				id: 'custpage_manual_used',
 				type: serverWidget.FieldType.CHECKBOX,
 				label: '手開(不上傳)字軌-使用中',
 				container : 'assign_log_field_id'
 			});
+			_select_manual_used.updateDisplayType({
+			    displayType: serverWidget.FieldDisplayType.HIDDEN
+			})
 			var _select_manual_finished = form.addField({
 				id: 'custpage_manual_finished',
 				type: serverWidget.FieldType.CHECKBOX,
 				label: '手開(不上傳)字軌-已使用完畢',
 				container : 'assign_log_field_id'
 			});
+			_select_manual_finished.updateDisplayType({
+			    displayType: serverWidget.FieldDisplayType.HIDDEN
+			})
 			var _select_manual_void = form.addField({
 				id: 'custpage_manual_void',
 				type: serverWidget.FieldType.CHECKBOX,
 				label: '手開(不上傳)字軌-作廢',
 				container : 'assign_log_field_id'
-			});  		
+			});
+			_select_manual_void.updateDisplayType({
+			    displayType: serverWidget.FieldDisplayType.HIDDEN
+			})
 			////////////////////////////////////////////////////////////// 
 			//格式代碼
+			/**
 			var _format_code_field_id = form.addFieldGroup({
 				id : 'format_code_field_id',
 				label : '字軌及發票格式代碼條件'
-			}); 
+			});  
             form.addField({
 				id: 'custpage_format_code_31_01',
 				type: serverWidget.FieldType.CHECKBOX,
@@ -188,14 +201,24 @@ define(['N/ui/serverWidget', 'N/runtime', 'N/config', 'N/file', '../gw_common_ut
 				type: serverWidget.FieldType.CHECKBOX,
 				label: '35:銷項三聯式收銀機統一發票',
 				container : 'format_code_field_id'
-			});	
+			});	 
             form.addField({
 				id: 'custpage_format_code_35_07',
 				type: serverWidget.FieldType.CHECKBOX,
 				label: '35:一般稅額電子發票',
 				container : 'format_code_field_id'
 			});	
+			*/
+			var _field_format_code_35_07 = form.addField({
+				id: 'custpage_format_code_35_07',
+				type: serverWidget.FieldType.CHECKBOX,
+				label: '35:一般稅額電子發票' 
+			});	
+			_field_format_code_35_07.updateDisplayType({
+			    displayType: serverWidget.FieldDisplayType.HIDDEN
+			})
             ////////////////////////////////////////////////////////////// 
+			/**
 			var _egui_class_field_id = form.addFieldGroup({
 				id : 'egui_class_field_id',
 				label : '發票類別條件'
@@ -211,7 +234,16 @@ define(['N/ui/serverWidget', 'N/runtime', 'N/config', 'N/file', '../gw_common_ut
 				type: serverWidget.FieldType.CHECKBOX,
 				label: '手開發票',
 				container : 'egui_class_field_id'
-			});			
+			});	
+            */
+            var _field_egui_electric = form.addField({
+				id: 'custpage_egui_electric',
+				type: serverWidget.FieldType.CHECKBOX,
+				label: '手開發票' 
+			});	 
+			_field_egui_electric.updateDisplayType({
+			    displayType: serverWidget.FieldDisplayType.HIDDEN
+			})
 	        ////////////////////////////////////////////////////////////// 
 			form.addButton({				
 				id: 'custpage_download_csv_button',
@@ -233,7 +265,7 @@ define(['N/ui/serverWidget', 'N/runtime', 'N/config', 'N/file', '../gw_common_ut
 				
         function onRequest(context) { 
 		    var form = serverWidget.createForm({
-				title: '營業稅申報管理-空白發票下載'
+				title: '營業稅申報管理-電子發票空白發票下載'
 			});  
 			
 			createForm(form);	

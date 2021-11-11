@@ -433,7 +433,7 @@ define(['N/search', 'N/currentRecord', 'N/url', '../gw_common_utility/gw_common_
 			    _filterArray.push(_subFilterArray);
 			}
 			_mySearch.filterExpression = _filterArray; 	
-			
+			console.log('_filterArray:'+JSON.stringify(_filterArray)); 
 			var _invoice_number_log_ary = [];			
 			_mySearch.run().each(function(result) {
 				
@@ -481,6 +481,10 @@ define(['N/search', 'N/currentRecord', 'N/url', '../gw_common_utility/gw_common_
 				
 				return true;
 			}); 
+			
+			console.log('_invoice_ary:'+JSON.stringify(_invoice_ary)); 
+			//alert('_invoice_ary='+JSON.stringify(_invoice_ary));
+			
 		} catch(e) {
 			console.log(e.name+':'+e.message); 
 		}
