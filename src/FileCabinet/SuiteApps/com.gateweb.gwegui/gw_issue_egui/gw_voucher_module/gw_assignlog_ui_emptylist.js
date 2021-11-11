@@ -251,13 +251,13 @@ define(['N/ui/serverWidget', 'N/runtime', 'N/config', 'N/file', '../gw_common_ut
 				functionName: 'downloadEmptyFile("csv")'
 			}); 
 			////////////////////////////////////////////////////////////// 
-			/**
+			/** 
 			form.addButton({				
 				id: 'custpage_upload_xml_button',
-				label: 'upload E0402 xml',
+				label: '上傳-E0402',
 				functionName: 'downloadEmptyFile("xml")'
 			}); 
-			*/
+		    */
 			////////////////////////////////////////////////////////////// 
 			
 			form.clientScriptModulePath = './gw_assignlog_ui_searchhelp.js';   

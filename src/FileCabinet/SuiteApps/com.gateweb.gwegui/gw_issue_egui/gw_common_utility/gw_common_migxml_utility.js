@@ -1987,6 +1987,7 @@ define([
   /////////////////////////////////////////////////////////////////////////////////////////////
   //抓空白發票(CSV)產生 E0402.xml TODO
   function getE0402Xml(
+    head_business_no,
     business_no,
     year_month,
     empty_json_obj_ary,
@@ -2017,7 +2018,7 @@ define([
           'BranchTrackBlank',
           'Main',
           'HeadBan',
-          _business_no
+          head_business_no
         )
         setXmlMainAndAmountValue(
           _xmlDocument,

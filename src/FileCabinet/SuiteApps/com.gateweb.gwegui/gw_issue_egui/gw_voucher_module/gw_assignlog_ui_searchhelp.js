@@ -1,5 +1,5 @@
 /**
- * @NApiVersion 2.0
+ * @NApiVersion 2.x
  * @NScriptType ClientScript
  * @NModuleScope Public
  */
@@ -530,9 +530,11 @@ define(['N/search', 'N/currentRecord', 'N/url', '../gw_common_utility/gw_common_
 			 //1. Get xml
              var _temp_e0402_xml = _current_record.getValue({
 				   fieldId: 'custpage_e0402_xml_field'
-			 }); 			 
+			 }); 			
+             
+             var _head_business_no = getHeadBusinessNo(business_no);
 			  
-			 var _e0402_xml_ary = migxmlutility.getE0402Xml(business_no, year_month, empty_json_obj_ary, _temp_e0402_xml);
+			 var _e0402_xml_ary = migxmlutility.getE0402Xml(_head_business_no, business_no, year_month, empty_json_obj_ary, _temp_e0402_xml);
              
 			 var _error_message = '';
 			 for (var i=0; i<_e0402_xml_ary.length; i++) {
@@ -564,19 +566,53 @@ define(['N/search', 'N/currentRecord', 'N/url', '../gw_common_utility/gw_common_
 		}		
    }
    
+   function getHeadBusinessNo(business_no) {	
+	    var _head_business_no = business_no
+		try {
+			 //custrecord_gw_be_parent 
+			var _businessSearch = search.create({
+		        type: 'customrecord_gw_business_entity',
+		        columns: [
+		          'custrecord_gw_be_tax_id_number',
+		          'custrecord_gw_be_conso_payment_code',
+		          'custrecord_gw_be_sale_income_cons_parent',
+		          'custrecord_gw_be_parent' 
+		        ],
+		        filters: ['custrecord_gw_be_tax_id_number', 'is', business_no]
+		      })
+		      .run()
+		      .each(function (result) { 
+		           var _tax_id_number      = result.getValue({name: 'custrecord_gw_be_tax_id_number'});
+		           var _gw_be_sale_income_cons_parent = result.getValue({name: 'custrecord_gw_be_sale_income_cons_parent'});
+		           var _gw_be_parent       = result.getValue({name: 'custrecord_gw_be_parent'});
+		           var _gw_be_conso_payment_code_value = result.getValue({name: 'custrecord_gw_be_conso_payment_code'});
+		           var _gw_be_conso_payment_code_text = result.getText({name: 'custrecord_gw_be_conso_payment_code'}); 
+                   
+		           if (_gw_be_conso_payment_code_value=='2') {
+		        	   _head_business_no = _gw_be_parent;
+		           }
+		           //alert('_gw_be_conso_payment_code_value='+_gw_be_conso_payment_code_value+' ,_gw_be_conso_payment_code_text='+_gw_be_conso_payment_code_text)
+		           return true
+		      })
+			 
+         	  		 
+		} catch(e) {  
+			console.log(e.name+':'+e.message); 
+		}	
+		return _head_business_no
+   }
+   
    //TODO Call Gate API And Exception Handle
    function sendToGateWebE0402API(business_no, year_month, invoice_track, invoice_type, mig_xml) {
 		var _api_result;
 		var _response_code = '404';
 		var _error_message = 'ERROR';
-		try {
-			 _api_result = {
-				 'response_code':_response_code,
-				 'error_message': _error_message				 
-			 };
+		try { 
+			 alert(mig_xml)
+			 
 			 //TODO Call GateWeb E0402 API
 			 //gwapiclient.downloadPdfs(_xmlFileObjects);
-			
+			 
 			 _response_code = '404';
 			 _error_message = 'GW E0402 API 尚未完成!';
 			 _api_result = {
