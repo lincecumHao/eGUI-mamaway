@@ -535,7 +535,7 @@ define([
 		         var _last_invoice_number = _assignLogSearchResult[i].getValue({name: 'custrecord_gw_assignlog_lastinvnumbe'})
 		         var _check_invoice_number = 0
 		         if (_last_invoice_number!=''){
-		        	 _check_invoice_number = parseInt(_last_invoice_number.substring(2,_last_invoice_number.length-1))
+		        	 _check_invoice_number = parseInt(_last_invoice_number)
 		         }
 		         if (_index_invoice_number >= _check_invoice_number){	        	 
 		        	 _index_invoice_number = padding('' + _index_invoice_number, 8)
