@@ -1233,13 +1233,13 @@ define([
 		        	 _check_invoice_number = parseInt(_last_invoice_number)
 		         }
 		         //alert('_last_invoice_number='+_last_invoice_number+',_index_invoice_number='+_index_invoice_number+', _check_invoice_number='+_check_invoice_number)
-		         if (_index_invoice_number >= _check_invoice_number){		        	 
-		        	 _index_invoice_number = padding('' + _index_invoice_number, 8)
-		        	 
-		        	 var values = {}
-                     values['custrecord_gw_assignlog_lastinvnumbe'] = _index_invoice_number
+		         if (_index_invoice_number >= _check_invoice_number){	 
+		        	 var values = {}                     
                      values['custrecord_gw_last_invoice_date'] = voucher_date
                      values['custrecord_gw_assignlog_usedcount'] = _index_invoice_number-_assignlog_startno+1
+                     
+                     _index_invoice_number = padding('' + _index_invoice_number, 8)
+                     values['custrecord_gw_assignlog_lastinvnumbe'] = _index_invoice_number
                      
                      if(_index_invoice_number == _assignlog_endno){
                     	values['custrecord_gw_assignlog_status'] = '23'
