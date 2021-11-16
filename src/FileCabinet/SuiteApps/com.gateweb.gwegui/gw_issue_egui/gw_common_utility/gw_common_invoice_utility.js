@@ -224,9 +224,8 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
     var randomNumber = (
       Math.abs(genHash(eguiNumberStr + sellerTaxIdStr)) % 10000
     ).toString()
-    if (randomNumber.length === 3) {
-      randomNumber = '0' + randomNumber
-    }
+  
+    randomNumber=padding(randomNumber, 4)
 
     return randomNumber
   }
