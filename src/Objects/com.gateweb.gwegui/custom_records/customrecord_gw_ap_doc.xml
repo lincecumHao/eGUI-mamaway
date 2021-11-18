@@ -299,7 +299,7 @@
             <dynamicdefault></dynamicdefault>
             <encryptatrest>F</encryptatrest>
             <fieldtype>TEXT</fieldtype>
-            <globalsearch>F</globalsearch>
+            <globalsearch>T</globalsearch>
             <help>其他憑證號碼（可參考營業稅申報）</help>
             <isformula>F</isformula>
             <ismandatory>F</ismandatory>
