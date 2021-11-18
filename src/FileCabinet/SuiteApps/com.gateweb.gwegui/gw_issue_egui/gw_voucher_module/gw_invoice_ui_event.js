@@ -3110,6 +3110,9 @@ define([
         } else {
           //1.取得折讓單號
           var _today = dateutility.getCompanyLocatDateForClient() //alert('allowance _today='+_today);
+          
+         _allowance_pre_code = invoiceutility.getConfigureValue('ALLOWANCE_GROUP', 'ALLOWANCE_PRE_CODE')
+    
           var _allowanceNumber = invoiceutility.getAllowanceNumber(
             _allowance_pre_code,
             _today
