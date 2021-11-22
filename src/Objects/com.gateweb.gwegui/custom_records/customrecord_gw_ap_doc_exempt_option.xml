@@ -119,58 +119,58 @@
     </customrecordcustomfields>
     <instances>
         <instance scriptid="val_6510_2130928_351">
-            <custrecord_gw_ap_doc_exempt_text></custrecord_gw_ap_doc_exempt_text>
+            <custrecord_gw_ap_doc_exempt_text>外銷貨物</custrecord_gw_ap_doc_exempt_text>
             <custrecord_gw_ap_doc_exempt_value>1</custrecord_gw_ap_doc_exempt_value>
             <isinactive>F</isinactive>
-            <name>1</name>
+            <name>1-外銷貨物</name>
         </instance>
         <instance scriptid="val_6511_2130928_813">
-            <custrecord_gw_ap_doc_exempt_text></custrecord_gw_ap_doc_exempt_text>
+            <custrecord_gw_ap_doc_exempt_text>與外銷有關之勞務，或在國內提供而在國外使用之勞務</custrecord_gw_ap_doc_exempt_text>
             <custrecord_gw_ap_doc_exempt_value>2</custrecord_gw_ap_doc_exempt_value>
             <isinactive>F</isinactive>
-            <name>2</name>
+            <name>2-與外銷有關之勞務，或在國內提供而在國外使用之勞務</name>
         </instance>
         <instance scriptid="val_6512_2130928_705">
-            <custrecord_gw_ap_doc_exempt_text></custrecord_gw_ap_doc_exempt_text>
+            <custrecord_gw_ap_doc_exempt_text>依法設立之免稅商店銷售與過境或出境旅客之貨物</custrecord_gw_ap_doc_exempt_text>
             <custrecord_gw_ap_doc_exempt_value>3</custrecord_gw_ap_doc_exempt_value>
             <isinactive>F</isinactive>
-            <name>3</name>
+            <name>3-依法設立之免稅商店銷售與過境或出境旅客之貨物</name>
         </instance>
         <instance scriptid="val_6513_2130928_721">
-            <custrecord_gw_ap_doc_exempt_text></custrecord_gw_ap_doc_exempt_text>
+            <custrecord_gw_ap_doc_exempt_text>銷售與保稅區營業人供營運之貨物或勞務</custrecord_gw_ap_doc_exempt_text>
             <custrecord_gw_ap_doc_exempt_value>4</custrecord_gw_ap_doc_exempt_value>
             <isinactive>F</isinactive>
-            <name>4</name>
+            <name>4-銷售與保稅區營業人供營運之貨物或勞務</name>
         </instance>
         <instance scriptid="val_6514_2130928_689">
-            <custrecord_gw_ap_doc_exempt_text></custrecord_gw_ap_doc_exempt_text>
+            <custrecord_gw_ap_doc_exempt_text>國際間之運輸</custrecord_gw_ap_doc_exempt_text>
             <custrecord_gw_ap_doc_exempt_value>5</custrecord_gw_ap_doc_exempt_value>
             <isinactive>F</isinactive>
-            <name>5</name>
+            <name>5-國際間之運輸</name>
         </instance>
         <instance scriptid="val_6515_2130928_590">
-            <custrecord_gw_ap_doc_exempt_text></custrecord_gw_ap_doc_exempt_text>
+            <custrecord_gw_ap_doc_exempt_text>國際運輸用之船舶、航空器，及遠洋漁船</custrecord_gw_ap_doc_exempt_text>
             <custrecord_gw_ap_doc_exempt_value>6</custrecord_gw_ap_doc_exempt_value>
             <isinactive>F</isinactive>
-            <name>6</name>
+            <name>6-國際運輸用之船舶、航空器，及遠洋漁船</name>
         </instance>
         <instance scriptid="val_6516_2130928_297">
-            <custrecord_gw_ap_doc_exempt_text></custrecord_gw_ap_doc_exempt_text>
+            <custrecord_gw_ap_doc_exempt_text>銷售與國際運輸用之船舶、航空器，及遠洋漁船所使用之貨物或修繕勞務</custrecord_gw_ap_doc_exempt_text>
             <custrecord_gw_ap_doc_exempt_value>7</custrecord_gw_ap_doc_exempt_value>
             <isinactive>F</isinactive>
-            <name>7</name>
+            <name>7-銷售與國際運輸用之船舶、航空器，及遠洋漁船所使用之貨物或修繕勞務</name>
         </instance>
         <instance scriptid="val_6517_2130928_309">
-            <custrecord_gw_ap_doc_exempt_text></custrecord_gw_ap_doc_exempt_text>
+            <custrecord_gw_ap_doc_exempt_text>保稅區營業人銷售與課稅區營業人未輸往課稅區而直接出口之貨物</custrecord_gw_ap_doc_exempt_text>
             <custrecord_gw_ap_doc_exempt_value>8</custrecord_gw_ap_doc_exempt_value>
             <isinactive>F</isinactive>
-            <name>8</name>
+            <name>8-保稅區營業人銷售與課稅區營業人未輸往課稅區而直接出口之貨物</name>
         </instance>
         <instance scriptid="val_6518_2130928_291">
-            <custrecord_gw_ap_doc_exempt_text></custrecord_gw_ap_doc_exempt_text>
+            <custrecord_gw_ap_doc_exempt_text>保稅區營業人銷售與課稅區營業人存入自由港區事業或海關管理之保稅倉庫、物流中心以供外銷之貨物</custrecord_gw_ap_doc_exempt_text>
             <custrecord_gw_ap_doc_exempt_value>9</custrecord_gw_ap_doc_exempt_value>
             <isinactive>F</isinactive>
-            <name>9</name>
+            <name>9-保稅區營業人銷售與課稅區營業人存入自由港區事業或海關管理之保稅倉庫、物流中心以供外銷之貨物</name>
         </instance>
     </instances>
 </customrecordtype>
