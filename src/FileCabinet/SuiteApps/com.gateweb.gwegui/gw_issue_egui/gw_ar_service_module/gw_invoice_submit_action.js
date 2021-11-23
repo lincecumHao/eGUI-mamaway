@@ -39,6 +39,38 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
 
     return _internalid
   }
+  
+  function searchVoucherByInternalId(internal_id) {
+    var _internalid
+    try {
+      var _mySearch = search.create({
+        type: 'customrecord_gw_voucher_details',
+        columns: [
+          search.createColumn({ name: 'custrecord_gw_original_gui_number' }),
+          search.createColumn({ name: 'custrecord_gw_original_gui_date' }),
+          search.createColumn({ name: 'custrecord_gw_voucher_main_internal_id' }),
+        ],
+      })
+
+      var _filterArray = []
+      _filterArray.push(['custrecord_gw_ns_document_apply_id', 'is', internal_id])
+      _mySearch.filterExpression = _filterArray
+       
+      log.debug('filterArray=', JSON.stringify(_filterArray))
+      _mySearch.run().each(function (result) {
+    	  var _result = JSON.parse(JSON.stringify(result)) 
+    	  if (_result.values.custrecord_gw_voucher_main_internal_id.length != 0) {
+    		  _internalid = _result.values.custrecord_gw_voucher_main_internal_id[0].value //54
+          }
+    	    
+          return true
+      })
+    } catch (e) {
+      log.error(e.name, e.message)
+    }
+
+    return _internalid
+  }
 
   function convertExportDate(export_date) {
     var _tradition_date //民國年月日(1101231)
@@ -108,7 +140,7 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
     try {
       if (context.type == context.UserEventType.EDIT) {
         var _current_record = context.newRecord
-
+         
         //發票號碼
         var _gui_num_start = _current_record.getValue({
           fieldId: 'custbody_gw_gui_num_start',
@@ -146,10 +178,14 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
 
         if (_gui_num_start !== '' || _allowance_num_start != '') {
           //save to voucher main
+          /**
           var _internalid =
             _gui_num_start.length != 0
               ? searchVoucherByNumber(_gui_num_start)
               : searchVoucherByNumber(_allowance_num_start)
+          */    
+          var _internalid = searchVoucherByInternalId(_current_record.id)
+          
           var _tradition_date = convertExportDate(_customs_export_date)
           //通關註記
           var _egui_clearance_mark = ''
