@@ -10,6 +10,8 @@
 remove_files() {
 #  rm ./src/deploy.xml
   rm ./project.json
+  cp ./InstallationPreferences/locking.xml ./src/InstallationPreferences/locking.xml
+  cp ./InstallationPreferences/hiding.xml ./src/InstallationPreferences/hiding.xml
 }
 
 deploy() {
@@ -24,24 +26,30 @@ deployWithApplyInstallPrefs() {
 
 # deploy project
 branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
+client_env=$branch
 # branch is environment
-DEPLOYFILE=./src/deploy-$branch.xml
-echo "renaming $DEPLOYFILE"
-if [ ! -f "$DEPLOYFILE" ]; then
-  DEPLOYFILE=./src/deploy-master.xml
+PROJECT_FILE=./project-$branch.json
+echo "renaming $PROJECT_FILE"
+if [ ! -f "$PROJECT_FILE" ]; then
+  # defaulting client env to master
+  PROJECT_FILE=./project-master.json
 fi
-echo "renamed $DEPLOYFILE"
+echo "renamed $PROJECT_FILE"
 
-PROJECTFILE=./project-$branch.json
-echo "renaming $PROJECTFILE"
-if [ ! -f "$PROJECTFILE" ]; then
-  PROJECTFILE=./project-master.json
+LOCKING_PREF=./InstallationPreferences/locking.xml
+HIDING_PREF=./InstallationPreferences/hiding.xml
+if [ "$client_env" != "shopping99-prod" ] && [ "$client_env" != "auo-prod" ] && [ "$client_env" != "auo-sb1" ] && [ "$client_env" != "justkitchen-prod" ] && [ "$client_env" != "justkitchen-sb1" ]; then
+  LOCKING_PREF=./InstallationPreferences/unlocking.xml
+  HIDING_PREF=./InstallationPreferences/unhiding.xml
 fi
-echo "renamed $PROJECTFILE"
 
-cp $DEPLOYFILE ./src/deploy.xml
-cp $PROJECTFILE ./project.json
+echo "copy locking preference $LOCKING_PREF"
+echo "copy hiding preference $HIDING_PREF"
 
-echo "$branch branch, deploy to $branch environment"
+cp $HIDING_PREF ./src/InstallationPreferences/hiding.xml
+cp $LOCKING_PREF ./src/InstallationPreferences/locking.xml
+cp $PROJECT_FILE ./project.json
+
+echo "$branch branch, deploy to $client_env environment"
 #deploy_development
 deployWithApplyInstallPrefs

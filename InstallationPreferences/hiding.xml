@@ -1,0 +1,18 @@
+<!-- This file is used for hiding the content of your SuiteApp when deploying to a NetSuite account. -->
+<!-- The configuration below hides all content except for the files and objects specified under the apply tag. Use the commented lines as examples. -->
+<!-- This configuration is only applied when the "Apply Installation Preferences" option is provided through SuiteCloud SDK. Otherwise this file is ignored. -->
+<!-- For more information, see https://system.netsuite.com/app/help/helpcenter.nl?fid=section_1515950176.html -->
+
+<preference type="HIDING" defaultAction="HIDE">
+    <apply action="UNHIDE">
+        <!-- <path>~/FileCabinet/SuiteApps/xxx.xxx.xxx/MyScript.js</path> -->
+        <path appliesTo="FILES">~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_mig_xml/*</path>
+        <path appliesTo="FILES">~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_email_templates/*</path>
+        <path appliesTo="FILES">~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_mig_xml/*</path>
+        <path appliesTo="FILES">~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/gw_mig_xml/*</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/services/email/eguiEmailTemplate.ftl</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/services/email/eguiEmailTemplate.hbs</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/services/email/eguiEmailTemplate.ftl</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/services/email/eguiEmailTemplate.hbs</path>
+    </apply>
+</preference>
