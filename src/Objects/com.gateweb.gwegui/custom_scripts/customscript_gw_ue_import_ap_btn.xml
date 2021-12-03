@@ -1,14 +1,14 @@
-<usereventscript scriptid="customscript_gw_ue_emp_rpt_ap_import_btn">
+<usereventscript scriptid="customscript_gw_ue_import_ap_btn">
     <description></description>
     <isinactive>F</isinactive>
-    <name>GW UE EMP EXPENSE AP DOC IMPORT BUTTON</name>
+    <name>GW UE IMPORT AP DOC BUTTON</name>
     <notifyadmins>F</notifyadmins>
     <notifyemails></notifyemails>
     <notifyowner>T</notifyowner>
     <notifyuser>F</notifyuser>
     <scriptfile>[/SuiteApps/com.gateweb.gwegui/gw_ap_doc/employee_expense/file_import/gw_ue_emp_exp_ap_import_btn.js]</scriptfile>
     <scriptdeployments>
-        <scriptdeployment scriptid="customdeploy_gw_ue_emp_rpt_ap_import_btn">
+        <scriptdeployment scriptid="customdeploy_gw_ue_import_ap_btn_emp_exp">
             <allemployees>F</allemployees>
             <alllocalizationcontexts>T</alllocalizationcontexts>
             <allroles>T</allroles>
@@ -18,6 +18,19 @@
             <isdeployed>T</isdeployed>
             <loglevel>DEBUG</loglevel>
             <recordtype>EXPENSEREPORT</recordtype>
+            <runasrole>ADMINISTRATOR</runasrole>
+            <status>RELEASED</status>
+        </scriptdeployment>
+        <scriptdeployment scriptid="customdeploy_gw_ue_import_ap_btn_bill">
+            <allemployees>F</allemployees>
+            <alllocalizationcontexts>T</alllocalizationcontexts>
+            <allroles>T</allroles>
+            <audslctrole></audslctrole>
+            <eventtype>VIEW</eventtype>
+            <executioncontext>USERINTERFACE</executioncontext>
+            <isdeployed>T</isdeployed>
+            <loglevel>DEBUG</loglevel>
+            <recordtype>VENDORBILL</recordtype>
             <runasrole>ADMINISTRATOR</runasrole>
             <status>RELEASED</status>
         </scriptdeployment>

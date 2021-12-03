@@ -38,7 +38,7 @@
         <scriptdeployment scriptid="customscript_gw_sl_unlock_cm.customdeploy_gw_sl_unlock_cm" action="OVERWRITE"/>
         <scriptdeployment scriptid="customscript_gw_sl_unlock_inv.customdeploy_gw_sl_unlock_inv" action="OVERWRITE"/>
         <scriptdeployment scriptid="customscript_gw_sl_validate_payload.customdeploy_gw_sl_validate_payload" action="OVERWRITE"/>
-        <scriptdeployment scriptid="customscript_gw_ue_emp_rpt_ap_import_btn.customdeploy_gw_ue_emp_rpt_ap_import_btn" action="OVERWRITE"/>
+        <scriptdeployment scriptid="customscript_gw_ue_import_ap_btn.customdeploy_gw_ue_import_ap_btn_emp_exp" action="OVERWRITE"/>
         <scriptdeployment scriptid="customscript_gw_ue_printer_agent.customdeploy_gw_ue_printer_agent" action="OVERWRITE"/>
         <scriptdeployment scriptid="customscript_gw_voucher_apply_action.customdeploy_gw_voucher_apply_action" action="OVERWRITE"/>
         <scriptdeployment scriptid="customscript_gw_voucher_apply_list.customdeploy_gw_voucher_apply_list" action="OVERWRITE"/>
