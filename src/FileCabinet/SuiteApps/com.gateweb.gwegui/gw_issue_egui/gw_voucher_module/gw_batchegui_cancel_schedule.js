@@ -221,6 +221,9 @@ define([
           //D0501
           _xml +=
             '<CancelAllowance xmlns="urn:GEINV:eInvoiceMessage:D0501:3.1">'
+        } else if (mig_type == 'B2B') { //要由買方作廢
+        	_xml +=
+                '<CancelAllowance xmlns="urn:GEINV:eInvoiceMessage:B0501:3.1">'
         } else if (mig_type == 'B2BE') {
           //B0201
           _xml +=
@@ -321,6 +324,8 @@ define([
           if (_mig_type == 'B2BS' || _mig_type == 'B2C') {
             //D0501
             _upload_mig_type = 'D0501'
+          } else if (_mig_type == 'B2B') {
+        	_upload_mig_type = 'B0501'
           } else if (_mig_type == 'B2BE') {
             //B0201
             _upload_mig_type = 'B0201'

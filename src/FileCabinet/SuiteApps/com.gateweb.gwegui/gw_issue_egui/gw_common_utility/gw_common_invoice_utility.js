@@ -72,6 +72,9 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
       case 'B2C':
         migTypeDesc = 'B2C存證'
         break
+      case 'B2B':
+        migTypeDesc = 'B2B存證'
+        break
     }
     return migTypeDesc
   }
@@ -90,6 +93,8 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
             _id = 'C0501'
           } else if (migType == 'B2C') {
             _id = 'C0501'
+          } else if (migType == 'B2B') {
+        	_id = 'A0501'
           }
         } else if (voucherType === 'ALLOWANCE') {
           if (migType == 'B2BE') {
@@ -100,6 +105,8 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
             _id = 'D0501'
           } else if (migType == 'B2C') {
             _id = 'D0501'
+          } else if (migType == 'B2B') {
+        	_id = 'B0501' //買方B0501 
           }
         }
       } else {
@@ -112,6 +119,8 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
             _id = 'C0401'
           } else if (migType == 'B2C') {
             _id = 'C0401'
+          } else if (migType == 'B2B') {
+        	_id = 'A0401'
           }
         } else if (voucherType === 'ALLOWANCE') {
           if (migType == 'B2BE') {
@@ -122,6 +131,8 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
             _id = 'D0401'
           } else if (migType == 'B2C') {
             _id = 'D0401'
+          } else if (migType == 'B2B') {
+        	_id = 'B0401'  
           }
         }
       }

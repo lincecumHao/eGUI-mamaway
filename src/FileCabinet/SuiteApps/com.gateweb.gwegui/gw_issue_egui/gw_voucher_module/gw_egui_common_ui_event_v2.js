@@ -1497,7 +1497,7 @@ define([
     try {
       //voucher_upload_type =>EGUI, ALLOWANCE
       var _title = '憑證重傳管理'
-      var _checkJsonObject = validateReUploadTask(voucher_upload_type)
+      var _checkJsonObject = validateReUploadTask(voucher_upload_type, true)
       var _checkFlag = _checkJsonObject.checkflag
       var _message = _checkJsonObject.message
 
@@ -1530,7 +1530,11 @@ define([
     try {
       //voucher_upload_type =>EGUI, ALLOWANCE
       var _title = '憑證重傳管理'
-      var _checkJsonObject = validateReUploadTask(voucher_upload_type)
+      var _need_check = true
+      //不申報不檢查
+      if (voucher_upload_status=='A')_need_check = false
+      
+      var _checkJsonObject = validateReUploadTask(voucher_upload_type, _need_check)
       var _checkFlag = _checkJsonObject.checkflag
       var _message = _checkJsonObject.message
 
@@ -1556,7 +1560,7 @@ define([
     }
   }
 
-  function validateReUploadTask(voucher_upload_type) {
+  function validateReUploadTask(voucher_upload_type, need_check) {
     var _jsonResult
     try {
       var _checkFlag = true
@@ -1594,14 +1598,16 @@ define([
               'customer_voucher_year_month',
               _internalId
             )
-            if (!validateTraditionYearMonth(_year_month)) {
-              _checkFlag = false
-              _error_message +=
-                _voucher_number + '-申報年月格式錯誤[需為民國年雙月共5碼],'
-            }
-            if (_voucher_date.length == 0) {
-              _checkFlag = false
-              _error_message += _voucher_number + '-上傳日期不可空白,'
+            if (need_check==true) {
+	            if (!validateTraditionYearMonth(_year_month)) {
+	              _checkFlag = false
+	              _error_message +=
+	                _voucher_number + '-申報年月格式錯誤[需為民國年雙月共5碼],'
+	            }
+	            if (_voucher_date.length == 0) {
+	              _checkFlag = false
+	              _error_message += _voucher_number + '-上傳日期不可空白,'
+	            }
             }
           }
         }

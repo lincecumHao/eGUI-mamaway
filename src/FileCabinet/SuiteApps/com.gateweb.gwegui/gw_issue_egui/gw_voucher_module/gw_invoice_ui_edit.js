@@ -287,7 +287,7 @@ define([
     })
     _mig_type.addSelectOption({
       value: 'B2C',
-      text: '存證'
+      text: 'B2C-存證'
     })
     //發票備註
     var _main_remark = form.addField({

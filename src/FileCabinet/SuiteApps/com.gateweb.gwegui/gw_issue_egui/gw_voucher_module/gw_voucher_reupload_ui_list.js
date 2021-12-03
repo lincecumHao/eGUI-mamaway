@@ -38,6 +38,11 @@ define([
   //憑證 Information View
   var _voucher_view_script_id = 'customscript_gw_allowance_ui_view'
   var _voucher_view_deploy_id = 'customdeploy_gw_allowance_ui_view'
+	  
+  //欄位寬度
+  var _field_height = 80
+  var _field_width = 150
+  var _field_text_width = 20
 
   //報稅期別(取得今日)
   function getEffectYearMonth() {
@@ -96,6 +101,42 @@ define([
 
     return _text
   }
+  
+  function buttonHideAndShow(form, status) { 
+    if (status == 'A') {//顯示-申報
+    	var c_document_button = form.getButton({
+    	    id : 'custpage_report_c_document_button'
+    	});
+    	c_document_button.isHidden = false;
+    	
+    	var a_document_button = form.getButton({
+    	    id : 'custpage_report_a_document_button'
+    	});
+    	a_document_button.isHidden = true;
+    	
+    } else if (status == 'C') { //顯示-不申報
+    	var c_document_button = form.getButton({
+    	    id : 'custpage_report_c_document_button'
+    	});
+    	c_document_button.isHidden = true;
+    	
+    	var a_document_button = form.getButton({
+    	    id : 'custpage_report_a_document_button'
+    	});
+    	a_document_button.isHidden = false;
+       
+    } else { //全部隱藏
+    	var c_document_button = form.getButton({
+    	    id : 'custpage_report_c_document_button'
+    	});
+    	c_document_button.isHidden = true;
+    	
+    	var a_document_button = form.getButton({
+    	    id : 'custpage_report_a_document_button'
+    	});
+    	a_document_button.isHidden = true;
+    } 
+  }
 
   /**
    * voucher_type : 憑證類別(EGUI/ALLOWANCE)
@@ -134,7 +175,7 @@ define([
       search.Operator.IS,
       voucher_type,
     ])
-    //不上傳
+    //不上傳-清單
     _filterArray.push('and')
     _filterArray.push([
       'custrecord_gw_need_upload_egui_mig',
@@ -142,8 +183,10 @@ define([
       'NONE',
     ])
     //排除上傳過
-    //_filterArray.push('and');
-    //_filterArray.push(['custrecord_gw_voucher_upload_status',search.Operator.IS, 'A']);
+    if (voucher_upload_status != '') {
+	    _filterArray.push('and');
+	    _filterArray.push(['custrecord_gw_voucher_upload_status',search.Operator.IS, voucher_upload_status]);
+    }
     //排除手開發票
     _filterArray.push('and')
     _filterArray.push([
@@ -652,6 +695,7 @@ define([
     _selectEmployee.updateLayoutType({
       layoutType: serverWidget.FieldLayoutType.OUTSIDE,
     })
+    /**
     //單據狀態
     var _selectUploadStatus = form.addField({
       id: 'custpage_select_voucher_upload_status',
@@ -684,6 +728,7 @@ define([
     _selectUploadStatus.updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN,
     })
+    */
     //Invoice單據類別
     var _selectVoucherType = form.addField({
       id: 'custpage_select_document_type',
@@ -705,13 +750,35 @@ define([
     _selectVoucherType.updateLayoutType({
       layoutType: serverWidget.FieldLayoutType.OUTSIDE,
     })
+    
+    var _selectVoucherType = form.addField({
+      id: 'custpage_select_voucher_upload_status',
+      type: serverWidget.FieldType.SELECT,
+      label: '申報類別',
+    })
+    _selectVoucherType.addSelectOption({
+      value: '',
+      text: 'NONE',
+    })
+    _selectVoucherType.addSelectOption({
+      value: 'C',
+      text: '申報',
+    })
+    _selectVoucherType.addSelectOption({
+      value: 'A',
+      text: '不申報',
+    })
+    _selectVoucherType.updateLayoutType({
+      layoutType: serverWidget.FieldLayoutType.OUTSIDE,
+    })
+    
     var _document_no = form.addField({
       id: 'custpage_select_document_no',
       type: serverWidget.FieldType.TEXT,
       label: 'NS 單據編號',
     })
     _document_no.updateLayoutType({
-      layoutType: serverWidget.FieldLayoutType.OUTSIDE,
+      layoutType: serverWidget.FieldLayoutType.OUTSIDEBELOW,
     })
 
     //EGUI單據號碼
@@ -721,9 +788,9 @@ define([
       label: 'e-GUI CM #',
     })
     _voucher_number.updateLayoutType({
-      layoutType: serverWidget.FieldLayoutType.OUTSIDE,
+      layoutType: serverWidget.FieldLayoutType.OUTSIDEBELOW,
     })
-
+     
     //單據日期
     var _tran_start_date = form.addField({
       id: 'custpage_select_transtartdate',
@@ -731,7 +798,7 @@ define([
       label: 'e-GUI CM #開始日期',
     })
     _tran_start_date.updateLayoutType({
-      layoutType: serverWidget.FieldLayoutType.OUTSIDE,
+      layoutType: serverWidget.FieldLayoutType.OUTSIDEBELOW,
     })
     _tran_start_date.defaultValue = new Date()
 
@@ -741,7 +808,7 @@ define([
       label: 'e-GUI CM #結束日期',
     })
     _tran_end_date.updateLayoutType({
-      layoutType: serverWidget.FieldLayoutType.OUTSIDE,
+      layoutType: serverWidget.FieldLayoutType.OUTSIDEBELOW,
     })
     var _year_month_field = form.addField({
       id: 'custpage_select_year_month',
@@ -749,7 +816,7 @@ define([
       label: '申報期別',
     })
     _year_month_field.updateLayoutType({
-      layoutType: serverWidget.FieldLayoutType.OUTSIDE,
+      layoutType: serverWidget.FieldLayoutType.OUTSIDEBELOW,
     })
   }
 
@@ -940,19 +1007,23 @@ define([
     createForm(form)
     var _invoiceSubList = createInvoiceSubList(form)
 
-    form.addButton({
+    var c_document_button = form.addButton({
       id: 'custpage_report_c_document_button',
-      label: '不上傳申報-申請',
+      label: '申報',
       functionName: 'reportTxtNotUpload("ALLOWANCE","C")',
-    })
-    form.addButton({
+    }) 
+    c_document_button.isHidden = true;
+    
+    var a_document_button = form.addButton({
       id: 'custpage_report_a_document_button',
-      label: '不上傳申報-取消',
+      label: '不申報',
       functionName: 'reportTxtNotUpload("ALLOWANCE","A")',
     })
+    a_document_button.isHidden = true;
+    
     form.addButton({
       id: 'custpage_cancel_document_button',
-      label: '重傳折讓單',
+      label: '上傳折讓單',
       functionName: 'reSendToGWProcess("ALLOWANCE")',
     })
     form.addButton({
@@ -1002,6 +1073,8 @@ define([
       var _select_voucher_upload_status =
         context.request.parameters.custpage_select_voucher_upload_status
 
+      buttonHideAndShow(form, _select_voucher_upload_status)
+      
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       var _businessnoField = form.getField({
   	      id: 'custpage_businessno',
@@ -1046,6 +1119,11 @@ define([
         id: 'custpage_select_document_no',
       })
       _documentNoField.defaultValue = _select_document_no
+      
+      var _voucher_upload_status_field = form.getField({
+          id: 'custpage_select_voucher_upload_status',
+      })
+      _voucher_upload_status_field.defaultValue = _select_voucher_upload_status
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1070,7 +1148,7 @@ define([
       )
       //search result end
       //end access file
-    }
+    }        
   } //End onRequest
 
   return {

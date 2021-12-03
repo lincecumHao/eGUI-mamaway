@@ -1487,14 +1487,21 @@ define([
               'customer_original_buyer_id',
               _internalId
             )
+            
+            var _mig_type = getSublistColumnValue(
+              _invoiceSublistId,
+              'customer_search_voucher_id',
+              'customer_mig_type',
+              _internalId
+            )
 
             if (_checkID != '') {
-              if (_checkID.indexOf(_voucher_buyer+_original_buyer_id) == -1) {
-                _errorMsg = '不可處理不同買方!'
+              if (_checkID.indexOf(_voucher_buyer+_original_buyer_id+_mig_type) == -1) {
+                _errorMsg = '不可處理不同買方及發票資料格式 !'
                 break
               }
             } else {
-              _checkID += _voucher_buyer+_original_buyer_id
+              _checkID += _voucher_buyer+_original_buyer_id+_mig_type
             }
           }
         }

@@ -141,17 +141,32 @@ define([
           _error_message += '不可變更為=>[一般字軌-使用中]!'
         }
         if (selectedStatus === '21') {
-          _error_message += '不可變更為=>[手開(不上傳)字軌-未使用]!'
+          _error_message += '不可變更為=>[歷史發票字軌-未使用]!'
         }
         if (selectedStatus === '22') {
-          _error_message += '不可變更為=>[手開(不上傳)字軌-使用中]!'
+          _error_message += '不可變更為=>[歷史發票字軌-使用中]!'
         }
         if (selectedStatus === '23') {
-          _error_message += '不可變更為=>[手開(不上傳)字軌-已使用完畢]!'
+          _error_message += '不可變更為=>[歷史發票字軌-已使用完畢]!'
         }
         if (selectedStatus === '24') {
-          _error_message += '不可變更為=>[手開(不上傳)字軌-作廢]!'
+          _error_message += '不可變更為=>[歷史發票字軌-作廢]!'
         }
+        
+        if (selectedStatus === '31') {
+	        _error_message += '不可變更為=>[外部發票字軌-未使用]!'
+	    }
+	    if (selectedStatus === '32') {
+	        _error_message += '不可變更為=>[外部發票字軌-使用中]!'
+	    }
+	    if (selectedStatus === '33') {
+	        _error_message += '不可變更為=>[外部發票字軌-已使用完畢]!'
+	    }
+	    if (selectedStatus === '34') {
+	        _error_message += '不可變更為=>[外部發票字軌-作廢]!'
+	    }
+        
+        
       } else if (_status === '12') {
         if (selectedStatus === '11') {
           _error_message += '不可變更為=>[一般字軌-未使用]!'
@@ -159,8 +174,11 @@ define([
         if (selectedStatus === '14') {
           _error_message += '不可變更為=>[一般字軌-作廢])!'
         }
-        if (selectedStatus !== '' && parseInt(_status) > 20) {
-          _error_message += '不可變更為=>[手開(不上傳)字軌])!'
+        if (selectedStatus !== '' && parseInt(_status) > 20 && parseInt(_status) < 30) {
+          _error_message += '不可變更為=>[歷史發票字軌])!'
+        }
+        if (selectedStatus !== '' && parseInt(_status) > 30) {
+            _error_message += '不可變更為=>[外部發票字軌])!'
         }
         if (
           _deptcode + '' + _classfication !==
@@ -178,7 +196,7 @@ define([
       if (_status === '21') {
         //空白本
         if (selectedStatus === '22') {
-          _error_message += '不可變更為=>[手開(不上傳)字軌-使用中]!'
+          _error_message += '不可變更為=>[歷史發票字軌-使用中]!'
         }
         if (selectedStatus === '11') {
           _error_message += '不可變更為=>[一般字軌-未使用]!'
@@ -192,15 +210,32 @@ define([
         if (selectedStatus === '14') {
           _error_message += '不可變更為=>[一般字軌-作廢]!'
         }
+        
+        if (selectedStatus === '31') {
+	        _error_message += '不可變更為=>[外部發票字軌-未使用]!'
+	    }
+	    if (selectedStatus === '32') {
+	        _error_message += '不可變更為=>[外部發票字軌-使用中]!'
+	    }
+	    if (selectedStatus === '33') {
+	        _error_message += '不可變更為=>[外部發票字軌-已使用完畢]!'
+	    }
+	    if (selectedStatus === '34') {
+	        _error_message += '不可變更為=>[外部發票字軌-作廢]!'
+	    }
+	    
       } else if (_status === '22') {
         if (selectedStatus === '21') {
-          _error_message += '不可變更為=>[手開(不上傳)字軌-未使用]!'
+          _error_message += '不可變更為=>[歷史發票字軌-未使用]!'
         }
         if (selectedStatus === '24') {
-          _error_message += '不可變更為=>[手開(不上傳)字軌-作廢])!'
+          _error_message += '不可變更為=>[歷史發票字軌-作廢])!'
         }
         if (selectedStatus !== '' && parseInt(_status) < 20) {
           _error_message += '不可變更為=>[一般字軌])!'
+        }
+        if (selectedStatus !== '' && parseInt(_status) > 30) {
+            _error_message += '不可變更為=>[外部發票字軌])!'
         }
         if (
           _deptcode + '' + _classfication !==
@@ -209,11 +244,67 @@ define([
           _error_message += '使用中(不上傳)字軌不可變更至其他部門或類別!'
         }
       } else if (_status === '23') {
-        _error_message += '手開(不上傳)字軌已使用完畢不可變更!'
+        _error_message += '歷史發票字軌已使用完畢不可變更!'
       } else if (_status === '24') {
-        _error_message += '手開(不上傳)字軌已作廢不可變更!'
+        _error_message += '歷史發票字軌已作廢不可變更!'
       }
-    }
+      
+      if (_status === '31') {
+          //空白本
+          if (selectedStatus === '32') {
+            _error_message += '不可變更為=>[外部發票字軌-使用中]!'
+          }
+          if (selectedStatus === '11') {
+            _error_message += '不可變更為=>[一般字軌-未使用]!'
+          }
+          if (selectedStatus === '12') {
+            _error_message += '不可變更為=>[一般字軌-使用中]!'
+          }
+          if (selectedStatus === '13') {
+            _error_message += '不可變更為=>[一般字軌-已使用完畢]!'
+          }
+          if (selectedStatus === '14') {
+            _error_message += '不可變更為=>[一般字軌-作廢]!'
+          }
+          
+          if (selectedStatus === '21') {
+  	        _error_message += '不可變更為=>[歷史發票字軌-未使用]!'
+	  	  }
+	  	  if (selectedStatus === '22') {
+	  	      _error_message += '不可變更為=>[歷史發票字軌-使用中]!'
+	  	  }
+	  	  if (selectedStatus === '23') {
+	  	      _error_message += '不可變更為=>[歷史發票字軌-已使用完畢]!'
+	  	  }
+	  	  if (selectedStatus === '24') {
+	  	      _error_message += '不可變更為=>[歷史發票字軌-作廢]!'
+	  	  }
+  	    
+        } else if (_status === '32') {
+          if (selectedStatus === '31') {
+            _error_message += '不可變更為=>[外部發票字軌-未使用]!'
+          }
+          if (selectedStatus === '34') {
+            _error_message += '不可變更為=>[外部發票字軌-作廢])!'
+          }
+          if (selectedStatus !== '' && parseInt(_status) < 20) {
+            _error_message += '不可變更為=>[一般字軌])!'
+          }
+          if (selectedStatus !== '' && parseInt(_status) > 20 && parseInt(_status) < 30) {
+              _error_message += '不可變更為=>[歷史發票字軌])!'
+          }
+          if (
+            _deptcode + '' + _classfication !==
+            selectedDeptCode + '' + selectedClassification
+          ) {
+            _error_message += '使用中(不上傳)字軌不可變更至其他部門或類別!'
+          }
+        } else if (_status === '33') {
+          _error_message += '外部發票字軌已使用完畢不可變更!'
+        } else if (_status === '34') {
+          _error_message += '外部發票字軌已作廢不可變更!'
+        }       
+    } 
 
     if (_error_message.length != 0) _checkFlag = false
     var _errorObj = {
@@ -384,12 +475,12 @@ define([
                 _record.setValue({
                   fieldId: 'custrecord_gw_egui_format_code',
                   value: '35',
-                })
+                })    
                 _record.setValue({
                   fieldId: 'custrecord_gw_last_invoice_date',
                   value: 0,
                 })
-              }
+              } 
               //狀態=>有值才填
               if (_selectStatus != '') {
                 _record.setValue({
@@ -446,7 +537,7 @@ define([
   }
 
   //////////////////////////////////////////////////////////////////////////////////////
-  //手開發票-START
+  //外部發票-START
   function saveManualAssignLogs() {
     try {
       var _businessNo = _currentRecord.getValue({
@@ -471,6 +562,9 @@ define([
       })
       var _assignlog_hiddent_listId = _currentRecord.getValue({
         fieldId: 'custpage_assignlog_hiddent_listid',
+      })
+      var _select_invoice_type = _currentRecord.getValue({
+        fieldId: 'custpage_select_invoice_type',
       })
 
       var _eguiFormatCodeAry = _eguiFormatID.split('-')
@@ -538,7 +632,7 @@ define([
           })
           _record.setValue({
             fieldId: 'custrecord_gw_assignlog_status',
-            value: '21',
+            value: _select_invoice_type,
           })
 
           _record.setValue({
@@ -560,6 +654,10 @@ define([
           _record.setValue({
             fieldId: 'custrecord_gw_book_binding_count',
             value: _eguiFormatCount,
+          })
+          _record.setValue({
+            fieldId: 'custrecord_gw_last_invoice_date',
+            value: 0,
           })
 
           try {
@@ -751,7 +849,7 @@ define([
     }
   }
 
-  //手開發票-END
+  //外部發票-END
   //////////////////////////////////////////////////////////////////////////////////////
   function searchAssignLogs() {
     _currentRecord.setValue({

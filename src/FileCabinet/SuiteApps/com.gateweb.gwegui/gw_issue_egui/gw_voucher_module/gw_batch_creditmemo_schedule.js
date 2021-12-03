@@ -42,6 +42,8 @@ define([
   var _allowance_pre_code = invoiceutility.getConfigureValue('ALLOWANCE_GROUP', 'ALLOWANCE_PRE_CODE')
   //商品名稱欄位
   var _ns_item_name_field = invoiceutility.getConfigureValue('ITEM_GROUP', 'ITEM_NAME_FIELD')
+  //DIRECT : 直接上傳 / APPROVE : 需審核
+  var _allowance_upload_way = invoiceutility.getConfigureValue('ALLOWANCE_GROUP', 'ALLOWANCE_UPLOAD_WAY')
   
   //1. 取得待處理的Credit_Memo資料 
   function executeScript(context) {
@@ -129,7 +131,9 @@ define([
 		var _entity_text = '' //11 se06_company公司
 		if (result_obj.values.entity.length != 0) {
 		  _entity_value = result_obj.values.entity[0].value //529
-		  _entity_text = result_obj.values.entity[0].text   //11 se06_company公司
+		  //_entity_text = result_obj.values.entity[0].text   //11 se06_company公司
+		  _entity_text = result_obj.values.custbody_gw_gui_title
+		  if (_entity_text=='')_entity_text = result_obj.values.entity[0].text 
 		}
 	    var _customer_vatregnumber = result_obj.values.custbody_gw_tax_id_number //99999997
 		var _email = result_obj.values['customer.email']
@@ -215,6 +219,21 @@ define([
 		var _voucher_number_start = result_obj.values.custbody_gw_gui_num_start
 		var _voucher_number_end = result_obj.values.custbody_gw_gui_num_end
 		
+		var _gw_gui_format = '33' 
+		if (result_obj.values['CUSTBODY_GW_GUI_FORMAT.custrecord_gw_ap_doc_type_value'] != '') {
+			_gw_gui_format = result_obj.values['CUSTBODY_GW_GUI_FORMAT.custrecord_gw_ap_doc_type_value']
+		}
+		 
+		var _gw_invoice_type = '07'
+		if (result_obj.values['CUSTBODY_GW_GUI_FORMAT.custrecord_gw_ap_doc_mof_doc_type_code'] != '') {
+			_gw_invoice_type = result_obj.values['CUSTBODY_GW_GUI_FORMAT.custrecord_gw_ap_doc_mof_doc_type_code']
+		}	
+		
+		//發票不上傳 true:不上傳 , false:上傳
+		var _gw_gui_not_upload = result_obj.values.custbody_gw_gui_not_upload
+		var _gw_allowance_num_start = result_obj.values.custbody_gw_allowance_num_start
+		var _gw_allowance_num_end = result_obj.values.custbody_gw_allowance_num_end
+		
 		var _tax_type          = allowance_item_obj.taxType
 		var _sales_amount      = (_tax_type=='1')?allowance_item_obj.amount:0			
 		var _zero_sales_amount = (_tax_type=='2')?allowance_item_obj.amount:0
@@ -230,7 +249,9 @@ define([
 			
 			//Allowance資料
 			var _allowance_egui_number = invoiceutility.getAllowanceNumber(_allowance_pre_code, dateutility.getCompanyLocatDate())
-            var _allowance_egui_time   = dateutility.getCompanyLocatTime()
+            if (_gw_allowance_num_start != '')_allowance_egui_number=_gw_allowance_num_start
+          
+			var _allowance_egui_time   = dateutility.getCompanyLocatTime()
             var _allowance_year_month  = dateutility.getTaxYearMonthByDate(result_obj.values.trandate)  
 			
 			main_json_obj = {
@@ -262,6 +283,9 @@ define([
               total_amount: _total_amount, 
 			  voucher_number_start : _voucher_number_start,
 			  voucher_number_end : _voucher_number_end,
+			  gui_format : _gw_gui_format,
+			  invoice_type : _gw_invoice_type,
+			  gui_not_upload : _gw_gui_not_upload,
               item_ary: _item_ary,
 			  allowance_egui_number: _allowance_egui_number,
 			  allowance_egui_time: _allowance_egui_time,
@@ -400,6 +424,7 @@ define([
 				type: 'customrecord_gw_voucher_main',
 				columns: [
 					search.createColumn({ name: 'internalid' }),
+					search.createColumn({ name: 'custrecord_gw_mig_type' }),
 			        search.createColumn({ name: 'custrecord_gw_voucher_number' }),
 			        search.createColumn({ name: 'custrecord_gw_voucher_date' }),
 			        search.createColumn({ name: 'custrecord_gw_voucher_yearmonth' }),
@@ -439,7 +464,8 @@ define([
 			 var _data_error = false;
 			 for (var i = 0; i < _search_result.length; i++) {
 				  var _internal_id = _search_result[i].id	
-				   
+				  
+				  var _mig_type = _search_result[i].getValue({name: 'custrecord_gw_mig_type'}) 
 				  var _egui_number = _search_result[i].getValue({name: 'custrecord_gw_voucher_number'})
 				  var _egui_date    = _search_result[i].getValue({name: 'custrecord_gw_voucher_date'})
 				  var _egui_year_month = _search_result[i].getValue({name: 'custrecord_gw_voucher_yearmonth'})
@@ -474,6 +500,7 @@ define([
 							  
 				  _egui_obj = {
 						'internal_id' :_internal_id,
+						'mig_type' :_mig_type,
 						'egui_number' :_egui_number,
 						'egui_date' :_egui_date,
 						'egui_year_month' :_egui_year_month,					
@@ -521,7 +548,7 @@ define([
 																	 tax_diff_balance
 																   )
 			
-			var _main_record_obj = saveVoucherMainRecord(_apply_internal_id, allowance_obj, _balance_amount_error, _tax_diff_error)
+			var _main_record_obj = saveVoucherMainRecord(_egui_obj.mig_type, _apply_internal_id, allowance_obj, _balance_amount_error, _tax_diff_error)
 			
 			var _main_record_id = _main_record_obj.main_record_id 
 			 
@@ -607,7 +634,7 @@ define([
   }
   
   //產生折讓單(Main資料)
-  function saveVoucherMainRecord(apply_internal_id, allowance_obj, balance_amount_error, tax_diff_error) {
+  function saveVoucherMainRecord(mig_type, apply_internal_id, allowance_obj, balance_amount_error, tax_diff_error) {
     log.debug('saveVoucherMainRecord', '產生折讓單(Main資料)')	
     var _voucher_main_obj 
     try {		
@@ -716,15 +743,15 @@ define([
 
 		  _voucher_main_record.setValue({
 			fieldId: 'custrecord_gw_invoice_type',
-			value: '07',
+			value: allowance_obj.invoice_type,
 		  })
 		  _voucher_main_record.setValue({
 			fieldId: 'custrecord_gw_mig_type',
-			value: 'B2C',
+			value: mig_type,
 		  })
 		  _voucher_main_record.setValue({
 			fieldId: 'custrecord_gw_voucher_format_code',
-			value: '33',
+			value: allowance_obj.gui_format,
 		  })  
 		  _voucher_main_record.setValue({
 			fieldId: 'custrecord_gw_is_printed',
@@ -747,10 +774,19 @@ define([
 			fieldId: 'custrecord_gw_voucher_status',
 			value: 'VOUCHER_SUCCESS',
 		  })
-		  _voucher_main_record.setValue({
-			fieldId: 'custrecord_gw_voucher_upload_status',
-			value: 'A',
-		  })		  
+	      
+		  //20211124 walter  modify 不上傳
+		  if (allowance_obj.gui_not_upload==true) {
+			  _voucher_main_record.setValue({
+				 fieldId: 'custrecord_gw_voucher_upload_status',
+				 value: 'C',
+			  })	
+		  } else {
+			  _voucher_main_record.setValue({
+				 fieldId: 'custrecord_gw_voucher_upload_status',
+				 value: 'A',
+			  })	
+		  }
 		  //處理Amount
 		  _voucher_main_record.setValue({
 			fieldId: 'custrecord_gw_sales_amount',
@@ -780,12 +816,20 @@ define([
 			fieldId: 'custrecord_gw_total_amount',
 			value: allowance_obj.total_amount,
 		  })
-
-		  //20210202 walter modify
-		  _voucher_main_record.setValue({
-			fieldId: 'custrecord_gw_need_upload_egui_mig',
-			value: 'NONE',
-		  })  
+		   
+		  //20211124 walter modify 
+		  if (_allowance_upload_way=='DIRECT' && allowance_obj.gui_not_upload==false) {
+			  _voucher_main_record.setValue({
+				fieldId: 'custrecord_gw_need_upload_egui_mig',
+				value: 'ALLOWANCE',
+			  })  
+		  } else {
+			  _voucher_main_record.setValue({
+				fieldId: 'custrecord_gw_need_upload_egui_mig',
+				value: 'NONE',
+			  })  
+		  }
+ 
 		  _voucher_main_record.setValue({
 			fieldId: 'custrecord_gw_print_mark',
 			value: 'Y',

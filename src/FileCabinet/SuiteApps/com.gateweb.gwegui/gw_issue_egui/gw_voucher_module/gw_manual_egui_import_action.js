@@ -37,6 +37,7 @@ define([
 	    var _seller_ban  = _line_values[0]
 	    var _buyer_ban   = _line_values[1]
 	    var _customer_id = _line_values[2]
+	    var _mig_type    = _line_values[14]
 	    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	    //this_period:當期, early_period:前期
 	    var _open_type = 'SINGLE-MANUAL-VOUCHER'
@@ -67,7 +68,7 @@ define([
 	    }) 
         _voucher_apply_record.setValue({
 	      fieldId: 'custrecord_gw_voucher_apply_mig_type',
-	      value: 'B2C',
+	      value: _mig_type,
 	    }) 
 	    _voucher_apply_record.setValue({
 	      fieldId: 'custrecord_gw_closed_voucher',
@@ -103,6 +104,7 @@ define([
 	  var _sales_discount_amount      = _line_values[11]
 	  var _free_sales_discount_amount = _line_values[12]
 	  var _zero_discount_amount       = _line_values[13]
+	  var _mig_type                   = _line_values[14]
 	  
 	  var _total_discount_amount = stringutility.convertToFloat(_sales_discount_amount) +
 							       stringutility.convertToFloat(_free_sales_discount_amount) +
@@ -111,8 +113,7 @@ define([
 	  //Save To Voucher Main And Detail
 	  var _voucher_type = 'EGUI'
       var _status = 'VOUCHER_SUCCESS' //2:開立成功, 3:作廢成功
-      var _default_upload_status = 'C'
-      var _mig_type = 'B2C'
+      var _default_upload_status = 'C' 
     	  
       var _format_code_ary = _format_code_str.split('-')
       var _format_code = _format_code_ary[0]
@@ -281,6 +282,7 @@ define([
   }
   
   function saveVoucherDetail (line_value, voucher_main_record) { 
+	  log.debug('saveVoucherDetail', line_value)
 	  var _line_values = line_value.split(',')  
 	  //賣方公司統編	買方公司統編	客戶代碼	格式代號	開立日期	發票號碼	稅別	稅率	銷售金額(未稅)	免稅銷售金額	零稅銷售金額	已折金額(應稅):未稅	已折金額(零稅)	已折金額(免稅)
 	  var _seller_ban                 = _line_values[0]
@@ -315,11 +317,11 @@ define([
 		  var _json_obj = {'item_name':'免稅商品', 'amount':_free_sales_amount, 'tax_rate':'0' ,'tax_type':'3'}
 		  _amount_ary.push(_json_obj)
 	  }
-	  if (stringutility.convertToFloat(_zero_discount_amount) != 0) {
-		  var _json_obj = {'item_name':'零稅商品', 'amount':_zero_discount_amount, 'tax_rate':'0' ,'tax_type':'2'}
+	  if (stringutility.convertToFloat(_zero_sales_amount) != 0) {
+		  var _json_obj = {'item_name':'零稅商品', 'amount':_zero_sales_amount, 'tax_rate':'0' ,'tax_type':'2'}
 		  _amount_ary.push(_json_obj)
 	  }
-	  
+	   
 	  //////////////////////////////////////////////////////////////////////////////	  
 	  for(var _seq=0; _seq<_amount_ary.length; _seq++) {	 
 		  var _json_obj = _amount_ary[_seq]
@@ -453,6 +455,7 @@ define([
 	        fieldId: 'custrecord_gw_dtl_voucher_apply_period',
 	        value: _voucher_apply_period
 	      })   
+	       log.debug('commitLine', line_value)
 	      voucher_main_record.commitLine({
 	        sublistId: _voucher_detail_sublistId
 	      })      

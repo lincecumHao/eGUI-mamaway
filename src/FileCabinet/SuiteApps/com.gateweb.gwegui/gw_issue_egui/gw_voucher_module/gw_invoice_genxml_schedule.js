@@ -61,8 +61,8 @@ define([
         if (migType == 'B2BE') {
           _file_path = _gw_mig_a0101_xml_path
         } else if (migType == 'B2BS') {
-          //_file_path = _gw_mig_a0401_xml_path;
-          _file_path = _gw_mig_c0401_xml_path //A0401轉成C0401
+          _file_path = _gw_mig_a0401_xml_path;
+          //_file_path = _gw_mig_c0401_xml_path //A0401轉成C0401
         } else if (migType == 'B2C') {
           _file_path = _gw_mig_c0401_xml_path
         }
@@ -71,8 +71,10 @@ define([
           //TODO
           _file_path = _gw_mig_b0101_xml_path
         } else if (migType == 'B2BS') {
-          //_file_path = _gw_mig_b0401_xml_path;
-          _file_path = _gw_mig_d0401_xml_path //B0401轉成D0401
+          _file_path = _gw_mig_b0401_xml_path;
+          //_file_path = _gw_mig_d0401_xml_path //B0401轉成D0401
+        } else if (migType == 'B2B') {
+          _file_path = _gw_mig_b0401_xml_path;
         } else if (migType == 'B2C') {
           _file_path = _gw_mig_d0401_xml_path
         }
@@ -471,6 +473,7 @@ define([
       var _b2bs_xml = loadInvoiceMigXml(voucher_type, 'B2BS')
       var _b2be_xml = loadInvoiceMigXml(voucher_type, 'B2BE')
       var _b2c_xml = loadInvoiceMigXml(voucher_type, 'B2C')
+      var _b2b_xml = loadInvoiceMigXml(voucher_type, 'B2B')
 
       var _xmlDocument
       var _mySearch = search.load({
@@ -657,6 +660,15 @@ define([
                   //B2C +C0401
                   _mig_xml = _mig_xml.replace('<RelateNumber/>', '')
                 }
+              }  else if (_pre_mig_type === 'B2B') {
+            	_mig_xml = _mig_xml.replace(
+                  'Invoice',
+                  'Invoice xmlns="urn:GEINV:eInvoiceMessage:A0401:3.1"'
+                )
+                if (_pre_zero_sales_amount == 0) {
+                  //非零稅要拿掉
+                  _mig_xml = _mig_xml.replace('<CustomsClearanceMark/>', '')
+                }
               }
             } else {
               //ALLOWANCE
@@ -676,6 +688,11 @@ define([
                   'Allowance',
                   'Allowance xmlns="urn:GEINV:eInvoiceMessage:D0401:3.1"'
                 )
+              } else if (_pre_mig_type === 'B2B') {
+            	  _mig_xml = _mig_xml.replace(
+                      'Allowance',
+                      'Allowance xmlns="urn:GEINV:eInvoiceMessage:B0401:3.1"'
+                    )  
               }
             }
             //A0101-AX123456789-123
@@ -714,6 +731,10 @@ define([
             _xmlDocument = xml.Parser.fromString({
               text: _b2c_xml,
             })
+          } else if (_mig_type === 'B2B') {
+        	  _xmlDocument = xml.Parser.fromString({
+                 text: _b2b_xml,
+              })
           }
 
           if (voucher_type === 'EGUI') {
@@ -1168,6 +1189,11 @@ define([
               'Allowance',
               'Allowance xmlns="urn:GEINV:eInvoiceMessage:D0401:3.1"'
             )
+          } else if (_pre_mig_type === 'B2B') {
+        	  _mig_xml = _mig_xml.replace(
+                  'Allowance',
+                  'Allowance xmlns="urn:GEINV:eInvoiceMessage:B0401:3.1"'
+              )  
           }
         }
 

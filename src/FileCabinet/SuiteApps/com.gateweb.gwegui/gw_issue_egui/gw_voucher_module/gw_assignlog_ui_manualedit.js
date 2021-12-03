@@ -60,13 +60,23 @@ define([
       name = '一般字軌-作廢'
     }
     if (id == '21') {
-      name = '手開(不上傳)字軌-未使用'
+      name = '歷史發票字軌-未使用'
     } else if (id == '22') {
-      name = '手開(不上傳)字軌-使用中'
+      name = '歷史發票字軌-使用中'
     } else if (id == '23') {
-      name = '手開(不上傳)字軌-已使用完畢'
+      name = '歷史發票字軌-已使用完畢'
     } else if (id == '24') {
-      name = '手開(不上傳)字軌-作廢'
+      name = '歷史發票字軌-作廢'
+    }
+    
+    if (id == '31') {
+        name = '外部發票字軌-未使用'
+    } else if (id == '32') {
+        name = '外部發票字軌-使用中'
+    } else if (id == '33') {
+        name = '外部發票字軌-已使用完畢'
+    } else if (id == '34') {
+        name = '外部發票字軌-作廢'
     }
     return name
   }
@@ -230,6 +240,23 @@ define([
     _endInvoiceNo.updateLayoutType({
       layoutType: serverWidget.FieldLayoutType.OUTSIDE,
     })
+    
+    var _selectInvoiceType = form.addField({
+      id: 'custpage_select_invoice_type',
+      type: serverWidget.FieldType.SELECT,
+      label: '字軌類型',
+    })
+    _selectInvoiceType.addSelectOption({
+      value: '21',
+      text: '歷史發票',
+    })
+    _selectInvoiceType.addSelectOption({
+      value: '31',
+      text: '外部發票',
+    })
+    _selectInvoiceType.updateLayoutType({
+      layoutType: serverWidget.FieldLayoutType.OUTSIDE,
+    })
 
     ///////////////////////////////////////////////////////////////////////////////////
     //Sub List Items
@@ -381,7 +408,7 @@ define([
 
   function onRequest(context) {
     var form = serverWidget.createForm({
-      title: '手開發票字軌管理',
+      title: '外部及歷史發票字軌管理',
     })
 
     var _sublist = createForm(form)
@@ -400,6 +427,9 @@ define([
       _invoice_track = stringutility.trim(_invoice_track)
       var _start_invoiceno = context.request.parameters.custpage_start_invoiceno
       var _end_invoiceno = context.request.parameters.custpage_end_invoiceno
+      
+      var _select_invoice_type = context.request.parameters.custpage_select_invoice_type
+      
       //////////////////////////////////////////////////////////////////////////////////////////////////
       var _businessNoField = form.getField({
         id: 'custpage_businessno',
@@ -430,6 +460,11 @@ define([
         id: 'custpage_end_invoiceno',
       })
       _endInvoicenoField.defaultValue = _end_invoiceno
+      
+      var _endInvoiceTypeField = form.getField({
+          id: 'custpage_select_invoice_type',
+        })
+      _endInvoiceTypeField.defaultValue = _select_invoice_type
       //////////////////////////////////////////////////////////////////////////////////////////////////
 
       //////////////////////////////////////////////////////////////////////////////////////////////////

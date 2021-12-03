@@ -294,6 +294,12 @@ define([
           })
           
           subListObj.setSublistValue({
+              id: 'customer_mig_type',
+              line: _index,
+              value: _mig_type
+          })
+          
+          subListObj.setSublistValue({
               id: 'customer_original_buyer_id',
               line: _index,
               value: _gw_original_buyer_id,
@@ -631,6 +637,11 @@ define([
       id: 'customer_voucher_date',
       type: serverWidget.FieldType.TEXT,
       label: '歷史發票日期',
+    })
+    _sublist.addField({
+      id: 'customer_mig_type',
+      type: serverWidget.FieldType.TEXT,
+      label: '發票資料格式',
     })
 
     var _buyerField = _sublist.addField({

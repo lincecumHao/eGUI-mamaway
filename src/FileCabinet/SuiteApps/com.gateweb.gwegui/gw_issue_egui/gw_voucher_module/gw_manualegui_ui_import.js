@@ -28,13 +28,15 @@ define([
   var _voucher_main_record_id = gwconfigure.getGwVoucherMainRecord()
   var _gw_voucher_properties = gwconfigure.getGwVoucherProperties() //設定檔
   
+  var _file_column_length = 15
+  
   function verifyColumn(line_value) {       
 	var _line_values = line_value.split(',')  
 	var _is_error = false
 	var _error_msg = ''
 		
-	if (_line_values.length !=14) {
-		_error_msg = '資料欄位長度不正確,需要14個欄位'
+	if (_line_values.length != _file_column_length) {
+		_error_msg = '資料欄位長度不正確,需要'+_file_column_length+'個欄位'
 	} else {
 		//賣方公司統編	買方公司統編	客戶代碼	格式代號	開立日期	發票號碼	稅別	稅率	銷售金額(未稅)	免稅銷售金額	零稅銷售金額	已折金額(應稅):未稅	已折金額(零稅)	已折金額(免稅)
 		var _seller_ban                 = _line_values[0]
@@ -51,6 +53,7 @@ define([
 		var _sales_discount_amount      = _line_values[11]
 		var _free_sales_discount_amount = _line_values[12]
 		var _zero_discount_amount       = _line_values[13]
+		var _mig_type                   = _line_values[14]
 	  
 	    //統編8碼
 	    if (_seller_ban.length != 8) _error_msg += '賣方統編-長度需為8碼\n'      
@@ -138,6 +141,11 @@ define([
 		if (_check_tax_type_count > 1) {
 			_error_msg += '稅別-需為混合稅(9)\n'  
 		}	
+	 
+		if (_mig_type=='B2B' || _mig_type=='B2C') {
+		} else {
+			_error_msg += '發票資料格式-需為B2B或B2C\n'  
+		}
 	}
 	
 	if(_error_msg.length != 0)_is_error=true
@@ -233,20 +241,21 @@ define([
   function writeMessageToSublist(sublist_obj, seq_index, line_value, message) { 
 	  var _line_values = line_value.split(',')  
 	  //賣方公司統編	買方公司統編	客戶代碼	格式代號	開立日期	發票號碼	稅別	稅率	銷售金額(未稅)	免稅銷售金額	零稅銷售金額	已折金額(應稅):未稅	已折金額(零稅)	已折金額(免稅)
-	  var _seller_ban                 = _line_values.length != 14 ? " ":_line_values[0]
-	  var _buyer_ban                  = _line_values.length != 14 ? " ":_line_values[1]
-	  var _customer_id                = _line_values.length != 14 ? " ":_line_values[2]
-	  var _format_code_str            = _line_values.length != 14 ? " ":_line_values[3] //31-05
-	  var _voucher_date               = _line_values.length != 14 ? " ":_line_values[4]
-	  var _egui_number                = _line_values.length != 14 ? " ":_line_values[5]
-	  var _tax_type                   = _line_values.length != 14 ? " ":_line_values[6]
-	  var _tax_rate                   = _line_values.length != 14 ? " ":_line_values[7]
-	  var _sales_amount               = _line_values.length != 14 ? " ":_line_values[8]
-	  var _free_sales_amount          = _line_values.length != 14 ? " ":_line_values[9]
-	  var _zero_sales_amount          = _line_values.length != 14 ? " ":_line_values[10]
-	  var _sales_discount_amount      = _line_values.length != 14 ? " ":_line_values[11]
-	  var _free_sales_discount_amount = _line_values.length != 14 ? " ":_line_values[12]
-	  var _zero_discount_amount       = _line_values.length != 14 ? " ":_line_values[13]
+	  var _seller_ban                 = _line_values.length != _file_column_length ? " ":_line_values[0]
+	  var _buyer_ban                  = _line_values.length != _file_column_length ? " ":_line_values[1]
+	  var _customer_id                = _line_values.length != _file_column_length ? " ":_line_values[2]
+	  var _format_code_str            = _line_values.length != _file_column_length ? " ":_line_values[3] //31-05
+	  var _voucher_date               = _line_values.length != _file_column_length ? " ":_line_values[4]
+	  var _egui_number                = _line_values.length != _file_column_length ? " ":_line_values[5]
+	  var _tax_type                   = _line_values.length != _file_column_length ? " ":_line_values[6]
+	  var _tax_rate                   = _line_values.length != _file_column_length ? " ":_line_values[7]
+	  var _sales_amount               = _line_values.length != _file_column_length ? " ":_line_values[8]
+	  var _free_sales_amount          = _line_values.length != _file_column_length ? " ":_line_values[9]
+	  var _zero_sales_amount          = _line_values.length != _file_column_length ? " ":_line_values[10]
+	  var _sales_discount_amount      = _line_values.length != _file_column_length ? " ":_line_values[11]
+	  var _free_sales_discount_amount = _line_values.length != _file_column_length ? " ":_line_values[12]
+	  var _zero_discount_amount       = _line_values.length != _file_column_length ? " ":_line_values[13]
+	  var _mig_type                   = _line_values.length != _file_column_length ? " ":_line_values[14]
 	   
 	  sublist_obj.setSublistValue({
           id: 'sublist_seq',
@@ -322,6 +331,11 @@ define([
           id: 'field_discount_zero_sales_amount',
           line: seq_index,
           value: _zero_discount_amount,
+      }) 
+      sublist_obj.setSublistValue({
+          id: 'field_mig_type',
+          line: seq_index,
+          value: _mig_type,
       }) 
       sublist_obj.setSublistValue({
           id: 'result_message',
@@ -446,7 +460,12 @@ define([
       id: 'field_discount_zero_sales_amount',
       type: serverWidget.FieldType.TEXT,
       label: '已折金額(免稅)',
-    })        
+    })    
+    _sublist.addField({
+      id: 'field_mig_type',
+      type: serverWidget.FieldType.TEXT,
+      label: '發票資料格式 ',
+    })    
     _sublist.addField({
       id: 'result_message',
       type: serverWidget.FieldType.TEXT,
@@ -468,7 +487,7 @@ define([
     	  return
       }
       
-      //抓歷史發票簽單    	
+      //抓歷史發票清單    	
       getAllManualEguiHistoryList()
     
       var _iterator = _file_obj.lines.iterator()	  

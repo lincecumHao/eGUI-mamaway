@@ -132,7 +132,7 @@ define(['N/ui/serverWidget', 'N/runtime', 'N/config', 'N/file', '../gw_common_ut
 			var _select_manual_unused = form.addField({
 				id: 'custpage_manual_unused',
 				type: serverWidget.FieldType.CHECKBOX,
-				label: '手開(不上傳)字軌-未使用',
+				label: '外部(不上傳)字軌-未使用',
 				container : 'assign_log_field_id'
 			});
 			_select_manual_unused.updateDisplayType({
@@ -141,7 +141,7 @@ define(['N/ui/serverWidget', 'N/runtime', 'N/config', 'N/file', '../gw_common_ut
 			var _select_manual_used = form.addField({
 				id: 'custpage_manual_used',
 				type: serverWidget.FieldType.CHECKBOX,
-				label: '手開(不上傳)字軌-使用中',
+				label: '外部(不上傳)字軌-使用中',
 				container : 'assign_log_field_id'
 			});
 			_select_manual_used.updateDisplayType({
@@ -150,7 +150,7 @@ define(['N/ui/serverWidget', 'N/runtime', 'N/config', 'N/file', '../gw_common_ut
 			var _select_manual_finished = form.addField({
 				id: 'custpage_manual_finished',
 				type: serverWidget.FieldType.CHECKBOX,
-				label: '手開(不上傳)字軌-已使用完畢',
+				label: '外部(不上傳)字軌-已使用完畢',
 				container : 'assign_log_field_id'
 			});
 			_select_manual_finished.updateDisplayType({
@@ -159,7 +159,7 @@ define(['N/ui/serverWidget', 'N/runtime', 'N/config', 'N/file', '../gw_common_ut
 			var _select_manual_void = form.addField({
 				id: 'custpage_manual_void',
 				type: serverWidget.FieldType.CHECKBOX,
-				label: '手開(不上傳)字軌-作廢',
+				label: '外部(不上傳)字軌-作廢',
 				container : 'assign_log_field_id'
 			});
 			_select_manual_void.updateDisplayType({
@@ -232,14 +232,14 @@ define(['N/ui/serverWidget', 'N/runtime', 'N/config', 'N/file', '../gw_common_ut
             form.addField({
 				id: 'custpage_egui_manual',
 				type: serverWidget.FieldType.CHECKBOX,
-				label: '手開發票',
+				label: '外部發票',
 				container : 'egui_class_field_id'
 			});	
             */
             var _field_egui_electric = form.addField({
 				id: 'custpage_egui_electric',
 				type: serverWidget.FieldType.CHECKBOX,
-				label: '手開發票' 
+				label: '外部發票' 
 			});	 
 			_field_egui_electric.updateDisplayType({
 			    displayType: serverWidget.FieldDisplayType.HIDDEN

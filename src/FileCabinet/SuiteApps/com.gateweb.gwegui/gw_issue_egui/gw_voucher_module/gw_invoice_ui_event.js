@@ -159,7 +159,7 @@ define([
     })
     console.log(_buyer_identifier + ' = ' + _custpage_mig_type)
     if (
-      (_custpage_mig_type === 'B2BS' || _custpage_mig_type === 'B2BE') &&
+      (_custpage_mig_type === 'B2B' || _custpage_mig_type === 'B2C') &&
       _buyer_identifier != '0000000000'
     ) {
       _npo_ban.isDisplay = false //不顯示捐贈碼
@@ -787,7 +787,7 @@ define([
     var _total_amount = _current_record.getValue({
       fieldId: 'custpage_total_amount'
     })
-
+ 
     if (_invoiceAry.length > 1 && _creditMemoAry.length > 1) {
       _voucherOpenType = _voucherOpenType + 'ALL'
       showCreditMemoForm(
@@ -800,6 +800,7 @@ define([
       _voucherOpenType = _voucherOpenType + 'INVOICE'
     } else if (_creditMemoAry.length > 1 && _invoiceAry.length <= 1) {
       _voucherOpenType = _voucherOpenType + 'CREDITMEMO'
+       
       showCreditMemoForm(
         true,
         _invoiceAry.length,
@@ -839,21 +840,29 @@ define([
       var _buyer_identifier = _current_record.getValue({
         fieldId: 'custpage_buyer_identifier'
       })
+         
       if (
         mandatoryFlag === true ||
         (stringutility.convertToFloat(total_amount) < 0 &&
           invoice_length + creditmemo_length - 2 <= 999)
-      ) {
+      ) { 
+    	  
         var _carrier_type = _current_record.getField({
           fieldId: 'custpage_carrier_type'
         })
         _carrier_type.isDisplay = false
-        var _carrier_id = _current_record.getField({
-          fieldId: 'custpage_carrier_id'
+        var _carrier_id_1 = _current_record.getField({
+            fieldId: 'custpage_carrier_id_1'
         })
-        _carrier_id.isDisplay = false
+        _carrier_id_1.isDisplay = false
+        var _carrier_id_2 = _current_record.getField({
+	        fieldId: 'custpage_carrier_id_2'
+	    })
+	    _carrier_id_2.isDisplay = false
+	     
         var _npo_ban = _current_record.getField({ fieldId: 'custpage_npo_ban' })
-        _carrier_id.isDisplay = false
+        _npo_ban.isDisplay = false
+        
         var _customs_clearance_mark_field = _current_record.getField({
           fieldId: 'custpage_customs_clearance_mark'
         })
@@ -863,7 +872,7 @@ define([
           fieldId: 'custpage_egui_format_code'
         })
         _custpage_egui_format_code.isDisplay = false
-
+        
         var _manual_voucher_number = _current_record.getField({
           fieldId: 'custpage_manual_voucher_number'
         })
@@ -875,14 +884,25 @@ define([
         var _classification = _current_record.getField({
           fieldId: 'custpage_classification'
         })
-        _classification.isDisplay = false
-
+        _classification.isDisplay = false 
         _current_record.setValue({
           fieldId: 'custpage_allowance_log_type',
           value: 'NONE',
           ignoreFieldChange: true
-        })
-      }
+        })  
+      } 
+      //////////////////////////////////////////////////////////////
+      //20211125 walter 折讓時增加B2B選項      
+      var _field_mig_type = _current_record.getField({
+        fieldId: 'custpage_mig_type'
+      })  
+	  _field_mig_type.insertSelectOption({
+        value: 'B2B',
+        text: 'B2B-存證'
+      })	   
+      //////////////////////////////////////////////////////////////
+      
+      
     } catch (e) {
       console.log(e.name + ':' + e.message)
     }
@@ -1190,6 +1210,7 @@ define([
       var _disconutTaxType = '-1'
       if (_mig_type == 'B2C') _disconutTaxType = '1'
       _creditMemoAmountFlag_TaxType_1 = checkCreditMemoAmount(
+    	_mig_type,
         _assignLogType,
         _applyMainObj.customer_id,
         _applyMainObj.buyer_identifier,
@@ -1224,6 +1245,7 @@ define([
       var _disconutTaxType = '-1'
       if (_mig_type == 'B2C') _disconutTaxType = '2'
       _creditMemoAmountFlag_TaxType_2 = checkCreditMemoAmount(
+        _mig_type,
         _assignLogType,
         _applyMainObj.customer_id,
         _applyMainObj.buyer_identifier,
@@ -1258,6 +1280,7 @@ define([
       var _disconutTaxType = '-1'
       if (_mig_type == 'B2C') _disconutTaxType = '3'
       _creditMemoAmountFlag_TaxType_3 = checkCreditMemoAmount(
+    	_mig_type,
         _assignLogType,
         _applyMainObj.customer_id,
         _applyMainObj.buyer_identifier,
@@ -1293,6 +1316,7 @@ define([
       var _disconutTaxType = '-1'
       if (_mig_type == 'B2C') _disconutTaxType = '3'
       _creditMemoAmountFlag_TaxType_9 = checkCreditMemoAmount(
+    	_mig_type,
         _assignLogType,
         _applyMainObj.customer_id,
         _applyMainObj.buyer_identifier,
@@ -1434,6 +1458,7 @@ define([
         if (_creditMemoAry_TaxType_1.length != 0) {
           //只開Allowance
           var _resultJsonObj = createAllowanceDocument(
+        	_mig_type,
             _voucherOpenType,
             _assignLogType,
             _year_month,
@@ -1478,6 +1503,7 @@ define([
         if (_creditMemoAry_TaxType_2.length != 0) {
           //只開Allowance
           var _resultJsonObj = createAllowanceDocument(
+            _mig_type,
             _voucherOpenType,
             _assignLogType,
             _year_month,
@@ -1522,7 +1548,8 @@ define([
         if (_creditMemoAry_TaxType_3.length != 0) {
           //只開Allowance
           var _resultJsonObj = createAllowanceDocument(
-            _voucherOpenType,
+            _mig_type,
+        	_voucherOpenType,
             _assignLogType,
             _year_month,
             _applyId,
@@ -2907,6 +2934,7 @@ define([
    * itemAry         : Item 資料
    */
   function createAllowanceDocument(
+    mig_type,
     voucherOpenType,
     assignLogType,
     year_month,
@@ -2973,6 +3001,7 @@ define([
         if (_deductionSalesAmount != 0) {
           var _checkField = '1'
           _deductionEGUIItems_TYPE_1 = geteGUIDeductionItems(
+        	mig_type,
             assignLogType,
             _main.customer_id,
             _main.buyer_identifier,
@@ -3009,6 +3038,7 @@ define([
         if (_deductionZeroAmount != 0) {
           var _checkField = '2'
           _deductionEGUIItems_TYPE_2 = geteGUIDeductionItems(
+        	mig_type,
             assignLogType,
             _main.customer_id,
             _main.buyer_identifier,
@@ -3044,6 +3074,7 @@ define([
         if (_deductionFreeAmount != 0) {
           var _checkField = '3'
           _deductionEGUIItems_TYPE_3 = geteGUIDeductionItems(
+        	mig_type,
             assignLogType,
             _main.customer_id,
             _main.buyer_identifier,
@@ -4626,6 +4657,7 @@ define([
    * deductionSalesAmount : 扣抵金額(未稅)
    */
   function checkCreditMemoAmount(
+    mig_type,
     assignLogType,
     buyer_id,
     buyer_identifier,
@@ -4701,6 +4733,13 @@ define([
         search.Operator.IS,
         buyer_identifier
       ])
+      //20211125 walter add 
+      _filterArray.push('and')
+      _filterArray.push([
+        'custrecord_gw_mig_type',
+        search.Operator.IS,
+        mig_type
+      ]) 
       //20201030 walter modify
       if (buyer_identifier == '0000000000') {
         _filterArray.push('and')
@@ -4940,6 +4979,7 @@ define([
    * deductionTotalAmount : 扣抵金額(未稅)
    */
   function geteGUIDeductionItems(
+	mig_type,
     assignLogType,
     buyer_id,
     buyer_identifier,
@@ -4964,6 +5004,7 @@ define([
           name: 'custrecord_gw_voucher_date',
           sort: search.Sort.DESC
         }),
+        search.createColumn({ name: 'custrecord_gw_mig_type' }), //MigType
         search.createColumn({ name: 'custrecord_gw_voucher_number' }), //憑證號碼
         search.createColumn({ name: 'custrecord_gw_voucher_yearmonth' }), //憑證期別
         search.createColumn({ name: 'custrecord_gw_sales_amount' }), //未稅金額
@@ -4990,7 +5031,13 @@ define([
       search.Operator.IS,
       'EGUI'
     ])
-
+    //20211125 walter modify 
+    _filterArray.push('and')
+    _filterArray.push([
+      'custrecord_gw_mig_type',
+      search.Operator.IS,
+      mig_type
+    ]) 
     _filterArray.push('and')
     _filterArray.push([
       'custrecord_gw_buyer',
@@ -5126,6 +5173,10 @@ define([
 
     for (var i = 0; i < _result.length; i++) {
       var _internalid = _result[i].id
+      
+      var _mig_type = _result[i].getValue({
+          name: 'custrecord_gw_mig_type'
+      })
       //發票號碼
       var _voucher_number = _result[i].getValue({
         name: 'custrecord_gw_voucher_number'
@@ -5190,6 +5241,7 @@ define([
       if (deductionTotalAmount >= _balance_amount) {
         var _obj = {
           internalid: _internalid,
+          mig_type: _mig_type,
           voucher_number: _voucher_number,
           voucher_date: _voucher_date,
           voucher_yearmonth: _voucher_yearmonth,
@@ -5237,6 +5289,7 @@ define([
 
         var _obj = {
           internalid: _internalid,
+          mig_type: _mig_type,
           voucher_number: _voucher_number,
           voucher_date: _voucher_date,
           voucher_yearmonth: _voucher_yearmonth,

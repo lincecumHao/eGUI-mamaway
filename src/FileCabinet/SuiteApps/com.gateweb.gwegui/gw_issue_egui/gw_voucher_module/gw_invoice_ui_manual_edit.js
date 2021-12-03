@@ -181,7 +181,11 @@ define([
     })
     _mig_type.addSelectOption({
       value: 'B2C',
-      text: '存證',
+      text: 'B2C-存證',
+    })
+    _mig_type.addSelectOption({
+      value: 'B2B',
+      text: 'B2B-存證',
     })
 
     //字軌使用方式
@@ -219,9 +223,11 @@ define([
       label: '買方公司統編',
       container: 'row01_fieldgroupid',
     })
+    /**
     _buyer_identifier.updateDisplayType({
       displayType: serverWidget.FieldDisplayType.DISABLED,
     })
+    */
     //公司名稱
     var _buyer_name = form.addField({
       id: 'custpage_buyer_name',
@@ -229,10 +235,11 @@ define([
       label: '買方公司名稱',
       container: 'row01_fieldgroupid',
     })
+    /**
     _buyer_name.updateDisplayType({
       displayType: serverWidget.FieldDisplayType.DISABLED,
     })
-
+    */
     //買方E-mail
     var _buyer_email = form.addField({
       id: 'custpage_buyer_email',
@@ -328,8 +335,7 @@ define([
       _formatCodeField.updateDisplayType({
         displayType: serverWidget.FieldDisplayType.ENTRY,
       })
-    }
-
+    } 
     var _voucherDateField = sublist.addField({
       id: 'selected_gw_voucher_date',
       label: '開立日期',
@@ -532,6 +538,9 @@ define([
         value: _myDate,
       })
       ////////////////////////////////////////////////////////////////////////////////////////////////
+      var _gw_mig_type = result.getValue({
+        name: 'custrecord_gw_mig_type',
+      })
 
       var _invoice_type = result.getValue({
         name: 'custrecord_gw_invoice_type',
@@ -617,6 +626,9 @@ define([
       var _buyer = result.getValue({
         name: 'custrecord_gw_buyer',
       })
+      var _buyer_name = result.getValue({
+        name: 'custrecord_gw_buyer_name',
+      })
 
       var _original_buyer_id = result.getValue({
         name: 'custrecord_gw_original_buyer_id',
@@ -624,6 +636,11 @@ define([
 
       if (row == 0) {
         log.debug('passed _original_buyer_id', _original_buyer_id)
+        var _mig_type_field = form.getField({
+          id: 'custpage_mig_type',
+        })
+        _mig_type_field.defaultValue = _gw_mig_type
+        
         //var _customerObj = getCustomerRecord(_buyer);
         var _customerObj = getCustomerInformation(_original_buyer_id)
         var _customerField = form.getField({
@@ -635,15 +652,27 @@ define([
         var _buyerIdentifierldField = form.getField({
           id: 'custpage_buyer_identifier',
         })
+        /**
         if (_customerObj.vatregnumber=='') {
         	_buyerIdentifierldField.defaultValue = _buyer
         } else {
            _buyerIdentifierldField.defaultValue = _customerObj.vatregnumber
         }
+        */
+        if (_buyer !='') {
+        	_buyerIdentifierldField.defaultValue = _buyer
+        } else {
+           _buyerIdentifierldField.defaultValue = _customerObj.vatregnumber
+        }
+        
         var _buyerNameField = form.getField({
           id: 'custpage_buyer_name',
-        })
-        _buyerNameField.defaultValue = _customerObj.companyname
+        })         
+        if (_buyer_name !='') {
+        	_buyerNameField.defaultValue = _buyer_name
+        } else {
+        	_buyerNameField.defaultValue = _customerObj.companyname
+        }
 
         var _buyerEmailField = form.getField({
           id: 'custpage_buyer_email',

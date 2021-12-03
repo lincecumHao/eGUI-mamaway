@@ -69,7 +69,7 @@ define(['N/search', 'N/currentRecord', 'N/url', '../gw_common_utility/gw_common_
 				 if (_common_void==true) {
 					 _assign_log_status_ary.push('14');
 				 }
-				 //手開字軌
+				 //外部字軌
 				 var _manual_unused = _current_record.getValue({
 					   fieldId: 'custpage_manual_unused'
 				 });
@@ -140,7 +140,7 @@ define(['N/search', 'N/currentRecord', 'N/url', '../gw_common_utility/gw_common_
 				 var _egui_electric = _current_record.getValue({
 					   fieldId: 'custpage_egui_electric'
 				 }); 
-				 //手開發票
+				 //外部發票
 				 var _egui_manual = _current_record.getValue({
 					   fieldId: 'custpage_egui_manual'
 				 });  

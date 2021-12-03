@@ -45,15 +45,28 @@ define([
       name = '一般字軌-作廢'
     }
     if (id == '21') {
-      name = '手開(不上傳)字軌-未使用'
+      name = '歷史發票字軌-未使用'
     } else if (id == '22') {
-      name = '手開(不上傳)字軌-使用中'
+      name = '歷史發票字軌-使用中'
     } else if (id == '23') {
-      name = '手開(不上傳)字軌-已使用完畢'
+      name = '歷史發票字軌-已使用完畢'
     } else if (id == '24') {
-      name = '手開(不上傳)字軌-作廢'
+      name = '歷史發票字軌-作廢'
     }
+    if (id == '31') {
+	    name = '外部發票字軌-未使用'
+	} else if (id == '32') {
+	    name = '外部發票字軌-使用中'
+	} else if (id == '33') {
+	    name = '外部發票字軌-已使用完畢'
+	} else if (id == '34') {
+	    name = '外部發票字軌-作廢'
+	}
     return name
+  }
+  
+  function padding(str, length) {
+    return (Array(length).join('0') + str).slice(-length)
   }
 
   function createForm(form) {
@@ -176,21 +189,39 @@ define([
       value: '14',
       text: '一般字軌-作廢',
     })
+    
     _selectStatus.addSelectOption({
       value: '21',
-      text: '手開(不上傳)字軌-未使用',
+      text: '歷史發票字軌-未使用',
     })
     _selectStatus.addSelectOption({
       value: '22',
-      text: '手開(不上傳)字軌-使用中',
+      text: '歷史發票字軌-使用中',
     })
     _selectStatus.addSelectOption({
       value: '23',
-      text: '手開(不上傳)字軌-已使用完畢',
+      text: '歷史發票字軌-已使用完畢',
     })
     _selectStatus.addSelectOption({
       value: '24',
-      text: '手開(不上傳)字軌-作廢',
+      text: '歷史發票字軌-作廢',
+    })
+    
+    _selectStatus.addSelectOption({
+      value: '31',
+      text: '外部發票字軌-未使用',
+    })
+    _selectStatus.addSelectOption({
+      value: '32',
+      text: '外部發票字軌-使用中',
+    })
+    _selectStatus.addSelectOption({
+      value: '33',
+      text: '外部發票字軌-已使用完畢',
+    })
+    _selectStatus.addSelectOption({
+      value: '34',
+      text: '外部發票字軌-作廢',
     })
     _selectStatus.updateLayoutType({
       layoutType: serverWidget.FieldLayoutType.OUTSIDE,
@@ -394,6 +425,11 @@ define([
       label: '最後使用日期',
     })
     _sublist.addField({
+      id: 'assignloglastinvnumber',
+      type: serverWidget.FieldType.TEXT,
+      label: '最後使用號碼',
+    })
+    _sublist.addField({
       id: 'reason',
       type: serverWidget.FieldType.TEXT,
       label: '作廢理由',
@@ -414,7 +450,7 @@ define([
 
     form.addButton({
       id: 'custpage_manual_assignlog_button',
-      label: '維護-手開發票字軌',
+      label: '維護-外部及歷史發票字軌',
       functionName:
         'openImportForm("' +
         _assignLogManualScriptId +
@@ -638,7 +674,18 @@ define([
           var _last_invoice_date = result.getValue({
             name: 'custrecord_gw_last_invoice_date',
           })
+          var _assignlog_lastinvnumbe = result.getValue({
+            name: 'custrecord_gw_assignlog_lastinvnumbe',
+          })
+          if (_assignlog_lastinvnumbe!='')_assignlog_lastinvnumbe = padding('' + _assignlog_lastinvnumbe, 8)
+          
           //序號	internalid	 customer_search_assignlog_check_id
+          _sublist.setSublistValue({
+            id: 'assignloglastinvnumber',
+            line: _index,
+            value: stringutility.trimOrAppendBlank(_assignlog_lastinvnumbe),
+          })
+          
           _sublist.setSublistValue({
             id: 'lastinvoicedate',
             line: _index,

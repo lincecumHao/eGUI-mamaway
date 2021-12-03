@@ -403,6 +403,24 @@ define([
     _npo_ban_field.defaultValue = _voucher_record.getValue({
       fieldId: 'custrecord_gw_npoban',
     })
+    //通關註記
+    var _customs_clearance_mark = form.addField({
+      id: 'custpage_customs_clearance_mark',
+      type: serverWidget.FieldType.SELECT,
+      label: '通關註記',
+      container: 'row01_fieldgroupid'
+    })
+    _customs_clearance_mark.addSelectOption({
+      value: '1',
+      text: '經海關'
+    })
+    _customs_clearance_mark.addSelectOption({
+      value: '2',
+      text: '不經海關'
+    })
+    _customs_clearance_mark.defaultValue = _voucher_record.getValue({
+      fieldId: 'custrecord_gw_clearance_mark',
+    })
     //發票類型
     var _invoice_type = form.addField({
       id: 'custpage_invoice_type',

@@ -464,7 +464,7 @@ define([
           subListObj.setSublistValue({
             id: 'customer_voucher_buyer',
             line: _index,
-            value: _buyer_name,
+            value: stringutility.trimOrAppendBlank(_buyer_name),
           })
 
           var _departmentname = getSelectName(

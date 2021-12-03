@@ -152,6 +152,7 @@ define(['N/record',
         	 //CI	憑證作廢待審核
         	 //CA	憑證已作廢
         	 //PC	憑證已作廢, 未進入關網系統
+    		 /**
     		 if (need_upload_egui_mig == 'NONE') {
     			 _gw_evidence_status ='PC'
     		 } else if (gw_voucher_status.toUpperCase().indexOf('CANCEL_ISSUE') !=-1) {
@@ -166,6 +167,23 @@ define(['N/record',
     				    voucher_upload_status =='E') {
     			 _gw_evidence_status ='CE'
     		 }
+    		 */
+    		 if (need_upload_egui_mig == 'NONE') {
+    			 _gw_evidence_status ='PC'
+    		 } else  {
+    			 if (gw_voucher_status.toUpperCase().indexOf('CANCEL_ISSUE') !=-1) {
+        			 _gw_evidence_status ='CI'
+        		 } else if (gw_voucher_status.toUpperCase().indexOf('CANCEL_APPROVE') !=-1) {
+        			 _gw_evidence_status ='CP'
+        		 } else if (gw_voucher_status.toUpperCase().indexOf('CANCEL_UPLOAD') !=-1) {
+        			 _gw_evidence_status ='CP'
+        		 } else if (gw_voucher_status.toUpperCase().indexOf('CANCEL_SUCCESS') !=-1) {
+        			 _gw_evidence_status ='CC'
+        		 } else if (gw_voucher_status.toUpperCase().indexOf('CANCEL_ERROR') !=-1 ||
+        				    voucher_upload_status =='E') {
+        			 _gw_evidence_status ='CE'
+        		 }
+    		 }
     			 
     	 } else {
     		 //A	憑證已開立
@@ -174,12 +192,23 @@ define(['N/record',
         	 //IE	憑證開立上傳已失敗
         	 //IC	憑證開立上傳已成功
         	 //IP	憑證開立已上傳 
+    		 /**
     		 if (need_upload_egui_mig == 'NONE') {
     			 _gw_evidence_status = 'PA'
     		 } else if (voucher_upload_status == 'A') {
     			 _gw_evidence_status = voucher_upload_status
     		 } else { 
     			 _gw_evidence_status = 'I'+voucher_upload_status
+    		 }
+    		 */
+    		 if (need_upload_egui_mig == 'NONE') {
+    			 _gw_evidence_status = 'PA'
+    		 } else {
+    			 if (voucher_upload_status == 'A') {
+        			 _gw_evidence_status = voucher_upload_status
+        		 } else { 
+        			 _gw_evidence_status = 'I'+voucher_upload_status
+        		 }
     		 }
     		 
     	 } 
