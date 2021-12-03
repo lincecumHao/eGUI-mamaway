@@ -2,8 +2,15 @@ define([
   '../library/ramda.min',
   '../library/gw_date_util',
   '../gw_dao/assignLog/gw_dao_assign_log_21',
-  '../gw_dao/assignLog/gw_record_fields'
-], (ramda, gwDateUtil, gwAssignLogDao, gwAssignLogFields) => {
+  '../gw_dao/assignLog/gw_record_fields',
+  '../gw_dao/evidenceIssueStatus/gw_dao_evidence_issue_status_21'
+], (
+  ramda,
+  gwDateUtil,
+  gwAssignLogDao,
+  gwAssignLogFields,
+  gwEvidenceIssueStatusDao
+) => {
   /**
    * Module Description...
    *
@@ -20,6 +27,7 @@ define([
   function getEguiBookStatus(currentStatus) {
     if (currentStatus === '21') return '22'
     if (currentStatus === '11') return '12'
+    if (currentStatus === '31') return '32'
     return currentStatus
   }
 
@@ -27,6 +35,15 @@ define([
     if (currentStatus === '22' || currentStatus === '21') return '23'
     if (currentStatus === '12' || currentStatus === '11') return '13'
     return currentStatus
+  }
+
+  function parseEguiNumber(value) {
+    var eguiNumRegEx = /^([A-Z]{2})([0-9]{8})$/
+    var result = eguiNumRegEx.exec(value)
+    return {
+      track: result[1],
+      number: parseInt(result[2], 10)
+    }
   }
 
   class EguiBookService {
@@ -101,7 +118,8 @@ define([
         // TODO 2: update last invoice number (GUI Number)
         eguiBook.custrecord_gw_assignlog_lastinvnumbe = pickedNumber
         // TODO 4: update last invoice date
-        eguiBook.custrecord_gw_last_invoice_date = gwDateUtil.getCurrentDateInYYYYMMDD()
+        eguiBook.custrecord_gw_last_invoice_date =
+          gwDateUtil.getCurrentDateInYYYYMMDD()
         if (pickedNumber === bookEndNumber) {
           // TODO 2: if is last one, change status to used
           eguiBook.custrecord_gw_assignlog_status = getUsedEguiBookStatus(
@@ -115,6 +133,62 @@ define([
         updatedBooks.push(eguiBooks[bookIdx])
       gwAssignLogDao.guiNumberPicked(updatedBooks)
       return pickedNumbers
+    }
+
+    updateLastEGuiNumber(eguiObj) {
+      var eguiNumber = parseEguiNumber(eguiObj.documentNumber)
+      var eguiIssueStatus = eguiObj.gwIssueStatus.value.toString()
+      var eguiIssuedNotTransferToGWStatusId = gwEvidenceIssueStatusDao
+        .getIssuedAndNotTransformedStatus()
+        .id.toString()
+      var eguiMigType = eguiObj.migType
+      if (eguiIssueStatus !== eguiIssuedNotTransferToGWStatusId) {
+        return 'Do not require update assign logs'
+      }
+      const params = {
+        taxId: eguiObj.sellerTaxId,
+        yearMonth: eguiObj.documentPeriod,
+        track: eguiNumber.track,
+        statusId: ['31', '32']
+      }
+      var eguiBooks = gwAssignLogDao.getAssignLogs(params)
+      if (eguiBooks.length === 0) {
+        return 'No available gui number found.'
+      }
+      for (var bookIdx = 0; bookIdx < eguiBooks.length; bookIdx++) {
+        var eguiBook = eguiBooks[bookIdx]
+        var startNumber = parseInt(eguiBook.custrecord_gw_assignlog_startno, 10)
+        var endNumber = parseInt(eguiBook.custrecord_gw_assignlog_endno, 10)
+        var lastEguiNumber =
+          parseInt(eguiBook.custrecord_gw_assignlog_lastinvnumbe, 10) || 0
+        if (
+          startNumber <= eguiNumber.number &&
+          endNumber >= eguiNumber.number
+        ) {
+          // The right assignlog record
+          if (lastEguiNumber < eguiNumber.number) {
+            eguiBook.custrecord_gw_assignlog_lastinvnumbe = eguiNumber.number
+            eguiBook.custrecord_gw_assignlog_usedcount = (
+              eguiNumber.number -
+              startNumber +
+              1
+            ).toString()
+            if (eguiNumber.number === endNumber) {
+              eguiBook.custrecord_gw_assignlog_status = getUsedEguiBookStatus(
+                eguiBook.custrecord_gw_assignlog_status
+              )
+            } else {
+              eguiBook.custrecord_gw_assignlog_status = getEguiBookStatus(
+                eguiBook.custrecord_gw_assignlog_status
+              )
+            }
+          }
+          eguiBook.custrecord_gw_last_invoice_date =
+            gwDateUtil.getCurrentDateInYYYYMMDD()
+          gwAssignLogDao.guiNumberPicked([eguiBook])
+          break
+        }
+      }
     }
   }
 

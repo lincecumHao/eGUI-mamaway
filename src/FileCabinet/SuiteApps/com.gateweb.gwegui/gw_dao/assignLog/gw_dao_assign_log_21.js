@@ -2,7 +2,7 @@ define([
   'N/record',
   './gw_record_fields',
   '../../library/ramda.min',
-  '../../library/gw_lib_search',
+  '../../library/gw_lib_search'
 ], (record, fieldConfig, ramda, searchLib) => {
   /**
    * Module Description...
@@ -94,6 +94,10 @@ define([
     getAssignLogs(params) {
       const searchColumns = JSON.parse(JSON.stringify(fieldConfig.allFieldIds))
       const searchFilters = getSearchFilters(params)
+      log.debug({
+        title: 'getAssignLogs searchFilters',
+        details: searchFilters
+      })
       return searchLib.runSearch(
         fieldConfig.recordId,
         searchColumns,
@@ -113,15 +117,15 @@ define([
             custrecord_gw_last_invoice_date:
               book.custrecord_gw_last_invoice_date,
             custrecord_gw_assignlog_usedcount:
-              book.custrecord_gw_assignlog_usedcount,
-          },
+              book.custrecord_gw_assignlog_usedcount
+          }
         }
       }, books)
       updateRecords.forEach((updatedRecord) => {
         record.submitFields({
           type: fieldConfig.recordId,
           id: updatedRecord.id,
-          values: updatedRecord.values,
+          values: updatedRecord.values
         })
       })
     }

@@ -22,113 +22,117 @@ define(['../../library/ramda.min'], function (ramda) {
     22: '手開(不上傳)字軌-使用中',
     23: '手開(不上傳)字軌-已使用完畢',
     24: '手開(不上傳)字軌-作廢',
+    31: '手開發票字軌-未使用',
+    32: '手開發票字軌-使用中',
+    33: '手開發票字軌-已使用完畢',
+    34: '手開發票字軌-作廢'
   }
   var fieldConfig = {
     name: {
       id: 'name',
       sourceField: '',
-      outputField: 'name',
+      outputField: 'name'
     },
     custrecord_gw_assignlog_businessno: {
       id: 'custrecord_gw_assignlog_businessno',
       sourceField: '',
-      outputField: 'taxId',
+      outputField: 'taxId'
     },
     custrecord_gw_assignlog_deptcode: {
       id: 'custrecord_gw_assignlog_deptcode',
       sourceField: '',
-      outputField: 'departmentId',
+      outputField: 'departmentId'
     },
     custrecord_gw_assignlog_deptname: {
       id: 'custrecord_gw_assignlog_deptname',
       sourceField: '',
-      outputField: 'departmentText',
+      outputField: 'departmentText'
     },
     custrecord_gw_assignlog_invoicetype: {
       id: 'custrecord_gw_assignlog_invoicetype',
       sourceField: '',
-      outputField: 'guiType',
+      outputField: 'guiType'
     },
     custrecord_gw_assignlog_invoicetrack: {
       id: 'custrecord_gw_assignlog_invoicetrack',
       sourceField: '',
-      outputField: 'track',
+      outputField: 'track'
     },
     custrecord_gw_assignlog_startno: {
       id: 'custrecord_gw_assignlog_startno',
       sourceField: '',
-      outputField: 'startNum',
+      outputField: 'startNum'
     },
     custrecord_gw_assignlog_endno: {
       id: 'custrecord_gw_assignlog_endno',
       sourceField: '',
-      outputField: 'endNum',
+      outputField: 'endNum'
     },
     custrecord_gw_assignlog_yearmonth: {
       id: 'custrecord_gw_assignlog_yearmonth',
       sourceField: '',
-      outputField: 'yearMonth',
+      outputField: 'yearMonth'
     },
     custrecord_gw_assignlog_status: {
       id: 'custrecord_gw_assignlog_status',
       sourceField: '',
-      outputField: 'statusId',
+      outputField: 'statusId'
     },
     custrecord_gw_assignlog_taketime: {
       id: 'custrecord_gw_assignlog_taketime',
       sourceField: '',
-      outputField: 'takeTime',
+      outputField: 'takeTime'
     },
     custrecord_gw_assignlog_lastinvnumbe: {
       id: 'custrecord_gw_assignlog_lastinvnumbe',
       sourceField: '',
-      outputField: 'lastInvoiceNumber',
+      outputField: 'lastInvoiceNumber'
     },
     custrecord_gw_last_invoice_date: {
       id: 'custrecord_gw_last_invoice_date',
       sourceField: '',
-      outputField: 'lastInvDate',
+      outputField: 'lastInvDate'
     },
     custrecord_gw_assignlog_reason: {
       id: 'custrecord_gw_assignlog_reason',
       sourceField: '',
-      outputField: 'cancelReason',
+      outputField: 'cancelReason'
     },
     custrecord_gw_assignlog_usedcount: {
       id: 'custrecord_gw_assignlog_usedcount',
       sourceField: '',
-      outputField: 'usedCount',
+      outputField: 'usedCount'
     },
     custrecord_gw_assignlog_classification: {
       id: 'custrecord_gw_assignlog_classification',
       sourceField: '',
-      outputField: 'classId',
+      outputField: 'classId'
     },
     custrecord_gw_assignlog_class_name: {
       id: 'custrecord_gw_assignlog_class_name',
       sourceField: '',
-      outputField: 'classText',
+      outputField: 'classText'
     },
     custrecord_gw_egui_format_code: {
       id: 'custrecord_gw_egui_format_code',
       sourceField: '',
-      outputField: 'eguiFormatValue',
+      outputField: 'eguiFormatValue'
     },
     custrecord_gw_egui_format_name: {
       id: 'custrecord_gw_egui_format_name',
       sourceField: '',
-      outputField: 'eguiFormatText',
+      outputField: 'eguiFormatText'
     },
     custrecord_gw_book_binding_count: {
       id: 'custrecord_gw_book_binding_count',
       sourceField: '',
-      outputField: 'guiCountInBook',
+      outputField: 'guiCountInBook'
     },
     custrecord_gw_assignlog_peroid: {
       id: 'custrecord_gw_assignlog_peroid',
       sourceField: '',
-      outputField: 'guiPeriod',
-    },
+      outputField: 'guiPeriod'
+    }
   }
 
   var fieldInputMapping = ramda.reduce(

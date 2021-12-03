@@ -27,11 +27,10 @@ define([
         var consolidateFieldId =
           fieldConfig.fields.custrecord_gw_be_conso_payment_code.outputField
         if (optionObject[consolidateFieldId]) {
-          optionObject[
-            consolidateFieldId
-          ] = gwDaoConsolidatePaymentCode.getById(
-            optionObject[consolidateFieldId].value
-          )
+          optionObject[consolidateFieldId] =
+            gwDaoConsolidatePaymentCode.getById(
+              optionObject[consolidateFieldId].value
+            )
         }
         return optionObject
       })
@@ -43,11 +42,10 @@ define([
         var consolidateFieldId =
           fieldConfig.fields.custrecord_gw_be_conso_payment_code.outputField
         if (optionObject[consolidateFieldId]) {
-          optionObject[
-            consolidateFieldId
-          ] = gwDaoConsolidatePaymentCode.getById(
-            optionObject[consolidateFieldId].value
-          )
+          optionObject[consolidateFieldId] =
+            gwDaoConsolidatePaymentCode.getById(
+              optionObject[consolidateFieldId].value
+            )
         }
         return optionObject
       })
@@ -76,7 +74,7 @@ define([
         return (
           recordObj[
             fieldConfig.fields.custrecord_gw_be_ns_subsidiary.outputField
-          ].value === subsidiaryId
+          ].value.toString() === subsidiaryId.toString()
         )
       })[0]
     }

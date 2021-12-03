@@ -77,6 +77,7 @@ define([
       var voucherId = this.createEgui()
       if (voucherId) {
         gwInvoiceService.eguiIssued(this.egui, voucherId)
+        gwEguiBookService.updateLastEGuiNumber(this.egui)
       } else {
         gwInvoiceService.eguiIssueFailed(this.egui)
       }

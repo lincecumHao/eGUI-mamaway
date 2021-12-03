@@ -248,7 +248,28 @@ define([
       updateValues[transSearchFields.fields.custbody_gw_gui_num_end.id] =
         eguiObj.documentNumber
     }
-
+    updateValues[transSearchFields.fields.custbody_gw_gui_sales_amt.id] =
+      parseInt(eguiObj.salesAmt, 10) || 0
+    updateValues[
+      transSearchFields.fields.custbody_gw_gui_sales_amt_tax_zero.id
+    ] = parseInt(eguiObj.zeroTaxSalesAmt, 10) || 0
+    updateValues[
+      transSearchFields.fields.custbody_gw_gui_sales_amt_tax_exempt.id
+    ] = parseInt(eguiObj.taxExemptedSalesAmt, 10) || 0
+    updateValues[transSearchFields.fields.custbody_gw_gui_tax_amt.id] =
+      parseInt(eguiObj.taxAmt, 10) || 0
+    updateValues[transSearchFields.fields.custbody_gw_gui_total_amt.id] =
+      parseInt(eguiObj.totalAmt, 10) || 0
+    updateValues[transSearchFields.fields.custbody_gw_gui_tax_rate.id] =
+      parseFloat(eguiObj.taxRate) || 0
+    updateValues[transSearchFields.fields.custbody_gw_gui_tax_type.id] =
+      eguiObj.taxType.id
+    updateValues[
+      transSearchFields.fields.custbody_gw_gui_date.id
+    ] = eguiObj.documentDate.toString()
+    updateValues[
+      transSearchFields.fields.custbody_gw_gui_tax_file_date.id
+    ] = eguiObj.taxApplyPeriod.value.toString()
     updateValues[
       transSearchFields.fields.custbody_gw_evidence_issue_status.id
     ] = gwEvidenceIssueStatusDao.getGwIssuedStatus().id

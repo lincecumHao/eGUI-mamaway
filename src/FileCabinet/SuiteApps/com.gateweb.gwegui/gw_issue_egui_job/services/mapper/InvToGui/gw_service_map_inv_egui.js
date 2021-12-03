@@ -65,8 +65,7 @@ define([
     return eguiMain
   }
 
-  function updateBuyer() {
-  }
+  function updateBuyer() {}
 
   function updateGuiNumber(eguiMainObj) {
     var eguiMain = JSON.parse(JSON.stringify(eguiMainObj))
@@ -75,8 +74,8 @@ define([
     return eguiMain
   }
 
-  function getCheckboxValue(value){
-    if (typeof value ==='boolean'){
+  function getCheckboxValue(value) {
+    if (typeof value === 'boolean') {
       return value
     }
     return value === 'T'
@@ -89,7 +88,9 @@ define([
         eguiMain['carrierType'].value
       )
     }
-    eguiMain['needUploadMig'] = getCheckboxValue(eguiMain['isNotUploadEGui']) ? 'NONE':'ALL'
+    eguiMain['needUploadMig'] = getCheckboxValue(eguiMain['isNotUploadEGui'])
+      ? 'NONE'
+      : 'ALL'
     eguiMain['printMark'] =
       !eguiMain['carrierType'] && !eguiMain['donationCode'] ? 'Y' : 'N'
     return eguiMain
@@ -104,7 +105,7 @@ define([
       ? eguiMain.guiPeriod
       : dateUtil.getGuiPeriod(eguiMain.documentDate)
     eguiMain.taxApplyPeriod = eguiMain.taxApplyPeriod
-      ? eguiMain.taxApplyPeriod
+      ? gwApplyPeriodDao.getByText(eguiMain.taxApplyPeriod)
       : gwApplyPeriodDao.getByText(eguiMain.documentPeriod)
     eguiMain.taxCalculationMethod = eguiMain.taxCalculationMethod
       ? eguiMain.taxCalculationMethod
@@ -119,7 +120,7 @@ define([
         : mainFields.uploadStatus.PENDING_UPLOAD
 
     eguiMain['docFormat'] = eguiMain['docFormat']
-      ? eguiMain['docFormat']
+      ? gwDocFormatDao.getById(eguiMain['docFormat'].value)
       : gwDocFormatDao.getDefaultArGuiFormat(eguiMain['guiType'].value)
     // eguiMain['isTransactionLocked'] = 'T'
     return eguiMain
@@ -144,7 +145,8 @@ define([
     return ramda.map((line) => {
       var eguiLine = gwObjectMappingUtil.mapFrom(line, lineFields)
       eguiLine['taxRate'] = line['rate.taxItem'] || line['taxItem']['rate']
-      eguiLine['itemDisplayName'] = line['displayname.item'] || line['item']['displayname']
+      eguiLine['itemDisplayName'] =
+        line['displayname.item'] || line['item']['displayname']
       eguiLine['itemName'] = eguiLine['itemDisplayName']
       return eguiLine
     }, tranLines)
@@ -421,7 +423,8 @@ define([
 
     transform() {
       var eguiMain = gwObjectMappingUtil.mapFrom(this.invoice, mainFields)
-      eguiMain['buyerEmail'] = this.invoice['email.customer'] || this.invoice['customer']['email']
+      eguiMain['buyerEmail'] =
+        this.invoice['email.customer'] || this.invoice['customer']['email']
       var lines = transformLines(this.invoice.lines)
       var taxLines = transformLines(this.invoice.taxLines)
       eguiMain = updateBodyValues(eguiMain)
