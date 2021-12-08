@@ -645,6 +645,71 @@ define([
       console.log(e.name + ':' + e.message)
     }
   }
+  
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //回復不上傳-Start
+  function resetSelected() {
+    try {
+      var _title = '憑證管理'
+
+      var _checkJsonObject = validateUnLockTask()
+      
+      var _checkFlag = _checkJsonObject.checkflag
+      var _message = _checkJsonObject.message
+
+      if (_checkFlag == true) {
+        _currentRecord.setValue({
+          fieldId: 'custpage_hiddent_buttontype',
+          value: 'resetSelected',
+          ignoreFieldChange: true,
+        })
+ 
+        var voucher_list_id = _currentRecord.getValue({
+          fieldId: 'custpage_voucher_hiddent_listid',
+        })
+
+        resetVoucherMainStatus(voucher_list_id)
+
+        document.forms[0].submit()
+      } else {
+        gwmessage.showErrorMessage(_title, _message)
+        return
+      }
+    } catch (e) {
+      console.log(e.name + ':' + e.message)
+    }
+  }
+  
+  function resetVoucherMainStatus(voucher_list_id) { 
+    try {
+	     var _internal_id_ary = voucher_list_id.split(',')
+	     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	     for (var i = 0; i < _internal_id_ary.length; i++) {
+	          var _id = parseInt(_internal_id_ary[i])
+	          if (_id>0) {
+	        	  var values = {}
+	              values['custrecord_gw_voucher_status'] = 'VOUCHER_SUCCESS'
+	              values['custrecord_gw_voucher_upload_status'] = 'A'
+	              values['custrecord_gw_need_upload_egui_mig'] = 'NONE'
+	           	  values['custrecord_gw_uploadstatus_messag'] = ''
+	              var _id = record.submitFields({
+	                type: 'customrecord_gw_voucher_main',
+	                id: _id,
+	                values: values,
+	                options: {
+	                  enableSourcing: false,
+	                  ignoreMandatoryFields: true,
+	                },
+	              })
+	          }
+	     
+	     }  
+    } catch (e) {
+      console.log(e.name + ':' + e.message)
+    }
+  }
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   //返還Customer Deposit金額
   function checkDepositVoucherRecordAndReturnAmount(
@@ -834,10 +899,10 @@ define([
             //alert('_internalId='+_internalId+', _upload_status='+_upload_status+', _voucher_status='+_voucher_status);
             if (stringutility.trim(_upload_status) != 'E') {
               _error_message =
-                '[' + _voucher_number + ']' + '非錯誤憑證不可 Un Lock!'
+                '[' + _voucher_number + ']' + '不可選取非錯誤憑證!'
               _checkFlag = false
             } else if (_voucher_status == 'VOUCHER_UNLOCKED') {
-              _error_message = '[' + _voucher_number + ']' + '該憑證已 Un Lock!'
+              _error_message = '[' + _voucher_number + ']' + '該憑證已 UNLOCKED!'
               _checkFlag = false
             }
           }
@@ -1920,6 +1985,7 @@ define([
     mark: mark,
     fieldChanged: fieldChanged,
     sublistChanged: sublistChanged,
+    resetSelected: resetSelected,
     unLockSelected: unLockSelected,
     submitEmailProcess: submitEmailProcess,
     submitCancelProcess: submitCancelProcess,

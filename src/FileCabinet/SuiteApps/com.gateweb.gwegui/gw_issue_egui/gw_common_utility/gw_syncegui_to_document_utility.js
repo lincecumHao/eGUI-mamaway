@@ -6,7 +6,7 @@
 define(['N/record', 
 	    'N/format', 
 	    'N/search',
-	    '../../gw_dao/docFormat/gw_dao_doc_format_21', 
+	    '../../gw_dao/docFormat/gw_dao_doc_format_21', 	    
 	    '../../gw_dao/evidenceIssueStatus/gw_dao_evidence_issue_status_21'], 
 	    function (record, format, search, doc_format_21, issue_status_21) {  
   /////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,7 +53,7 @@ define(['N/record',
     	log.debug('syncToNetsuiteDocument format', 'record_type_id='+_record_type_id+',gw_gui_format='+_gw_gui_format+',gw_gui_tax_type='+_gw_gui_tax_type)
     	
     	//有資料就不再更新
-        if (_gw_gui_format.trim().length==0 && _gw_gui_tax_type.trim().length==0 && _record_type_id.length !=0) {
+        //if (_gw_gui_format.trim().length==0 && _gw_gui_tax_type.trim().length==0 && _record_type_id.length !=0) {
 	    	var values = {} 
 	    	//_access_model NETSUITE / GATEWEB
 	    	var _access_model = voucher_main_record.getValue({fieldId: 'custrecord_gw_upload_access_model'}) 
@@ -115,7 +115,11 @@ define(['N/record',
 		    values['custbody_gw_gui_format'] = _gw_gui_format_obj.id
 		 
 		    log.debug('custbody_gw_gui_format', 'custbody_gw_gui_format='+JSON.stringify(values))
-	    	
+		    
+		    //通關注記 
+		    var _clearance_mark = voucher_main_record.getValue({fieldId: 'custrecord_gw_clearance_mark'})
+	    	values['custbody_gw_egui_clearance_mark'] = getCustomClearanceMarkByValue(_clearance_mark)
+	     	
 	 	    var _id = record.submitFields({
 	            type: _record_type_id,
 	            id: document_internal_id,
@@ -125,7 +129,7 @@ define(['N/record',
 	              ignoreMandatoryFields: true
 	            }
 	        })
-	    }
+	    //}
     } catch (e) {
         log.error(e.name, e.message)
     } 
@@ -278,6 +282,44 @@ define(['N/record',
     } catch (e) {
         log.error(e.name, e.message)
     } 
+  }
+  
+  
+  function getCustomClearanceMarkByValue(clearance_mark) {  	
+	  log.debug('getCustomClearanceMarkByValue', 'clearance_mark='+clearance_mark)
+	  var _internal_id=-1
+	  try { 
+		  var _search = search.create({
+		      type: 'customrecord_gw_ap_doc_custom_option',
+		      columns: [
+		        search.createColumn({ name: 'custrecord_gw_ap_doc_custom_value' }),
+		        search.createColumn({ name: 'custrecord_gw_ap_doc_custom_text' }) 
+		      ]
+		  })
+		  
+		  var _filter_array = [] 
+    	  _filter_array.push(['custrecord_gw_ap_doc_custom_value', search.Operator.EQUALTO, parseInt(clearance_mark)]) 
+  		  _search.filterExpression = _filter_array
+  		  log.debug('CustomClearanceMarkByValue', '_filter_array='+JSON.stringify(_filter_array))
+  		  _search.run().each(function(result) {	
+  			  _internal_id=result.id
+  			  var _gw_ap_doc_custom_value = result.getValue({
+  		          name: 'custrecord_gw_ap_doc_custom_value'
+  		      })
+  		      var _ap_doc_custom_text = result.getValue({
+  		          name: 'custrecord_gw_ap_doc_custom_text'
+  		      })
+  		        
+  			  log.debug('CustomClearanceMarkByValue _internal_id', '_internal_id='+_internal_id)
+  			
+  			  return true
+		  })	   
+ 
+    } catch (e) {
+        log.error(e.name, e.message)
+    } 
+    log.debug('getCustomClearanceMarkByValue', '_internal_id='+_internal_id)
+    return _internal_id
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////

@@ -140,9 +140,11 @@ define([
         if (selectedStatus === '12') {
           _error_message += '不可變更為=>[一般字軌-使用中]!'
         }
+        /**
         if (selectedStatus === '21') {
           _error_message += '不可變更為=>[歷史發票字軌-未使用]!'
         }
+        */
         if (selectedStatus === '22') {
           _error_message += '不可變更為=>[歷史發票字軌-使用中]!'
         }
@@ -152,10 +154,11 @@ define([
         if (selectedStatus === '24') {
           _error_message += '不可變更為=>[歷史發票字軌-作廢]!'
         }
-        
+        /**
         if (selectedStatus === '31') {
 	        _error_message += '不可變更為=>[外部發票字軌-未使用]!'
 	    }
+        */
 	    if (selectedStatus === '32') {
 	        _error_message += '不可變更為=>[外部發票字軌-使用中]!'
 	    }
@@ -198,9 +201,11 @@ define([
         if (selectedStatus === '22') {
           _error_message += '不可變更為=>[歷史發票字軌-使用中]!'
         }
+        /**
         if (selectedStatus === '11') {
           _error_message += '不可變更為=>[一般字軌-未使用]!'
         }
+        */
         if (selectedStatus === '12') {
           _error_message += '不可變更為=>[一般字軌-使用中]!'
         }
@@ -210,10 +215,11 @@ define([
         if (selectedStatus === '14') {
           _error_message += '不可變更為=>[一般字軌-作廢]!'
         }
-        
+        /**
         if (selectedStatus === '31') {
 	        _error_message += '不可變更為=>[外部發票字軌-未使用]!'
 	    }
+	    */
 	    if (selectedStatus === '32') {
 	        _error_message += '不可變更為=>[外部發票字軌-使用中]!'
 	    }
@@ -254,9 +260,11 @@ define([
           if (selectedStatus === '32') {
             _error_message += '不可變更為=>[外部發票字軌-使用中]!'
           }
+          /**
           if (selectedStatus === '11') {
             _error_message += '不可變更為=>[一般字軌-未使用]!'
           }
+          */
           if (selectedStatus === '12') {
             _error_message += '不可變更為=>[一般字軌-使用中]!'
           }
@@ -266,10 +274,11 @@ define([
           if (selectedStatus === '14') {
             _error_message += '不可變更為=>[一般字軌-作廢]!'
           }
-          
+          /**
           if (selectedStatus === '21') {
   	        _error_message += '不可變更為=>[歷史發票字軌-未使用]!'
 	  	  }
+          */
 	  	  if (selectedStatus === '22') {
 	  	      _error_message += '不可變更為=>[歷史發票字軌-使用中]!'
 	  	  }

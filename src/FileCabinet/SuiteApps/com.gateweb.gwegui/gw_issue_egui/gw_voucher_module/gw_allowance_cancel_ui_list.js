@@ -1117,7 +1117,11 @@ define([
       //label: '重傳折讓單E-Mail',
       //functionName: 'submitEmailProcess("ALLOWANCE")',
     //})
-    
+    form.addButton({
+      id: 'custpage_reset_document_button',
+      label: '回復不上傳',
+      functionName: 'resetSelected()',
+    })
     form.addButton({
       id: 'custpage_search_document_button',
       label: '查詢',

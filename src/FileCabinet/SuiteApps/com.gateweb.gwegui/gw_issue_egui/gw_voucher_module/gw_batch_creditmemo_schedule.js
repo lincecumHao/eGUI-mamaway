@@ -443,6 +443,8 @@ define([
 				],
 			 })
 			 var _filterArray = []  
+			 _filterArray.push(['custrecord_gw_voucher_type', search.Operator.IS, 'EGUI'])
+			 _filterArray.push('and')
 			 _filterArray.push(['custrecord_gw_seller', search.Operator.IS, _sellerIdentifier])
 			 _filterArray.push('and')
 			 _filterArray.push(['custrecord_gw_buyer', search.Operator.IS, _buyerIdentifier]) 
@@ -450,8 +452,10 @@ define([
 			 _filterArray.push(['custrecord_gw_original_buyer_id', search.Operator.IS, _buyerId])  
 			 _filterArray.push('and')
 			 _filterArray.push(['custrecord_gw_voucher_number', search.Operator.IS, _voucher_number_start])  
-			 _filterArray.push('and')		 
-			 _filterArray.push(['custrecord_gw_voucher_upload_status', search.Operator.IS, 'C'])
+			 _filterArray.push('and')	
+			 //20211206 walter modify 配合手開發票
+			 //_filterArray.push(['custrecord_gw_voucher_upload_status', search.Operator.IS, 'C'])
+			 _filterArray.push(['custrecord_gw_voucher_upload_status', search.Operator.ISNOT, 'E'])
 			  
 			 _my_search.filterExpression = _filterArray
 			 log.debug('_filterArray', JSON.stringify(_filterArray))
@@ -484,10 +488,10 @@ define([
 											  _egui_discount_zero_amount
 											  
 				  //判斷折讓條件是否成立
-				  if (_egui_discount_sales_amount > _egui_sales_amount ||
-					  _egui_discount_free_amount  > _egui_free_sales_amount ||
-					  _egui_discount_zero_amount  > _egui_zero_sales_amount ) { 
-                      _data_error = true;					  
+				  if ( (Math.round(_egui_discount_sales_amount - _egui_sales_amount)>0) ||
+					   (Math.round(_egui_discount_free_amount  - _egui_free_sales_amount)>0) ||
+					   (Math.round(_egui_discount_zero_amount  - _egui_zero_sales_amount)>0) ) { 
+                       _data_error = true;					  
 				  }
 				  
 				  log.debug('_egui_discount_sales_amount', _egui_discount_sales_amount)
@@ -496,8 +500,7 @@ define([
 				  log.debug('_egui_free_sales_amount', _egui_free_sales_amount)
 				  log.debug('_egui_discount_zero_amount', _egui_discount_zero_amount)
 				  log.debug('_egui_zero_sales_amount', _egui_zero_sales_amount)
-				  
-							  
+				  							  
 				  _egui_obj = {
 						'internal_id' :_internal_id,
 						'mig_type' :_mig_type,
@@ -541,6 +544,8 @@ define([
 			
 			var _balance_amount_error = _egui_obj==null?true:_egui_obj.data_error
 					
+			var _mig_type = _egui_obj==null?'B2C':_egui_obj.mig_type	
+					
 			var _tax_diff_error = invoiceutility.checkTaxDifference(
 																	 allowance_obj.sales_amount,
 																	 allowance_obj.taxRate,
@@ -548,7 +553,7 @@ define([
 																	 tax_diff_balance
 																   )
 			
-			var _main_record_obj = saveVoucherMainRecord(_egui_obj.mig_type, _apply_internal_id, allowance_obj, _balance_amount_error, _tax_diff_error)
+			var _main_record_obj = saveVoucherMainRecord(_mig_type, _apply_internal_id, allowance_obj, _balance_amount_error, _tax_diff_error)
 			
 			var _main_record_id = _main_record_obj.main_record_id 
 			 

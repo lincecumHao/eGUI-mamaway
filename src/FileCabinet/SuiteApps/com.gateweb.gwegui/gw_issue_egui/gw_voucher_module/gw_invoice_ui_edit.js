@@ -146,16 +146,21 @@ define([
     return _taxObj
   } 
 
-  //轉換成民國年月日(2021/01/18)
+  //轉換成民國年月日(2021/01/18) 
   function convertExportDate(export_date) {
     var _tradition_date = '' //民國年月日(1101231)
     log.debug('export_date', export_date)
     try {
       if (export_date.toString().length != 0) {
-        export_date = export_date.replace('/', '')
-        export_date = export_date.replace('/', '')
+    	  var date = new Date(export_date);
+    	  var month =(date.getMonth()+1)<10?'0'+(date.getMonth()+1):(date.getMonth()+1);//months (0-11)
+    	  var day = date.getDate()<10?"0"+date.getDate():(date.getDate());//day (1-31)
+    	  var year= date.getFullYear();
 
-        _tradition_date = parseInt(export_date - 19110000).toString()
+    	  var _formatted_date =  year+''+month+''+day;
+    	  log.debug('formattedDate', _formatted_date)
+           
+          _tradition_date = parseInt(_formatted_date - 19110000).toString()
       }
     } catch (e) {
       log.error(e.name, e.message)
@@ -205,14 +210,14 @@ define([
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     //輸出或結匯日期
-    var _customs_export_date = form.addField({
+    var _customs_export_date_field = form.addField({
       id: 'custpage_gw_customs_export_date',
       type: serverWidget.FieldType.TEXT,
       label: '輸出或結匯日期'
-    })
-    _customs_export_no_field.updateDisplayType({
+    }) 
+    _customs_export_date_field.updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
-    })
+    }) 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     var _row01_fieldgroupid = form.addFieldGroup({
       id: 'row01_fieldgroupid',
@@ -990,10 +995,7 @@ define([
     var _gw_applicable_zero_tax_text = ''
     //海關出口號碼
     var _gw_customs_export_no_value = ''
-    var _gw_customs_export_no_text = ''
-    //輸出或結匯日期
-    var _gw_customs_export_date_value = ''
-    var _gw_customs_export_date_text = ''
+    var _gw_customs_export_no_text = '' 
     //通關註記
     var _gw_egui_clearance_mark_value = ''
     var _gw_egui_clearance_mark_text = ''
@@ -1054,7 +1056,7 @@ define([
       }
       //海關出口號碼 : AA123456789012
       _gw_customs_export_no = _result.values.custbody_gw_customs_export_no
-      //輸出或結匯日期 : 2021/01/22
+      //輸出或結匯日期 : 2021/01/22 
       _gw_customs_export_date = convertExportDate(
         _result.values.custbody_gw_customs_export_date
       )
@@ -2032,9 +2034,7 @@ define([
     //海關出口號碼
     var _gw_customs_export_no_value = ''
     var _gw_customs_export_no_text = ''
-    //輸出或結匯日期
-    var _gw_customs_export_date_value = ''
-    var _gw_customs_export_date_text = ''
+     
     //通關註記
     var _gw_egui_clearance_mark_value = ''
     var _gw_egui_clearance_mark_text = ''

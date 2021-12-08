@@ -75,14 +75,8 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
   function convertExportDate(export_date) {
     var _tradition_date //民國年月日(1101231)
 
-    try {
-      var _date_string = format.format({
-        value: export_date,
-        type: format.Type.DATETIME,
-        timezone: format.Timezone.ASIA_TAIPEI,
-      })
-
-      var _date = new Date(_date_string)
+    try { 
+      var _date = new Date(export_date) 
 
       var _year = _date.getFullYear() - 1911
       var _month = _date.getMonth() + 1
