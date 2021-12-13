@@ -104,7 +104,10 @@ define([
     setApplyPeriod()
     setCurrency()
     setBuyer(subsidiary)
-    setSeller()
+    if (context.currentRecord.type !== 'expensereport') {
+      console.log('In Expense Report Record')
+      setSeller()
+    }
     clearDisabledFieldsContent(docTypeCode)
     var taxType = getNumberSublistFieldValue(apDocFields.fields.taxType.id)
     if (taxType) {
