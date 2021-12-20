@@ -118,7 +118,9 @@ define(['N/record',
 		    
 		    //通關注記 
 		    var _clearance_mark = voucher_main_record.getValue({fieldId: 'custrecord_gw_clearance_mark'})
-	    	values['custbody_gw_egui_clearance_mark'] = getCustomClearanceMarkByValue(_clearance_mark)
+	    	if (_clearance_mark!='') {
+	    	    values['custbody_gw_egui_clearance_mark'] = getCustomClearanceMarkByValue(_clearance_mark)
+		    }
 	     	
 	 	    var _id = record.submitFields({
 	            type: _record_type_id,
