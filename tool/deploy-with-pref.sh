@@ -38,7 +38,7 @@ echo "renamed $PROJECT_FILE"
 
 LOCKING_PREF=./InstallationPreferences/locking.xml
 HIDING_PREF=./InstallationPreferences/hiding.xml
-if [ "$client_env" != "shopping99-prod" ] && [ "$client_env" != "auo-prod" ] && [ "$client_env" != "auo-sb1" ] && [ "$client_env" != "justkitchen-prod" ] && [ "$client_env" != "justkitchen-sb1" ]; then
+if [ "$client_env" == "shopping99-sb" ] || [ "$client_env" == "auo-sb2" ]; then
   LOCKING_PREF=./InstallationPreferences/unlocking.xml
   HIDING_PREF=./InstallationPreferences/unhiding.xml
 fi
