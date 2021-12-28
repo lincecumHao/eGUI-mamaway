@@ -117,4 +117,132 @@
             <subtab></subtab>
         </customrecordcustomfield>
     </customrecordcustomfields>
+    <instances>
+        <instance scriptid="val_6610167_4627689_sb1_416">
+            <custrecord_gw_customers_export_cate_id>G1</custrecord_gw_customers_export_cate_id>
+            <custrecord_gw_customers_export_cate_text>外貨進口</custrecord_gw_customers_export_cate_text>
+            <isinactive>F</isinactive>
+            <name>G1-外貨進口</name>
+        </instance>
+        <instance scriptid="val_6610168_4627689_sb1_735">
+            <custrecord_gw_customers_export_cate_id>G2</custrecord_gw_customers_export_cate_id>
+            <custrecord_gw_customers_export_cate_text>本地補稅案件</custrecord_gw_customers_export_cate_text>
+            <isinactive>F</isinactive>
+            <name>G2-本地補稅案件</name>
+        </instance>
+        <instance scriptid="val_6610169_4627689_sb1_142">
+            <custrecord_gw_customers_export_cate_id>G7</custrecord_gw_customers_export_cate_id>
+            <custrecord_gw_customers_export_cate_text>國貨復進口</custrecord_gw_customers_export_cate_text>
+            <isinactive>F</isinactive>
+            <name>G7-國貨復進口</name>
+        </instance>
+        <instance scriptid="val_6610170_4627689_sb1_708">
+            <custrecord_gw_customers_export_cate_id>D2</custrecord_gw_customers_export_cate_id>
+            <custrecord_gw_customers_export_cate_text>保稅貨出保稅倉進口</custrecord_gw_customers_export_cate_text>
+            <isinactive>F</isinactive>
+            <name>D2-保稅貨出保稅倉進口</name>
+        </instance>
+        <instance scriptid="val_6610171_4627689_sb1_560">
+            <custrecord_gw_customers_export_cate_id>D7</custrecord_gw_customers_export_cate_id>
+            <custrecord_gw_customers_export_cate_text>保稅倉相互轉儲或運往保稅廠</custrecord_gw_customers_export_cate_text>
+            <isinactive>F</isinactive>
+            <name>D7-保稅倉相互轉儲或運往保稅廠</name>
+        </instance>
+        <instance scriptid="val_6610172_4627689_sb1_499">
+            <custrecord_gw_customers_export_cate_id>D8</custrecord_gw_customers_export_cate_id>
+            <custrecord_gw_customers_export_cate_text>外貨進保稅倉</custrecord_gw_customers_export_cate_text>
+            <isinactive>F</isinactive>
+            <name>D8-外貨進保稅倉</name>
+        </instance>
+        <instance scriptid="val_6610173_4627689_sb1_915">
+            <custrecord_gw_customers_export_cate_id>B6</custrecord_gw_customers_export_cate_id>
+            <custrecord_gw_customers_export_cate_text>保稅廠輸入貨物（原料）</custrecord_gw_customers_export_cate_text>
+            <isinactive>F</isinactive>
+            <name>B6-保稅廠輸入貨物（原料）</name>
+        </instance>
+        <instance scriptid="val_6610174_4627689_sb1_437">
+            <custrecord_gw_customers_export_cate_id>F1</custrecord_gw_customers_export_cate_id>
+            <custrecord_gw_customers_export_cate_text>外貨進儲自由港區</custrecord_gw_customers_export_cate_text>
+            <isinactive>F</isinactive>
+            <name>F1-外貨進儲自由港區</name>
+        </instance>
+        <instance scriptid="val_6610175_4627689_sb1_238">
+            <custrecord_gw_customers_export_cate_id>F2</custrecord_gw_customers_export_cate_id>
+            <custrecord_gw_customers_export_cate_text>自由港區貨物進口</custrecord_gw_customers_export_cate_text>
+            <isinactive>F</isinactive>
+            <name>F2-自由港區貨物進口</name>
+        </instance>
+        <instance scriptid="val_6610176_4627689_sb1_132">
+            <custrecord_gw_customers_export_cate_id>F3</custrecord_gw_customers_export_cate_id>
+            <custrecord_gw_customers_export_cate_text>自由港區區內事業間之交易</custrecord_gw_customers_export_cate_text>
+            <isinactive>F</isinactive>
+            <name>F3-自由港區區內事業間之交易</name>
+        </instance>
+        <instance scriptid="val_6610177_4627689_sb1_278">
+            <custrecord_gw_customers_export_cate_id>G3</custrecord_gw_customers_export_cate_id>
+            <custrecord_gw_customers_export_cate_text>外貨復出口</custrecord_gw_customers_export_cate_text>
+            <isinactive>F</isinactive>
+            <name>G3-外貨復出口</name>
+        </instance>
+        <instance scriptid="val_6610178_4627689_sb1_760">
+            <custrecord_gw_customers_export_cate_id>G5</custrecord_gw_customers_export_cate_id>
+            <custrecord_gw_customers_export_cate_text>國貨出口</custrecord_gw_customers_export_cate_text>
+            <isinactive>F</isinactive>
+            <name>G5-國貨出口</name>
+        </instance>
+        <instance scriptid="val_6610179_4627689_sb1_336">
+            <custrecord_gw_customers_export_cate_id>D1</custrecord_gw_customers_export_cate_id>
+            <custrecord_gw_customers_export_cate_text>課稅區售與或退回保稅倉</custrecord_gw_customers_export_cate_text>
+            <isinactive>F</isinactive>
+            <name>D1-課稅區售與或退回保稅倉</name>
+        </instance>
+        <instance scriptid="val_6610180_4627689_sb1_652">
+            <custrecord_gw_customers_export_cate_id>D5</custrecord_gw_customers_export_cate_id>
+            <custrecord_gw_customers_export_cate_text>保稅倉貨物出口</custrecord_gw_customers_export_cate_text>
+            <isinactive>F</isinactive>
+            <name>D5-保稅倉貨物出口</name>
+        </instance>
+        <instance scriptid="val_6610181_4627689_sb1_613">
+            <custrecord_gw_customers_export_cate_id>B1</custrecord_gw_customers_export_cate_id>
+            <custrecord_gw_customers_export_cate_text>課稅區售與保稅廠</custrecord_gw_customers_export_cate_text>
+            <isinactive>F</isinactive>
+            <name>B1-課稅區售與保稅廠</name>
+        </instance>
+        <instance scriptid="val_6610182_4627689_sb1_697">
+            <custrecord_gw_customers_export_cate_id>B2</custrecord_gw_customers_export_cate_id>
+            <custrecord_gw_customers_export_cate_text>保稅廠相互交易或售與保稅倉</custrecord_gw_customers_export_cate_text>
+            <isinactive>F</isinactive>
+            <name>B2-保稅廠相互交易或售與保稅倉</name>
+        </instance>
+        <instance scriptid="val_6610183_4627689_sb1_275">
+            <custrecord_gw_customers_export_cate_id>B8</custrecord_gw_customers_export_cate_id>
+            <custrecord_gw_customers_export_cate_text>保稅廠進口貨物（原料）復出口</custrecord_gw_customers_export_cate_text>
+            <isinactive>F</isinactive>
+            <name>B8-保稅廠進口貨物（原料）復出口</name>
+        </instance>
+        <instance scriptid="val_6610184_4627689_sb1_500">
+            <custrecord_gw_customers_export_cate_id>B9</custrecord_gw_customers_export_cate_id>
+            <custrecord_gw_customers_export_cate_text>保稅廠產品出口</custrecord_gw_customers_export_cate_text>
+            <isinactive>F</isinactive>
+            <name>B9-保稅廠產品出口</name>
+        </instance>
+        <instance scriptid="val_6610185_4627689_sb1_814">
+            <custrecord_gw_customers_export_cate_id>F4</custrecord_gw_customers_export_cate_id>
+            <custrecord_gw_customers_export_cate_text>自由港區與他自由港區、課稅區間之交易</custrecord_gw_customers_export_cate_text>
+            <isinactive>F</isinactive>
+            <name>F4-自由港區與他自由港區、課稅區間之交易</name>
+        </instance>
+        <instance scriptid="val_6610186_4627689_sb1_901">
+            <custrecord_gw_customers_export_cate_id>F5</custrecord_gw_customers_export_cate_id>
+            <custrecord_gw_customers_export_cate_text>自由港區貨物出口</custrecord_gw_customers_export_cate_text>
+            <isinactive>F</isinactive>
+            <name>F5-自由港區貨物出口</name>
+        </instance>
+        <instance scriptid="val_6610187_4627689_sb1_544">
+            <custrecord_gw_customers_export_cate_id>TA</custrecord_gw_customers_export_cate_id>
+            <custrecord_gw_customers_export_cate_text>外貨進出口</custrecord_gw_customers_export_cate_text>
+            <isinactive>F</isinactive>
+            <name>TA-外貨進出口</name>
+        </instance>
+    </instances>
 </customrecordtype>
