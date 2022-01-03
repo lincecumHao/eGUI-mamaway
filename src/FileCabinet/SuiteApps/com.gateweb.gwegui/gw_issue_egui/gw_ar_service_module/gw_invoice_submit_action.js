@@ -193,6 +193,8 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
               fieldId: 'custrecord_gw_ap_doc_custom_value',
             })
           }
+        
+        	  
           //適用零稅率註記選項
           var _applicable_zero_tax = ''
           if (_applicable_zero_tax_id.length != 0) {
@@ -217,6 +219,12 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
               { fieldId: 'custrecord_gw_customers_export_cate_id' }
             )
           }
+          
+          //1:非經海關的資料應填寫證明文件名稱與號碼=>不寫入
+          if (_egui_clearance_mark=='1'){
+        	  _customs_export_no='' //海關出口報單號碼-14碼
+        	  _customs_export_category='' //海關出口報單類別
+          }
 
           saveToVoucherMain(
             _internalid,
@@ -238,7 +246,7 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
       if (!validateCustomsExportNumberLength(context)) {
         throw error.create({
           name: '零稅率資訊',
-          message: '海關出口報單號碼長度須為14碼!',
+          message: '海關出口報單號碼長度須為14碼,海關出口報單類別不可空白!',
           notifyOff: true,
         })
       }
@@ -254,8 +262,34 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
       var _customs_export_no = _current_record.getValue({
         fieldId: 'custbody_gw_customs_export_no',
       })
-      if (_customs_export_no.length != 0 && _customs_export_no.length != 14)
-        _result = false
+      //通關註記 1-非經海關 2-經海關
+      //非經海關的資料應填寫證明文件名稱與號碼；經海關才是報單號碼與報單類別。現在的欄位帶入有誤
+      var _egui_clearance_mark = ''
+      var _egui_clearance_mark_id = _current_record.getValue({
+        fieldId: 'custbody_gw_egui_clearance_mark',
+      })
+      if (_egui_clearance_mark_id.length != 0) {
+        var _ap_doc_custom_option_record = record.load({
+          type: 'customrecord_gw_ap_doc_custom_option',
+          id: _egui_clearance_mark_id,
+          isDynamic: true,
+        })
+        _egui_clearance_mark = _ap_doc_custom_option_record.getValue({
+          fieldId: 'custrecord_gw_ap_doc_custom_value',
+        })
+      }
+      log.error('通關註記', 'egui_clearance_mark='+_egui_clearance_mark)
+      
+      
+      //海關出口報單類別 
+      var _customs_export_category_id = _current_record.getValue({
+          fieldId: 'custbody_gw_customs_export_category',
+      }) 
+      
+      if ( _egui_clearance_mark=='2' && 
+    	  (_customs_export_category_id.length == 0 || _customs_export_no.length != 14) ) {
+          _result = false
+      }
     } catch (e) {
       log.error(e.name, e.message)
     }
