@@ -412,11 +412,11 @@ define([
     })
     _customs_clearance_mark.addSelectOption({
       value: '1',
-      text: '經海關'
+      text: '1:非經海關'
     })
     _customs_clearance_mark.addSelectOption({
       value: '2',
-      text: '不經海關'
+      text: '2:經海關'
     })
     _customs_clearance_mark.defaultValue = _voucher_record.getValue({
       fieldId: 'custrecord_gw_clearance_mark',

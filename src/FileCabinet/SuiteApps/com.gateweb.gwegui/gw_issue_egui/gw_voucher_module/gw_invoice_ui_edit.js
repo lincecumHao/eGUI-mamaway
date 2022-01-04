@@ -76,30 +76,41 @@ define([
 
   function loadAllTaxInformation() {
     try {
-      var _all_tax_types = taxyype21.getAll()
-      log.debug('get all_tax_types', JSON.stringify(_all_tax_types))
-
-      for (var i = 0; i < _all_tax_types.length; i++) {
-        var _tax_json_obj = _all_tax_types[i]
-        var _ns_tax_json_obj = _tax_json_obj.taxCodes
-        log.debug('get _ns_tax_json_obj', JSON.stringify(_ns_tax_json_obj))
-        var _netsuite_id_value = ''
-        var _netsuite_id_text = ''
-        if (_ns_tax_json_obj.length != 0) {
-          _netsuite_id_value = _ns_tax_json_obj.value //111;
-          _netsuite_id_text = _ns_tax_json_obj.text //Jul 2020;
-        }
-
-        var _obj = {
-          voucher_property_id: _tax_json_obj.name, //TAX_WITH_TAX
-          voucher_property_value: _tax_json_obj.value, //1
+        var _all_tax_types = taxyype21.getAll().map(function (_tax_json_obj) {
+       	var _ns_tax_json_obj = _tax_json_obj.taxCodes
+        return {
+          voucher_property_id: _tax_json_obj.name.toString(), //TAX_WITH_TAX
+          voucher_property_value: _tax_json_obj.value.toString(), //1
           voucher_property_note: _tax_json_obj.text, //應稅
-          netsuite_id_value: _netsuite_id_value, //8(NS internalID)
-          netsuite_id_text: _netsuite_id_text //VAT_TW TAX 5%-TW(NS Text)
+          netsuite_id_value: _ns_tax_json_obj.value || '', //8(NS internalID)
+          netsuite_id_text: _ns_tax_json_obj.text || '' //VAT_TW TAX 5%-TW(NS Text)
         }
+      })
+      log.debug('get all_tax_types', JSON.stringify(_all_tax_types))
+      return _all_tax_types
+      // log.debug('get all_tax_types', JSON.stringify(_all_tax_types))
 
-        _taxObjAry.push(_obj)
-      }
+      // for (var i = 0; i < _all_tax_types.length; i++) {
+      //   var _tax_json_obj = _all_tax_types[i]
+      //   var _ns_tax_json_obj = _tax_json_obj.taxCodes
+      //   log.debug('get _ns_tax_json_obj', JSON.stringify(_ns_tax_json_obj))
+      //   var _netsuite_id_value = ''
+      //   var _netsuite_id_text = ''
+      //   if (_ns_tax_json_obj.length != 0) {
+      //     _netsuite_id_value = _ns_tax_json_obj.value //111;
+      //     _netsuite_id_text = _ns_tax_json_obj.text //Jul 2020;
+      //   }
+      //
+      //   var _obj = {
+      //     voucher_property_id: _tax_json_obj.name, //TAX_WITH_TAX
+      //     voucher_property_value: _tax_json_obj.value, //1
+      //     voucher_property_note: _tax_json_obj.text, //應稅
+      //     netsuite_id_value: _netsuite_id_value, //8(NS internalID)
+      //     netsuite_id_text: _netsuite_id_text //VAT_TW TAX 5%-TW(NS Text)
+      //   }
+      //
+      //   _taxObjAry.push(_obj)
+      // }
     } catch (e) {
       log.error(e.name, e.message)
     }
@@ -107,69 +118,78 @@ define([
 
   //取得稅別資料
   function getTaxInformation(netsuiteId) {
-    var _taxObj
-    try {
-      if (_taxObjAry != null) {
-        for (var i = 0; i < _taxObjAry.length; i++) {
-          var _obj = JSON.parse(JSON.stringify(_taxObjAry[i]))
-
-          if (_obj.netsuite_id_value == netsuiteId) {
-            _taxObj = _obj
-            break
-          }
-        }
-      }
-    } catch (e) {
-      log.error(e.name, e.message)
-    }
-
-    return _taxObj
+    return _taxObjAry.filter(function (_obj) {
+      return _obj.netsuite_id_value.toString() === netsuiteId.toString()
+    })[0]
+    // var _taxObj
+    // try {
+    //   if (_taxObjAry != null) {
+    //     for (var i = 0; i < _taxObjAry.length; i++) {
+    //       var _obj = JSON.parse(JSON.stringify(_taxObjAry[i]))
+    //
+    //       if (_obj.netsuite_id_value == netsuiteId) {
+    //         _taxObj = _obj
+    //         break
+    //       }
+    //     }
+    //   }
+    // } catch (e) {
+    //   log.error(e.name, e.message)
+    // }
+    //
+    // return _taxObj
   }
   //取得稅別資料
   function getTaxInformationByTaxId(taxId) {
-    var _taxObj
-    try {
-      if (_taxObjAry != null) {
-        for (var i = 0; i < _taxObjAry.length; i++) {
-          var _obj = JSON.parse(JSON.stringify(_taxObjAry[i]))
+    return _taxObjAry.filter(function (_obj) {
+      return _obj.voucher_property_value.toString() === taxId.toString()
+    })[0]
+    // var _taxObj
+    // try {
+    //   if (_taxObjAry != null) {
+    //     for (var i = 0; i < _taxObjAry.length; i++) {
+    //       var _obj = JSON.parse(JSON.stringify(_taxObjAry[i]))
+    //
+    //       if (_obj.voucher_property_value == taxId) {
+    //         _taxObj = _obj
+    //         break
+    //       }
+    //     }
+    //   }
+    // } catch (e) {
+    //   log.error(e.name, e.message)
+    // }
+    //
+    // return _taxObj
+  }
 
-          if (_obj.voucher_property_value == taxId) {
-            _taxObj = _obj
-            break
-          }
-        }
-      }
-    } catch (e) {
-      log.error(e.name, e.message)
-    }
-
-    return _taxObj
-  } 
-
-  //轉換成民國年月日(2021/01/18) 
+  //轉換成民國年月日(2021/01/18)
   function convertExportDate(export_date) {
     var _tradition_date = '' //民國年月日(1101231)
     log.debug('export_date', export_date)
     try {
       if (export_date.toString().length != 0) {
-    	  var date = new Date(export_date);
-    	  var month =(date.getMonth()+1)<10?'0'+(date.getMonth()+1):(date.getMonth()+1);//months (0-11)
-    	  var day = date.getDate()<10?"0"+date.getDate():(date.getDate());//day (1-31)
-    	  var year= date.getFullYear();
+        var date = new Date(export_date)
+        var month =
+          date.getMonth() + 1 < 10
+            ? '0' + (date.getMonth() + 1)
+            : date.getMonth() + 1 //months (0-11)
+        var day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate() //day (1-31)
+        var year = date.getFullYear()
 
-    	  var _formatted_date =  year+''+month+''+day;
-    	  log.debug('formattedDate', _formatted_date)
-           
-          _tradition_date = parseInt(_formatted_date - 19110000).toString()
+        var _formatted_date = year + '' + month + '' + day
+        log.debug('formattedDate', _formatted_date)
+
+        _tradition_date = parseInt(_formatted_date - 19110000).toString()
       }
     } catch (e) {
       log.error(e.name, e.message)
     }
 
     return _tradition_date
-  } 
+  }
   ///////////////////////////////////////////////////////////////////////////////////////////
-  
+
   //顯示畫面
   function createFormHeader(apply_business_no, form) {
     /////////////////////////////////////////////////////////////
@@ -214,10 +234,10 @@ define([
       id: 'custpage_gw_customs_export_date',
       type: serverWidget.FieldType.TEXT,
       label: '輸出或結匯日期'
-    }) 
+    })
     _customs_export_date_field.updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
-    }) 
+    })
     ////////////////////////////////////////////////////////////////////////////////////////////////
     var _row01_fieldgroupid = form.addFieldGroup({
       id: 'row01_fieldgroupid',
@@ -390,7 +410,7 @@ define([
       value: '',
       text: '-----'
     })
-    ////////////////////////////////////////////////////////////////////     
+    ////////////////////////////////////////////////////////////////////
     var _all_carry_types = carriertypedao.getAll()
     log.debug('get _all_carry_types', JSON.stringify(_all_carry_types))
     for (var i = 0; i < _all_carry_types.length; i++) {
@@ -402,7 +422,7 @@ define([
         value: _carry_id,
         text: _carry_text
       })
-    }     
+    }
     ////////////////////////////////////////////////////////////////////
     _carrier_type.updateBreakType({
       breakType: serverWidget.FieldBreakType.STARTCOL
@@ -439,11 +459,11 @@ define([
     })
     _customs_clearance_mark.addSelectOption({
       value: '1',
-      text: '經海關'
+      text: '1:非經海關'
     })
     _customs_clearance_mark.addSelectOption({
       value: '2',
-      text: '不經海關'
+      text: '2:經海關'
     })
     _customs_clearance_mark.updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
@@ -930,7 +950,7 @@ define([
     var _mySearch = search.load({
       id: _gw_invoice_detail_search_id
     })
-    var _filterArray = []    
+    var _filterArray = []
     if (_selected_invoice_Id != null) {
       var _internalIdAry = _selected_invoice_Id.split(',')
       _filterArray.push(['internalid', 'anyof', _internalIdAry])
@@ -973,7 +993,7 @@ define([
     //稅別資料
     var _taxObj
     var _hasZeroTax = false
- 
+
     var _last_id = -1
     var _sales_order_id = -1
     var _sales_order_number = ''
@@ -995,7 +1015,7 @@ define([
     var _gw_applicable_zero_tax_text = ''
     //海關出口號碼
     var _gw_customs_export_no_value = ''
-    var _gw_customs_export_no_text = '' 
+    var _gw_customs_export_no_text = ''
     //通關註記
     var _gw_egui_clearance_mark_value = ''
     var _gw_egui_clearance_mark_text = ''
@@ -1056,7 +1076,7 @@ define([
       }
       //海關出口號碼 : AA123456789012
       _gw_customs_export_no = _result.values.custbody_gw_customs_export_no
-      //輸出或結匯日期 : 2021/01/22 
+      //輸出或結匯日期 : 2021/01/22
       _gw_customs_export_date = convertExportDate(
         _result.values.custbody_gw_customs_export_date
       )
@@ -1180,15 +1200,7 @@ define([
 
         //抓稅別資料
         _taxObj = getTaxInformation(_item_salestaxcodeValue)
-        log.debug(
-          '_item_salestaxcodeValue',
-          '_ns_tax_type_code=' +
-            _ns_tax_type_code +
-            '  ,item_salestaxcodeValue=' +
-            _item_salestaxcodeValue +
-            '  ,_taxObj.voucher_property_value=' +
-            _taxObj.voucher_property_value
-        )
+    
         if (typeof _taxObj !== 'undefined') {
           if (_taxObj.voucher_property_value == '2') _hasZeroTax = true //零稅率
 
@@ -1405,7 +1417,7 @@ define([
         sublist,
         row,
         _selectDepartment,
-        _selectClassification, 
+        _selectClassification,
         _invoice_sales_amount,
         _invoice_free_sales_amount,
         _invoice_zero_sales_amonut,
@@ -1608,7 +1620,7 @@ define([
     sublist,
     row,
     dept_code,
-    classfication,    
+    classfication,
     invoice_sales_amount,
     invoice_free_sales_amount,
     invoice_zero_sales_amonut,
@@ -1649,14 +1661,14 @@ define([
           var _balance_amount = _amount + _dedcuted_amount
           var _deduction_amount = _balance_amount
 
-          if (_tax_type == '2') { 
+          if (_tax_type == '2') {
             _tax_rate = 0
             _tax_rate_note = '零稅'
             if (invoice_zero_sales_amonut < Math.abs(_balance_amount)) {
               _deduction_amount = -1 * invoice_zero_sales_amonut
             }
             invoice_zero_sales_amonut += _deduction_amount
-          } else if (_tax_type == '3') { 
+          } else if (_tax_type == '3') {
             _tax_rate = 0
             _tax_rate_note = '免稅'
             if (invoice_free_sales_amount < Math.abs(_balance_amount)) {
@@ -1985,7 +1997,7 @@ define([
     var _mySearch = search.load({
       id: _gw_creditmemo_detail_search_id
     })
-    var _filterArray = []   
+    var _filterArray = []
     if (_selected_creditmemo_Id != null) {
       var _internalIdAry = _selected_creditmemo_Id.split(',')
       _filterArray.push(['internalid', 'anyof', _internalIdAry])
@@ -2034,7 +2046,7 @@ define([
     //海關出口號碼
     var _gw_customs_export_no_value = ''
     var _gw_customs_export_no_text = ''
-     
+
     //通關註記
     var _gw_egui_clearance_mark_value = ''
     var _gw_egui_clearance_mark_text = ''
@@ -2526,7 +2538,7 @@ define([
     )
     ///////////////////////////////////////////////////////////////////////////////////////////
     //載入稅別資料
-    loadAllTaxInformation()
+    _taxObjAry = loadAllTaxInformation()
     ///////////////////////////////////////////////////////////////////////////////////////////
     //處理資料
 
