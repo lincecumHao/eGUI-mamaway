@@ -148,23 +148,27 @@ define(['N/format'], function (format) {
   }
   
   function getConvertDateByDate(date) {
-	  var _date_ary = date.split('-')
-		 
-	  var _year = _date_ary[0]
-	  var _month = _date_ary[1]
-	  if (_month < 10 && _month.length==1) {
-	      _month = '0' + _month
-	  }
-	  var _day = _date_ary[2]
-	  if (_day < 10 && _day.length==1) {
-	      _day = '0' + _day
-	  }
-	     
-	  var _tran_date=_year+''+_month+''+_day
-	      
-	  return _tran_date
+	log.debug('getConvertDateByDate', 'tran_date='+date)	  
+    var _dateString = format.format({
+      value: date,
+      type: format.Type.DATETIME 
+    })
+ 
+    var _date = new Date(_dateString) 
+ 
+    var _year = _date.getFullYear()
+    var _month = _date.getMonth() + 1
+    if (_month < 10) {
+      _month = '0' + _month
+    }
+    var _day = _date.getDate()
+    if (_day < 10) {
+        _day = '0' + _day
+    }
+    log.debug('return_date', 'return_date='+_year+''+_month+''+_day)
+    return _year + '' + _month + '' + _day
   }
-
+    
   function getTaxYearMonthByDateObj(date) {
     var _month = date.getMonth() + 1
     if (_month % 2 != 0) _month = _month + 1
