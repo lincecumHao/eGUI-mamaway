@@ -65,7 +65,9 @@ define([
       var _filterArray = []
       _filterArray.push(['custrecord_gw_voucher_group_type', 'is', _group_type])
       _mySearch.filterExpression = _filterArray
-      _mySearch.run().each(function (result) {
+      _mySearch.run().each(function (result) { 
+    	log.debug(_gw_voucher_properties+' result', JSON.stringify(result))
+    	
         var internalid = result.id
 
         var _voucher_property_id = result.getValue({
@@ -96,7 +98,7 @@ define([
         return true
       })
     } catch (e) {
-      log.debug(e.name, e.message)
+      log.error(e.name, e.message)
     }
   }
 
@@ -115,7 +117,7 @@ define([
         }
       }
     } catch (e) {
-      log.debug(e.name, e.message)
+      log.error(e.name, e.message)
     }
 
     return _taxObj
