@@ -32,6 +32,29 @@ define([
   invoiceutility,
   gwmessage
 ) {
+  function initializeVar() { 
+    _tax_diff_balance = getTaxDiffBalance()
+  }
+
+  function checkVarExists() {
+    return _tax_diff_balance !== ''
+  }
+
+  function constructorWrapper(func) {
+    return function () {
+      if (!checkVarExists()) {
+        initializeVar()
+      }
+      return func.apply(this, arguments)
+    }
+  }
+  
+  function getTaxDiffBalance() {
+    _tax_diff_balance = stringutility.convertToFloat(
+      invoiceutility.getConfigureValue('TAX_GROUP', 'TAX_DIFF_BALANCE')
+    )
+  }
+	  
   var _invoceFormatCode = gwconfigure.getGwVoucherFormatInvoiceCode() //35
 
   var _assignLogActionScriptId = gwconfigure.getGwAssignLogActionScriptId()
@@ -65,9 +88,7 @@ define([
   var _gw_gui_num_end_field = 'custbody_gw_gui_num_end'
 
   //稅差
-  var _tax_diff_balance = stringutility.convertToFloat(
-    invoiceutility.getConfigureValue('TAX_GROUP', 'TAX_DIFF_BALANCE')
-  )
+  var _tax_diff_balance = ''
 
   var _current_record = currentRecord.get()
 
@@ -2075,6 +2096,11 @@ define([
         var _sales_order = _current_record.getValue({
           fieldId: 'salesorder',
         })
+        
+        var _subsidiary = _current_record.getValue({
+          fieldId: 'subsidiary'
+        })
+        var _selected_business_no = getBusinessNoBySubsidiary(_subsidiary)
 
         var params = {
           select_customer_deposit_id: _internalId,
@@ -2102,11 +2128,11 @@ define([
   }
 
   return {
-    pageInit: pageInit,
-    backToPage: backToPage,
-    onButtonClick: onButtonClick,
-    submitDocument: submitDocument,
-    fieldChanged: fieldChanged,
-    sublistChanged: sublistChanged,
+    pageInit: constructorWrapper(pageInit),
+    backToPage: constructorWrapper(backToPage),
+    onButtonClick: constructorWrapper(onButtonClick),
+    submitDocument: constructorWrapper(submitDocument),
+    fieldChanged: constructorWrapper(fieldChanged),
+    sublistChanged: constructorWrapper(sublistChanged),
   }
 })

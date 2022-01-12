@@ -12,7 +12,9 @@ define([
   '../gw_common_utility/gw_common_date_utility',
   '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_search_utility',
+  '../../gw_dao/taxType/gw_dao_tax_type_21',
   '../gw_common_utility/gw_common_configure',
+  '../../gw_dao/busEnt/gw_dao_business_entity_21'
 ], function (
   config,
   serverWidget,
@@ -21,7 +23,9 @@ define([
   dateutility,
   stringutility,
   searchutility,
-  gwconfigure
+  taxyype21,
+  gwconfigure,
+  businessEntityDao
 ) {
   var _numericToFixed = gwconfigure.getGwNumericToFixed() //小數點位數
   var _invoiceActionScriptId = gwconfigure.getGwInvoiceActionScriptId()
@@ -116,100 +120,62 @@ define([
 
   function loadAllTaxInformation() {
     try {
-      var _group_type = 'TAX_TYPE'
-      var _mySearch = search.create({
-        type: _gw_voucher_properties,
-        columns: [
-          search.createColumn({ name: 'custrecord_gw_voucher_property_id' }), //TAX_WITH_TAX
-          search.createColumn({ name: 'custrecord_gw_voucher_property_value' }), //1
-          search.createColumn({ name: 'custrecord_gw_voucher_property_note' }), //應稅
-          search.createColumn({ name: 'custrecord_gw_netsuite_id_value' }), //8
-          search.createColumn({ name: 'custrecord_gw_netsuite_id_text' }), //VAT_TW TAX 5%-TW
-        ],
-      })
-
-      var _filterArray = []
-      _filterArray.push(['custrecord_gw_voucher_group_type', 'is', _group_type])
-      _mySearch.filterExpression = _filterArray
-      _mySearch.run().each(function (result) {
-        var internalid = result.id
-
-        var _voucher_property_id = result.getValue({
-          name: 'custrecord_gw_voucher_property_id',
-        })
-        var _voucher_property_value = result.getValue({
-          name: 'custrecord_gw_voucher_property_value',
-        })
-        var _voucher_property_note = result.getValue({
-          name: 'custrecord_gw_voucher_property_note',
-        })
-        var _netsuite_id_value = result.getValue({
-          name: 'custrecord_gw_netsuite_id_value',
-        })
-        var _netsuite_id_text = result.getValue({
-          name: 'custrecord_gw_netsuite_id_text',
-        })
-
-        var _obj = {
-          voucher_property_id: _voucher_property_id,
-          voucher_property_value: _voucher_property_value,
-          voucher_property_note: _voucher_property_note,
-          netsuite_id_value: _netsuite_id_value,
-          netsuite_id_text: _netsuite_id_text,
+        var _all_tax_types = taxyype21.getAll().map(function (_tax_json_obj) {
+       	var _ns_tax_json_obj = _tax_json_obj.taxCodes
+        return {
+          voucher_property_id: _tax_json_obj.name.toString(), //TAX_WITH_TAX
+          voucher_property_value: _tax_json_obj.value.toString(), //1
+          voucher_property_note: _tax_json_obj.text, //應稅
+          netsuite_id_value: _ns_tax_json_obj.value || '', //8(NS internalID)
+          netsuite_id_text: _ns_tax_json_obj.text || '' //VAT_TW TAX 5%-TW(NS Text)
         }
-
-        _taxObjAry.push(_obj)
-        return true
       })
+      
+      log.debug('get all_tax_types', JSON.stringify(_all_tax_types))
+      return _all_tax_types  
     } catch (e) {
-      log.debug(e.name, e.message)
+      log.error(e.name, e.message)
     }
   }
 
   //取得稅別資料
   function getTaxInformation(netsuiteId) {
-    var _taxObj
-    try {
-      if (_taxObjAry != null) {
-        for (var i = 0; i < _taxObjAry.length; i++) {
-          var _obj = JSON.parse(JSON.stringify(_taxObjAry[i]))
+    return _taxObjAry.filter(function (_obj) {
+      return _obj.netsuite_id_value.toString() === netsuiteId.toString()
+    })[0] 
+  }
+  
 
-          if (_obj.netsuite_id_value == netsuiteId) {
-            _taxObj = _obj
-            break
-          }
-        }
+  //取得賣方公司資料
+  function getSellerInfo(businessNo) {
+    var _companyObj
+    try {
+      var businessEntity = businessEntityDao.getByTaxId(businessNo)
+      _companyObj = {
+        tax_id_number: businessEntity.taxId, //_tax_id_number,
+        be_gui_title: businessEntity.title, // _be_gui_title,
+        business_address: businessEntity.address, //_business_address,
+        contact_email: businessEntity.repEmail // _contact_email
       }
     } catch (e) {
-      log.debug(e.name, e.message)
+      log.error(e.name, e.message)
     }
 
-    return _taxObj
+    return _companyObj
   }
 
   //顯示畫面
-  function createFormHeader(form) {
-    /////////////////////////////////////////////////////////////
-    //載入公司資料
-    var _companyInfo = config.load({
-      type: config.Type.COMPANY_INFORMATION,
-    })
-    var _taxid = _companyInfo.getValue({
-      fieldId: 'taxid',
-    })
-    var _companyname = _companyInfo.getValue({
-      fieldId: 'companyname',
-    })
-    var _mainaddress_text = _companyInfo.getValue({
-      fieldId: 'mainaddress_text',
-    })
+  function createFormHeader(apply_business_no, form) {
+	/////////////////////////////////////////////////////////////
+    //load company information
+    var _seller_obj = getSellerInfo(apply_business_no)
+    var _taxid = _seller_obj.tax_id_number
+    var _companyname = _seller_obj.be_gui_title
+    var _mainaddress_text = _seller_obj.business_address
     //暫借欄位做統編
-    var _ban = _companyInfo.getValue({
-      fieldId: 'employerid',
-    })
-    var _legalname = _companyInfo.getValue({
-      fieldId: 'legalname',
-    })
+    var _ban = _taxid
+    var _legalname = _companyname 
+ 
     /////////////////////////////////////////////////////////////
     var _row01_fieldgroupid = form.addFieldGroup({
       id: 'row01_fieldgroupid',
@@ -707,7 +673,7 @@ define([
     ///////////////////////////////////////////////////////////////////////////////////////////
   }
 
-  function createCutomerDepositDetails(form, selected_customer_deposit_Id) {
+  function createCutomerDepositDetails(form, customer_deposit_record) {
     //處理Detail
     var sublist = form.addSublist({
       id: 'customerdepositsublistid',
@@ -815,75 +781,70 @@ define([
       displayType: serverWidget.FieldDisplayType.ENTRY,
     })
     /////////////////////////////////////////////////////////////////////////////////////////
-    //處理 Customer Deposit Item
-    var _customerDepositRecord = record.load({
-      type: record.Type.CUSTOMER_DEPOSIT,
-      id: selected_customer_deposit_Id,
-      isDynamic: true,
-    })
+    //處理 Customer Deposit Item 
     //客戶id
-    var _customer_id = _customerDepositRecord.getValue({
+    var _customer_id = customer_deposit_record.getValue({
       fieldId: 'customer',
     })
     //單號
-    var _tranid = _customerDepositRecord.getValue({
+    var _tranid = customer_deposit_record.getValue({
       fieldId: 'tranid',
     })
     //payment
-    var _payment = _customerDepositRecord.getValue({
+    var _payment = customer_deposit_record.getValue({
       fieldId: 'payment',
     })
     //幣別
-    var _currency = _customerDepositRecord.getValue({
+    var _currency = customer_deposit_record.getValue({
       fieldId: 'currency',
     })
     //費率
-    var _exchangerate = _customerDepositRecord.getValue({
+    var _exchangerate = customer_deposit_record.getValue({
       fieldId: 'exchangerate',
     })
     //單據日期
-    var _trandate = _customerDepositRecord.getValue({
+    var _trandate = customer_deposit_record.getValue({
       fieldId: 'trandate',
     })
-    var _department = _customerDepositRecord.getValue({
+    var _department = customer_deposit_record.getValue({
       fieldId: 'department',
     })
-    var _class = _customerDepositRecord.getValue({
+    var _class = customer_deposit_record.getValue({
       fieldId: 'class',
     })
     ///////////////////////////////////////////////////////////////////////////////////
     //客製化欄位值-Use Custom Customer Deposit
-    var _custbody_gw_tax_id_number = _customerDepositRecord.getValue({
+    var _custbody_gw_tax_id_number = customer_deposit_record.getValue({
       fieldId: 'custbody_gw_tax_id_number',
     })
-    var _custbody_gw_gui_address = _customerDepositRecord.getValue({
+    var _custbody_gw_gui_address = customer_deposit_record.getValue({
       fieldId: 'custbody_gw_gui_address',
     })
-    var _custbody_gw_gui_title = _customerDepositRecord.getValue({
+    var _custbody_gw_gui_title = customer_deposit_record.getValue({
       fieldId: 'custbody_gw_gui_title',
     })
-    var _custbody_gw_lock_transaction = _customerDepositRecord.getValue({
+    var _custbody_gw_lock_transaction = customer_deposit_record.getValue({
       fieldId: 'custbody_gw_lock_transaction',
     })
     //會計資訊
     //稅別
-    var _custbody_tcm_taxcode = _customerDepositRecord.getValue({
+    var _custbody_tcm_taxcode = customer_deposit_record.getValue({
       fieldId: 'custbody_tcm_taxcode',
     })
     //稅率 5
-    var _custbody_tcm_taxrate = _customerDepositRecord.getValue({
+    var _custbody_tcm_taxrate = customer_deposit_record.getValue({
       fieldId: 'custbody_tcm_taxrate',
     })
     //稅額
-    var _custbody_tcm_tax = _customerDepositRecord.getValue({
+    var _custbody_tcm_tax = customer_deposit_record.getValue({
       fieldId: 'custbody_tcm_tax',
     })
     //未稅金額
-    var _custbody_tcm_untax_amount = _customerDepositRecord.getValue({
+    var _custbody_tcm_untax_amount = customer_deposit_record.getValue({
       fieldId: 'custbody_tcm_untax_amount',
     })
     //科目: internalid=215
-    var _tcm_tax_account = _customerDepositRecord.getValue({
+    var _tcm_tax_account = customer_deposit_record.getValue({
       fieldId: 'custbody_tcm_tax_account',
     })
     ///////////////////////////////////////////////////////////////////////////////////
@@ -924,7 +885,7 @@ define([
     sublist.setSublistValue({
       id: 'customer_search_customerdeposit_id',
       line: 0,
-      value: _customerDepositRecord.id,
+      value: customer_deposit_record.id,
     })
     sublist.setSublistValue({
       id: 'customer_search_customerdeposit_number',
@@ -1084,17 +1045,19 @@ define([
   }
 
   function onRequest(context) {
-    var _select_customer_deposit_id =
-      context.request.parameters.select_customer_deposit_id
+	var _selected_business_no = context.request.parameters.selected_businessno
+	//Customer Deposit Id
+    var _select_customer_deposit_id = context.request.parameters.select_customer_deposit_id
+    var _customer_deposit_record = record.load({
+        type: record.Type.CUSTOMER_DEPOSIT,
+        id: _select_customer_deposit_id,
+        isDynamic: true,
+    })
+      
+    //Sales Order id
     var _select_sales_order_id = context.request.parameters.select_sales_order
 
-    log.debug(
-      'get parameter',
-      'deposit_id=' +
-        _select_customer_deposit_id +
-        ' ,sales_order=' +
-        _select_sales_order_id
-    )
+    log.debug('get parameter','deposit_id='+_select_customer_deposit_id+' ,sales_order='+_select_sales_order_id)
     ///////////////////////////////////////////////////////////////////////////////////////////
     //處理資料
     var _select_sales_order_number = ''
@@ -1156,14 +1119,15 @@ define([
     _hiddensalesordernumberlistld.defaultValue = _select_sales_order_number
 
     //////////////////////////////////////////////////////////////////////////////////////////
-    loadAllTaxInformation()
+    _taxObjAry = loadAllTaxInformation()
     /////////////////////////////////////////////////////////////////////////////////////////
-    createFormHeader(form)
+     
+    createFormHeader(_selected_business_no, form)
 
     if (_select_customer_deposit_id != null) {
       var _idAry = _select_customer_deposit_id.split(',')
       if (_idAry.length != 0) {
-        createCutomerDepositDetails(form, _select_customer_deposit_id)
+        createCutomerDepositDetails(form, _customer_deposit_record)
       }
     }
 
