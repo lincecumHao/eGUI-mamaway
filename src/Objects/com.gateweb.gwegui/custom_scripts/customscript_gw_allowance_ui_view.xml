@@ -17,7 +17,7 @@
             <isonline>F</isonline>
             <loglevel>DEBUG</loglevel>
             <runasrole>ADMINISTRATOR</runasrole>
-            <status>TESTING</status>
+            <status>RELEASED</status>
             <title>折讓單資料-檢視</title>
         </scriptdeployment>
     </scriptdeployments>

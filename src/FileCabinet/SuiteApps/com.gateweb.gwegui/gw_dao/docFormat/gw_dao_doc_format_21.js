@@ -18,7 +18,9 @@ define(['../gw_abstract_dao', './gw_record_fields'], (gwDao, fieldConfig) => {
     }
 
     getByValueAndMofCode(value, mofCode) {
-      if (!mofCode) {
+      var defaultMofCodeValues = [23, 24, 26, 27, 28, 29, 33, 34, 36, 37, 38]
+
+      if (!mofCode || defaultMofCodeValues.indexOf(parseInt(value, 10)) > -1) {
         mofCode = '00'
       }
       return this.getAll().filter(function (option) {
