@@ -709,8 +709,10 @@ define([
       )
 
       var _egui_number = ''
-      if (_eDocument_TaxType_1_Ary.length != 0) {
-        _egui_number = createEGUIDocument(
+      var _forward_voucher_main_id = -1
+      
+      if (_eDocument_TaxType_1_Ary.length != 0) {    	   
+        var _egui_obj = createEGUIDocument( 
           _voucherOpenType,
           _assignLogType,
           _year_month,
@@ -720,6 +722,9 @@ define([
           _voucher_date,
           _user_id
         )
+        
+        _forward_voucher_main_id = _egui_obj.mainRecordId
+        _egui_number = _egui_obj.invoiceNumber
       }
       //處理要開發票的部分(999筆1包)-END
 
@@ -735,6 +740,22 @@ define([
         )
         //做完更新資料-END
         gwmessage.showInformationMessage(_title, _message)
+        
+        ///////////////////////////////////////////////////////////////////
+        //forward to egui View
+        var _params = {
+           voucher_type: 'EGUI',
+           voucher_internal_id: _forward_voucher_main_id
+        }
+  
+        window.location = url.resolveScript({
+           scriptId: 'customscript_gw_egui_ui_view',
+           deploymentId: 'customdeploy_gw_egui_ui_view',
+           params: _params,
+           returnExternalUrl: false
+        })
+      ///////////////////////////////////////////////////////////////////
+        
       }
       /////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
@@ -913,8 +934,11 @@ define([
     var _carrier_type = _current_record.getValue({
       fieldId: 'custpage_carrier_type',
     })
-    var _carrier_id = _current_record.getValue({
-      fieldId: 'custpage_carrier_id',
+    var _carrier_id_1 = _current_record.getValue({
+      fieldId: 'custpage_carrier_id_1',
+    })
+    var _carrier_id_2 = _current_record.getValue({
+      fieldId: 'custpage_carrier_id_2',
     })
     var _npo_ban = _current_record.getValue({ fieldId: 'custpage_npo_ban' })
     var _customs_clearance_mark = _current_record.getValue({
@@ -962,7 +986,8 @@ define([
       buyer_email: _buyer_email,
       buyer_address: _buyer_address,
       carrier_type: _carrier_type,
-      carrier_id: _carrier_id,
+      carrier_id_1: _carrier_id_1,
+      carrier_id_2: _carrier_id_2,
       npo_ban: _npo_ban,
       customs_clearance_mark: _customs_clearance_mark,
       gui_yearmonth_type: _gui_yearmonth_type,
@@ -1146,7 +1171,7 @@ define([
    * eGuiMainObj : 表頭資料
    * itemAry     : Item 資料
    */
-  function createEGUIDocument(
+  function createEGUIDocument( 
     openType,
     assignLogType,
     year_month,
@@ -1319,11 +1344,11 @@ define([
         })
         _voucherMainRecord.setValue({
           fieldId: 'custrecord_gw_carrierid1',
-          value: stringutility.trim(mainObj.carrier_id),
+          value: stringutility.trim(mainObj.carrier_id_1),
         })
         _voucherMainRecord.setValue({
           fieldId: 'custrecord_gw_carrierid2',
-          value: stringutility.trim(mainObj.carrier_id),
+          value: stringutility.trim(mainObj.carrier_id_2),
         })
         _voucherMainRecord.setValue({
           fieldId: 'custrecord_gw_npoban',
@@ -1337,23 +1362,23 @@ define([
           fieldId: 'custrecord_gw_main_remark',
           value: stringutility.trim(mainObj.main_remark),
         })
-
-        var _print_mark = 'N'
-        if (mainObj.mig_type == 'C0401' || mainObj.mig_type == 'B2C') {
-          //TODO 要產生隨機碼
-          _print_mark = 'Y'
-          var _random_number = Math.round(
-            invoiceutility.getRandomNum(1000, 9999)
-          )
-          _voucherMainRecord.setValue({
-            fieldId: 'custrecord_gw_random_number',
-            value: _random_number,
-          })
-        }
+ 
+        var _print_mark = invoiceutility.getPrintMark(
+			        		mainObj.npo_ban,
+			        		mainObj.carrier_type,
+			        		mainObj.buyer_identifier
+			              )
         _voucherMainRecord.setValue({
           fieldId: 'custrecord_gw_print_mark',
           value: _print_mark,
         })
+        
+        var _random_number = invoiceutility.getRandomNumNew(_invoiceNumber, mainObj.company_ban)
+        _voucherMainRecord.setValue({
+            fieldId: 'custrecord_gw_random_number',
+            value: _random_number,
+        })              
+       
         _voucherMainRecord.setValue({
           fieldId: 'custrecord_gw_is_printed',
           value: 'N',
@@ -1444,7 +1469,7 @@ define([
           value: user_id,
         })
         try {
-          _mainRecordId = _voucherMainRecord.save()
+          _mainRecordId = _voucherMainRecord.save() 
         } catch (e) {
           console.log(e.name + ':' + e.message)
         }
@@ -1647,9 +1672,9 @@ define([
         }
         //End Details
       }
-    }
-
-    return _invoiceNumber
+    }  
+    
+    return {'mainRecordId':_mainRecordId, 'invoiceNumber':_invoiceNumber}
   }
 
   //整理發票
@@ -2088,7 +2113,7 @@ define([
   function onButtonClick() {
     var _eguiEditScriptId = 'customscript_gw_deposit_egui_ui_edit'
     var _eguiEditDeploymentId = 'customdeploy_gw_deposit_egui_ui_edit'
-    alert('_eguiEditDeploymentId=' + _eguiEditDeploymentId)
+     
     var _internalId = _current_record.id
     if (_internalId != 0) {
       try {

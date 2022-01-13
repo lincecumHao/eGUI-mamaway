@@ -14,6 +14,7 @@ define([
   '../gw_common_utility/gw_common_search_utility',
   '../../gw_dao/taxType/gw_dao_tax_type_21',
   '../gw_common_utility/gw_common_configure',
+  '../../gw_dao/carrierType/gw_dao_carrier_type_21',
   '../../gw_dao/busEnt/gw_dao_business_entity_21'
 ], function (
   config,
@@ -25,6 +26,7 @@ define([
   searchutility,
   taxyype21,
   gwconfigure,
+  carriertypedao,
   businessEntityDao
 ) {
   var _numericToFixed = gwconfigure.getGwNumericToFixed() //小數點位數
@@ -58,24 +60,6 @@ define([
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////
-  //取得Account資料
-  function getAccountName(account_id) {
-    var _acctname = ''
-
-    var _record = record.load({
-      type: record.Type.ACCOUNT,
-      id: account_id,
-      isDynamic: true,
-    })
-
-    if (typeof _record !== 'undefined') {
-      _acctname = _record.getValue({
-        fieldId: 'acctname',
-      })
-    }
-    return _acctname
-  }
-
   //取得客戶資料
   function getCustomerInformation(customer_id) {
     var _customerRecord = record.load({
@@ -123,7 +107,7 @@ define([
         var _all_tax_types = taxyype21.getAll().map(function (_tax_json_obj) {
        	var _ns_tax_json_obj = _tax_json_obj.taxCodes
         return {
-          voucher_property_id: _tax_json_obj.name.toString(), //TAX_WITH_TAX
+       	  voucher_property_id: _tax_json_obj.name.toString(), //TAX_WITH_TAX
           voucher_property_value: _tax_json_obj.value.toString(), //1
           voucher_property_note: _tax_json_obj.text, //應稅
           netsuite_id_value: _ns_tax_json_obj.value || '', //8(NS internalID)
@@ -165,7 +149,12 @@ define([
   }
 
   //顯示畫面
-  function createFormHeader(apply_business_no, form) {
+  function createFormHeader(apply_business_no, customer_deposit_record, form) {
+	var _gw_gui_carrier_type = customer_deposit_record.getValue({fieldId: 'custbody_gw_gui_carrier_type'})
+	var _gw_gui_carrier_id_1 = customer_deposit_record.getValue({fieldId: 'custbody_gw_gui_carrier_id_1'})
+	var _gw_gui_carrier_id_2 = customer_deposit_record.getValue({fieldId: 'custbody_gw_gui_carrier_id_2'})
+	var _gw_gui_donation_code = customer_deposit_record.getValue({fieldId: 'custbody_gw_gui_donation_code'})
+	 	  
 	/////////////////////////////////////////////////////////////
     //load company information
     var _seller_obj = getSellerInfo(apply_business_no)
@@ -374,43 +363,59 @@ define([
     })
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //載具類別
-    var _carrier_type = form.addField({
+    var _carrier_type_field = form.addField({
       id: 'custpage_carrier_type',
       type: serverWidget.FieldType.SELECT,
       label: '載具類別',
       container: 'row01_fieldgroupid',
     })
-    _carrier_type.addSelectOption({
+    _carrier_type_field.addSelectOption({
       value: '',
       text: '-----',
     })
-    _carrier_type.addSelectOption({
-      value: '3J0002',
-      text: '手機條碼',
-    })
-    _carrier_type.addSelectOption({
-      value: 'CQ0001',
-      text: '自然人憑證',
-    })
-    _carrier_type.updateBreakType({
+    ////////////////////////////////////////////////////////////////////
+    var _all_carry_types = carriertypedao.getAll()
+    log.debug('get _all_carry_types', JSON.stringify(_all_carry_types))
+    for (var i = 0; i < _all_carry_types.length; i++) {
+      var _carry_json_obj = _all_carry_types[i]
+      var _carry_text = _carry_json_obj.text
+      var _carry_id = _carry_json_obj.id
+
+      _carrier_type_field.addSelectOption({
+        value: _carry_id,
+        text: _carry_text
+      })
+    }
+    //////////////////////////////////////////////////////////////////// 
+	_carrier_type_field.updateBreakType({
       breakType: serverWidget.FieldBreakType.STARTCOL,
     })
+    _carrier_type_field.defaultValue=_gw_gui_carrier_type
 
     //載具號碼
-    var _carrier_id = form.addField({
-      id: 'custpage_carrier_id',
+    var _carrier_id_1_field = form.addField({
+      id: 'custpage_carrier_id_1',
       type: serverWidget.FieldType.TEXT,
-      label: '載具號碼',
+      label: '載具號碼-1',
       container: 'row01_fieldgroupid',
     })
-
+    _carrier_id_1_field.defaultValue=_gw_gui_carrier_id_1
+    var _carrier_id_2_field = form.addField({
+        id: 'custpage_carrier_id_2',
+        type: serverWidget.FieldType.TEXT,
+        label: '載具號碼-2',
+        container: 'row01_fieldgroupid',
+      })
+      _carrier_id_2_field.defaultValue=_gw_gui_carrier_id_2
+   	
     //捐贈碼
-    var _npo_ban = form.addField({
+    var _npo_ban_field = form.addField({
       id: 'custpage_npo_ban',
       type: serverWidget.FieldType.TEXT,
       label: '捐贈碼',
       container: 'row01_fieldgroupid',
     })
+    _npo_ban_field.defaultValue=_gw_gui_donation_code
     //通關註記
     var _customs_clearance_mark = form.addField({
       id: 'custpage_customs_clearance_mark',
@@ -825,37 +830,18 @@ define([
     })
     var _custbody_gw_lock_transaction = customer_deposit_record.getValue({
       fieldId: 'custbody_gw_lock_transaction',
-    })
-    //會計資訊
-    //稅別
-    var _custbody_tcm_taxcode = customer_deposit_record.getValue({
-      fieldId: 'custbody_tcm_taxcode',
-    })
-    //稅率 5
-    var _custbody_tcm_taxrate = customer_deposit_record.getValue({
-      fieldId: 'custbody_tcm_taxrate',
-    })
-    //稅額
-    var _custbody_tcm_tax = customer_deposit_record.getValue({
-      fieldId: 'custbody_tcm_tax',
-    })
-    //未稅金額
-    var _custbody_tcm_untax_amount = customer_deposit_record.getValue({
-      fieldId: 'custbody_tcm_untax_amount',
-    })
-    //科目: internalid=215
-    var _tcm_tax_account = customer_deposit_record.getValue({
-      fieldId: 'custbody_tcm_tax_account',
-    })
+    })     
     ///////////////////////////////////////////////////////////////////////////////////
-    var _account_name = '顧客押金'
-    log.debug('get account_name 1', '_tcm_tax_account=' + _tcm_tax_account)
-    if (
-      typeof _tcm_tax_account != 'undefined' ||
-      stringutility.trim(_tcm_tax_account) != ''
-    ) {
-      //_account_name = getAccountName(_tcm_tax_account);
-    }
+    //稅別  
+    //電子發票Tab
+    var _gw_gui_tax_type = customer_deposit_record.getValue({
+        fieldId: 'custbody_gw_gui_tax_type',
+      }) 
+    var _gw_gui_tax_rate = customer_deposit_record.getValue({
+      fieldId: 'custbody_gw_gui_tax_rate',
+    }) 
+    ///////////////////////////////////////////////////////////////////////////////////
+    var _account_name = '顧客押金' 
     var _tax_code = '1'
     var _tax_code_note = '應稅'
     var _tax_rate = '5'
@@ -863,8 +849,8 @@ define([
     var _custpage_tax_type = form.getField({
       id: 'custpage_tax_type',
     })
-    if (typeof _custbody_tcm_taxcode != 'undefined') {
-      var _taxObj = getTaxInformation(_custbody_tcm_taxcode)
+    if (typeof _gw_gui_tax_type != 'undefined') {
+      var _taxObj = getTaxInformation(_gw_gui_tax_type)
       if (typeof _taxObj != 'undefined') {
         _tax_code = _taxObj.voucher_property_value
         _tax_code_note = _taxObj.voucher_property_note
@@ -923,19 +909,9 @@ define([
       value: '筆',
     })
 
-    var _amount = 0
-    var _tax_amount = 0
-
-    if (typeof _custbody_tcm_taxcode != 'undefined') {
-      //Custom Customer Deposit
-      _amount = _custbody_tcm_untax_amount
-      _tax_amount = _custbody_tcm_tax
-    } else {
-      //Standard Customer Deposit
-      _amount = _payment / (1 + parseInt(_tax_rate) / 100)
-      _tax_amount = _payment - _amount
-    }
-
+    var _amount = _payment / (1 + parseInt(_tax_rate) / 100)
+    var _tax_amount = _tax_amount = _payment - _amount
+ 
     sublist.setSublistValue({
       id: 'custpage_unit_price',
       line: 0,
@@ -1122,7 +1098,7 @@ define([
     _taxObjAry = loadAllTaxInformation()
     /////////////////////////////////////////////////////////////////////////////////////////
      
-    createFormHeader(_selected_business_no, form)
+    createFormHeader(_selected_business_no, _customer_deposit_record, form)
 
     if (_select_customer_deposit_id != null) {
       var _idAry = _select_customer_deposit_id.split(',')

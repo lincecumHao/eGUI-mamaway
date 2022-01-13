@@ -5,7 +5,7 @@
  */
 define(['N/record', 
 	    'N/format', 
-	    'N/search',
+	    'N/search', 
 	    '../../gw_dao/docFormat/gw_dao_doc_format_21', 	    
 	    '../../gw_dao/evidenceIssueStatus/gw_dao_evidence_issue_status_21'], 
 	    function (record, format, search, doc_format_21, issue_status_21) {  
@@ -18,7 +18,9 @@ define(['N/record',
              var _document_list = document_ary[i] //INVOICE_1259998
              var _document_ary = _document_list.split('_')
              var _document_type = _document_ary[0].toUpperCase()
-             var _document_internal_id = _document_ary[1]
+             var _document_internal_id = _document_ary[_document_ary.length-1]
+             
+             _document_type = document_ary.toString().replace('_'+_document_internal_id, '');
              
              syncToNetsuiteDocument(voucher_main_record, _document_type, _document_internal_id)
     	}
@@ -79,7 +81,8 @@ define(['N/record',
 		    //稅率  
 		    values['custbody_gw_gui_tax_rate'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_tax_rate'})	
 		    //課稅別  
-		    values['custbody_gw_gui_tax_type'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_tax_type'})	
+		    values['custbody_gw_gui_tax_type'] = getTaxTypeIdByValue(voucher_main_record.getValue({fieldId: 'custrecord_gw_tax_type'}))	
+	 
 		    //總計
 		    values['custbody_gw_gui_total_amt'] = _gui_total_amt
 		    //發票日期  
@@ -121,7 +124,8 @@ define(['N/record',
 	    	if (_clearance_mark!='') {
 	    	    values['custbody_gw_egui_clearance_mark'] = getCustomClearanceMarkByValue(_clearance_mark)
 		    }
-	     	
+	  	    log.debug('record.submitFields', 'record_type_id='+_record_type_id+' ,document_internal_id='+document_internal_id)
+		  
 	 	    var _id = record.submitFields({
 	            type: _record_type_id,
 	            id: document_internal_id,
@@ -131,6 +135,9 @@ define(['N/record',
 	              ignoreMandatoryFields: true
 	            }
 	        })
+	        log.debug('record.submitFields', 'saved success'+_record_type_id+' ,document_internal_id='+document_internal_id)
+			  
+	        
 	    //}
     } catch (e) {
         log.error(e.name, e.message)
@@ -321,6 +328,34 @@ define(['N/record',
         log.error(e.name, e.message)
     } 
     log.debug('getCustomClearanceMarkByValue', '_internal_id='+_internal_id)
+    return _internal_id
+  }
+  
+  function getTaxTypeIdByValue(value) {  	
+	  log.debug('getTaxTypeIdByValue', 'value='+value)
+	  var _internal_id=-1
+	  try { 
+		  var _search = search.create({
+		      type: 'customrecord_gw_ap_doc_tax_type_option',
+		      columns: [
+		        search.createColumn({ name: 'custrecord_gw_ap_doc_tax_type_value' }),
+		        search.createColumn({ name: 'custrecord_gw_ap_doc_tax_type_text' }) 
+		      ]
+		  })
+		  
+		  var _filter_array = [] 
+    	  _filter_array.push(['custrecord_gw_ap_doc_tax_type_value', search.Operator.EQUALTO, parseInt(value)]) 
+  		  _search.filterExpression = _filter_array
+  		  log.debug('getTaxTypeIdByValue', '_filter_array='+JSON.stringify(_filter_array))
+  		  _search.run().each(function(result) {	
+  			  _internal_id=result.id 
+  			  return true
+		  })	   
+ 
+    } catch (e) {
+        log.error(e.name, e.message)
+    } 
+    log.debug('getTaxTypeIdByValue', 'internal_id='+_internal_id)
     return _internal_id
   }
 
