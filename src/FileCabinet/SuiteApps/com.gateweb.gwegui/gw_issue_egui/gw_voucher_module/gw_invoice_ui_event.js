@@ -960,7 +960,7 @@ define([
     } catch (e) {
       log.debug(e.name, e.message)
     }
-
+ 
     return _taxObj
   }
 

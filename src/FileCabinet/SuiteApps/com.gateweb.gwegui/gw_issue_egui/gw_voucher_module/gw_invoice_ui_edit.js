@@ -1653,7 +1653,9 @@ define([
           var _total_amount = _jsonObj.total_amount
           var _dedcuted_amount = _jsonObj.dedcuted_amount //已扣金額
           /////////////////////////////////////////////////////////////////////////////////
-          var _ns_tax_code = getTaxInformationByTaxId(_tax_type)
+          var _ns_tax_code_obj = getTaxInformationByTaxId(_tax_type)
+          var _ns_tax_code = _ns_tax_code_obj.netsuite_id_value
+          log.debug('accessCustomerDeposit _ns_tax_code', JSON.stringify(_ns_tax_code))
           var _tax_rate = 5
           var _tax_rate_note = '應稅'
 
