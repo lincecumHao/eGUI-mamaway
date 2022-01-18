@@ -237,44 +237,10 @@ define([
   }
 
   //取得會計科目
-  function getNSInvoiceAccount(group_type, voucher_property_id) {
-    var _account = ''
-    try {
-      var _mySearch = search.create({
-        type: _gw_voucher_properties,
-        columns: [
-          search.createColumn({ name: 'custrecord_gw_voucher_property_id' }), //TAX_WITH_TAX
-          search.createColumn({ name: 'custrecord_gw_voucher_property_value' }), //1
-          search.createColumn({ name: 'custrecord_gw_voucher_property_note' }), //應稅
-          search.createColumn({ name: 'custrecord_gw_netsuite_id_value' }), //8
-          search.createColumn({ name: 'custrecord_gw_netsuite_id_text' }), //VAT_TW TAX 5%-TW
-        ],
-      })
-
-      var _filterArray = []
-      _filterArray.push(['custrecord_gw_voucher_group_type', 'is', group_type])
-      _filterArray.push('and')
-      _filterArray.push([
-        'custrecord_gw_voucher_property_id',
-        'is',
-        voucher_property_id,
-      ])
-
-      _mySearch.filterExpression = _filterArray
-      _mySearch.run().each(function (result) {
-        var internalid = result.id
-
-        _account = result.getValue({
-          name: 'custrecord_gw_netsuite_id_value',
-        })
-
-        return true
-      })
-    } catch (e) {
-      log.error(e.name, e.message)
-    }
-
-    return _account
+  function getNSInvoiceAccount(_egui_tax_id) {   
+	 return _taxObjAry.filter(function (_obj) {
+	      return _obj.voucher_property_value.toString() === _egui_tax_id.toString()
+	 })[0].netsuite_id_value 
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -461,9 +427,13 @@ define([
 
       ////////////////////////////////////////////////////////////
       //this search is ordered by id, taxrate
-      var _nsTaxWithTaxValue = getNSInvoiceAccount('TAX_TYPE', 'TAX_WITH_TAX') //8
-      var _nsTaxFreeTaxValue = getNSInvoiceAccount('TAX_TYPE', 'TAX_FREE_TAX')
-      var _nsTaxZeroTaxValue = getNSInvoiceAccount('TAX_TYPE', 'TAX_ZERO_TAX')
+      var _nsTaxWithTaxValue = getNSInvoiceAccount('1') //8
+      var _nsTaxFreeTaxValue = getNSInvoiceAccount('3')
+      var _nsTaxZeroTaxValue = getNSInvoiceAccount('2')
+      
+      log.debug('_nsTaxWithTaxValue', _nsTaxWithTaxValue)
+      log.debug('_nsTaxFreeTaxValue', _nsTaxFreeTaxValue)
+      log.debug('_nsTaxZeroTaxValue', _nsTaxZeroTaxValue)
 
       var _mySearch = search.load({
         id: _gw_invoice_detail_search_id,
