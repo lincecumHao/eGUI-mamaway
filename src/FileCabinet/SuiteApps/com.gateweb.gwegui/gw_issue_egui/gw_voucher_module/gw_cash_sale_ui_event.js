@@ -32,6 +32,28 @@ define([
   invoiceutility,
   gwmessage
 ) {
+  function initializeVar() { 
+    _tax_diff_balance = getTaxDiffBalance()
+  }
+
+  function checkVarExists() {
+    return _tax_diff_balance !== ''
+  }
+
+  function constructorWrapper(func) {
+    return function () {
+      if (!checkVarExists()) {
+        initializeVar()
+      }
+      return func.apply(this, arguments)
+    }
+  }
+  
+  function getTaxDiffBalance() {
+    _tax_diff_balance = stringutility.convertToFloat(
+       invoiceutility.getConfigureValue('TAX_GROUP', 'TAX_DIFF_BALANCE')
+    )
+  }
   var _invoceFormatCode = gwconfigure.getGwVoucherFormatInvoiceCode() //35
   var _creditMemoFormatCode = gwconfigure.getGwVoucherFormatAllowanceCode()
 
@@ -62,9 +84,7 @@ define([
   var _default_upload_status = 'A' //A->P->C,E
 
   //稅差
-  var _tax_diff_balance = stringutility.convertToFloat(
-    invoiceutility.getConfigureValue('TAX_GROUP', 'TAX_DIFF_BALANCE')
-  )
+  var _tax_diff_balance = ''
 
   var _invoiceEditScriptId = 'customscript_gw_document_ui_list'
   var _invoiceEditDeployId = 'customdeploy_gw_document_ui_list'
@@ -3324,10 +3344,10 @@ define([
   }
 
   return {
-    pageInit: pageInit,
-    backToPage: backToPage,
-    submitDocument: submitDocument,
-    fieldChanged: fieldChanged,
-    sublistChanged: sublistChanged,
+    pageInit: constructorWrapper(pageInit),
+    backToPage: constructorWrapper(backToPage),
+    submitDocument: constructorWrapper(submitDocument),
+    fieldChanged: constructorWrapper(fieldChanged),
+    sublistChanged: constructorWrapper(sublistChanged),
   }
 })

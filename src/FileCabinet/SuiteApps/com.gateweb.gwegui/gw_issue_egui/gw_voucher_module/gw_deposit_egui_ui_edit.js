@@ -263,58 +263,14 @@ define([
     })
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    //客戶名稱
+    //客戶名稱 
     var _customer_id = form.addField({
       id: 'custpage_customer_id',
       type: serverWidget.FieldType.SELECT,
       label: '客戶代碼',
-      container: 'row01_fieldgroupid',
-    })
-    var _type = search.Type.CUSTOMER
-    var _filters = []
-    var _columns = [
-      'entityid',
-      'companyname',
-      'custentity_gw_tax_id_number',
-      'address',
-      'email',
-    ]
-    var _allCustomers = searchutility.getSearchResult(_type, _filters, _columns)
-    _allCustomers.forEach(function (result) {
-      var _internalid = result.id
-
-      var _entityid = result.getValue({
-        name: 'entityid',
-      })
-      var _name = result.getValue({
-        name: 'companyname',
-      })
-      var _ban = result.getValue({
-        name: 'custentity_gw_tax_id_number',
-      })
-      var _email = result.getValue({
-        name: 'email',
-      })
-      var _address = result.getValue({
-        name: 'address',
-      })
-
-      var _obj = {
-        internalid: _internalid,
-        entityid: _entityid,
-        ban: _ban,
-        companyname: _name,
-        email: _email,
-        address: _address,
-      }
-      _companyObjAry.push(_obj)
-
-      _customer_id.addSelectOption({
-        value: _internalid,
-        text: _internalid + '-' + _name,
-      })
-      return true
-    })
+      source: 'CUSTOMER',
+      container: 'row01_fieldgroupid'
+    })  
     _customer_id.updateBreakType({
       breakType: serverWidget.FieldBreakType.STARTCOL,
     })
