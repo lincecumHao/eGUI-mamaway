@@ -72,7 +72,5 @@ define(['../../library/ramda.min'], function (ramda) {
   exports.fieldOutputMapping = fieldOutputMapping
   exports.fieldInputMapping = fieldInputMapping
   exports.recordId = recordId
-  exports.assignLogStatus = assignLogStatus
-  exports.assignLogStatusTextToId = ramda.invertObj(assignLogStatus)
   return exports
 })
