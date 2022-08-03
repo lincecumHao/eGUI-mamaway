@@ -44,7 +44,7 @@ define([
    * @param {ServerResponse} context.response - The outgoing response object
    */
   function onRequest(context) {
-    log.audit({ title: `${context.request.method} request received` })
+    log.audit({title: `${context.request.method} request received`})
 
     const eventRouter = {
       [https.Method.GET]: onGet,
@@ -54,10 +54,10 @@ define([
     try {
       eventRouter[context.request.method](context)
     } catch (e) {
-      onError({ context: context, error: e })
+      onError({context: context, error: e})
     }
 
-    log.audit({ title: 'Request complete.' })
+    log.audit({title: 'Request complete.'})
   }
 
   /**
@@ -180,12 +180,18 @@ define([
     redirectToExpenseRecord(context, transactionId, tranType)
   }
 
+  function isCsvLineValid(lineText) {
+    const invalidLineString = [',,,,,,,,,,,,,,,,,,,', ',,,,,,,,,,,,,,,,,,,,,,,,']
+    return !(invalidLineString.indexOf(lineText.trim()) > -1 || !lineText)
+
+  }
+
   function getFileContent(uploaded_file) {
     var fileContent = uploaded_file.getContents()
     var fileLines = fileContent.split('\r\n').filter(function (line) {
-      return !(line.trim() === ',,,,,,,,,,,,,,,,,,,' || !line)
+      return isCsvLineValid(line)
     })
-    log.debug({ title: 'fileLines', details: fileLines })
+    log.debug({title: 'fileLines', details: fileLines})
     return fileLines
   }
 
@@ -270,7 +276,7 @@ define([
    */
   function onError(params) {
     // TODO
-    log.debug({ title: 'Error Occurs', details: params.error })
+    log.debug({title: 'Error Occurs', details: params.error})
   }
 
   exports.onRequest = onRequest
