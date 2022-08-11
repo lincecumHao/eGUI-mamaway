@@ -39,7 +39,9 @@ echo "renamed $PROJECT_FILE"
 LOCKING_PREF=./InstallationPreferences/locking.xml
 HIDING_PREF=./InstallationPreferences/hiding.xml
 #if [ "$client_env" == "shopping99-sb" ] || [ "$client_env" == "auo-sb2" ]; then
-if [ "$client_env" == "shopping99-sb" ] || [ "$client_env" == "master" ]; then
+if [ "$client_env" == "shopping99-sb" ] ||
+  [ "$client_env" == "master" ] ||
+  [ "$client_env" == "ap-validate-egui-number-duplicate" ]; then
   LOCKING_PREF=./InstallationPreferences/unlocking.xml
   HIDING_PREF=./InstallationPreferences/unhiding.xml
 fi

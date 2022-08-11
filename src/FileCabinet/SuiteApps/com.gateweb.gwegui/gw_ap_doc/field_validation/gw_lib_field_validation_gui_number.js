@@ -69,8 +69,8 @@ define(['../application/gw_service_ap_doc_gui_number'], function (
     return guiTrackValidationRequiredDocType.indexOf(parseInt(docTypeInt)) > -1
   }
 
-  function isGuiNumberDuplicated(guiNumber, apDocId) {
-    return guiNumService.isGuiNumberDuplicate(guiNumber, apDocId)
+  function isGuiNumberDuplicated(guiNumber, apDocId, docType) {
+    return guiNumService.isGuiNumberDuplicate(guiNumber, apDocId, docType)
   }
 
   exports.setAvailableTrackValues = setAvailableTrackValues

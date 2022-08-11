@@ -1,6 +1,6 @@
-define(['./gw_lib_search', './gw_lib_wrapper'], function (
+define(['./gw_lib_search', './gw_service_ap_doc_type_options'], function (
   searchLib,
-  wrapperLib
+  apDocTypeService
 ) {
   /**
    * Module Description...
@@ -19,10 +19,11 @@ define(['./gw_lib_search', './gw_lib_wrapper'], function (
   var guiNumbers = []
   var guiNumbersWithRecordId = []
   var guiNumberFieldId = 'custrecord_gw_ap_doc_gui_num'
+  var docTypeFieldId = 'custrecord_gw_ap_doc_type'
   var apDocRecordTypeId = 'customrecord_gw_ap_doc'
 
   function getAllGuiNumbersCore() {
-    var columns = [guiNumberFieldId, 'isinactive']
+    var columns = [guiNumberFieldId, 'isinactive', docTypeFieldId]
     var results = searchLib.search(apDocRecordTypeId, columns, null)
     var activeResults = results.filter(function (record) {
       return !record['isinactive']
@@ -31,7 +32,11 @@ define(['./gw_lib_search', './gw_lib_wrapper'], function (
       return result[guiNumberFieldId]
     })
     guiNumbersWithRecordId = activeResults.map(function (result) {
-      return { id: result.id, guiNumber: result[guiNumberFieldId] }
+      return {
+        id: result.id,
+        guiNumber: result[guiNumberFieldId],
+        docType: result[docTypeFieldId]
+      }
     })
     return guiNumbers
   }
@@ -43,25 +48,32 @@ define(['./gw_lib_search', './gw_lib_wrapper'], function (
     return { track: result[1].toUpperCase(), eguiNumber: result[2] }
   }
 
-  function isGuiNumberDuplicate(guiNum, apDocId) {
-    var historyGuiNumbers = guiNumbers
-    if (apDocId) {
-      historyGuiNumbers = guiNumbersWithRecordId
-        .filter(function (guiNumberObj) {
+  function isGuiNumberDuplicate(guiNum, apDocId, docType) {
+    const duplicatedGuiNumbers = guiNumbersWithRecordId
+      .filter(function (guiNumberObj) {
+        return guiNumberObj.guiNumber.toString() === guiNum.toString()
+        return guiNumberObj.guiNumber
+      })
+      .filter(function (guiNumberObj) {
+        // If ap doc id is not 0, means it's updating ap doc, then try to find different ap doc id with same gui number
+        if (apDocId) {
           return parseInt(guiNumberObj.id) !== parseInt(apDocId)
-        })
-        .map(function (guiNumberObj) {
-          return guiNumberObj.guiNumber
-        })
-    }
-    var isDuplicated = historyGuiNumbers.indexOf(guiNum) > -1
-    return isDuplicated
+        } else {
+          return true
+        }
+      })
+      .filter(function (guiNumberObj) {
+        var docTypeNumber = apDocTypeService.getDocTypeCodeByRecordId(
+          guiNumberObj.docType
+        )
+        return parseInt(docTypeNumber) === parseInt(docType)
+      })
+    return duplicatedGuiNumbers.length > 0
   }
 
   function constructorWrapper(func) {
     return function () {
       if (guiNumbers.length === 0) {
-        log.debug({ title: 'gui number constructor wrapper get all options' })
         getAllGuiNumbers()
       }
       var result = func.apply(this, arguments)

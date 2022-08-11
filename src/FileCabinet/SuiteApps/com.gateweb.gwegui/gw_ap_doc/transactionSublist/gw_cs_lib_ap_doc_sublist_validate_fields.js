@@ -96,18 +96,25 @@ define([
     var docType = apDocTypeService.getDocTypeCodeByRecordId(
       getNumberSublistFieldValue(apDocFields.fields.docType.id)
     )
-    if (parseInt(docType) !== 24 && parseInt(docType) !== 23) {
-      if (
-        guiNumberValidator.isGuiNumberDuplicated(
-          guiNumber,
-          currentSublistApDocRecord.id
-        )
-      ) {
-        resultObj.isValid = false
-        resultObj.error.push(GwError.GuiNumberDuplicated)
-        return resultObj
-      }
+    console.log('docType', docType)
+    console.log(
+      'docType value',
+      getNumberSublistFieldValue(apDocFields.fields.docType.id)
+    )
+    console.log('currentSublistId', currentSublistApDocRecord.id)
+    // if (parseInt(docType) !== 24 && parseInt(docType) !== 23) {
+    if (
+      guiNumberValidator.isGuiNumberDuplicated(
+        guiNumber,
+        currentSublistApDocRecord.id,
+        parseInt(docType)
+      )
+    ) {
+      resultObj.isValid = false
+      resultObj.error.push(GwError.GuiNumberDuplicated)
+      return resultObj
     }
+    // }
     // console.log('validateGuiNumber docType', docType)
     if (guiNumberValidator.isGuiNumberRequired(docType)) {
       resultObj = validateRequiredGuiNumber(guiNumber, docType)
@@ -204,9 +211,8 @@ define([
     var docTypeFieldValue = getNumberSublistFieldValue(
       apDocFields.fields.docType.id
     )
-    var docTypeObj = apDocTypeService.getDocTypeAndMofDocTypeByRecordId(
-      docTypeFieldValue
-    )
+    var docTypeObj =
+      apDocTypeService.getDocTypeAndMofDocTypeByRecordId(docTypeFieldValue)
     var guiDate = getSublistValue(apDocFields.fields.guiDate.id)
     var guiPeriod = applyPeriodService.convertGuiPeriod(guiDate)
     var applyPeriod = getSublistValue(apDocFields.fields.applyPeriod.id)
@@ -266,9 +272,10 @@ define([
     )
     console.log('validateCommonNumber, docType', docType)
 
-    var consolidationMark = apDocConsolidationMarkService.getConsolidateMarkValueByRecordId(
-      getNumberSublistFieldValue(apDocFields.fields.consolidationMark.id)
-    )
+    var consolidationMark =
+      apDocConsolidationMarkService.getConsolidateMarkValueByRecordId(
+        getNumberSublistFieldValue(apDocFields.fields.consolidationMark.id)
+      )
     console.log('validateCommonNumber consolidationMark', consolidationMark)
 
     if (commonNumberValidator.isCommonNumberMustNotHave(docType)) {
@@ -459,9 +466,10 @@ define([
   function validateSellerTaxId(context, value) {
     console.log('validateSellerTaxId fieldValue', value)
     var resultObj = {}
-    var consolidationMark = apDocConsolidationMarkService.getConsolidateMarkValueByRecordId(
-      getNumberSublistFieldValue(apDocFields.fields.consolidationMark.id)
-    )
+    var consolidationMark =
+      apDocConsolidationMarkService.getConsolidateMarkValueByRecordId(
+        getNumberSublistFieldValue(apDocFields.fields.consolidationMark.id)
+      )
     var docType = apDocTypeService.getDocTypeCodeByRecordId(
       getNumberSublistFieldValue(apDocFields.fields.docType.id)
     )
