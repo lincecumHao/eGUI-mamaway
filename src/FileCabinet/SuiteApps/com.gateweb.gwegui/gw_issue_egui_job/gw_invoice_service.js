@@ -27,6 +27,72 @@ define([
    */
   let exports = {}
 
+  function getFilters(internalId){
+
+    let searchFilters = []
+    if (internalId){
+      searchFilters.push(['internalid', 'is', internalId])
+      searchFilters.push('AND')
+    }
+    searchFilters.push(['cogs', 'is', 'F'])
+    searchFilters.push('AND')
+    searchFilters.push(['status', 'noneof', 'CustInvc:V', 'CustCred:V'])
+    searchFilters.push('AND')
+    searchFilters.push(['type', 'is', 'CustInvc'])
+    searchFilters.push('AND')
+    searchFilters.push(['shipping', 'is', 'F'])
+    searchFilters.push('AND')
+    searchFilters.push(['custbody_gw_is_issue_egui', 'is', 'T'])
+    searchFilters.push('AND')
+
+    searchFilters.push(getIssueSubFilter())
+
+    return searchFilters
+  }
+
+  function getColumns(){
+    let searchColumns = JSON.parse(
+      JSON.stringify(transSearchFields.allFieldIds)
+    )
+    searchColumns.push('taxItem.rate')
+    searchColumns.push('customer.email')
+    searchColumns.push('item.displayname')
+    return searchColumns
+  }
+
+  function getSearchResults(invoiceSearch){
+    let pagedData = invoiceSearch.runPaged({
+      pageSize: 1000
+    })
+    let searchResults = []
+    for (let i = 0; i < pagedData.pageRanges.length; i++) {
+      let currentPage = pagedData.fetch({ index: i })
+      currentPage.data.forEach(function (result) {
+        let value = JSON.parse(JSON.stringify(result)).values
+        let resultObject = {}
+        Object.keys(value).forEach(function (key) {
+          let objectValue = value[key]
+          let newKey = key
+          if (key.indexOf('.') > -1) {
+            newKey = key.split('.')[1] + '.' + key.split('.')[0]
+          }
+          if (typeof objectValue === 'string') {
+            resultObject[newKey] = objectValue
+          } else {
+            if (objectValue.length === 0) {
+              resultObject[newKey] = ''
+            } else if (objectValue.length === 1) {
+              resultObject[newKey] = objectValue[0]
+            } else {
+              resultObject[newKey] = objectValue
+            }
+          }
+        })
+        searchResults.push(resultObject)
+      })
+    }
+    return searchResults
+  }
   function getInvoiceToIssueEguiSearch() {
     var searchFilters = []
     searchFilters.push(['cogs', 'is', 'F'])
@@ -84,50 +150,14 @@ define([
   }
 
   function getInvoiceSearchResultDebugger(internalId) {
-    var searchFilters = []
-    searchFilters.push(['internalid', 'is', internalId])
-    var searchColumns = JSON.parse(
-      JSON.stringify(transSearchFields.allFieldIds)
-    )
-    searchColumns.push('taxItem.rate')
-    searchColumns.push('customer.email')
-    searchColumns.push('item.displayname')
-    var invoiceSearch = search.create({
+    const searchFilters = getFilters(internalId)
+    const searchColumns = getColumns()
+    let invoiceSearch = search.create({
       type: search.Type.INVOICE,
       filters: searchFilters,
       columns: searchColumns
     })
-
-    var pagedData = invoiceSearch.runPaged({
-      pageSize: 1000
-    })
-    var searchResults = []
-    for (var i = 0; i < pagedData.pageRanges.length; i++) {
-      var currentPage = pagedData.fetch({ index: i })
-      currentPage.data.forEach(function (result) {
-        var value = JSON.parse(JSON.stringify(result)).values
-        var resultObject = {}
-        Object.keys(value).forEach(function (key) {
-          var objectValue = value[key]
-          var newKey = key
-          if (key.indexOf('.') > -1) {
-            newKey = key.split('.')[1] + '.' + key.split('.')[0]
-          }
-          if (typeof objectValue === 'string') {
-            resultObject[newKey] = objectValue
-          } else {
-            if (objectValue.length === 0) {
-              resultObject[newKey] = ''
-            } else if (objectValue.length === 1) {
-              resultObject[newKey] = objectValue[0]
-            } else {
-              resultObject[newKey] = objectValue
-            }
-          }
-        })
-        searchResults.push(resultObject)
-      })
-    }
+    const searchResults = getSearchResults(invoiceSearch)
     return searchResults
   }
 
@@ -313,6 +343,7 @@ define([
   exports.getInvoiceToIssueEguiSearchById = getInvoiceToIssueEguiSearchById
   exports.getInvoiceToIssueEguiById = getInvoiceToIssueEguiById
   exports.getInvoiceSearchResultDebugger = getInvoiceSearchResultDebugger
+  exports.getSearchResults = getSearchResults
   exports.composeInvObj = composeInvObj
   exports.lockInvoice = lockInvoice
   exports.unlockInvoice = unlockInvoice

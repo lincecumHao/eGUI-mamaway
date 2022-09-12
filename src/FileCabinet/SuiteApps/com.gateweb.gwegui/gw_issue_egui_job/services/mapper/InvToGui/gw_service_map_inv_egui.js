@@ -10,8 +10,11 @@ define([
   '../../../../gw_dao/taxCalcMethod/gw_dao_tax_calc_method_21',
   '../../../../gw_dao/taxType/gw_dao_tax_type_21',
   '../../../../gw_dao/carrierType/gw_dao_carrier_type_21',
+  '../../../../gw_dao/customClearanceMark/gw_dao_custom_clearance_mark_21',
+  '../../../../gw_dao/customExportCategory/gw_dao_custom_export_category_21',
+  '../../../../gw_dao/taxExemptMark/gw_dao_tax_exempt_mark_21',
   '../../../domain/vo/egui/gw_egui_main_fields',
-  '../../../domain/vo/egui/gw_egui_line_fields'
+  '../../../domain/vo/egui/gw_egui_line_fields',
 ], (
   ramda,
   dateUtil,
@@ -24,8 +27,11 @@ define([
   gwTaxCalculationDao,
   gwTaxTypeDao,
   gwCarrierTypeDao,
+  gwCustomClearanceMarkDao,
+  gwCustomCategoryDao,
+  gwTaxExemptMarkDao,
   mainFields,
-  lineFields
+  lineFields,
 ) => {
   /**
    * Module Description...
@@ -49,6 +55,7 @@ define([
       : gwBusinessEntityDao.getBySubsidiary(eguiMainObj.subsidiaryId)
     eguiMainObj = updateSeller(eguiMainObj, seller)
     eguiMainObj = updateCarrierAndDonation(eguiMainObj)
+    eguiMainObj = updateZeroTaxInfo(eguiMainObj)
     eguiMainObj = updateMiscFields(eguiMainObj, configuration)
     eguiMainObj = updateGuiNumber(eguiMainObj)
     return eguiMainObj
@@ -65,7 +72,16 @@ define([
     return eguiMain
   }
 
-  function updateBuyer() {}
+  function updateZeroTaxInfo(eguiMainObj) {
+    let eguiMain = JSON.parse(JSON.stringify(eguiMainObj))
+    eguiMain.customExportCategory = eguiMain.customExportCategory ? gwCustomCategoryDao.getById(eguiMain.customExportCategory.value) : eguiMain.customExportCategory
+    eguiMain.zeroTaxMark = eguiMain.zeroTaxMark ? gwTaxExemptMarkDao.getById(eguiMain.zeroTaxMark.value) : eguiMain.zeroTaxMark
+    eguiMain.clearanceMark = eguiMain.clearanceMark ? gwCustomClearanceMarkDao.getById(eguiMain.clearanceMark.value) : eguiMain.clearanceMark
+    return eguiMain
+  }
+
+  function updateBuyer() {
+  }
 
   function updateGuiNumber(eguiMainObj) {
     var eguiMain = JSON.parse(JSON.stringify(eguiMainObj))
@@ -85,7 +101,7 @@ define([
     var eguiMain = JSON.parse(JSON.stringify(eguiMainObj))
     if (eguiMain['carrierType'] && eguiMain['carrierType'].value) {
       eguiMain['carrierType'] = gwCarrierTypeDao.getById(
-        eguiMain['carrierType'].value
+        eguiMain['carrierType'].value,
       )
     }
     eguiMain['needUploadMig'] = getCheckboxValue(eguiMain['isNotUploadEGui'])
@@ -112,7 +128,7 @@ define([
       : gwTaxCalculationDao.getById(configuration.taxCalcMethod.value)
     eguiMain.documentStatus = getDocumentStatus(
       eguiMain.isIssueEgui,
-      eguiMain.isNotUploadEGui
+      eguiMain.isNotUploadEGui,
     )
     eguiMain['documentUploadStatus'] =
       eguiMain.isUploadEGui === 'F'
@@ -188,7 +204,7 @@ define([
     line.nsTaxAmt = line.nsTaxAmt ? parseFloat(line.nsTaxAmt) : 0
     line.nsTotalAmt = line.nsAmt + line.nsTaxAmt
     var lineTaxRate = parseFloat(
-      parseInt(line['taxRate'].replace('%', ''), 10) / 100
+      parseInt(line['taxRate'].replace('%', ''), 10) / 100,
     )
     line.nsTaxExemptedSalesAmt = 0
     line.nsTaxZeroSalesAmt = 0
@@ -219,7 +235,7 @@ define([
   function gwRecalculateLineTax(line) {
     var eguiLine = JSON.parse(JSON.stringify(line))
     var lineTaxRate = parseFloat(
-      parseInt(eguiLine['taxRate'].replace('%', ''), 10) / 100
+      parseInt(eguiLine['taxRate'].replace('%', ''), 10) / 100,
     )
     var lineTaxType = gwTaxTypeDao.getTaxTypeByTaxCode(line.taxCode.value)
 
@@ -262,7 +278,7 @@ define([
       sumTaxExemptedSalesAmt: 'taxExemptedSalesAmt',
       sumTaxZeroSalesAmt: 'taxZeroSalesAmt',
       sumTaxAmt: 'taxAmt',
-      sumTotalAmt: 'totalAmt'
+      sumTotalAmt: 'totalAmt',
     }
 
     var summaryInitObj = ramda.reduce(
@@ -271,7 +287,7 @@ define([
         return summary
       },
       {},
-      ramda.keys(sumAmountFields)
+      ramda.keys(sumAmountFields),
     )
     summaryInitObj['taxType'] = []
     summaryInitObj['taxRate'] = []
@@ -284,7 +300,7 @@ define([
             return result
           },
           result,
-          ramda.keys(sumAmountFields)
+          ramda.keys(sumAmountFields),
         )
         if (result['taxType'].indexOf(parseInt(line['taxType'].value)) === -1) {
           result['taxType'].push(parseInt(line['taxType'].value, 10))
@@ -299,7 +315,7 @@ define([
         return result
       },
       summaryInitObj,
-      eguiLines
+      eguiLines,
     )
     var taxType = getSummaryTaxType(summary.taxType)
     summary.taxType = taxType
@@ -311,7 +327,7 @@ define([
     var result = {
       isValid: true,
       errorCode: '',
-      errorMessage: ''
+      errorMessage: '',
     }
     if (lineSumTaxType.length > 2) {
       result.isValid = false
@@ -338,7 +354,7 @@ define([
     var result = {
       isValid: true,
       errorCode: '',
-      errorMessage: ''
+      errorMessage: '',
     }
     if (lineSummaryTaxRate.length > 2) {
       result.isValid = false
@@ -403,10 +419,10 @@ define([
     var eguiMainObj = JSON.parse(JSON.stringify(eguiMain))
     eguiMainObj['salesAmt'] = Math.round(eguiLineSummary.sumSalesAmt)
     eguiMainObj['taxExemptedSalesAmt'] = Math.round(
-      eguiLineSummary.sumTaxExemptedSalesAmt
+      eguiLineSummary.sumTaxExemptedSalesAmt,
     )
     eguiMainObj['zeroTaxSalesAmt'] = Math.round(
-      eguiLineSummary.sumTaxZeroSalesAmt
+      eguiLineSummary.sumTaxZeroSalesAmt,
     )
     eguiMainObj['taxAmt'] = Math.round(eguiLineSummary.sumTaxAmt)
     eguiMainObj['totalAmt'] = Math.round(eguiLineSummary.sumTotalAmt)

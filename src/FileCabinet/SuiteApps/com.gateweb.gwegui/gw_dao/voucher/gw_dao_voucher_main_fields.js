@@ -204,8 +204,8 @@ define(['../../library/ramda.min'], function (ramda) {
     },
     custrecord_gw_clearance_mark: {
       id: 'custrecord_gw_clearance_mark',
-      sourceField: 'customClearanceMark',
-      outputField: 'customClearanceMark'
+      sourceField: 'clearanceMark.value',
+      outputField: 'clearanceMark'
     },
     custrecord_gw_voucher_status: {
       id: 'custrecord_gw_voucher_status',
@@ -299,23 +299,23 @@ define(['../../library/ramda.min'], function (ramda) {
     },
     custrecord_gw_applicable_zero_tax: {
       id: 'custrecord_gw_applicable_zero_tax',
-      sourceField: '',
-      outputField: 'zeroTaxOption'
+      sourceField: 'zeroTaxMark.value',
+      outputField: 'zeroTaxMark'
     },
     custrecord_gw_customs_export_category: {
       id: 'custrecord_gw_customs_export_category',
-      sourceField: '',
-      outputField: 'customsExportCategory'
+      sourceField: 'customExportCategory.value',
+      outputField: 'customExportCategory'
     },
     custrecord_gw_customs_export_no: {
       id: 'custrecord_gw_customs_export_no',
-      sourceField: '',
-      outputField: 'customsExportNumber'
+      sourceField: 'customExportNum',
+      outputField: 'customExportNum'
     },
     custrecord_gw_customs_export_date: {
       id: 'custrecord_gw_customs_export_date',
-      sourceField: '',
-      outputField: 'customsExportDate'
+      sourceField: 'customExportDate',
+      outputField: 'customExportDate'
     },
     custrecord_gw_need_upload_egui_mig: {
       id: 'custrecord_gw_need_upload_egui_mig',

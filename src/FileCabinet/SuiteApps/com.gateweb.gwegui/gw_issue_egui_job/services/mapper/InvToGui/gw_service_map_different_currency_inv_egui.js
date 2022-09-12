@@ -9,6 +9,9 @@ define([
   '../../../../gw_dao/docFormat/gw_dao_doc_format_21',
   '../../../../gw_dao/taxCalcMethod/gw_dao_tax_calc_method_21',
   '../../../../gw_dao/taxType/gw_dao_tax_type_21',
+  '../../../../gw_dao/customClearanceMark/gw_dao_custom_clearance_mark_21',
+  '../../../../gw_dao/customExportCategory/gw_dao_custom_export_category',
+  '../../../../gw_dao/taxExemptMark/gw_dao_tax_exempt_mark',
   '../../../domain/vo/egui/gw_egui_main_fields_foreign',
   '../../../domain/vo/egui/gw_egui_line_fields_foreign'
 ], (
@@ -22,6 +25,9 @@ define([
   gwDocFormatDao,
   gwTaxCalculationDao,
   gwTaxTypeDao,
+  gwCustomClearanceMarkDao,
+  gwCustomCategoryDao,
+  gwTaxExemptMarkDao,
   mainFields,
   lineFields
 ) => {
@@ -47,18 +53,7 @@ define([
     log.debug({ title: 'update body values seller', details: seller })
     eguiMainObj = updateSeller(eguiMainObj, seller)
     eguiMainObj = updateCarrierAndDonation(eguiMainObj)
-    eguiMainObj = updateMiscFields(eguiMainObj, configuration)
-    eguiMainObj = updateGuiNumber(eguiMainObj)
-    log.debug({ title: 'eguiMainObj', details: eguiMainObj })
-    return eguiMainObj
-  }
-
-  function updateEguiIssuedBodyValues(eguiMain) {
-    var configuration = gwEguiConfigDao.getConfig()
-    var eguiMainObj = JSON.parse(JSON.stringify(eguiMain))
-    var seller = gwBusinessEntityDao.getByTaxId(eguiMainObj.sellerTaxId)
-    eguiMainObj = updateSeller(eguiMainObj, seller)
-    eguiMainObj = updateCarrierAndDonation(eguiMainObj)
+    eguiMainObj = updateZeroTaxInfo(eguiMainObj)
     eguiMainObj = updateMiscFields(eguiMainObj, configuration)
     eguiMainObj = updateGuiNumber(eguiMainObj)
     log.debug({ title: 'eguiMainObj', details: eguiMainObj })
@@ -91,6 +86,14 @@ define([
       eguiMain['isNotUploadEGui'] === 'F' ? 'ALL' : 'NONE'
     eguiMain['printMark'] =
       !eguiMain['carrierType'] && !eguiMain['donationCode'] ? 'Y' : 'N'
+    return eguiMain
+  }
+
+  function updateZeroTaxInfo(eguiMainObj) {
+    let eguiMain = JSON.parse(JSON.stringify(eguiMainObj))
+    eguiMain.customExportCategory = eguiMain.customExportCategory ? gwCustomCategoryDao.getById(eguiMain.customExportCategory.value) : eguiMain.customExportCategory
+    eguiMain.zeroTaxMark = eguiMain.zeroTaxMark ? gwTaxExemptMarkDao.getById(eguiMain.zeroTaxMark.value) : eguiMain.zeroTaxMark
+    eguiMain.clearanceMark = eguiMain.clearanceMark ? gwCustomClearanceMarkDao.getById(eguiMain.clearanceMark.value) : eguiMain.clearanceMark
     return eguiMain
   }
 

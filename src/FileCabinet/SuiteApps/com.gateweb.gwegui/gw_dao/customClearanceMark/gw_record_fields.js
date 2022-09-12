@@ -12,20 +12,20 @@ define(['../../library/ramda.min'], function (ramda) {
 
    */
   let exports = {}
-  let recordTypeId = 'customrecord_gw_customs_export_category'
+  let recordTypeId = 'customrecord_gw_ap_doc_custom_option'
   let fieldConfig = {
     name: {
       id: 'name',
       sourceField: '',
       outputField: 'name',
     },
-    custrecord_gw_customers_export_cate_id: {
-      id: 'custrecord_gw_customers_export_cate_id',
+    custrecord_gw_ap_doc_custom_value: {
+      id: 'custrecord_gw_ap_doc_custom_value',
       sourceField: '',
       outputField: 'value',
     },
-    custrecord_gw_customers_export_cate_text: {
-      id: 'custrecord_gw_customers_export_cate_text',
+    custrecord_gw_ap_doc_custom_text: {
+      id: 'custrecord_gw_ap_doc_custom_text',
       sourceField: '',
       outputField: 'text',
     },

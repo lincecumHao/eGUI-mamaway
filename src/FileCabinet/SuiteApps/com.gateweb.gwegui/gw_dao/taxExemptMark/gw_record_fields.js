@@ -7,33 +7,33 @@ define(['../../library/ramda.min'], function (ramda) {
    * @copyright 2021 Gateweb
    * @author Sean Lin <sean.hyl@gmail.com>
    *
-   * @NApiVersion 2.0
+   * @NApiVersion 2.1
    * @NModuleScope Public
 
    */
-  var exports = {}
-  var recordId = 'customrecord_gw_exempt_option'
-  var fieldConfig = {
+  let exports = {}
+  let recordTypeId = 'customrecord_gw_ap_doc_exempt_option'
+  let fieldConfig = {
     name: {
       id: 'name',
       sourceField: '',
       outputField: 'name',
     },
-    custrecord_gw_gbsvalue: {
-      id: 'custrecord_gw_exempt_value',
+    custrecord_gw_ap_doc_exempt_value: {
+      id: 'custrecord_gw_ap_doc_exempt_value',
       sourceField: '',
       outputField: 'value',
     },
-    custrecord_gw_gbstext: {
-      id: 'custrecord_gw_exempt_text',
+    custrecord_gw_ap_doc_exempt_text: {
+      id: 'custrecord_gw_ap_doc_exempt_text',
       sourceField: '',
       outputField: 'text',
     },
   }
 
-  var fieldInputMapping = ramda.reduce(
+  let fieldInputMapping = ramda.reduce(
     function (result, fieldId) {
-      var fieldObj = fieldConfig[fieldId]
+      let fieldObj = fieldConfig[fieldId]
       if (fieldObj.sourceField) {
         result[fieldId] = fieldObj.sourceField
       }
@@ -43,9 +43,9 @@ define(['../../library/ramda.min'], function (ramda) {
     Object.keys(fieldConfig)
   )
 
-  var fieldOutputMapping = ramda.reduce(
+  let fieldOutputMapping = ramda.reduce(
     function (result, fieldId) {
-      var fieldObj = fieldConfig[fieldId]
+      let fieldObj = fieldConfig[fieldId]
       if (fieldObj.outputField) {
         result[fieldObj.id] = fieldObj.outputField
       }
@@ -61,6 +61,6 @@ define(['../../library/ramda.min'], function (ramda) {
   })
   exports.fieldOutputMapping = fieldOutputMapping
   exports.fieldInputMapping = fieldInputMapping
-  exports.recordId = recordId
+  exports.recordId = recordTypeId
   return exports
 })
