@@ -71,10 +71,10 @@ define([
      */
     getBySubsidiary(subsidiaryId) {
       return this.getAll().filter(function (recordObj) {
+        const subsidiaryField = recordObj[fieldConfig.fields.custrecord_gw_be_ns_subsidiary.outputField]
+        const subsidiaryValue = (typeof subsidiaryField === 'string') ? subsidiaryField.toString() : subsidiaryField.valueOf.toString()
         return (
-          recordObj[
-            fieldConfig.fields.custrecord_gw_be_ns_subsidiary.outputField
-          ].value.toString() === subsidiaryId.toString()
+          subsidiaryValue === subsidiaryId.toString()
         )
       })[0]
     }
