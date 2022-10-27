@@ -39,16 +39,21 @@ define([
   var _min_governence = 100
   var _final_remaining_usage = 0
   
-  var _allowance_pre_code = invoiceutility.getConfigureValue('ALLOWANCE_GROUP', 'ALLOWANCE_PRE_CODE')
+  var _allowance_pre_code = ''
   //商品名稱欄位
-  var _ns_item_name_field = invoiceutility.getConfigureValue('ITEM_GROUP', 'ITEM_NAME_FIELD')
+  var _ns_item_name_field = ''
   //DIRECT : 直接上傳 / APPROVE : 需審核
-  var _allowance_upload_way = invoiceutility.getConfigureValue('ALLOWANCE_GROUP', 'ALLOWANCE_UPLOAD_WAY')
+  var _allowance_upload_way = ''
   
   //1. 取得待處理的Credit_Memo資料 
   function executeScript(context) {
     log.debug('executeScript', '執行批次作業')  
     try {
+			 _allowance_pre_code = invoiceutility.getConfigureValue('ALLOWANCE_GROUP', 'ALLOWANCE_PRE_CODE')
+			//商品名稱欄位
+			 _ns_item_name_field = invoiceutility.getConfigureValue('ITEM_GROUP', 'ITEM_NAME_FIELD')
+			//DIRECT : 直接上傳 / APPROVE : 需審核
+			 _allowance_upload_way = invoiceutility.getConfigureValue('ALLOWANCE_GROUP', 'ALLOWANCE_UPLOAD_WAY')
 			tax_diff_balance = stringutility.convertToFloat(invoiceutility.getConfigureValue('TAX_GROUP', 'TAX_DIFF_BALANCE'))
     	loadAllTaxInformation()
     	
