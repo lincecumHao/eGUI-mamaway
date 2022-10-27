@@ -34,7 +34,7 @@ define([
 
   var _gw_creditmemo_detail_search_id = gwconfigure.getGwCreditmemoDetailSearchId()
   //稅差
-  var tax_diff_balance = stringutility.convertToFloat(invoiceutility.getConfigureValue('TAX_GROUP', 'TAX_DIFF_BALANCE'))
+  var tax_diff_balance = ''
   
   var _min_governence = 100
   var _final_remaining_usage = 0
@@ -49,6 +49,7 @@ define([
   function executeScript(context) {
     log.debug('executeScript', '執行批次作業')  
     try {
+			tax_diff_balance = stringutility.convertToFloat(invoiceutility.getConfigureValue('TAX_GROUP', 'TAX_DIFF_BALANCE'))
     	loadAllTaxInformation()
     	
 		//1. search credit_memo
