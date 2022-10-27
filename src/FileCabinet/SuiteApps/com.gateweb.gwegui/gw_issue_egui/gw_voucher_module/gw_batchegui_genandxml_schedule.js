@@ -72,10 +72,10 @@ define([
   var _gw_allowance_num_end_field = 'custbody_gw_allowance_num_end'
   var _deduction_egui_number_field = 'custbody_gw_creditmemo_deduction_list'
 
-  var _allowance_pre_code = invoiceutility.getConfigureValue('ALLOWANCE_GROUP', 'ALLOWANCE_PRE_CODE')
+  var _allowance_pre_code = ''
   
   //商品名稱欄位
-  var _ns_item_name_field = invoiceutility.getConfigureValue('ITEM_GROUP', 'ITEM_NAME_FIELD')
+  var _ns_item_name_field = '' //invoiceutility.getConfigureValue('ITEM_GROUP', 'ITEM_NAME_FIELD')
 	  
   //放公司基本資料
   var _companyObjAry = []
@@ -3553,6 +3553,8 @@ define([
 
   function executeScript(context) {
     //removeRecord();return;
+    _allowance_pre_code = invoiceutility.getConfigureValue('ALLOWANCE_GROUP', 'ALLOWANCE_PRE_CODE')
+    _ns_item_name_field = invoiceutility.getConfigureValue('ITEM_GROUP', 'ITEM_NAME_FIELD')
     //稅差
     var _tax_diff_balance = stringutility.convertToFloat(
       invoiceutility.getConfigureValue('TAX_GROUP', 'TAX_DIFF_BALANCE')
