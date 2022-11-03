@@ -522,10 +522,10 @@
             <name>測試設定-default</name>
         </instance>
         <instance scriptid="val_9599_2130928_608">
-            <custrecord_gw_config_dl_base_url>https://nsprint.tweinv.com:443</custrecord_gw_config_dl_base_url>
+            <custrecord_gw_config_dl_base_url>https://gw-ns-service.tweinv.com</custrecord_gw_config_dl_base_url>
             <custrecord_gw_conf_active>F</custrecord_gw_conf_active>
             <custrecord_gw_conf_ns_acct_id></custrecord_gw_conf_ns_acct_id>
-            <custrecord_gw_conf_print_base_url>https://nsprint.tweinv.com:443</custrecord_gw_conf_print_base_url>
+            <custrecord_gw_conf_print_base_url>https://gw-ns-service.tweinv.com</custrecord_gw_conf_print_base_url>
             <custrecord_gw_conf_turnkey_base_url>https://api.gwis.com.tw</custrecord_gw_conf_turnkey_base_url>
             <custrecord_gw_conf_tax_calc_method>[scriptid=customrecord_gw_tax_calc_method_option.val_111434_t2411467_263]</custrecord_gw_conf_tax_calc_method>
             <custrecord_gw_conf_acceptable_variation>1.00</custrecord_gw_conf_acceptable_variation>
