@@ -47,4 +47,16 @@
         <scriptdeployment scriptid="customscript_gw_voucher_reupload_ui_list.customdeploy_gw_voucher_reupload_ui_list" action="OVERWRITE"/>
         <scriptdeployment scriptid="customscript_gw_voucher_unlocked_ui_list.customdeploy_gw_voucher_unlocked_ui_list" action="OVERWRITE"/>
     </scriptdeployments>
+    <customrecordtypes>
+        <customrecordtype scriptid="customrecord_gw_ap_doc_tax_type_option">
+            <instances defaultAction="PRESERVE">
+            </instances>
+        </customrecordtype>
+        <customrecordtype scriptid="customrecord_gw_egui_config">
+            <instances defaultAction="PRESERVE">
+            </instances>
+        </customrecordtype>
+
+
+    </customrecordtypes>
 </preference>
