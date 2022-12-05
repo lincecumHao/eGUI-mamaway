@@ -36,9 +36,9 @@ define([], function () {
     var numberStrArray = number.toString().split('')
     var result = numberStrArray.reduce(calculate, 0)
     if (parseInt(numberStrArray[6]) === 7) {
-      return result % 10 === 0 || (result + 1) % 10 === 0
+      return result % 5 === 0 || (result + 1) % 5 === 0
     }
-    return result % 10 === 0
+    return result % 5 === 0
   }
 
   function calculate(total, digitStr, index) {

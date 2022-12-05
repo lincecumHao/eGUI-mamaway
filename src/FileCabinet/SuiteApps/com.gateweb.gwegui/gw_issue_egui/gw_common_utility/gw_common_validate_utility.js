@@ -78,7 +78,7 @@ define(['N/format'], function (format) {
       sum += calculate(taxId[i] * validateOperator[i])
     }
 
-    return sum % 10 == 0 || (taxId[6] == '7' && (sum + 1) % 10 == 0)
+    return sum % 5 == 0 || (taxId[6] == '7' && (sum + 1) % 5 == 0)
   }
 
   function checkIdent(id) {
@@ -175,6 +175,6 @@ define(['N/format'], function (format) {
     checkCarrier: checkCarrier,
     checkEmail: checkEmail,
     isValidGUI: isValidGUI,
-    checkIdent: checkIdent,
+    checkIdent: checkIdent
   }
 })
