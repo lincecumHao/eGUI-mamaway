@@ -2373,10 +2373,14 @@ define([
           )
         }
 
-        if (_invoiceNumber.length == 0) {
+        if (_invoiceNumber.length == 0 || _invoiceNumber == 'BUSY') {
           var _title = '字軌管理'
-          var _message =
-            '無本期(' + year_month + ')字軌請匯入或日期小於字軌日期!'
+          var _message = '無本期(' + year_month + ')字軌請匯入或日期小於字軌日期!'
+          if (_invoiceNumber == 'BUSY'){
+          	  _title   = '憑證管理'
+          	  _message ='本期(' + year_month + ')字軌使用忙碌,請稍後再開立!'
+          }
+          
           gwmessage.showErrorMessage(_title, _message)
 
           break
