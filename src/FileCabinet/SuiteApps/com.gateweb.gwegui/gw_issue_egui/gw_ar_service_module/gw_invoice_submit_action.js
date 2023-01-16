@@ -21,8 +21,8 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
         columns: [
           search.createColumn({ name: 'custrecord_gw_voucher_number' }),
           search.createColumn({ name: 'custrecord_gw_tax_type' }),
-          search.createColumn({ name: 'custrecord_gw_voucher_date' }),
-        ],
+          search.createColumn({ name: 'custrecord_gw_voucher_date' })
+        ]
       })
 
       var _filterArray = []
@@ -39,7 +39,7 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
 
     return _internalid
   }
-  
+
   function searchVoucherByInternalId(internal_id) {
     var _internalid
     try {
@@ -48,22 +48,29 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
         columns: [
           search.createColumn({ name: 'custrecord_gw_original_gui_number' }),
           search.createColumn({ name: 'custrecord_gw_original_gui_date' }),
-          search.createColumn({ name: 'custrecord_gw_voucher_main_internal_id' }),
-        ],
+          search.createColumn({
+            name: 'custrecord_gw_voucher_main_internal_id'
+          })
+        ]
       })
 
       var _filterArray = []
-      _filterArray.push(['custrecord_gw_ns_document_apply_id', 'is', internal_id])
+      _filterArray.push([
+        'custrecord_gw_ns_document_apply_id',
+        'is',
+        internal_id
+      ])
       _mySearch.filterExpression = _filterArray
-       
+
       log.debug('filterArray=', JSON.stringify(_filterArray))
       _mySearch.run().each(function (result) {
-    	  var _result = JSON.parse(JSON.stringify(result)) 
-    	  if (_result.values.custrecord_gw_voucher_main_internal_id.length != 0) {
-    		  _internalid = _result.values.custrecord_gw_voucher_main_internal_id[0].value //54
-          }
-    	    
-          return true
+        var _result = JSON.parse(JSON.stringify(result))
+        if (_result.values.custrecord_gw_voucher_main_internal_id.length != 0) {
+          _internalid =
+            _result.values.custrecord_gw_voucher_main_internal_id[0].value //54
+        }
+
+        return true
       })
     } catch (e) {
       log.error(e.name, e.message)
@@ -73,10 +80,11 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
   }
 
   function convertExportDate(export_date) {
+    if (!export_date) return ''
     var _tradition_date //民國年月日(1101231)
 
-    try { 
-      var _date = new Date(export_date) 
+    try {
+      var _date = new Date(export_date)
 
       var _year = _date.getFullYear() - 1911
       var _month = _date.getMonth() + 1
@@ -121,8 +129,8 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
         values: values,
         options: {
           enableSourcing: false,
-          ignoreMandatoryFields: true,
-        },
+          ignoreMandatoryFields: true
+        }
       })
     } catch (e) {
       log.error(e.name, e.message)
@@ -134,40 +142,40 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
     try {
       if (context.type == context.UserEventType.EDIT) {
         var _current_record = context.newRecord
-         
+
         //發票號碼
         var _gui_num_start = _current_record.getValue({
-          fieldId: 'custbody_gw_gui_num_start',
+          fieldId: 'custbody_gw_gui_num_start'
         })
         var _gui_num_end = _current_record.getValue({
-          fieldId: 'custbody_gw_gui_num_end',
+          fieldId: 'custbody_gw_gui_num_end'
         })
         //折讓單號碼
         var _allowance_num_start = _current_record.getValue({
-          fieldId: 'custbody_gw_allowance_num_start',
+          fieldId: 'custbody_gw_allowance_num_start'
         })
         var _allowance_num_end = _current_record.getValue({
-          fieldId: 'custbody_gw_allowance_num_end',
+          fieldId: 'custbody_gw_allowance_num_end'
         })
         //零稅率註記
         var _applicable_zero_tax_id = _current_record.getValue({
-          fieldId: 'custbody_gw_applicable_zero_tax',
+          fieldId: 'custbody_gw_applicable_zero_tax'
         })
         //通關註記
         var _egui_clearance_mark_id = _current_record.getValue({
-          fieldId: 'custbody_gw_egui_clearance_mark',
+          fieldId: 'custbody_gw_egui_clearance_mark'
         })
         //海關出口單類別
         var _customs_export_category_id = _current_record.getValue({
-          fieldId: 'custbody_gw_customs_export_category',
+          fieldId: 'custbody_gw_customs_export_category'
         })
         //海關出口號碼
         var _customs_export_no = _current_record.getValue({
-          fieldId: 'custbody_gw_customs_export_no',
+          fieldId: 'custbody_gw_customs_export_no'
         })
         //輸出或結匯日期
         var _customs_export_date = _current_record.getValue({
-          fieldId: 'custbody_gw_customs_export_date',
+          fieldId: 'custbody_gw_customs_export_date'
         })
 
         if (_gui_num_start !== '' || _allowance_num_start != '') {
@@ -177,9 +185,9 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
             _gui_num_start.length != 0
               ? searchVoucherByNumber(_gui_num_start)
               : searchVoucherByNumber(_allowance_num_start)
-          */    
+          */
           var _internalid = searchVoucherByInternalId(_current_record.id)
-          
+
           var _tradition_date = convertExportDate(_customs_export_date)
           //通關註記
           var _egui_clearance_mark = ''
@@ -187,24 +195,23 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
             var _ap_doc_custom_option_record = record.load({
               type: 'customrecord_gw_ap_doc_custom_option',
               id: _egui_clearance_mark_id,
-              isDynamic: true,
+              isDynamic: true
             })
             _egui_clearance_mark = _ap_doc_custom_option_record.getValue({
-              fieldId: 'custrecord_gw_ap_doc_custom_value',
+              fieldId: 'custrecord_gw_ap_doc_custom_value'
             })
           }
-        
-        	  
+
           //適用零稅率註記選項
           var _applicable_zero_tax = ''
           if (_applicable_zero_tax_id.length != 0) {
             var _ap_doc_exempt_option_record = record.load({
               type: 'customrecord_gw_ap_doc_exempt_option',
               id: _applicable_zero_tax_id,
-              isDynamic: true,
+              isDynamic: true
             })
             _applicable_zero_tax = _ap_doc_exempt_option_record.getValue({
-              fieldId: 'custrecord_gw_ap_doc_exempt_value',
+              fieldId: 'custrecord_gw_ap_doc_exempt_value'
             })
           }
           //零稅率註記類別
@@ -213,17 +220,17 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
             var _customs_export_category_record = record.load({
               type: 'customrecord_gw_customs_export_category',
               id: _customs_export_category_id,
-              isDynamic: true,
+              isDynamic: true
             })
             _customs_export_category = _customs_export_category_record.getValue(
               { fieldId: 'custrecord_gw_customers_export_cate_id' }
             )
           }
-          
+
           //1:非經海關的資料應填寫證明文件名稱與號碼=>不寫入
-          if (_egui_clearance_mark=='1'){
-        	  _customs_export_no='' //海關出口報單號碼-14碼
-        	  _customs_export_category='' //海關出口報單類別
+          if (_egui_clearance_mark == '1') {
+            _customs_export_no = '' //海關出口報單號碼-14碼
+            _customs_export_category = '' //海關出口報單類別
           }
 
           saveToVoucherMain(
@@ -247,7 +254,7 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
         throw error.create({
           name: '零稅率資訊',
           message: '海關出口報單號碼長度須為14碼,海關出口報單類別不可空白!',
-          notifyOff: true,
+          notifyOff: true
         })
       }
     }
@@ -260,35 +267,37 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
       var _current_record = context.newRecord
       //海關出口號碼
       var _customs_export_no = _current_record.getValue({
-        fieldId: 'custbody_gw_customs_export_no',
+        fieldId: 'custbody_gw_customs_export_no'
       })
       //通關註記 1-非經海關 2-經海關
       //非經海關的資料應填寫證明文件名稱與號碼；經海關才是報單號碼與報單類別。現在的欄位帶入有誤
       var _egui_clearance_mark = ''
       var _egui_clearance_mark_id = _current_record.getValue({
-        fieldId: 'custbody_gw_egui_clearance_mark',
+        fieldId: 'custbody_gw_egui_clearance_mark'
       })
       if (_egui_clearance_mark_id.length != 0) {
         var _ap_doc_custom_option_record = record.load({
           type: 'customrecord_gw_ap_doc_custom_option',
           id: _egui_clearance_mark_id,
-          isDynamic: true,
+          isDynamic: true
         })
         _egui_clearance_mark = _ap_doc_custom_option_record.getValue({
-          fieldId: 'custrecord_gw_ap_doc_custom_value',
+          fieldId: 'custrecord_gw_ap_doc_custom_value'
         })
       }
-      log.error('通關註記', 'egui_clearance_mark='+_egui_clearance_mark)
-      
-      
-      //海關出口報單類別 
+      log.error('通關註記', 'egui_clearance_mark=' + _egui_clearance_mark)
+
+      //海關出口報單類別
       var _customs_export_category_id = _current_record.getValue({
-          fieldId: 'custbody_gw_customs_export_category',
-      }) 
-      
-      if ( _egui_clearance_mark=='2' && 
-    	  (_customs_export_category_id.length == 0 || _customs_export_no.length != 14) ) {
-          _result = false
+        fieldId: 'custbody_gw_customs_export_category'
+      })
+
+      if (
+        _egui_clearance_mark == '2' &&
+        (_customs_export_category_id.length == 0 ||
+          _customs_export_no.length != 14)
+      ) {
+        _result = false
       }
     } catch (e) {
       log.error(e.name, e.message)
