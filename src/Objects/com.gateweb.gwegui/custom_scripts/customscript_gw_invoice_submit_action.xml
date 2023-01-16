@@ -11,14 +11,14 @@
         <scriptdeployment scriptid="customdeploy_gw_invoice_submit_action">
             <allemployees>F</allemployees>
             <alllocalizationcontexts>T</alllocalizationcontexts>
-            <allroles>F</allroles>
+            <allroles>T</allroles>
             <audslctrole></audslctrole>
             <eventtype></eventtype>
             <isdeployed>T</isdeployed>
             <loglevel>DEBUG</loglevel>
             <recordtype>INVOICE</recordtype>
             <runasrole>ADMINISTRATOR</runasrole>
-            <status>TESTING</status>
+            <status>RELEASED</status>
         </scriptdeployment>
     </scriptdeployments>
 </usereventscript>
