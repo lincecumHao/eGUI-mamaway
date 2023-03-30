@@ -17,7 +17,7 @@ define([
   '../gw_common_utility/gw_common_configure',
   '../gw_common_utility/gw_syncegui_to_document_utility',
   '../../gw_dao/taxType/gw_dao_tax_type_21',
-  '../../gw_dao/docFormat/gw_dao_doc_format_21', 
+  '../../gw_dao/docFormat/gw_dao_doc_format_21',
   '../../gw_dao/carrierType/gw_dao_carrier_type_21',
   '../../gw_dao/settings/gw_dao_egui_config'
 ], function (
@@ -92,6 +92,10 @@ define([
 
   //放期別資料
   var _apply_period_options_ary = []
+  //EGUI
+  var _egui_gw_dm_mig_type = 1
+  //ALLOWANCE
+  var _allowance_gw_dm_mig_type = 4
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
   //1.取得稅別資料
   function loadAllTaxInformation() {
@@ -1976,6 +1980,18 @@ log.debug('檢查 jsonObj',  JSON.stringify(jsonObj))
         fieldId: 'custrecord_gw_voucher_type',
         value: voucher_type,
       })
+      //20230324
+      if (voucher_type=='EGUI'){
+    	  _voucherMainRecord.setValue({
+	        fieldId: 'custrecord_gw_dm_mig_type',
+	        value: _egui_gw_dm_mig_type,
+	      })
+      }else{
+    	  _voucherMainRecord.setValue({
+  	        fieldId: 'custrecord_gw_dm_mig_type',
+  	        value: _allowance_gw_dm_mig_type,
+  	      })
+      }
       _voucherMainRecord.setValue({
         fieldId: 'custrecord_gw_voucher_number',
         value: _documentNumber,
@@ -3596,6 +3612,9 @@ log.debug('檢查 jsonObj',  JSON.stringify(jsonObj))
     var _tax_diff_balance = stringutility.convertToFloat(
       invoiceutility.getConfigureValue('TAX_GROUP', 'TAX_DIFF_BALANCE')
     )
+    //20230324 預先處理
+    _egui_gw_dm_mig_type = invoiceutility.getVoucherMigType('EGUI')
+    _allowance_gw_dm_mig_type = invoiceutility.getVoucherMigType('ALLOWANCE')
 
     //1.載入公司資料
     loadAllCustomerRecord()
