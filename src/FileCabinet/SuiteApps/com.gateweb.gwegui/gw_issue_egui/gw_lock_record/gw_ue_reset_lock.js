@@ -75,20 +75,33 @@ define([], () => {
   }
 
   function clearLock(record) {
+
+    var fieldsArray = [
+      'custbody_gw_evidence_issue_status',
+      'custbody_gw_gui_apply_period',
+      'custbody_gw_gui_date',
+      'custbody_gw_gui_format',
+      'custbody_gw_gui_sales_amt',
+      'custbody_gw_gui_sales_amt_tax_exempt',
+      'custbody_gw_gui_sales_amt_tax_zero',
+      'custbody_gw_gui_tax_amt',
+      'custbody_gw_gui_tax_file_date',
+      'custbody_gw_gui_tax_rate',
+      'custbody_gw_gui_tax_type',
+      'custbody_gw_gui_total_amt'
+    ];
+
     var lock_validate_field = 'custbody_gw_lock_transaction'
     record.setValue({
       fieldId: lock_validate_field,
       value: false,
     })
 
-    record.setValue({
-      fieldId: 'custbody_gw_gui_num_start',
-      value: '',
-    })
-
-    record.setValue({
-      fieldId: 'custbody_gw_gui_num_end',
-      value: '',
+    fieldsArray.forEach(function (item) {
+      record.setValue({
+        fieldId: item,
+        value: '',
+      })
     })
   }
 

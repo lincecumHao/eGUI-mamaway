@@ -194,7 +194,7 @@ define([
   ///////////////////////////////////////////////////////////////////////////////////////////
 
   //顯示畫面
-  function createFormHeader(apply_business_no, form) {
+  function createFormHeader(apply_business_no, form, context) {
     /////////////////////////////////////////////////////////////
     //load company information
     var _seller_obj = getSellerInfo(apply_business_no)
@@ -699,6 +699,8 @@ define([
       value: 'user_selected',
       text: '自選發票'
     })
+
+    var eguiNumber = context.request.parameters.eguiNumber;
     //人工輸入發票號碼
     var _deduction_voucher_number = form.addField({
       id: 'custpage_deduction_egui_number',
@@ -706,7 +708,7 @@ define([
       label: '扣抵發票號碼',
       container: 'row03_fieldgroupid'
     })
-
+    if(eguiNumber) _deduction_voucher_number.defaultValue = eguiNumber;
     ///////////////////////////////////////////////////////////////////////////////////
     //憑證開立方式
     var _voucherOpenTypeField = form.addField({
@@ -2660,7 +2662,7 @@ define([
     //////////////////////////////////////////////////////////////////////////////////////////
 
     /////////////////////////////////////////////////////////////////////////////////////////
-    createFormHeader(_selected_business_no, form)
+    createFormHeader(_selected_business_no, form, context)
 
     if (_selected_invoice_Id != null) {
       var _idAry = _selected_invoice_Id.split(',')
