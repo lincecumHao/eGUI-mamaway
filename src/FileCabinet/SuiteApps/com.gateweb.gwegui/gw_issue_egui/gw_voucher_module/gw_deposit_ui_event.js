@@ -1448,6 +1448,11 @@ define([
         })
         //_voucherMainRecord.setValue({fieldId:'custrecord_gw_voucher_extra_memo',value:mainObj.extraMemo});
 
+        _voucherMainRecord.setValue({
+            fieldId: 'custrecord_gw_original_buyer_id',
+            value: mainObj.customer_id,
+        })
+          
         //20201201 walter modify
         if (stringutility.trim(mainObj.manual_voucher_number) != '') {
           _voucherMainRecord.setValue({

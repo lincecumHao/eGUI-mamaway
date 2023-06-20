@@ -611,6 +611,7 @@ define([
     _eguiFormatCode.addSelectOption({
       value: '35-07',
       text: '35-一般稅額電子發票[裝訂數:50張]',
+      isSelected: true
     })
 
     //人工輸入發票號碼

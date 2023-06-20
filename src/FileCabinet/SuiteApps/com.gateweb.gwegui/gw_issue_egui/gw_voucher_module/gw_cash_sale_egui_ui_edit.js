@@ -337,12 +337,6 @@ define([
       id: 'custpage_customer_id',
       type: serverWidget.FieldType.SELECT,
       label: '客戶代碼',
-      container: 'row01_fieldgroupid',
-    })
-    var _customer_id = form.addField({
-      id: 'custpage_customer_id',
-      type: serverWidget.FieldType.SELECT,
-      label: '客戶代碼',
       source: 'CUSTOMER',
       container: 'row01_fieldgroupid'
     })  

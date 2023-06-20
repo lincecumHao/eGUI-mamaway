@@ -19,6 +19,7 @@ define(['N/format'], function (format) {
   //取得Netsuite當地時間
   function getNetSuiteLocalDate() {
     var _date = new Date()
+    
     var _formatDate = format.format({
       value: _date,
       type: format.Type.DATETIME,

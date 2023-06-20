@@ -421,6 +421,11 @@ define([
     _customs_clearance_mark.defaultValue = _voucher_record.getValue({
       fieldId: 'custrecord_gw_clearance_mark',
     })
+    if (_voucher_record.getValue({fieldId: 'custrecord_gw_clearance_mark'})=='') {
+    	_customs_clearance_mark.updateDisplayType({
+    	     displayType: serverWidget.FieldDisplayType.HIDDEN,
+    	})
+    }
     //發票類型
     var _invoice_type = form.addField({
       id: 'custpage_invoice_type',
