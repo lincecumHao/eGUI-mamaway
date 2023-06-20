@@ -15,6 +15,7 @@ define([
   '../gw_common_utility/gw_common_migxml_utility',
   '../gw_common_utility/gw_common_invoice_utility',
   '../gw_common_utility/gw_common_gwmessage_utility',
+  '../../library/gw_date_util'
 ], function (
   search,
   currentRecord,
@@ -26,7 +27,8 @@ define([
   stringutility,
   migxmlutility,
   invoiceutility,
-  gwmessage
+  gwmessage,
+  gwDateUtil
 ) {
   var _voucher_apply_list_record = gwconfigure.getGwVoucherApplyListRecord()
   var _voucher_main_record = gwconfigure.getGwVoucherMainRecord()
@@ -1134,7 +1136,6 @@ define([
           return
         }
 
-        
         var _selected_business_no = _currentRecord.getValue({
             fieldId: 'custpage_businessno',
           })
@@ -1222,11 +1223,11 @@ define([
       })
       _voucherApplyRecord.setValue({
         fieldId: 'custrecord_gw_voucher_apply_date',
-        value: dateutility.getNetSuiteLocalDate(),
+        value: new Date(gwDateUtil.getNsCompatibleDate())
       })
       _voucherApplyRecord.setValue({
         fieldId: 'custrecord_gw_voucher_apply_time',
-        value: dateutility.getCompanyLocatTime(),
+        value: gwDateUtil.getCurrentDateTime().time
       })
       _voucherApplyRecord.setValue({
         fieldId: 'custrecord_gw_voucher_void_comment',
