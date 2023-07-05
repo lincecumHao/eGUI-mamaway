@@ -2014,6 +2014,8 @@ define([
     _filterArray.push(['taxline', 'is', false]) //擋稅別科目
     _filterArray.push('and')
     _filterArray.push(['cogs', 'is', false]) //擋庫存及成本科目
+    _filterArray.push('and')
+    _filterArray.push(['item', 'noneof', '@NONE@'])
     ////////////////////////////////////////////////////////////////
     _mySearch.filterExpression = _filterArray
     ////////////////////////////////////////////////////////////////////////////////////////
