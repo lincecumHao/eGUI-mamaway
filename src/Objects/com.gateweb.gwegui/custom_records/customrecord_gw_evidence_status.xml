@@ -9,8 +9,11 @@
   <allowquickadd>T</allowquickadd>
   <allowquicksearch>F</allowquicksearch>
   <allowuiaccess>T</allowuiaccess>
+  <customsegment></customsegment>
   <description></description>
+  <enabledle>T</enabledle>
   <enablekeywords>T</enablekeywords>
+  <enablemailmerge>F</enablemailmerge>
   <enablenametranslation>F</enablenametranslation>
   <enablenumbering>F</enablenumbering>
   <enableoptimisticlocking>T</enableoptimisticlocking>
@@ -189,6 +192,18 @@
       <custrecord_gw_evidence_status_value>CI</custrecord_gw_evidence_status_value>
       <isinactive>F</isinactive>
       <name>憑證作廢待審核</name>
+    </instance>
+    <instance scriptid="val_256568_t2636252_401">
+      <custrecord_gw_evidence_status_text>手開憑證未開立</custrecord_gw_evidence_status_text>
+      <custrecord_gw_evidence_status_value>MI</custrecord_gw_evidence_status_value>
+      <isinactive>F</isinactive>
+      <name>手開憑證未開立</name>
+    </instance>
+    <instance scriptid="val_256569_t2636252_631">
+      <custrecord_gw_evidence_status_text>人工開立發票</custrecord_gw_evidence_status_text>
+      <custrecord_gw_evidence_status_value>MI</custrecord_gw_evidence_status_value>
+      <isinactive>F</isinactive>
+      <name>單張開立發票</name>
     </instance>
   </instances>
 </customrecordtype>

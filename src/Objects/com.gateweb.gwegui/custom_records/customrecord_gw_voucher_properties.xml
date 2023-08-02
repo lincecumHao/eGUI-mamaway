@@ -304,6 +304,26 @@
             <isinactive>F</isinactive>
             <name>Voucher Properties</name>
         </instance>
+        <instance scriptid="val_7965_2130928_570">
+            <custrecord_gw_netsuite_id_text></custrecord_gw_netsuite_id_text>
+            <custrecord_gw_netsuite_id_value></custrecord_gw_netsuite_id_value>
+            <custrecord_gw_voucher_group_type>TAX_TYPE</custrecord_gw_voucher_group_type>
+            <custrecord_gw_voucher_property_id>TAX_SPECIAL_TAX</custrecord_gw_voucher_property_id>
+            <custrecord_gw_voucher_property_note>特種稅</custrecord_gw_voucher_property_note>
+            <custrecord_gw_voucher_property_value>4</custrecord_gw_voucher_property_value>
+            <isinactive>F</isinactive>
+            <name>Voucher Properties</name>
+        </instance>
+        <instance scriptid="val_7966_2130928_577">
+            <custrecord_gw_netsuite_id_text></custrecord_gw_netsuite_id_text>
+            <custrecord_gw_netsuite_id_value></custrecord_gw_netsuite_id_value>
+            <custrecord_gw_voucher_group_type>TAX_TYPE</custrecord_gw_voucher_group_type>
+            <custrecord_gw_voucher_property_id>TAX_MIX_TAX</custrecord_gw_voucher_property_id>
+            <custrecord_gw_voucher_property_note>混合稅</custrecord_gw_voucher_property_note>
+            <custrecord_gw_voucher_property_value>9</custrecord_gw_voucher_property_value>
+            <isinactive>F</isinactive>
+            <name>Voucher Properties</name>
+        </instance>
         <instance scriptid="val_7942_2130928_532">
             <custrecord_gw_netsuite_id_text>Accounts Receivable</custrecord_gw_netsuite_id_text>
             <custrecord_gw_netsuite_id_value>123</custrecord_gw_netsuite_id_value>
@@ -344,26 +364,6 @@
             <isinactive>F</isinactive>
             <name>Voucher Properties</name>
         </instance>
-        <instance scriptid="val_7965_2130928_570">
-            <custrecord_gw_netsuite_id_text></custrecord_gw_netsuite_id_text>
-            <custrecord_gw_netsuite_id_value></custrecord_gw_netsuite_id_value>
-            <custrecord_gw_voucher_group_type>TAX_TYPE</custrecord_gw_voucher_group_type>
-            <custrecord_gw_voucher_property_id>TAX_SPECIAL_TAX</custrecord_gw_voucher_property_id>
-            <custrecord_gw_voucher_property_note>特種稅</custrecord_gw_voucher_property_note>
-            <custrecord_gw_voucher_property_value>4</custrecord_gw_voucher_property_value>
-            <isinactive>F</isinactive>
-            <name>Voucher Properties</name>
-        </instance>
-        <instance scriptid="val_7966_2130928_577">
-            <custrecord_gw_netsuite_id_text></custrecord_gw_netsuite_id_text>
-            <custrecord_gw_netsuite_id_value></custrecord_gw_netsuite_id_value>
-            <custrecord_gw_voucher_group_type>TAX_TYPE</custrecord_gw_voucher_group_type>
-            <custrecord_gw_voucher_property_id>TAX_MIX_TAX</custrecord_gw_voucher_property_id>
-            <custrecord_gw_voucher_property_note>混合稅</custrecord_gw_voucher_property_note>
-            <custrecord_gw_voucher_property_value>9</custrecord_gw_voucher_property_value>
-            <isinactive>F</isinactive>
-            <name>Voucher Properties</name>
-        </instance>
         <instance scriptid="val_21571_2130928_449">
             <custrecord_gw_netsuite_id_text></custrecord_gw_netsuite_id_text>
             <custrecord_gw_netsuite_id_value></custrecord_gw_netsuite_id_value>
@@ -382,7 +382,57 @@
             <custrecord_gw_voucher_property_note>稅差額度[1..5..], 設999則以Netsuite為準不檢查</custrecord_gw_voucher_property_note>
             <custrecord_gw_voucher_property_value>1</custrecord_gw_voucher_property_value>
             <isinactive>F</isinactive>
-            <name>Voucher Properties	</name>
+            <name>Voucher Properties</name>
+        </instance>
+        <instance scriptid="val_21571_2130928_301">
+            <custrecord_gw_netsuite_id_text></custrecord_gw_netsuite_id_text>
+            <custrecord_gw_netsuite_id_value></custrecord_gw_netsuite_id_value>
+            <custrecord_gw_voucher_group_type>UPLOAD_FILE</custrecord_gw_voucher_group_type>
+            <custrecord_gw_voucher_property_id>GWTempUploadFileFolder</custrecord_gw_voucher_property_id>
+            <custrecord_gw_voucher_property_note>上傳檔案暫存目錄</custrecord_gw_voucher_property_note>
+            <custrecord_gw_voucher_property_value>GWTempUploadFileFolder</custrecord_gw_voucher_property_value>
+            <isinactive>F</isinactive>
+            <name>Voucher Properties</name>
+        </instance>
+        <instance scriptid="val_21571_2130928_302">
+            <custrecord_gw_netsuite_id_text></custrecord_gw_netsuite_id_text>
+            <custrecord_gw_netsuite_id_value></custrecord_gw_netsuite_id_value>
+            <custrecord_gw_voucher_group_type>ALLOWANCE_GROUP</custrecord_gw_voucher_group_type>
+            <custrecord_gw_voucher_property_id>ALLOWANCE_PRE_CODE</custrecord_gw_voucher_property_id>
+            <custrecord_gw_voucher_property_note>折讓單前綴文字</custrecord_gw_voucher_property_note>
+            <custrecord_gw_voucher_property_value></custrecord_gw_voucher_property_value>
+            <isinactive>F</isinactive>
+            <name>Voucher Properties</name>
+        </instance>
+        <instance scriptid="val_21571_2130928_303">
+            <custrecord_gw_netsuite_id_text></custrecord_gw_netsuite_id_text>
+            <custrecord_gw_netsuite_id_value></custrecord_gw_netsuite_id_value>
+            <custrecord_gw_voucher_group_type>ALLOWANCE_GROUP</custrecord_gw_voucher_group_type>
+            <custrecord_gw_voucher_property_id>ALLOWANCE_UPLOAD_WAY</custrecord_gw_voucher_property_id>
+            <custrecord_gw_voucher_property_note>DIRECT : 直接上傳 / APPROVE : 需審核</custrecord_gw_voucher_property_note>
+            <custrecord_gw_voucher_property_value>APPROVE</custrecord_gw_voucher_property_value>
+            <isinactive>F</isinactive>
+            <name>Voucher Properties</name>
+        </instance>
+        <instance scriptid="val_21571_2130928_304">
+            <custrecord_gw_netsuite_id_text></custrecord_gw_netsuite_id_text>
+            <custrecord_gw_netsuite_id_value></custrecord_gw_netsuite_id_value>
+            <custrecord_gw_voucher_group_type>MAIL_GROUP</custrecord_gw_voucher_group_type>
+            <custrecord_gw_voucher_property_id>USED_EMAIL</custrecord_gw_voucher_property_id>
+            <custrecord_gw_voucher_property_note></custrecord_gw_voucher_property_note>
+            <custrecord_gw_voucher_property_value>N</custrecord_gw_voucher_property_value>
+            <isinactive>F</isinactive>
+            <name>Voucher Properties</name>
+        </instance>
+        <instance scriptid="val_21571_2130928_305">
+            <custrecord_gw_netsuite_id_text>item.displayname 或 memo</custrecord_gw_netsuite_id_text>
+            <custrecord_gw_netsuite_id_value>item.displayname</custrecord_gw_netsuite_id_value>
+            <custrecord_gw_voucher_group_type>ITEM_GROUP</custrecord_gw_voucher_group_type>
+            <custrecord_gw_voucher_property_id>ITEM_NAME_FIELD</custrecord_gw_voucher_property_id>
+            <custrecord_gw_voucher_property_note>設定抓取NS商品欄位名稱</custrecord_gw_voucher_property_note>
+            <custrecord_gw_voucher_property_value>item.displayname</custrecord_gw_voucher_property_value>
+            <isinactive>F</isinactive>
+            <name>Voucher Properties</name>
         </instance>
     </instances>
 </customrecordtype>
