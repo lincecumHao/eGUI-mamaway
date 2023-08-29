@@ -85,6 +85,8 @@ define([
 
   //稅差
   var _tax_diff_balance = ''
+	  
+  var _item_detail_summary_error=false
 
   var _invoiceEditScriptId = 'customscript_gw_document_ui_list'
   var _invoiceEditDeployId = 'customdeploy_gw_document_ui_list'
@@ -361,6 +363,19 @@ define([
   function validateForm() {
     var _errorMsg = ''
     try {
+      var _cash_sales_hiddent_id = _current_record.getValue({ fieldId: 'custpage_cash_sale_hiddent_listid' })
+  	  var _record = record.load({
+  	    type: record.Type.CASH_SALE,
+  	    id: _cash_sales_hiddent_id,
+  	    isDynamic: true,
+      })
+      var _gw_lock_transaction = _record.getValue({
+          fieldId: 'custbody_gw_lock_transaction',
+      })         
+      if (_gw_lock_transaction==true){
+      	  _errorMsg += 'EGUI已開立,'
+      }
+    	
       //B2BS, B2BE, B2C
       var _mig_type = _current_record.getValue({ fieldId: 'custpage_mig_type' })
       //1.請輸入商品名稱:中文30字以內, 英文60字以內
@@ -373,14 +388,18 @@ define([
       } else if (stringutility.checkByteLength(_custpage_company_name) > 60) {
         _errorMsg += '公司名稱長度不可超過30個中文字或60個英文字,'
       }
-      //3.載具格式錯誤, 請輸入載具類別, 輸入統編不得使用自然人(CQ0001)載具!
+      //買方統編
       var _buyer_identifier = _current_record.getValue({
         fieldId: 'custpage_buyer_identifier',
       })
+      //檢查統編
+      if (!validate.isValidGUI(_buyer_identifier) && _buyer_identifier !='0000000000') {
+          _errorMsg += '統編格式錯誤<br>'
+      } 
       var _custpage_customer_id = _current_record.getValue({
         fieldId: 'custpage_customer_id',
       })
-
+      //3.載具格式錯誤, 請輸入載具類別, 輸入統編不得使用自然人(CQ0001)載具!
       var _carrier_type = _current_record.getValue({fieldId: 'custpage_carrier_type'})
       if (_carrier_type.length !=0) _carrier_type = getCarryTypeValueByID(_carrier_type)
 
@@ -425,12 +444,7 @@ define([
         if (!validate.checkEmail(_buyer_email)) {
           _errorMsg += '請輸入正確Email格式,'
         }
-      }
-      //custpage_buyer_identifier
-
-      if (_buyer_identifier.length == 0) {
-        _errorMsg += '請維護正確統編,'
-      }
+      } 
       var _buyer_name = _current_record.getValue({
         fieldId: 'custpage_buyer_name',
       })
@@ -690,6 +704,23 @@ define([
       value: _voucherOpenType,
       ignoreFieldChange: true,
     })
+    
+    var _total_amount = _current_record.getValue({
+      fieldId: 'custpage_total_amount'
+    })
+    //小計含稅總金額
+    var _sum_item_total_amount = _current_record.getValue({
+      fieldId: 'custpage_sum_item_total_amount'
+    })  
+   	var _check_tax_diff_balance = stringutility.convertToFloat(invoiceutility.getConfigureValue('TAX_GROUP', 'TAX_DIFF_BALANCE'))
+   	var _diff_amount = stringutility.convertToFloat(_total_amount)-stringutility.convertToFloat(_sum_item_total_amount)
+
+    if (_check_tax_diff_balance < Math.abs(_diff_amount)){ 
+    	_item_detail_summary_error=true
+    	var _title = '憑證管理'
+    	var _err_message='小計金額(含稅)['+_sum_item_total_amount+']與總金額(含稅)['+_total_amount+']不一致,請確認是否仍要開立發票'
+    	gwmessage.showErrorMessage(_title, _err_message) 
+    } 
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -772,12 +803,16 @@ define([
 
   function submitDocument(assignlogScriptId, assignlogDeploymentId) {
     try {
-      var options = {
-        title: '憑證管理',
-        message: '是否開立憑證',
-      }
-
-      dialog.confirm(options).then(success).catch(failure)
+    	var _alert_message = '是否開立憑證'
+   	    if (_item_detail_summary_error==true){ 
+   	        _alert_message = '小計(含稅)金額與總金額(含稅)不一致,請確認是否仍要開立發票 !'
+   	    }
+   	    var options = {
+   	        title: '憑證管理',
+   	        message: _alert_message
+   	    }
+        dialog.confirm(options).then(success).catch(failure)
+   	    
     } catch (e) {
       log.debug(e.name, e.message)
     }
@@ -795,6 +830,7 @@ define([
     document.getElementById('custpage_forward_back_button').disabled = true
 
     var _errorMsg = validateForm()
+    
     if (_errorMsg.length != 0) {
       var _title = '憑證管理'
       gwmessage.showErrorMessage(_title, _errorMsg)
@@ -940,6 +976,7 @@ define([
     var _cash_sale_selected_listid = _current_record.getValue({
       fieldId: 'custpage_cash_sale_hiddent_listid',
     })
+    
     if (_checkInvoiceCountFlag == false) {
       var _title = '憑證管理'
       var _message = '憑證錯誤:'
@@ -1628,6 +1665,7 @@ define([
         if (stringutility.trim(manual_voucher_number) != '') {
           _invoiceNumber = manual_voucher_number
         } else {
+         /**	
           _invoiceNumber = invoiceutility.getAssignLogNumber(
             _main.invoice_type,
             _main.company_ban,
@@ -1637,12 +1675,26 @@ define([
             assignLogType,
             _documentDate
           )
+          */
+          _invoiceNumber = invoiceutility.getAssignLogNumberAndCheckDuplicate(
+				            -1,
+				            _main.invoice_type,
+				            _main.company_ban,
+				            _main.dept_code,
+				            _main.classification,
+				            year_month,
+				            assignLogType,
+				            _documentDate
+				          )
         }
 
-        if (_invoiceNumber.length == 0) {
+        if (_invoiceNumber.length == 0 || _invoiceNumber == 'BUSY') {
           var _title = '字軌管理'
-          var _message =
-            '無本期(' + year_month + ')字軌請匯入或日期小於字軌日期!'
+          var _message ='無本期(' + year_month + ')字軌請匯入或日期小於字軌日期!'
+          if (_invoiceNumber == 'BUSY'){
+        	  _title   = '憑證管理'
+        	  _message ='本期(' + year_month + ')字軌使用忙碌,請稍後再開立!'
+          }
           gwmessage.showErrorMessage(_title, _message)
 
           break

@@ -33,12 +33,11 @@ define([
   gwmessage
 ) {
   function initializeVar() {
-    _allowance_pre_code = getAllowancePreCode()
-    _tax_diff_balance = getTaxDiffBalance()
+    _allowance_pre_code = getAllowancePreCode() 
   }
 
   function checkVarExists() {
-    return _allowance_pre_code !== '' && _tax_diff_balance !== ''
+    return _allowance_pre_code !== ''  
   }
 
   function constructorWrapper(func) {
@@ -77,14 +76,10 @@ define([
   var _defaultAssignLogType = 'TYPE_1'
 
   var _default_upload_status = 'A' //A->P->C,E
-  var _tax_diff_balance = ''
-  //稅差
-  function getTaxDiffBalance() {
-    _tax_diff_balance = stringutility.convertToFloat(
-      invoiceutility.getConfigureValue('TAX_GROUP', 'TAX_DIFF_BALANCE')
-    )
-  }
-
+  var _tax_diff_balance = -1
+	  
+  var _item_detail_summary_error=false
+  
   var _allowance_pre_code = ''
   function getAllowancePreCode() {
     _allowance_pre_code = invoiceutility.getConfigureValue(
@@ -133,8 +128,18 @@ define([
       var _deduction_egui_number = _current_record.getField({
         fieldId: 'custpage_deduction_egui_number'
       })
+      
+      var _gw_gui_num_start_field = _current_record.getField({
+        fieldId: 'custbody_gw_gui_num_start',
+      })
+         
       if (_allowance_deduction_period === 'user_selected') {
-        _deduction_egui_number.isDisplay = true //顯示
+        _deduction_egui_number.isDisplay = true //顯示 
+        _current_record.setValue({
+          fieldId: 'custpage_deduction_egui_number',
+          value: _current_record.getValue({fieldId: 'custbody_gw_gui_num_start'}),
+          ignoreFieldChange: true
+        })
       } else {
         _deduction_egui_number.isDisplay = false //不顯示
         _current_record.setValue({
@@ -410,14 +415,18 @@ define([
           _errorMsg += '發票備註長度不可超過200字元<br>'
       }
       
-      //3.載具格式錯誤, 請輸入載具類別, 輸入統編不得使用自然人(CQ0001)載具!
+      //買方統編
       var _buyer_identifier = _current_record.getValue({
         fieldId: 'custpage_buyer_identifier'
       })
+      //檢查統編
+      if (!validate.isValidGUI(_buyer_identifier) && _buyer_identifier !='0000000000') {
+          _errorMsg += '統編格式錯誤<br>'
+      }      
       var _custpage_customer_id = _current_record.getValue({
         fieldId: 'custpage_customer_id'
       })
-
+      //3.載具格式錯誤, 請輸入載具類別, 輸入統編不得使用自然人(CQ0001)載具!
       var _carrier_type = _current_record.getValue({
         fieldId: 'custpage_carrier_type'
       })
@@ -758,7 +767,10 @@ define([
   }
 
   //Init Company Information TODO
-  function pageInit(context) {
+  function pageInit(context) {	  
+	_tax_diff_balance = stringutility.convertToInt(
+			              invoiceutility.getConfigureValue('TAX_GROUP', 'TAX_DIFF_BALANCE')
+		                )  
     _current_record.setValue({
       fieldId: 'custpage_print_type',
       value: '熱感式印表機',
@@ -787,6 +799,10 @@ define([
     var _total_amount = _current_record.getValue({
       fieldId: 'custpage_total_amount'
     })
+    //小計含稅總金額
+    var _sum_item_total_amount = _current_record.getValue({
+      fieldId: 'custpage_sum_item_total_amount'
+    }) 
  
     if (_invoiceAry.length > 1 && _creditMemoAry.length > 1) {
       _voucherOpenType = _voucherOpenType + 'ALL'
@@ -828,6 +844,16 @@ define([
       fieldId: 'custpage_deduction_egui_number'
     })
     _deduction_egui_number.isDisplay = false //預設不顯示
+    
+    //檢查明細金額的一致性 
+    var _diff_amount = stringutility.convertToFloat(_total_amount)-stringutility.convertToFloat(_sum_item_total_amount)
+    if (_tax_diff_balance < Math.abs(_diff_amount)){ 
+    	_item_detail_summary_error=true
+    	var _title = '憑證管理'
+    	var _err_message='小計金額(含稅)['+_sum_item_total_amount+']與總金額(含稅)['+_total_amount+']不一致,請確認是否仍要開立發票'
+    	gwmessage.showErrorMessage(_title, _err_message) 
+    } 
+    
   }
 
   function showCreditMemoForm(
@@ -1071,12 +1097,16 @@ define([
 
   function submitDocument(assignlogScriptId, assignlogDeploymentId) {
     try {
-      var options = {
-        title: '憑證管理',
-        message: '是否開立憑證'
-      }
+    	 var _alert_message = '是否開立憑證'
+	     if (_item_detail_summary_error==true){ 
+	         _alert_message = '小計(含稅)金額與總金額(含稅)不一致,請確認是否仍要開立發票 !'
+	     }
+	     var options = {
+	        title: '憑證管理',
+	        message: _alert_message
+	     }
 
-      dialog.confirm(options).then(successTask).catch(failureTask)
+         dialog.confirm(options).then(successTask).catch(failureTask)
     } catch (e) {
       log.debug(e.name, e.message)
     }
@@ -1085,9 +1115,134 @@ define([
   function failureTask(reason) {
     console.log('cancel this task=>' + reason)
   }
-
+  
+  
+  function checkInvoiceOrCreditMemoIsLock(search_id, search_record_field_id) {
+    var _is_lock=false 
+    try { 
+	    var _check_hiddent_listid = _current_record.getValue({
+            fieldId: search_record_field_id
+        })	
+	  
+		///////////////////////////////////////////////////////////////////
+		if (_check_hiddent_listid.length !=0) { 
+			var _mySearch = search.load({
+				id: search_id,
+			})
+			var _filterArray = []
+			_filterArray.push(['mainline', search.Operator.IS, true])
+			_filterArray.push('and')
+			_filterArray.push([
+			  'custbody_gw_lock_transaction',
+			  search.Operator.IS,
+			  true,
+			])
+		  
+			var _internal_id_ary = _check_hiddent_listid.split(',') 
+			_filterArray.push('and')
+			_filterArray.push(['internalid', search.Operator.ANYOF, _internal_id_ary])    
+			_mySearch.filterExpression = _filterArray
+			
+			_mySearch.run().each(function (result) {
+				_is_lock=true 
+				return true      
+			})  
+		}
+    } catch (e) {
+       log.debug(e.name, e.message)
+    }
+	 
+    return _is_lock
+  }
+   
+  function lockOrUnlockRecord(invoice_hiddent_field_id,
+                              creditmemo_hiddent_field_id,
+							  lock_flag){
+	/////////////////////////////////////////////////////////////////////////
+	//發票
+	var _invoice_hiddent_listid = _current_record.getValue({
+         fieldId: invoice_hiddent_field_id
+    })		
+    //Update INVOICE
+    if (typeof _invoice_hiddent_listid !== 'undefined') {
+        var _idAry = _invoice_hiddent_listid.split(',')
+        for (var i = 0; i < _idAry.length; i++) {
+             var _internalId = _idAry[i]
+			 if (parseInt(_internalId) > 0) {
+				 try {
+					 var values = {}
+					 values[_invoce_control_field_id] = lock_flag
+					 
+					 if (lock_flag==false){
+					     values['custbody_gw_gui_num_start'] = ''
+					     values['custbody_gw_gui_num_end'] = '' 
+					 }
+					 var _id = record.submitFields({
+					     type: record.Type.INVOICE,
+					     id: parseInt(_internalId),
+					     values: values,
+					     options: {
+						   enableSourcing: false,
+						   ignoreMandatoryFields: true
+					     }
+					})
+			
+				 }catch(e){
+					 console.log(e.name + ':' + e.message)
+				 }				 
+			 }
+	    }
+	}	  
+	////////////////////////////////////////////////////////////////////////////////////////
+	//折讓單
+	var _creditmemo_hiddent_listid = _current_record.getValue({
+        fieldId: creditmemo_hiddent_field_id
+    })
+	if (typeof _creditmemo_hiddent_listid !== 'undefined') {
+        var _idAry = _creditmemo_hiddent_listid.split(',')
+        for (var i = 0; i < _idAry.length; i++) {
+            var _internalId = _idAry[i]
+            if (parseInt(_internalId) > 0) {
+				try {
+					 var values = {}
+					 values[_credmemo_control_field_id] = lock_flag
+					 if (lock_flag==false){ 
+					     values['custbody_gw_allowance_num_start'] = ''
+					     values['custbody_gw_allowance_num_end'] = ''
+					 }
+					 
+					 var _id = record.submitFields({
+					     type: record.Type.CREDIT_MEMO,
+					     id: parseInt(_internalId),
+					     values: values,
+					     options: {
+						   enableSourcing: false,
+						   ignoreMandatoryFields: true
+					     }
+					})
+			
+				}catch(e){
+					console.log(e.name + ':' + e.message)
+				}	
+		    }
+	    }
+	}  
+  }
+  
   function successTask(reason) {
     if (reason == false) return
+    
+    if (checkInvoiceOrCreditMemoIsLock('customsearch_gw_invoice_detail_search', _invoice_hiddent_listid)==true ||
+	    checkInvoiceOrCreditMemoIsLock('customsearch_gw_creditmemo_detail_search', _creditmemo_hiddent_listid)==true){
+		
+		var _title = '憑證管理'
+        gwmessage.showErrorMessage(_title, '憑證已開立!!!')
+         
+		return
+	} 
+	
+    lockOrUnlockRecord(_invoice_hiddent_listid,_creditmemo_hiddent_listid,true)
+
 
     //1.驗證資料
     document.getElementById('custpage_create_voucher_button').disabled = true
@@ -1099,6 +1254,9 @@ define([
       gwmessage.showErrorMessage(_title, _errorMsg)
       document.getElementById('custpage_forward_back_button').disabled = false
       document.getElementById('custpage_create_voucher_button').disabled = false
+      
+      lockOrUnlockRecord(_invoice_hiddent_listid,_creditmemo_hiddent_listid,false)
+      
       return
     }
 
@@ -1299,8 +1457,7 @@ define([
       if (_creditMemoAmountFlag_TaxType_3 == false)
         _creditmemo_error_message += '(免稅)發票可折金額不足<br>'
     }
-
-    //TODO
+ 
     //Check 混合稅部分
     var _organisedAry_TaxType_9 = organisingDocument(
       _applyMainObj,
@@ -1382,6 +1539,8 @@ define([
         _message += _creditmemo_error_message
       }
       gwmessage.showErrorMessage(_title, _message)
+      
+      lockOrUnlockRecord(_invoice_hiddent_listid,_creditmemo_hiddent_listid,false)
     } else {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       //處理要開發票的部分(999筆1包)-START
@@ -2276,6 +2435,7 @@ define([
         }
       }
       //alert('_ns_sales_amount='+_ns_sales_amount+' ,_ns_tax_rate='+_ns_tax_rate+' ,_ns_tax_amount='+_ns_tax_amount+' ,_tax_diff_balance='+_tax_diff_balance);
+       
       if (_tax_diff_balance < 999) {
         _tax_diff_error = invoiceutility.checkTaxDifference(
           _ns_sales_amount,
@@ -2284,6 +2444,7 @@ define([
           _tax_diff_balance
         )
       }
+       
     } catch (e) {
       console.log(e.name + ':' + e.message)
     }
@@ -2353,6 +2514,9 @@ define([
           var _title = '發票管理'
           var _message = '稅差超過(' + _tax_diff_balance + ')元 ,請重新調整!'
           gwmessage.showErrorMessage(_title, _message)
+          
+          lockOrUnlockRecord(_invoice_hiddent_listid,_creditmemo_hiddent_listid,false)
+          
           break
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2362,7 +2526,19 @@ define([
         if (stringutility.trim(manual_voucher_number) != '') {
           _invoiceNumber = manual_voucher_number
         } else {
+          /**	
           _invoiceNumber = invoiceutility.getAssignLogNumber(
+            _main.invoice_type,
+            _main.company_ban,
+            _main.dept_code,
+            _main.classification,
+            year_month,
+            assignLogType,
+            _documentDate
+          )
+          */
+          _invoiceNumber = invoiceutility.getAssignLogNumberAndCheckDuplicate(
+            -1,
             _main.invoice_type,
             _main.company_ban,
             _main.dept_code,
@@ -2383,6 +2559,8 @@ define([
           
           gwmessage.showErrorMessage(_title, _message)
 
+          lockOrUnlockRecord(_invoice_hiddent_listid,_creditmemo_hiddent_listid,false)
+          
           break
         } else {
           _guiNumberAry.push(_invoiceNumber)
@@ -3141,6 +3319,9 @@ define([
 
         if (_error_message.length != 0) {
           gwmessage.showErrorMessage(_title, _error_message)
+          
+          lockOrUnlockRecord(_invoice_hiddent_listid,_creditmemo_hiddent_listid,false)
+          
           break
         } else {
           //1.取得折讓單號
@@ -4774,7 +4955,11 @@ define([
         ])
       }
       _filterArray.push('and')
-      _filterArray.push(['custrecord_gw_tax_type', search.Operator.IS, taxType])
+      if(taxType=='9'){//混合稅
+         _filterArray.push(['custrecord_gw_tax_amount', search.Operator.GREATERTHAN, 0])
+      }else{
+    	_filterArray.push(['custrecord_gw_tax_type', search.Operator.IS, taxType])
+      } 
 
       //20201102 walter modify 不擋部門
       /**

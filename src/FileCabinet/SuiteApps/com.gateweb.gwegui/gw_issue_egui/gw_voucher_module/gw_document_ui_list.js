@@ -29,6 +29,9 @@ define([
   var invoiceEditDeployId = gwconfigure.getGwInvoiceUIEditDeployId()
 
   var _gw_voucher_properties = gwconfigure.getGwVoucherProperties() //設定檔
+   
+  //手開發票指定狀態
+  var _manual_evidence_status_value = invoiceutility.getManualOpenID()
 
   //欄位寬度
   var _field_height = 80
@@ -74,7 +77,7 @@ define([
     tranenddate,
     invoice_status
   ) {
-    
+	     
     var _mySearch = search.load({
       id: _gw_invoice_detail_search_id,
     })
@@ -91,6 +94,10 @@ define([
 
     _filterArray.push('and')
     _filterArray.push(['custbody_gw_is_issue_egui', search.Operator.IS, true])
+           
+    _filterArray.push('and')
+    _filterArray.push(['CUSTBODY_GW_EVIDENCE_ISSUE_STATUS.custrecord_gw_evidence_status_value', search.Operator.IS, _manual_evidence_status_value])
+ 
      
     if (subsidiary != '') {
 	    _filterArray.push('and')
@@ -312,7 +319,9 @@ define([
     _filterArray.push(['custbody_gw_lock_transaction', 'is', false])
     _filterArray.push('and')
     _filterArray.push(['custbody_gw_is_issue_egui', 'is', true])
-
+    _filterArray.push('and')
+    _filterArray.push(['CUSTBODY_GW_EVIDENCE_ISSUE_STATUS.custrecord_gw_evidence_status_value', search.Operator.IS, _manual_evidence_status_value])
+  
     if (subsidiary != '') {
 	    _filterArray.push('and')
 	    _filterArray.push(['subsidiary', search.Operator.ANYOF, subsidiary])

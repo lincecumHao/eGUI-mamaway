@@ -49,7 +49,7 @@ define(['N/record',
     	      id: document_internal_id,
     	      isDynamic: true,
     	})
-    	
+    	 	
     	var _gw_gui_format   = _document_record.getValue({fieldId: 'custbody_gw_gui_format'}) 
     	var _gw_gui_tax_type = _document_record.getValue({fieldId: 'custbody_gw_gui_tax_type'}) 
     	log.debug('syncToNetsuiteDocument format', 'record_type_id='+_record_type_id+',gw_gui_format='+_gw_gui_format+',gw_gui_tax_type='+_gw_gui_tax_type)
@@ -82,7 +82,9 @@ define(['N/record',
 		    values['custbody_gw_gui_tax_rate'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_tax_rate'})	
 		    //課稅別  
 		    values['custbody_gw_gui_tax_type'] = getTaxTypeIdByValue(voucher_main_record.getValue({fieldId: 'custrecord_gw_tax_type'}))	
-	 
+	        //發票號碼訖號-custbody_gw_gui_num_end
+		    //發票號碼起號-custbody_gw_gui_num_start
+		    
 		    //總計
 		    values['custbody_gw_gui_total_amt'] = _gui_total_amt
 		    //發票日期  
@@ -115,7 +117,7 @@ define(['N/record',
 		    log.debug('custbody_gw_gui_format', 'mof_code='+_mof_code+',format_code='+_format_code)
 		    
 		    var _gw_gui_format_obj = doc_format_21.getByValueAndMofCode(_format_code, _mof_code)
-		    values['custbody_gw_gui_format'] = _gw_gui_format_obj.id
+		    if(_gw_gui_format_obj!=null)values['custbody_gw_gui_format'] = _gw_gui_format_obj.id
 		 
 		    log.debug('custbody_gw_gui_format', 'custbody_gw_gui_format='+JSON.stringify(values))
 		    

@@ -17,6 +17,7 @@ define([
   '../gw_common_utility/gw_common_invoice_utility',
   '../gw_common_utility/gw_common_migxml_utility',
   '../gw_common_utility/gw_common_configure',
+  '../../gw_dao/taxType/gw_dao_tax_type_21'
 ], function (
   runtime,
   search,
@@ -30,7 +31,8 @@ define([
   stringutility,
   invoiceutility,
   migxmlutility,
-  gwconfigure
+  gwconfigure,
+  taxyype21
 ) {
   var _default_upload_status = 'A'
   var _gw_voucher_main_search_id = gwconfigure.getGwVoucherMainSearchId()
@@ -52,6 +54,64 @@ define([
 
   var _NETSUITE_MODEL = 'NETSUITE'
   var _GATEWEB_MODEL = 'GATEWEB'
+  var _taxObjAry = []	   
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //1.取得稅別資料
+  /**
+  function loadAllTaxInformation() {
+    try {
+	  var _all_tax_types = taxyype21.getAll()
+	  log.debug('get all_tax_types', JSON.stringify(_all_tax_types))
+ 
+	  for (var i=0; i<_all_tax_types.length; i++) {
+		   var _tax_json_obj = _all_tax_types[i]
+		   var _ns_tax_json_obj = _tax_json_obj.taxCodes
+		   log.debug('get _ns_tax_json_obj', JSON.stringify(_ns_tax_json_obj))
+		   var _netsuite_id_value = ''
+		   var _netsuite_id_text = ''
+		   if (_ns_tax_json_obj.length != 0) {
+              _netsuite_id_value = _ns_tax_json_obj.value //111;
+              _netsuite_id_text = _ns_tax_json_obj.text //Jul 2020;
+           }
+		   
+		   var _obj = {
+			  voucher_property_id: _tax_json_obj.name, //TAX_WITH_TAX
+			  voucher_property_value: _tax_json_obj.value, //1
+			  voucher_property_note: _tax_json_obj.text, //應稅
+			  netsuite_id_value: _netsuite_id_value, //8(NS internalID)
+			  netsuite_id_text: _netsuite_id_text,   //VAT_TW TAX 5%-TW(NS Text)
+		   }
+
+		   _taxObjAry.push(_obj)
+		   
+	  } 
+    } catch (e) {
+      log.error(e.name, e.message)
+    }
+  }
+  */ 
+  //取得稅別資料
+  /**
+  function getTaxInformation(netsuiteId) {
+    var _taxObj
+    try {
+      if (_taxObjAry != null) {
+        for (var i = 0; i < _taxObjAry.length; i++) {
+          var _obj = JSON.parse(JSON.stringify(_taxObjAry[i]))
+
+          if (_obj.netsuite_id_value == netsuiteId) {
+            _taxObj = _obj
+            break
+          }
+        }
+      }
+    } catch (e) {
+      log.error(e.name, e.message)
+    }
+
+    return _taxObj
+  }
+  */
 
   function loadInvoiceMigXml(voucherType, migType) {
     var _xmlString
@@ -1027,11 +1087,24 @@ define([
           _result.values[
             'CUSTRECORD_GW_VOUCHER_MAIN_INTERNAL_ID.custrecord_gw_original_gui_yearmonth'
           ]
-
+        /**
         var _item_tax_type = gwconfigure.getGwTaxTypeFromNSTaxCode(
           _dtl_item_tax_code
         )
-
+        */
+        
+        log.debug('get Dtl_item_tax_code', _dtl_item_tax_code)
+        /**
+        var _taxObj = getTaxInformation(_dtl_item_tax_code)
+        log.debug('get TaxObj', JSON.stringify(_taxObj))
+        var _item_tax_type = '1'
+        if (typeof _taxObj !== 'undefined') {
+        	_item_tax_type = _taxObj.voucher_property_value
+        }
+        */
+        var _taxObj = taxyype21.getTaxTypeByTaxCode(_dtl_item_tax_code)
+        log.debug('get TaxObj', JSON.stringify(_taxObj))
+        var _item_tax_type = (_taxObj) ? _taxObj.value : '1';
         //折讓單的稅別要四捨五入(_allowanceTaxAmount)
         var _allowanceTaxAmount = Math.round(
           stringutility.convertToFloat(_item_tax_amount)
@@ -1398,6 +1471,8 @@ define([
       'ACCESS_MODEL',
       'XML_MODEL'
     )
+    
+    //loadAllTaxInformation()
 
     var _guiJsonObjAry = getVoucherToDoList(_access_model, 'EGUI')
 

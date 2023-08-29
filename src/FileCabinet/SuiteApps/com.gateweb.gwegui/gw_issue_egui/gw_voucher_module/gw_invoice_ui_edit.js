@@ -42,6 +42,9 @@ define([
   var _customer_deposit_text = '顧客押金'
   //部門代碼
   var _default_department_id = ''
+	   
+  //統計Item金額
+  var _sum_item_total_amount = 0
 
   //商品名稱欄位
   var _ns_item_name_field = invoiceutility.getConfigureValue(
@@ -211,6 +214,16 @@ define([
     _applicable_zero_tax_field.updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
+    
+    var _gw_gui_num_start_field = form.addField({
+      id: 'custbody_gw_gui_num_start',
+      type: serverWidget.FieldType.TEXT,
+      label: '發票號碼起號'
+    })
+    _gw_gui_num_start_field.updateDisplayType({
+      displayType: serverWidget.FieldDisplayType.HIDDEN
+    })
+    
     //海關出口單類別
     var _customs_export_category_field = form.addField({
       id: 'custpage_gw_customs_export_category',
@@ -573,6 +586,17 @@ define([
     })
     _total_amount.updateDisplayType({
       displayType: serverWidget.FieldDisplayType.DISABLED
+    })
+    
+    //小計含稅總金額
+    var _sum_item_total_amount_field = form.addField({
+      id: 'custpage_sum_item_total_amount',
+      type: serverWidget.FieldType.TEXT,
+      label: '小計含稅總金額',
+      container: 'row01_fieldgroupid'
+    })
+    _sum_item_total_amount_field.updateDisplayType({
+      displayType: serverWidget.FieldDisplayType.HIDDEN
     })
 
     //憑證日期
@@ -1385,6 +1409,9 @@ define([
           line: row,
           value: stringutility.trimOrAppendBlank(_ns_item_total_amount)
         })
+        
+         //NE241 含稅金額
+        _sum_item_total_amount += stringutility.convertToFloat(_ns_item_total_amount)
 
         sublist.setSublistValue({
           id: 'custpage_invoice_total_tax_amount',
@@ -1594,6 +1621,15 @@ define([
     _toatl_amount_field.defaultValue = _ns_SumTotalAmount.toFixed(
       _numericToFixed
     )
+
+    //NE-241 小計含稅總金額
+    var _sum_item_total_amount_field = form.getField({
+      id: 'custpage_sum_item_total_amount'
+    })
+    _sum_item_total_amount_field.defaultValue = _sum_item_total_amount.toFixed(
+      _numericToFixed
+    )
+
     //處理總計計部分-START
     /////////////////////////////////////////////////////////////////////////////////////////
     //載具類別
@@ -1787,6 +1823,9 @@ define([
             line: row,
             value: _deduction_amount + _deduction_tax_amount
           })
+          //NE241 含稅金額
+          _sum_item_total_amount += _deduction_amount + _deduction_tax_amount
+
           sublist.setSublistValue({
             id: 'custpage_invoice_total_tax_amount',
             line: row,
@@ -1846,6 +1885,10 @@ define([
       label: 'NS Credit Memo 商品清單'
     })
     //sublist.addMarkAllButtons();
+    
+    var _gw_gui_num_start_field= form.getField({
+      id: 'custbody_gw_gui_num_start'
+    })
 
     var _idField = sublist.addField({
       id: 'customer_search_creditmemo_id',
@@ -2272,6 +2315,9 @@ define([
         //20210908 walter modify => 折扣項目作進Item, 不另外處理
         // &&  _itemtype != 'Discount'
       ) {
+    	  
+        _gw_gui_num_start_field.defaultValue = _result.values.custbody_gw_gui_num_start
+    	  
         //抓第1筆當部門
         if (_default_department_id.length == 0) {
           _default_department_id = _selectDepartment
@@ -2372,6 +2418,8 @@ define([
           line: row,
           value: stringutility.trimOrAppendBlank(_ns_item_total_amount)
         })
+        //NE241 含稅金額
+        _sum_item_total_amount += stringutility.convertToFloat(_ns_item_total_amount)
 
         sublist.setSublistValue({
           id: 'custpage_creditmemo_total_tax_amount',
@@ -2516,6 +2564,15 @@ define([
       id: 'custpage_total_amount'
     })
     _toatl_amount_field.defaultValue = _ns_SumTotalAmount.toFixed(
+      _numericToFixed
+    )
+    
+    
+    //NE-241 小計含稅總金額
+    var _sum_item_total_amount_field = form.getField({
+      id: 'custpage_sum_item_total_amount'
+    })
+    _sum_item_total_amount_field.defaultValue = _sum_item_total_amount.toFixed(
       _numericToFixed
     )
     /////////////////////////////////////////////////////////////////////////////////////////

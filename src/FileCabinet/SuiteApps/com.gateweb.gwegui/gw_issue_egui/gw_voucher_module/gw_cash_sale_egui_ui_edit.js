@@ -563,6 +563,18 @@ define([
     _total_amount.updateDisplayType({
       displayType: serverWidget.FieldDisplayType.DISABLED,
     })
+        
+    //NE-241 小計含稅總金額
+    var _sum_item_total_amount_field = form.addField({
+      id: 'custpage_sum_item_total_amount',
+      type: serverWidget.FieldType.TEXT,
+      label: '小計含稅總金額',
+      container: 'row01_fieldgroupid'
+    })
+    _sum_item_total_amount_field.updateDisplayType({
+      displayType: serverWidget.FieldDisplayType.HIDDEN
+    })
+    
     //憑證日期
     var _select_voucher_date = form.addField({
       id: 'custpage_select_voucher_date',
@@ -675,6 +687,7 @@ define([
     _eguiFormatCode.addSelectOption({
       value: '35-07',
       text: '35-一般稅額電子發票[裝訂數:50張]',
+      isSelected: true
     })
 
     //人工輸入發票號碼
@@ -1367,6 +1380,13 @@ define([
     _toatl_amount_field.defaultValue = _ns_SumTotalAmount.toFixed(
       _numericToFixed
     )
+    
+    //NE-241 小計含稅總金額
+    var _sum_item_total_amount_field = form.getField({
+      id: 'custpage_sum_item_total_amount'
+    })    
+    _sum_item_total_amount_field.defaultValue = (_sumSalesAmount+_sumDiscountAmount+_ns_SumTaxAmount).toFixed(_numericToFixed)
+ 
     //處理總計計部分-START
     /////////////////////////////////////////////////////////////////////////////////////////
     //載具類別

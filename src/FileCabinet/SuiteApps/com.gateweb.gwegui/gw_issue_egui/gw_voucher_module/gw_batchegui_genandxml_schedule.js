@@ -11,6 +11,7 @@ define([
   'N/record',
   'N/format',
   '../gw_common_utility/gw_common_string_utility',
+  '../gw_common_utility/gw_common_validate_utility',
   '../gw_common_utility/gw_common_invoice_utility',
   '../gw_common_utility/gw_common_date_utility',
   '../gw_common_utility/gw_common_configure',
@@ -25,6 +26,7 @@ define([
   record,
   format,
   stringutility,
+  validate,
   invoiceutility,
   dateutility,
   gwconfigure,
@@ -77,6 +79,9 @@ define([
   //商品名稱欄位
   var _ns_item_name_field = '' //invoiceutility.getConfigureValue('ITEM_GROUP', 'ITEM_NAME_FIELD')
 	  
+  //手開發票指定狀態
+  var _manual_evidence_status_value = invoiceutility.getManualOpenID()
+
   //放公司基本資料
   var _companyObjAry = []
   var _taxObjAry = []
@@ -743,7 +748,7 @@ define([
             /////////////////////////////////////////////////////////////////////////////////////////////////////////
             //載具類別
             var _gw_gui_carrier_type = ''
-            if (_result.values.custbody_gw_gui_carrier_type.length != 0) {
+            if (_result.values.custbody_gw_gui_carrier_type !=null && _result.values.custbody_gw_gui_carrier_type.length != 0) {
 		        _gw_gui_carrier_type = getCarryTypeValue(_result.values.custbody_gw_gui_carrier_type[0].value)  
 	        } 
 			var _gw_gui_carrier_id_1 = _result.values.custbody_gw_gui_carrier_id_1
@@ -1820,7 +1825,7 @@ define([
           ' ,year_month=' +
           _year_month
       )
-
+log.debug('檢查 jsonObj',  JSON.stringify(jsonObj))
       //_documentDate='20200911';_documentTime='23:59:59';_year_month='10910';
       var _net_value = 1
       var _assignLogType = 'TYPE_1'
@@ -1863,16 +1868,19 @@ define([
         //發票號碼 apply_dept_code, apply_class
         //_documentNumber = invoiceutility.getAssignLogNumber(invoice_type, jsonObj.sellerIdentifier, stringutility.trim(jsonObj.department), stringutility.trim(jsonObj.classId), _year_month, need_upload_mig, _documentDate);
         var _assignlog_dept_code = apply_dept_code
-        var _assignlog_class_code = apply_class
+        var _assignlog_class_code = apply_class 
+          
         if (stringutility.trim(apply_dept_code) == 'USE_INVOICE') {
           //以單據為主 = USE_INVOICE
-          _assignlog_dept_code = stringutility.trim(jsonObj.department)
+          _assignlog_dept_code = stringutility.trim(jsonObj.department)         
         }
         if (stringutility.trim(apply_class) == 'USE_INVOICE') {
           //以單據為主 = USE_INVOICE
-          _assignlog_class_code = stringutility.trim(jsonObj.classId)
+          _assignlog_class_code = stringutility.trim(jsonObj.classId)          
         }
+         
         if (need_upload_mig != 'ALL' && voucher_type != need_upload_mig) {
+         /**
           _documentNumber = invoiceutility.getAssignLogNumber(
             invoice_type,
             jsonObj.sellerIdentifier,
@@ -1882,7 +1890,23 @@ define([
             'NONE',
             _documentDate
           )
+          */
+          if (validate.isValidGUI(jsonObj.buyerIdentifier)==true || 
+        	  jsonObj.buyerIdentifier =='0000000000') {
+	          _documentNumber = invoiceutility.getAssignLogNumberAndCheckDuplicate(
+				            -1,
+				            invoice_type,
+				            jsonObj.sellerIdentifier,
+				            stringutility.trim(_assignlog_dept_code),
+				            stringutility.trim(_assignlog_class_code),
+				            _year_month,
+				            'NONE',
+				            _documentDate
+				          )
+          }     
+			          
         } else {
+          /**	
           _documentNumber = invoiceutility.getAssignLogNumber(
             invoice_type,
             jsonObj.sellerIdentifier,
@@ -1892,6 +1916,20 @@ define([
             need_upload_mig,
             _documentDate
           )
+          */
+       	  if (validate.isValidGUI(jsonObj.buyerIdentifier)==true || 
+           	  jsonObj.buyerIdentifier =='0000000000') {	
+	          _documentNumber = invoiceutility.getAssignLogNumberAndCheckDuplicate(
+				            -1,
+				            invoice_type,
+				            jsonObj.sellerIdentifier,
+				            stringutility.trim(_assignlog_dept_code),
+				            stringutility.trim(_assignlog_class_code),
+				            _year_month,
+				            need_upload_mig,
+				            _documentDate
+				          )
+          }          
         }
         log.debug(
           '_documentNumber',
@@ -1912,11 +1950,11 @@ define([
         ) {
           _net_value = -1
           var _today = getCompanyLocatDate()
-          _documentNumber = invoiceutility.getAllowanceNumber(_allowance_pre_code, _today)
+          _documentNumber = (invoiceutility.getAllowanceNumber(_allowance_pre_code, stringutility.trim(_today)))
           _voucherFormatCode = _creditMemoFormatCode
         }
-      }
-      
+        log.debug('檢查-getAllowanceNumber', 'documentNumber=' + _documentNumber)
+      } 
       
       var _status = 'VOUCHER_SUCCESS'
       var _voucherMainRecord = record.create({
@@ -1966,6 +2004,8 @@ define([
         fieldId: 'custrecord_gw_seller_name',
         value: jsonObj.sellerName,
       })
+      log.debug('檢查-sellerAddress', 'jsonObj.sellerAddress=' + jsonObj.sellerAddress)
+      log.debug('檢查-stringutility.trim', 'jsonObj.sellerAddress=' + stringutility.trim(jsonObj.sellerAddress))
       _voucherMainRecord.setValue({
         fieldId: 'custrecord_gw_seller_address',
         value: stringutility.trim(jsonObj.sellerAddress),
@@ -2036,24 +2076,28 @@ define([
         fieldId: 'custrecord_gw_voucher_format_code',
         value: stringutility.trim(_voucherFormatCode),
       })
-      _voucherMainRecord.setValue({
-        fieldId: 'custrecord_gw_main_remark',
-        value: stringutility.trim(jsonObj.mainRemark),
-      })
-
+      if (jsonObj.mainRemark!=null){
+	      _voucherMainRecord.setValue({
+	        fieldId: 'custrecord_gw_main_remark',
+	        value: stringutility.trim(jsonObj.mainRemark),
+	      })
+      }
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       //20210913 walter modify
       _voucherMainRecord.setValue({fieldId:'custrecord_gw_carrier_type',value:stringutility.trim(jsonObj.carrier_type)});
-      _voucherMainRecord.setValue({fieldId:'custrecord_gw_carrierid1',value:stringutility.trim(jsonObj.carrier_id_1)});
-      _voucherMainRecord.setValue({fieldId:'custrecord_gw_carrierid2',value:stringutility.trim(jsonObj.carrier_id_2)});
-      _voucherMainRecord.setValue({fieldId:'custrecord_gw_npoban',value:stringutility.trim(jsonObj.npo_ban)});
+      if (jsonObj.carrier_id_1!=null)_voucherMainRecord.setValue({fieldId:'custrecord_gw_carrierid1',value:stringutility.trim(jsonObj.carrier_id_1)});
+      if (jsonObj.carrier_id_2!=null)_voucherMainRecord.setValue({fieldId:'custrecord_gw_carrierid2',value:stringutility.trim(jsonObj.carrier_id_2)});
+      if (jsonObj.npo_ban!=null)_voucherMainRecord.setValue({fieldId:'custrecord_gw_npoban',value:stringutility.trim(jsonObj.npo_ban)});
       //_voucherMainRecord.setValue({fieldId:'custrecord_gw_clearance_mark',value:stringutility.trim(jsonObj.customs_clearance_mark)});
       //_voucherMainRecord.setValue({fieldId:'custrecord_gw_main_remark',value:stringutility.trim(jsonObj.main_remark)});
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
      
       var _random_number = ' '
-      var _print_mark = invoiceutility.getPrintMark(jsonObj.npo_ban, jsonObj.carrier_type, jsonObj.buyerIdentifier)
-      
+      var _print_mark = 'Y'
+      if (voucher_type === 'EGUI') {
+    	  _print_mark = invoiceutility.getPrintMark(jsonObj.npo_ban, jsonObj.carrier_type, jsonObj.buyerIdentifier)
+      }
+      log.debug('檢查-print_mark', '_print_mark=' + _print_mark)
       if (mig_type == 'C0401' || mig_type == 'B2C') {
          //TODO 要產生隨機碼
          //_random_number = Math.round(invoiceutility.getRandomNum(1000, 9999))
@@ -2170,10 +2214,7 @@ define([
           fieldId: 'custrecord_gw_uploadstatus_messag',
           value: '稅差超過(' + tax_diff_balance + ')元 ,請重新調整!',
         })
-      } else if (
-        voucher_type == 'EGUI' &&
-        stringutility.trim(_documentNumber) == ''
-      ) {
+      } else if (voucher_type == 'EGUI' && stringutility.trim(_documentNumber) == '') {
         _voucherMainRecord.setValue({
           fieldId: 'custrecord_gw_need_upload_egui_mig',
           value: 'NONE',
@@ -2186,10 +2227,20 @@ define([
           fieldId: 'custrecord_gw_uploadstatus_messag',
           value: '無字軌可使用或開立日期小於字軌日期',
         })
-      } else if (
-        voucher_type == 'ALLOWANCE' &&
-        typeof historyInvoiceObj == 'undefined'
-      ) {
+      } if (validate.isValidGUI(jsonObj.buyerIdentifier)==false && jsonObj.buyerIdentifier !='0000000000'){
+    	  _documentNumber='';
+		  _voucherMainRecord.setValue({fieldId:'custrecord_gw_voucher_number',value:_documentNumber}); 
+		  _voucherMainRecord.setValue({fieldId:'custrecord_gw_need_upload_egui_mig',value:'NONE'});
+		  _voucherMainRecord.setValue({fieldId:'custrecord_gw_voucher_upload_status',value:'E'}); 				
+		  _voucherMainRecord.setValue({fieldId:'custrecord_gw_uploadstatus_messag',value:'統編(' + jsonObj.buyerIdentifier + ')錯誤!'});
+		  
+      } else if (voucher_type == 'EGUI' && stringutility.trim(_documentNumber) == 'BUSY') {
+    	  _documentNumber='';
+		  _voucherMainRecord.setValue({fieldId:'custrecord_gw_voucher_number',value:_documentNumber}); 
+		  _voucherMainRecord.setValue({fieldId:'custrecord_gw_need_upload_egui_mig',value:'NONE'});
+		  _voucherMainRecord.setValue({fieldId:'custrecord_gw_voucher_upload_status',value:'E'}); 				
+		  _voucherMainRecord.setValue({fieldId:'custrecord_gw_uploadstatus_messag',value:'本期(' + _year_month + ')字軌使用忙碌,請稍後再開立!'});
+      } else if (voucher_type == 'ALLOWANCE' && typeof historyInvoiceObj == 'undefined' ) {
         _voucherMainRecord.setValue({
           fieldId: 'custrecord_gw_need_upload_egui_mig',
           value: 'NONE',
@@ -2202,10 +2253,7 @@ define([
           fieldId: 'custrecord_gw_uploadstatus_messag',
           value: '折讓條件無發票可扣',
         })
-      } else if (
-        voucher_type == 'EGUI' &&
-        stringutility.trim(jsonObj.buyerName) == ''
-      ) {
+      } else if (voucher_type == 'EGUI' && stringutility.trim(jsonObj.buyerName) == '') {
         _voucherMainRecord.setValue({
           fieldId: 'custrecord_gw_need_upload_egui_mig',
           value: 'NONE',
@@ -2903,6 +2951,9 @@ define([
       var _filterArray = []
       //_filterArray.push(['itemtype',search.Operator.ISNOTEMPTY, '']);
       _filterArray.push(['mainline', 'is', false])
+      _filterArray.push('and')
+      _filterArray.push(['CUSTBODY_GW_EVIDENCE_ISSUE_STATUS.custrecord_gw_evidence_status_value', search.Operator.IS, _manual_evidence_status_value])
+  
       if (internalIdAry != null) {
         _filterArray.push('and')
         //_filterArray.push(['createdfrom',search.Operator.ANYOF, internalIdAry]);
@@ -2921,29 +2972,13 @@ define([
         ////////////////////////////////////////////////////////////////
         //擋做過的
         _filterArray.push('and')
-        _filterArray.push([
-          'custbody_gw_gui_num_start',
-          search.Operator.ISEMPTY,
-          '',
-        ])
+        _filterArray.push(['custbody_gw_gui_num_start', search.Operator.ISEMPTY, ''])
         _filterArray.push('and')
-        _filterArray.push([
-          'custbody_gw_gui_num_end',
-          search.Operator.ISEMPTY,
-          '',
-        ])
+        _filterArray.push(['custbody_gw_gui_num_end', search.Operator.ISEMPTY, ''])
         _filterArray.push('and')
-        _filterArray.push([
-          'custbody_gw_allowance_num_start',
-          search.Operator.ISEMPTY,
-          '',
-        ])
+        _filterArray.push(['custbody_gw_allowance_num_start', search.Operator.ISEMPTY,''])
         _filterArray.push('and')
-        _filterArray.push([
-          'custbody_gw_allowance_num_end',
-          search.Operator.ISEMPTY,
-          '',
-        ])
+        _filterArray.push(['custbody_gw_allowance_num_end', search.Operator.ISEMPTY, ''])
         ////////////////////////////////////////////////////////////////
         _mySearch.filterExpression = _filterArray
         log.debug('_filterArray', JSON.stringify(_filterArray))
@@ -3206,7 +3241,7 @@ define([
             /////////////////////////////////////////////////////////////////////////////////////////////////////////
             //載具類別
             var _gw_gui_carrier_type = ''
-            if (_result.values.custbody_gw_gui_carrier_type.length != 0) {
+            if (_result.values.custbody_gw_gui_carrier_type !=null && _result.values.custbody_gw_gui_carrier_type.length != 0) {
 		        _gw_gui_carrier_type = _result.values.custbody_gw_gui_carrier_type[0].value   
 	        } 
 			var _gw_gui_carrier_id_1 = _result.values.custbody_gw_gui_carrier_id_1

@@ -928,6 +928,18 @@ define([
       height: _field_height,
       width: _field_text_width,
     })
+    
+	//是否含下載錯誤資料PDF
+	var _errorLinePrintField = form.addField({
+	      id: 'custpage_select_error_item',
+	      type: serverWidget.FieldType.CHECKBOX,
+	      label: '下載開立正常折讓單PDF',
+    }) 
+    _errorLinePrintField.updateLayoutType({
+      layoutType: serverWidget.FieldLayoutType.OUTSIDEBELOW,
+    })  
+    _errorLinePrintField.defaultValue = 'T';
+    
   }
 
   //發票明細

@@ -123,9 +123,9 @@ define([
   }
 
   //取得稅別資料
-  function getTaxInformation(netsuiteId) {
+  function getTaxInformation(eguiTaxId) {
     return _taxObjAry.filter(function (_obj) {
-      return _obj.netsuite_id_value.toString() === netsuiteId.toString()
+      return _obj.voucher_property_value.toString() === eguiTaxId.toString()
     })[0] 
   }
   
@@ -808,6 +808,9 @@ define([
     })
     if (typeof _gw_gui_tax_type != 'undefined') {
       var _taxObj = getTaxInformation(_gw_gui_tax_type)
+      
+      log.debug('get taxObj', JSON.stringify(_taxObj))
+      
       if (typeof _taxObj != 'undefined') {
         _tax_code = _taxObj.voucher_property_value
         _tax_code_note = _taxObj.voucher_property_note

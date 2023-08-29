@@ -194,6 +194,13 @@ define([
       search.Operator.IS,
       false,
     ])
+    //NE-326
+    _filterArray.push('and')
+    _filterArray.push([
+      'custrecord_gw_voucher_upload_status',
+      search.Operator.ISNOT,
+      'C',
+    ])
 
     if (select_year_month != '') {
       _filterArray.push('and')
@@ -422,11 +429,19 @@ define([
             line: _index,
             value: _url_value,
           })
+          
+          subListObj.setSublistValue({
+            id: 'customer_voucher_date',
+            line: _index,
+            value: _voucher_date,
+          })
+          /**
           subListObj.setSublistValue({
             id: 'customer_voucher_date',
             line: _index,
             value: _voucher_date + ' ' + _voucher_time,
           })
+          */
           /**
              subListObj.setSublistValue({
 								id : 'customer_voucher_year_month',

@@ -17,6 +17,7 @@ define(['N/format'], function (format) {
     if (typeof str === 'undefined' || str == null || str.length == 0) {
       str = ''
     }
+    
     if (typeof str === 'string') str = str.trim()
     return str
   }

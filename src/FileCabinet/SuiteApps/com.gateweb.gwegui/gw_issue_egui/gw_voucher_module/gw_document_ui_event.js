@@ -10,6 +10,7 @@ define([
   'N/currentRecord',
   'N/record',
   '../gw_common_utility/gw_common_configure',
+  '../gw_common_utility/gw_common_validate_utility',
   '../gw_common_utility/gw_common_date_utility',
   '../gw_common_utility/gw_common_invoice_utility',
   '../gw_common_utility/gw_common_gwmessage_utility',
@@ -20,6 +21,7 @@ define([
   currentRecord,
   record,
   gwconfigure,
+  validater,
   dateutility,
   invoiceutility,
   gwmessage
@@ -263,11 +265,11 @@ define([
             if (_checkDocumentIndexId === '') {
               //第 1 筆不檢查
               _checkDocumentIndexId = _checkIdText
-            }
-            if (_tax_id_number.length != 8 && _tax_id_number != '0000000000') {
-              _checkFlag = false
-              _error_message = '開立統編錯誤或空白!'
-              break
+            } 
+            if (!validater.isValidGUI(_tax_id_number) && _tax_id_number !='0000000000') {
+                _checkFlag = false
+                _error_message = '開立統編錯誤或空白!'
+                break
             } else {
               if (
                 _checkDocumentIndexId != _checkIdText &&

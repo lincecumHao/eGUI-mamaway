@@ -80,7 +80,9 @@ define([
       )
       if (_checkedResult) {
         //add to array
-        _voucherIdArray.push(_selectCheckId)
+    	if(_voucherIdArray.toString().indexOf(_selectCheckId)==-1){
+    	   _voucherIdArray.push(_selectCheckId)
+    	}  
       } else {
         //remove from array
         for (var i = 0; i <= _voucherIdArray.length; i++) {
@@ -927,6 +929,12 @@ define([
       var voucher_list_id = _currentRecord.getValue({
         fieldId: 'custpage_voucher_hiddent_listid',
       })
+	  //是否含下載錯誤資料PDF
+	  var _select_error_item = _currentRecord.getValue({
+			fieldId: 'custpage_select_error_item'
+	  });   
+	  console.log('select_error_item', _select_error_item); 
+	    
       if (voucher_list_id == '') {
         var _pre_text = '電子發票'
         if (voucher_type == 'EGUI') {
@@ -978,7 +986,8 @@ define([
         _b2be_xml,
         _b2c_xml,
         _genxml_toftp_result,
-        _genxml_toftp_message
+        _genxml_toftp_message,
+        _select_error_item
       )
 
       var _xmlFileObjects = []
@@ -989,7 +998,7 @@ define([
         _doc_type = gwapiclient.DOCTYPE.ALLOWANCE
       }
 
-      if (_xmlObjectAry != null) {
+      if (_xmlObjectAry != null && _xmlObjectAry.length!=0) { 	
         for (var i = 0; i < _xmlObjectAry.length; i++) {
           var _obj = _xmlObjectAry[i]
 
@@ -1080,17 +1089,26 @@ define([
 
           ///////////////////////////////////////////////////////////////////////////////////////
         }
-      }
-
-      try {
-        if (printType == 'PDF') {
-          gwapiclient.downloadPdfs(_xmlFileObjects)
-        } else {
-          gwapiclient.printToPrinter(_xmlFileObjects)
-        }
-      } catch (e) {
-        console.log('error', e)
-      }
+        try {
+	        if (printType == 'PDF') {
+	          gwapiclient.downloadPdfs(_xmlFileObjects)
+	        } else {
+	          gwapiclient.printToPrinter(_xmlFileObjects)
+	        }
+	    } catch (e) {
+	       console.log('error', e)
+	    } 
+      } else { 
+		var _title = '下載PDF管理'; 
+		var _text = '電子發票'
+		if (voucher_type != 'EGUI') {
+			_text = '電子發票折讓單'
+		} 
+		var _message = '請勿選取開立錯誤或非'+_text+'憑證下載!'									
+		gwmessage.showErrorMessage(_title, _message)
+		return			
+      } 
+      
     } catch (e) {
       console.log(e.name + ':' + e.message)
     }
@@ -1561,9 +1579,10 @@ define([
   function reSendToGWProcess(voucher_upload_type) {
     console.log('reSendToGWProcess start:' + voucher_upload_type)
     try {
-      //voucher_upload_type =>EGUI, ALLOWANCE
+      //voucher_upload_type =>EGUI, ALLOWANCE 
       var _title = '憑證重傳管理'
       var _checkJsonObject = validateReUploadTask(voucher_upload_type, true)
+      
       var _checkFlag = _checkJsonObject.checkflag
       var _message = _checkJsonObject.message
 
@@ -1601,6 +1620,7 @@ define([
       if (voucher_upload_status=='A')_need_check = false
       
       var _checkJsonObject = validateReUploadTask(voucher_upload_type, _need_check)
+      
       var _checkFlag = _checkJsonObject.checkflag
       var _message = _checkJsonObject.message
 
@@ -1657,24 +1677,89 @@ define([
               'customer_search_voucher_id',
               'customer_voucher_reupload_date',
               _internalId
-            )
+            )       
+             
+            _voucher_date = dateutility.getConvertVoucherDateByDate(_voucher_date)
+        
             var _year_month = getSublistColumnValue(
               'vouchersublistid',
               'customer_search_voucher_id',
               'customer_voucher_year_month',
               _internalId
-            )
+            ) 
+            
             if (need_check==true) {
-	            if (!validateTraditionYearMonth(_year_month)) {
+	            if (!validateTraditionYearMonth(_year_month) || 
+	            	(stringutility.convertToFloat(_year_month.substring(3,5)) >12 && stringutility.convertToFloat(_year_month.substring(3,5)) <=0) ||
+	            	stringutility.convertToFloat(_year_month) % 2 !=0) {
 	              _checkFlag = false
-	              _error_message +=
-	                _voucher_number + '-申報年月格式錯誤[需為民國年雙月共5碼],'
+	              _error_message += _voucher_number + '-申報年月格式錯誤[需為民國年雙月共5碼],'
 	            }
 	            if (_voucher_date.length == 0) {
 	              _checkFlag = false
 	              _error_message += _voucher_number + '-上傳日期不可空白,'
 	            }
-            }
+	            //折讓單回收作業-檢查填入日期須大於等於原開立日期, 期數檢查=原期或次期.
+	            var _original_voucher_date = getSublistColumnValue(
+                    'vouchersublistid',
+                    'customer_search_voucher_id',
+                    'customer_voucher_date',
+                    _internalId
+                )
+                //填入日期須大於等於原開立日期
+                /////////////////////////////////////////////////////////////////////////////////////////
+                //日期:區間檢查
+                //1.新上傳日期>=原憑證開立日期     
+                if (_voucher_date.length !=0){
+	                if (_checkFlag==true && stringutility.convertToFloat(_voucher_date) < stringutility.convertToFloat(_original_voucher_date)){
+	                	_checkFlag = false
+	  	                _error_message += _voucher_number + '上傳日期('+_voucher_date+')不可小於原憑證開立日期('+_original_voucher_date+'),'
+	                }
+		            //2.新上傳日期<=今日
+		            if (_checkFlag==true && stringutility.convertToFloat(_voucher_date) > stringutility.convertToFloat(dateutility.getConvertVoucherDateByDate(dateutility.getNetSuiteLocalDate()))){
+	                	_checkFlag = false
+	  	                _error_message += _voucher_number + '上傳日期('+_voucher_date+')不可大於今天,'
+	                }
+                }
+                /////////////////////////////////////////////////////////////////////////////////////////
+                /////////////////////////////////////////////////////////////////////////////////////////
+	            //期別:區間檢查  	    
+	            var _original_voucher_yearmonth= dateutility.getTaxYearMonthByYYYYMMDD(_original_voucher_date)	       
+
+                //1.新申報期別>=原始憑證開立期別                
+                if (_voucher_date.length !=0 && _year_month.length !=0){                	
+                	var _apply_date_year_month=dateutility.getTaxYearMonthByYYYYMMDD(_voucher_date) //新申報日期期別
+                
+	                if (_checkFlag==true && stringutility.convertToFloat(_year_month)<stringutility.convertToFloat(_original_voucher_yearmonth) ){
+	                	_checkFlag = false
+	                	_error_message += _voucher_number + '上傳期別('+_year_month+')不可小於原憑證開立期別('+_original_voucher_yearmonth+'),'
+	                }
+		            //2.新申報日期所屬期別<=新申報期別  
+		            if (_checkFlag==true && stringutility.convertToFloat(_apply_date_year_month)>stringutility.convertToFloat(_year_month) ){
+	                	_checkFlag = false
+	                	_error_message += _voucher_number + '上傳期別('+_year_month+')不可小於申報日期所屬期別('+_apply_date_year_month+'),'
+	                }	            
+		            //3.新申報期別 =新申報日期所屬(期別或次期) period_month=2:1期 , period_month=4:2期...以此類推
+		            var _period_month=1
+		            var _year_month_date = (191100+parseInt(_year_month))+'01'
+		              
+		            if (_checkFlag==true && dateutility.getMonthPeriodDiff(_voucher_date, _year_month_date, _period_month) != true){
+		            	_checkFlag = false
+	                	_error_message += _voucher_number + '上傳期別('+_year_month+')不可大於下下期,'
+		            }
+		            /**
+		            if (_checkFlag==true){
+			            if ( ( (stringutility.convertToFloat(_year_month)-stringutility.convertToFloat(_apply_date_year_month)) > _period_month && (stringutility.convertToFloat(_year_month)-stringutility.convertToFloat(_apply_date_year_month)) <= 10 ) ||
+			            	 (stringutility.convertToFloat(_year_month)-stringutility.convertToFloat(_apply_date_year_month)) > (90+_period_month) ){
+		                	_checkFlag = false
+		                	_error_message += _voucher_number + '上傳期別('+_year_month+')不可大於下期,'
+		                }
+		            }
+		            */
+                }
+                /////////////////////////////////////////////////////////////////////////////////////////
+            }             
+            
           }
         }
       }
@@ -1737,12 +1822,20 @@ define([
             values['custrecord_voucher_sale_tax_apply_period'] = _apply_period
           }
           //處理Detail Item
-          updateVoucherDetailInfomation(
+          var _is_35_format_code = updateVoucherDetailInfomation(
             _internalId,
             _date,
             _year_month,
             _apply_period
           )
+          //alert('_is_35_format_code='+_is_35_format_code)
+          //NE-326 非35格式不上傳
+          if (_is_35_format_code==false){
+        	  values['custrecord_gw_voucher_status'] = 'VOUCHER_SUCCESS'
+       		  values['custrecord_gw_voucher_upload_status'] = 'C' 
+       		  values['custrecord_gw_need_upload_egui_mig'] = 'NONE'
+          }
+
 
           var _id = record.submitFields({
             type: _voucher_main_record,
@@ -1771,12 +1864,17 @@ define([
     _voucher_yearmonth,
     _apply_period
   ) {
-    try {
+	var _is_35_format = false
+	
+    try { 
+     	
       var _mySearch = search.create({
         type: 'customrecord_gw_voucher_details',
         columns: [
           search.createColumn({ name: 'custrecord_gw_ns_document_item_id' }),
           search.createColumn({ name: 'custrecord_gw_original_gui_yearmonth' }),
+          search.createColumn({ name: 'custrecord_gw_original_gui_number' }),
+          search.createColumn({ name: 'custrecord_gw_original_gui_date' })
         ],
       })
 
@@ -1790,6 +1888,14 @@ define([
 
       _mySearch.run().each(function (result) {
         var internalid = result.id
+        //NE-326 非35格式不上傳
+        var _gw_original_gui_number = result.getValue({name: 'custrecord_gw_original_gui_number'}) 
+        var _gw_original_gui_date = result.getValue({name: 'custrecord_gw_original_gui_date'}) 
+        
+        if (_gw_original_gui_number !=''){
+        	_is_35_format = searchEGUI(_gw_original_gui_number, _gw_original_gui_date , '35') 
+        }
+     
 
         var values = {}
         if (_date != '') {
@@ -1814,6 +1920,42 @@ define([
     } catch (e) {
       console.log(e.name + ':' + e.message)
     }
+    
+    return _is_35_format
+  }
+   
+  //NE-326 非35格式不上傳
+  function searchEGUI(original_gui_number, original_gui_date , format_code) {
+	    var _has = false
+	    try {
+	      var _mySearch = search.create({
+	        type: 'customrecord_gw_voucher_main',
+	        columns: [ 
+	          search.createColumn({ name: 'custrecord_gw_voucher_number' }),
+	          search.createColumn({ name: 'custrecord_gw_voucher_date' }),
+	          search.createColumn({ name: 'custrecord_gw_voucher_format_code' })
+	        ],
+	      })
+
+	      var _filterArray = []
+	      _filterArray.push(['custrecord_gw_voucher_number', search.Operator.IS, original_gui_number])
+	      _filterArray.push('and')
+	      _filterArray.push(['custrecord_gw_voucher_date', search.Operator.IS, original_gui_date])
+	      _filterArray.push('and')
+	      _filterArray.push(['custrecord_gw_voucher_format_code', search.Operator.IS, format_code])
+	      //alert('filterArray==>'+JSON.stringify(_filterArray))
+	      _mySearch.filterExpression = _filterArray
+
+	      _mySearch.run().each(function (result) {
+	        var internalid = result.id
+	        _has = true
+
+	        return true
+	      })
+	    } catch (e) {
+	      console.log(e.name + ':' + e.message)
+	    }
+	    return _has
   }
 
   function saveVoucherYearMonthAndStatus(
@@ -1858,7 +2000,7 @@ define([
               _date = dateutility.getConvertDateByDate(_voucher_date.toString())
               values['custrecord_gw_voucher_date'] = _date
             }
-            updateVoucherDetailInfomation(
+            var _is_35_format_code = updateVoucherDetailInfomation(
               _internalId,
               _date,
               _year_month,

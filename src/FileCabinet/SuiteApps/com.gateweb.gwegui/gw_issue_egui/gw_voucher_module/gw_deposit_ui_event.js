@@ -368,6 +368,20 @@ define([
     var _errorMsg = ''
 
     try {
+      var _deposit_hiddent_id = _current_record.getValue({ fieldId: 'custpage_customer_deposit_hiddent_listid' })
+	  var _record = record.load({
+	    type: record.Type.CUSTOMER_DEPOSIT,
+	    id: _deposit_hiddent_id,
+	    isDynamic: true,
+      })
+      var _gw_lock_transaction = _record.getValue({
+        fieldId: 'custbody_gw_lock_transaction',
+      })
+       
+      if (_gw_lock_transaction==true){
+    	  _errorMsg += 'EGUI已開立,'
+      }
+    	
       //B2BS, B2BE, B2C
       var _mig_type = _current_record.getValue({ fieldId: 'custpage_mig_type' })
       //1.請輸入商品名稱:中文30字以內, 英文60字以內
@@ -418,9 +432,11 @@ define([
       var _buyer_identifier = _current_record.getValue({
         fieldId: 'custpage_buyer_identifier',
       })
-      if (_buyer_identifier.length == 0) {
-        _errorMsg += '請維護正確統編,'
-      }
+      //檢查統編
+      if (!validate.isValidGUI(_buyer_identifier) && _buyer_identifier !='0000000000') {
+          _errorMsg += '統編格式錯誤<br>'
+      } 
+      
       var _buyer_name = _current_record.getValue({
         fieldId: 'custpage_buyer_name',
       })
@@ -611,7 +627,9 @@ define([
     //1.驗證資料
     document.getElementById('custpage_create_voucher_button').disabled = true
     document.getElementById('custpage_forward_back_button').disabled = true
+    
     var _errorMsg = validateForm()
+    
     if (_errorMsg.length != 0) {
       var _title = '憑證管理'
       gwmessage.showErrorMessage(_title, _errorMsg)
@@ -633,7 +651,7 @@ define([
     var _voucherOpenType = _current_record.getValue({
       fieldId: 'custpage_voucher_open_type',
     })
-    //取得DiscountItem List and Amount
+     
     var _customer_deposit_selected_listid = _current_record.getValue({
       fieldId: 'custpage_customer_deposit_hiddent_listid',
     })
@@ -1227,6 +1245,7 @@ define([
       if (stringutility.trim(mainObj.manual_voucher_number) != '') {
         _invoiceNumber = mainObj.manual_voucher_number
       } else {
+    	/**  
         _invoiceNumber = invoiceutility.getAssignLogNumber(
           mainObj.invoice_type,
           mainObj.company_ban,
@@ -1236,10 +1255,25 @@ define([
           assignLogType,
           _documentDate
         )
+        */
+        _invoiceNumber = invoiceutility.getAssignLogNumberAndCheckDuplicate(
+				            -1,
+				            mainObj.invoice_type,
+				            mainObj.company_ban,
+				            mainObj.dept_code,
+				            mainObj.classification,
+				            year_month,
+				            assignLogType,
+				            _documentDate
+				          )
       }
-      if (_invoiceNumber.length == 0) {
+      if (_invoiceNumber.length == 0 || _invoiceNumber == 'BUSY') {
         var _title = '字軌管理'
         var _message = '無本期(' + year_month + ')字軌請匯入或日期小於字軌日期!'
+        if (_invoiceNumber == 'BUSY'){
+      	    _title   = '憑證管理'
+      	    _message ='本期(' + year_month + ')字軌使用忙碌,請稍後再開立!'
+        }
         gwmessage.showErrorMessage(_title, _message)
       } else {
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1447,12 +1481,10 @@ define([
             .toFixed(_numericToFixed),
         })
         //_voucherMainRecord.setValue({fieldId:'custrecord_gw_voucher_extra_memo',value:mainObj.extraMemo});
-
         _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_original_buyer_id',
             value: mainObj.customer_id,
         })
-          
         //20201201 walter modify
         if (stringutility.trim(mainObj.manual_voucher_number) != '') {
           _voucherMainRecord.setValue({
