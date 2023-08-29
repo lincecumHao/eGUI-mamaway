@@ -1,420 +1,422 @@
 <customrecordtype scriptid="customrecord_gw_mig_type">
-    <accesstype>NONENEEDED</accesstype>
-    <allowattachments>T</allowattachments>
-    <allowinlinedeleting>F</allowinlinedeleting>
-    <allowinlinedetaching>T</allowinlinedetaching>
-    <allowinlineediting>F</allowinlineediting>
-    <allowmobileaccess>T</allowmobileaccess>
-    <allownumberingoverride>F</allownumberingoverride>
-    <allowquickadd>T</allowquickadd>
-    <allowquicksearch>F</allowquicksearch>
-    <allowuiaccess>T</allowuiaccess>
-    <description></description>
-    <enablekeywords>T</enablekeywords>
-    <enablenametranslation>F</enablenametranslation>
-    <enablenumbering>F</enablenumbering>
-    <enableoptimisticlocking>T</enableoptimisticlocking>
-    <enablesystemnotes>T</enablesystemnotes>
-    <hierarchical>F</hierarchical>
-    <icon></icon>
-    <iconbuiltin>T</iconbuiltin>
-    <iconindex></iconindex>
-    <includeinsearchmenu>T</includeinsearchmenu>
-    <includename>T</includename>
-    <isinactive>F</isinactive>
-    <isordered>F</isordered>
-    <numberinginit></numberinginit>
-    <numberingmindigits></numberingmindigits>
-    <numberingprefix></numberingprefix>
-    <numberingsuffix></numberingsuffix>
-    <recordname>Gw Mig Type</recordname>
-    <showcreationdate>F</showcreationdate>
-    <showcreationdateonlist>F</showcreationdateonlist>
-    <showid>T</showid>
-    <showlastmodified>T</showlastmodified>
-    <showlastmodifiedonlist>T</showlastmodifiedonlist>
-    <shownotes>T</shownotes>
-    <showowner>T</showowner>
-    <showownerallowchange>F</showownerallowchange>
-    <showowneronlist>T</showowneronlist>
-    <customrecordcustomfields>
-        <customrecordcustomfield scriptid="custrecord_gw_mt_egui_type">
-            <accesslevel>2</accesslevel>
-            <allowquickadd>F</allowquickadd>
-            <applyformatting>F</applyformatting>
-            <checkspelling>F</checkspelling>
-            <defaultchecked>F</defaultchecked>
-            <defaultselection></defaultselection>
-            <defaultvalue></defaultvalue>
-            <description></description>
-            <displayheight></displayheight>
-            <displaytype>NORMAL</displaytype>
-            <displaywidth></displaywidth>
-            <dynamicdefault></dynamicdefault>
-            <encryptatrest>F</encryptatrest>
-            <fieldtype>TEXT</fieldtype>
-            <globalsearch>F</globalsearch>
-            <help>EGUI or Allowance</help>
-            <isformula>F</isformula>
-            <ismandatory>F</ismandatory>
-            <isparent>F</isparent>
-            <label>Egui Type</label>
-            <linktext></linktext>
-            <maxlength></maxlength>
-            <maxvalue></maxvalue>
-            <minvalue></minvalue>
-            <onparentdelete></onparentdelete>
-            <parentsubtab></parentsubtab>
-            <rolerestrict>F</rolerestrict>
-            <searchcomparefield></searchcomparefield>
-            <searchdefault></searchdefault>
-            <searchlevel>2</searchlevel>
-            <selectrecordtype></selectrecordtype>
-            <showinlist>T</showinlist>
-            <sourcefilterby></sourcefilterby>
-            <sourcefrom></sourcefrom>
-            <sourcelist></sourcelist>
-            <storevalue>T</storevalue>
-            <subtab></subtab>
-        </customrecordcustomfield>
-        <customrecordcustomfield scriptid="custrecord_gw_mt_bus_tran_type">
-            <accesslevel>2</accesslevel>
-            <allowquickadd>F</allowquickadd>
-            <applyformatting>F</applyformatting>
-            <checkspelling>F</checkspelling>
-            <defaultchecked>F</defaultchecked>
-            <defaultselection></defaultselection>
-            <defaultvalue></defaultvalue>
-            <description></description>
-            <displayheight></displayheight>
-            <displaytype>NORMAL</displaytype>
-            <displaywidth></displaywidth>
-            <dynamicdefault></dynamicdefault>
-            <encryptatrest>F</encryptatrest>
-            <fieldtype>TEXT</fieldtype>
-            <globalsearch>F</globalsearch>
-            <help>B2B or B2C</help>
-            <isformula>F</isformula>
-            <ismandatory>F</ismandatory>
-            <isparent>F</isparent>
-            <label>Business Transaction Type</label>
-            <linktext></linktext>
-            <maxlength></maxlength>
-            <maxvalue></maxvalue>
-            <minvalue></minvalue>
-            <onparentdelete></onparentdelete>
-            <parentsubtab></parentsubtab>
-            <rolerestrict>F</rolerestrict>
-            <searchcomparefield></searchcomparefield>
-            <searchdefault></searchdefault>
-            <searchlevel>2</searchlevel>
-            <selectrecordtype></selectrecordtype>
-            <showinlist>T</showinlist>
-            <sourcefilterby></sourcefilterby>
-            <sourcefrom></sourcefrom>
-            <sourcelist></sourcelist>
-            <storevalue>T</storevalue>
-            <subtab></subtab>
-        </customrecordcustomfield>
-        <customrecordcustomfield scriptid="custrecord_gw_mt_mig_type">
-            <accesslevel>2</accesslevel>
-            <allowquickadd>F</allowquickadd>
-            <applyformatting>F</applyformatting>
-            <checkspelling>F</checkspelling>
-            <defaultchecked>F</defaultchecked>
-            <defaultselection></defaultselection>
-            <defaultvalue></defaultvalue>
-            <description></description>
-            <displayheight></displayheight>
-            <displaytype>NORMAL</displaytype>
-            <displaywidth></displaywidth>
-            <dynamicdefault></dynamicdefault>
-            <encryptatrest>F</encryptatrest>
-            <fieldtype>TEXT</fieldtype>
-            <globalsearch>F</globalsearch>
-            <help>Example: C0403, C0401... etc</help>
-            <isformula>F</isformula>
-            <ismandatory>F</ismandatory>
-            <isparent>F</isparent>
-            <label>Mig Type</label>
-            <linktext></linktext>
-            <maxlength></maxlength>
-            <maxvalue></maxvalue>
-            <minvalue></minvalue>
-            <onparentdelete></onparentdelete>
-            <parentsubtab></parentsubtab>
-            <rolerestrict>F</rolerestrict>
-            <searchcomparefield></searchcomparefield>
-            <searchdefault></searchdefault>
-            <searchlevel>2</searchlevel>
-            <selectrecordtype></selectrecordtype>
-            <showinlist>T</showinlist>
-            <sourcefilterby></sourcefilterby>
-            <sourcefrom></sourcefrom>
-            <sourcelist></sourcelist>
-            <storevalue>T</storevalue>
-            <subtab></subtab>
-        </customrecordcustomfield>
-        <customrecordcustomfield scriptid="custrecord_gw_mt_xml_filename">
-            <accesslevel>2</accesslevel>
-            <allowquickadd>F</allowquickadd>
-            <applyformatting>F</applyformatting>
-            <checkspelling>F</checkspelling>
-            <defaultchecked>F</defaultchecked>
-            <defaultselection></defaultselection>
-            <defaultvalue></defaultvalue>
-            <description></description>
-            <displayheight></displayheight>
-            <displaytype>NORMAL</displaytype>
-            <displaywidth></displaywidth>
-            <dynamicdefault></dynamicdefault>
-            <encryptatrest>F</encryptatrest>
-            <fieldtype>TEXT</fieldtype>
-            <globalsearch>F</globalsearch>
-            <help></help>
-            <isformula>F</isformula>
-            <ismandatory>F</ismandatory>
-            <isparent>F</isparent>
-            <label>XML Template Filename</label>
-            <linktext></linktext>
-            <maxlength></maxlength>
-            <maxvalue></maxvalue>
-            <minvalue></minvalue>
-            <onparentdelete></onparentdelete>
-            <parentsubtab></parentsubtab>
-            <rolerestrict>F</rolerestrict>
-            <searchcomparefield></searchcomparefield>
-            <searchdefault></searchdefault>
-            <searchlevel>2</searchlevel>
-            <selectrecordtype></selectrecordtype>
-            <showinlist>T</showinlist>
-            <sourcefilterby></sourcefilterby>
-            <sourcefrom></sourcefrom>
-            <sourcelist></sourcelist>
-            <storevalue>T</storevalue>
-            <subtab></subtab>
-        </customrecordcustomfield>
-        <customrecordcustomfield scriptid="custrecord_gw_mt_action_mode">
-            <accesslevel>2</accesslevel>
-            <allowquickadd>F</allowquickadd>
-            <applyformatting>F</applyformatting>
-            <checkspelling>F</checkspelling>
-            <defaultchecked>F</defaultchecked>
-            <defaultselection></defaultselection>
-            <defaultvalue></defaultvalue>
-            <description></description>
-            <displayheight></displayheight>
-            <displaytype>NORMAL</displaytype>
-            <displaywidth></displaywidth>
-            <dynamicdefault></dynamicdefault>
-            <encryptatrest>F</encryptatrest>
-            <fieldtype>TEXT</fieldtype>
-            <globalsearch>F</globalsearch>
-            <help></help>
-            <isformula>F</isformula>
-            <ismandatory>F</ismandatory>
-            <isparent>F</isparent>
-            <label>Action Mode</label>
-            <linktext></linktext>
-            <maxlength></maxlength>
-            <maxvalue></maxvalue>
-            <minvalue></minvalue>
-            <onparentdelete></onparentdelete>
-            <parentsubtab></parentsubtab>
-            <rolerestrict>F</rolerestrict>
-            <searchcomparefield></searchcomparefield>
-            <searchdefault></searchdefault>
-            <searchlevel>2</searchlevel>
-            <selectrecordtype></selectrecordtype>
-            <showinlist>T</showinlist>
-            <sourcefilterby></sourcefilterby>
-            <sourcefrom></sourcefrom>
-            <sourcelist></sourcelist>
-            <storevalue>T</storevalue>
-            <subtab></subtab>
-        </customrecordcustomfield>
-    </customrecordcustomfields>
-    <instances>
-        <instance scriptid="val_111443_t2411467_996">
-            <custrecord_gw_mt_action_mode>ISSUE</custrecord_gw_mt_action_mode>
-            <custrecord_gw_mt_bus_tran_type>B2C</custrecord_gw_mt_bus_tran_type>
-            <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
-            <custrecord_gw_mt_mig_type>C0401</custrecord_gw_mt_mig_type>
-            <custrecord_gw_mt_xml_filename>gw_c0401_b2c_egui.xml.ftl</custrecord_gw_mt_xml_filename>
-            <isinactive>F</isinactive>
-            <name>Issue B2C EGUI</name>
-        </instance>
-        <instance scriptid="val_111483_t2411467_546">
-            <custrecord_gw_mt_action_mode>CANCEL</custrecord_gw_mt_action_mode>
-            <custrecord_gw_mt_bus_tran_type>B2C</custrecord_gw_mt_bus_tran_type>
-            <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
-            <custrecord_gw_mt_mig_type>C0501</custrecord_gw_mt_mig_type>
-            <custrecord_gw_mt_xml_filename>gw_c0501_b2c_egui.xml.ftl</custrecord_gw_mt_xml_filename>
-            <isinactive>F</isinactive>
-            <name>Cancel B2C EGUI</name>
-        </instance>
-        <instance scriptid="val_111443_t2411467_987">
-            <custrecord_gw_mt_action_mode>VOID</custrecord_gw_mt_action_mode>
-            <custrecord_gw_mt_bus_tran_type>B2C</custrecord_gw_mt_bus_tran_type>
-            <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
-            <custrecord_gw_mt_mig_type>C0701</custrecord_gw_mt_mig_type>
-            <custrecord_gw_mt_xml_filename>gw_c0701_b2c_egui.xml.ftl</custrecord_gw_mt_xml_filename>
-            <isinactive>F</isinactive>
-            <name>Void B2C EGUI</name>
-        </instance>
-        <instance scriptid="val_111445_t2411467_237">
-            <custrecord_gw_mt_action_mode>ISSUE</custrecord_gw_mt_action_mode>
-            <custrecord_gw_mt_bus_tran_type>B2C</custrecord_gw_mt_bus_tran_type>
-            <custrecord_gw_mt_egui_type>Allowance</custrecord_gw_mt_egui_type>
-            <custrecord_gw_mt_mig_type>D0401</custrecord_gw_mt_mig_type>
-            <custrecord_gw_mt_xml_filename>gw_d0401_b2c_allowance.xml.ftl</custrecord_gw_mt_xml_filename>
-            <isinactive>F</isinactive>
-            <name>Issue B2C Allowance</name>
-        </instance>
-        <instance scriptid="val_111482_t2411467_886">
-            <custrecord_gw_mt_action_mode>ISSUE</custrecord_gw_mt_action_mode>
-            <custrecord_gw_mt_bus_tran_type>B2C</custrecord_gw_mt_bus_tran_type>
-            <custrecord_gw_mt_egui_type>Allowance</custrecord_gw_mt_egui_type>
-            <custrecord_gw_mt_mig_type>D0501</custrecord_gw_mt_mig_type>
-            <custrecord_gw_mt_xml_filename>gw_d0501_b2c_egui.xml.ftl</custrecord_gw_mt_xml_filename>
-            <isinactive>F</isinactive>
-            <name>Cancel B2C Allowance</name>
-        </instance>
-
-        <instance scriptid="val_111444_t2411467_799">
-            <custrecord_gw_mt_action_mode>ISSUE</custrecord_gw_mt_action_mode>
-            <custrecord_gw_mt_bus_tran_type>B2BS</custrecord_gw_mt_bus_tran_type>
-            <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
-            <custrecord_gw_mt_mig_type>A0401</custrecord_gw_mt_mig_type>
-            <custrecord_gw_mt_xml_filename>gw_a0401_b2bs_egui.xml.ftl</custrecord_gw_mt_xml_filename>
-            <isinactive>F</isinactive>
-            <name>Issue B2BS EGUI</name>
-        </instance>
-        <instance scriptid="val_111481_t2411467_475">
-            <custrecord_gw_mt_action_mode>CANCEL</custrecord_gw_mt_action_mode>
-            <custrecord_gw_mt_bus_tran_type>B2BS</custrecord_gw_mt_bus_tran_type>
-            <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
-            <custrecord_gw_mt_mig_type>A0501</custrecord_gw_mt_mig_type>
-            <custrecord_gw_mt_xml_filename>gw_a0501_b2bs_egui.xml.ftl</custrecord_gw_mt_xml_filename>
-            <isinactive>F</isinactive>
-            <name>Cancel B2BS EGUI</name>
-        </instance>
-        <instance scriptid="val_111444_t2411467_978">
-            <custrecord_gw_mt_action_mode>REJECT</custrecord_gw_mt_action_mode>
-            <custrecord_gw_mt_bus_tran_type>B2BS</custrecord_gw_mt_bus_tran_type>
-            <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
-            <custrecord_gw_mt_mig_type>A0601</custrecord_gw_mt_mig_type>
-            <custrecord_gw_mt_xml_filename>gw_a0601_b2bs_egui.xml.ftl</custrecord_gw_mt_xml_filename>
-            <isinactive>F</isinactive>
-            <name>Reject B2B EGUI</name>
-        </instance>
-        <instance scriptid="val_111477_t2411467_863">
-            <custrecord_gw_mt_action_mode>ISSUE</custrecord_gw_mt_action_mode>
-            <custrecord_gw_mt_bus_tran_type>B2BS</custrecord_gw_mt_bus_tran_type>
-            <custrecord_gw_mt_egui_type>Allowance</custrecord_gw_mt_egui_type>
-            <custrecord_gw_mt_mig_type>B0401</custrecord_gw_mt_mig_type>
-            <custrecord_gw_mt_xml_filename>gw_b0401_b2bs_egui.xml.ftl</custrecord_gw_mt_xml_filename>
-            <isinactive>F</isinactive>
-            <name>Issue B2B Allowance</name>
-        </instance>
-        <instance scriptid="val_111480_t2411467_389">
-            <custrecord_gw_mt_action_mode>CANCEL</custrecord_gw_mt_action_mode>
-            <custrecord_gw_mt_bus_tran_type>B2BS</custrecord_gw_mt_bus_tran_type>
-            <custrecord_gw_mt_egui_type>Allowance</custrecord_gw_mt_egui_type>
-            <custrecord_gw_mt_mig_type>B0501</custrecord_gw_mt_mig_type>
-            <custrecord_gw_mt_xml_filename>gw_b0501_b2bs_egui.xml.ftl</custrecord_gw_mt_xml_filename>
-            <isinactive>F</isinactive>
-            <name>Cancel B2BS Allowance</name>
-        </instance>
-        <instance scriptid="val_111475_t2411467_451">
-            <custrecord_gw_mt_action_mode>ISSUE</custrecord_gw_mt_action_mode>
-            <custrecord_gw_mt_bus_tran_type>B2BE</custrecord_gw_mt_bus_tran_type>
-            <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
-            <custrecord_gw_mt_mig_type>A0101</custrecord_gw_mt_mig_type>
-            <custrecord_gw_mt_xml_filename>gw_a0101_b2be_egui.xml.ftl</custrecord_gw_mt_xml_filename>
-            <isinactive>F</isinactive>
-            <name>Issue B2B Exchange EGUI</name>
-        </instance>
-        <instance scriptid="val_111475_t2411467_452">
-            <custrecord_gw_mt_action_mode>ConfirmIssuance</custrecord_gw_mt_action_mode>
-            <custrecord_gw_mt_bus_tran_type>B2BE</custrecord_gw_mt_bus_tran_type>
-            <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
-            <custrecord_gw_mt_mig_type>A0102</custrecord_gw_mt_mig_type>
-            <custrecord_gw_mt_xml_filename>gw_a0102_b2be_egui.xml.ftl</custrecord_gw_mt_xml_filename>
-            <isinactive>F</isinactive>
-            <name>Confirm B2B Exchange EGUI Issuance</name>
-        </instance>
-        <instance scriptid="val_111475_t2411467_453">
-            <custrecord_gw_mt_action_mode>RejectIssuance</custrecord_gw_mt_action_mode>
-            <custrecord_gw_mt_bus_tran_type>B2BE</custrecord_gw_mt_bus_tran_type>
-            <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
-            <custrecord_gw_mt_mig_type>A0301</custrecord_gw_mt_mig_type>
-            <custrecord_gw_mt_xml_filename>gw_a0301_b2be_egui.xml.ftl</custrecord_gw_mt_xml_filename>
-            <isinactive>F</isinactive>
-            <name>Reject B2B Exchange EGUI Issuance</name>
-        </instance>
-        <instance scriptid="val_111475_t2411467_454">
-            <custrecord_gw_mt_action_mode>ConfirmIssuanceRejection</custrecord_gw_mt_action_mode>
-            <custrecord_gw_mt_bus_tran_type>B2BE</custrecord_gw_mt_bus_tran_type>
-            <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
-            <custrecord_gw_mt_mig_type>A0302</custrecord_gw_mt_mig_type>
-            <custrecord_gw_mt_xml_filename>gw_a0302_b2be_egui.xml.ftl</custrecord_gw_mt_xml_filename>
-            <isinactive>F</isinactive>
-            <name>Confirm B2B Exchange EGUI Rejection</name>
-        </instance>
-        <instance scriptid="val_111479_t2411467_866">
-            <custrecord_gw_mt_action_mode>CANCEL</custrecord_gw_mt_action_mode>
-            <custrecord_gw_mt_bus_tran_type>B2BE</custrecord_gw_mt_bus_tran_type>
-            <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
-            <custrecord_gw_mt_mig_type>A0201</custrecord_gw_mt_mig_type>
-            <custrecord_gw_mt_xml_filename>gw_a0201_b2be_egui.xml.ftl</custrecord_gw_mt_xml_filename>
-            <isinactive>F</isinactive>
-            <name>Cancel B2B Exchange EGUI</name>
-        </instance>
-        <instance scriptid="val_111479_t2411467_867">
-            <custrecord_gw_mt_action_mode>ConfirmCancellation</custrecord_gw_mt_action_mode>
-            <custrecord_gw_mt_bus_tran_type>B2BE</custrecord_gw_mt_bus_tran_type>
-            <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
-            <custrecord_gw_mt_mig_type>A0202</custrecord_gw_mt_mig_type>
-            <custrecord_gw_mt_xml_filename>gw_a0202_b2be_egui.xml.ftl</custrecord_gw_mt_xml_filename>
-            <isinactive>F</isinactive>
-            <name>Cancel B2B Exchange EGUI</name>
-        </instance>
-        <instance scriptid="val_111446_t2411467_886">
-            <custrecord_gw_mt_action_mode>ISSUE</custrecord_gw_mt_action_mode>
-            <custrecord_gw_mt_bus_tran_type>B2BE</custrecord_gw_mt_bus_tran_type>
-            <custrecord_gw_mt_egui_type>Allowance</custrecord_gw_mt_egui_type>
-            <custrecord_gw_mt_mig_type>B0101</custrecord_gw_mt_mig_type>
-            <custrecord_gw_mt_xml_filename>gw_b0101_b2be_egui.xml.ftl</custrecord_gw_mt_xml_filename>
-            <isinactive>F</isinactive>
-            <name>Issue B2B Exchange Allowance</name>
-        </instance>
-        <instance scriptid="val_111446_t2411467_887">
-            <custrecord_gw_mt_action_mode>ConfirmIssuance</custrecord_gw_mt_action_mode>
-            <custrecord_gw_mt_bus_tran_type>B2BE</custrecord_gw_mt_bus_tran_type>
-            <custrecord_gw_mt_egui_type>Allowance</custrecord_gw_mt_egui_type>
-            <custrecord_gw_mt_mig_type>B0201</custrecord_gw_mt_mig_type>
-            <custrecord_gw_mt_xml_filename>gw_b0201_b2be_egui.xml.ftl</custrecord_gw_mt_xml_filename>
-            <isinactive>F</isinactive>
-            <name>Issue B2B Exchange Allowance</name>
-        </instance>
-        <instance scriptid="val_111478_t2411467_821">
-            <custrecord_gw_mt_action_mode>CANCEL</custrecord_gw_mt_action_mode>
-            <custrecord_gw_mt_bus_tran_type>B2BE</custrecord_gw_mt_bus_tran_type>
-            <custrecord_gw_mt_egui_type>Allowance</custrecord_gw_mt_egui_type>
-            <custrecord_gw_mt_mig_type>B0201</custrecord_gw_mt_mig_type>
-            <custrecord_gw_mt_xml_filename>gw_b0401_b2c_egui.xml.ftl</custrecord_gw_mt_xml_filename>
-            <isinactive>F</isinactive>
-            <name>Cancel B2B Exchange Allowance</name>
-        </instance>
-        <instance scriptid="val_111478_t2411467_822">
-            <custrecord_gw_mt_action_mode>ConfirmCancellation</custrecord_gw_mt_action_mode>
-            <custrecord_gw_mt_bus_tran_type>B2BE</custrecord_gw_mt_bus_tran_type>
-            <custrecord_gw_mt_egui_type>Allowance</custrecord_gw_mt_egui_type>
-            <custrecord_gw_mt_mig_type>B0202</custrecord_gw_mt_mig_type>
-            <custrecord_gw_mt_xml_filename>gw_b0402_b2c_egui.xml.ftl</custrecord_gw_mt_xml_filename>
-            <isinactive>F</isinactive>
-            <name>Cancel B2B Exchange Allowance</name>
-        </instance>
-    </instances>
+  <accesstype>NONENEEDED</accesstype>
+  <allowattachments>T</allowattachments>
+  <allowinlinedeleting>F</allowinlinedeleting>
+  <allowinlinedetaching>T</allowinlinedetaching>
+  <allowinlineediting>F</allowinlineediting>
+  <allowmobileaccess>T</allowmobileaccess>
+  <allownumberingoverride>F</allownumberingoverride>
+  <allowquickadd>T</allowquickadd>
+  <allowquicksearch>F</allowquicksearch>
+  <allowuiaccess>T</allowuiaccess>
+  <customsegment></customsegment>
+  <description></description>
+  <enabledle>T</enabledle>
+  <enablekeywords>T</enablekeywords>
+  <enablemailmerge>F</enablemailmerge>
+  <enablenametranslation>F</enablenametranslation>
+  <enablenumbering>F</enablenumbering>
+  <enableoptimisticlocking>T</enableoptimisticlocking>
+  <enablesystemnotes>T</enablesystemnotes>
+  <hierarchical>F</hierarchical>
+  <icon></icon>
+  <iconbuiltin>T</iconbuiltin>
+  <iconindex></iconindex>
+  <includeinsearchmenu>T</includeinsearchmenu>
+  <includename>T</includename>
+  <isinactive>F</isinactive>
+  <isordered>F</isordered>
+  <numberinginit></numberinginit>
+  <numberingmindigits></numberingmindigits>
+  <numberingprefix></numberingprefix>
+  <numberingsuffix></numberingsuffix>
+  <recordname>Gw Mig Type</recordname>
+  <showcreationdate>F</showcreationdate>
+  <showcreationdateonlist>F</showcreationdateonlist>
+  <showid>T</showid>
+  <showlastmodified>T</showlastmodified>
+  <showlastmodifiedonlist>T</showlastmodifiedonlist>
+  <shownotes>T</shownotes>
+  <showowner>T</showowner>
+  <showownerallowchange>F</showownerallowchange>
+  <showowneronlist>T</showowneronlist>
+  <customrecordcustomfields>
+    <customrecordcustomfield scriptid="custrecord_gw_mt_egui_type">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>EGUI or Allowance</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Egui Type</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>T</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_gw_mt_bus_tran_type">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>B2B or B2C</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Business Transaction Type</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>T</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_gw_mt_mig_type">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>Example: C0403, C0401... etc</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Mig Type</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>T</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_gw_mt_xml_filename">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help></help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>XML Template Filename</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>T</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_gw_mt_action_mode">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help></help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Action Mode</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>T</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+  </customrecordcustomfields>
+  <instances>
+    <instance scriptid="val_111443_t2411467_996">
+      <custrecord_gw_mt_action_mode>ISSUE</custrecord_gw_mt_action_mode>
+      <custrecord_gw_mt_bus_tran_type>B2C</custrecord_gw_mt_bus_tran_type>
+      <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
+      <custrecord_gw_mt_mig_type>C0401</custrecord_gw_mt_mig_type>
+      <custrecord_gw_mt_xml_filename>gw_c0401_b2c_egui.xml.ftl</custrecord_gw_mt_xml_filename>
+      <isinactive>F</isinactive>
+      <name>Issue B2C EGUI</name>
+    </instance>
+    <instance scriptid="val_111483_t2411467_546">
+      <custrecord_gw_mt_action_mode>CANCEL</custrecord_gw_mt_action_mode>
+      <custrecord_gw_mt_bus_tran_type>B2C</custrecord_gw_mt_bus_tran_type>
+      <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
+      <custrecord_gw_mt_mig_type>C0501</custrecord_gw_mt_mig_type>
+      <custrecord_gw_mt_xml_filename>gw_c0501_b2c_egui.xml.ftl</custrecord_gw_mt_xml_filename>
+      <isinactive>F</isinactive>
+      <name>Cancel B2C EGUI</name>
+    </instance>
+    <instance scriptid="val_111443_t2411467_987">
+      <custrecord_gw_mt_action_mode>VOID</custrecord_gw_mt_action_mode>
+      <custrecord_gw_mt_bus_tran_type>B2C</custrecord_gw_mt_bus_tran_type>
+      <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
+      <custrecord_gw_mt_mig_type>C0701</custrecord_gw_mt_mig_type>
+      <custrecord_gw_mt_xml_filename>gw_c0701_b2c_egui.xml.ftl</custrecord_gw_mt_xml_filename>
+      <isinactive>F</isinactive>
+      <name>Void B2C EGUI</name>
+    </instance>
+    <instance scriptid="val_111445_t2411467_237">
+      <custrecord_gw_mt_action_mode>ISSUE</custrecord_gw_mt_action_mode>
+      <custrecord_gw_mt_bus_tran_type>B2C</custrecord_gw_mt_bus_tran_type>
+      <custrecord_gw_mt_egui_type>Allowance</custrecord_gw_mt_egui_type>
+      <custrecord_gw_mt_mig_type>D0401</custrecord_gw_mt_mig_type>
+      <custrecord_gw_mt_xml_filename>gw_d0401_b2c_allowance.xml.ftl</custrecord_gw_mt_xml_filename>
+      <isinactive>F</isinactive>
+      <name>Issue B2C Allowance</name>
+    </instance>
+    <instance scriptid="val_111482_t2411467_886">
+      <custrecord_gw_mt_action_mode>CANCEL</custrecord_gw_mt_action_mode>
+      <custrecord_gw_mt_bus_tran_type>B2C</custrecord_gw_mt_bus_tran_type>
+      <custrecord_gw_mt_egui_type>Allowance</custrecord_gw_mt_egui_type>
+      <custrecord_gw_mt_mig_type>D0501</custrecord_gw_mt_mig_type>
+      <custrecord_gw_mt_xml_filename>gw_d0501_b2c_egui.xml.ftl</custrecord_gw_mt_xml_filename>
+      <isinactive>F</isinactive>
+      <name>Cancel B2C Allowance</name>
+    </instance>
+    <instance scriptid="val_111444_t2411467_799">
+      <custrecord_gw_mt_action_mode>ISSUE</custrecord_gw_mt_action_mode>
+      <custrecord_gw_mt_bus_tran_type>B2BS</custrecord_gw_mt_bus_tran_type>
+      <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
+      <custrecord_gw_mt_mig_type>A0401</custrecord_gw_mt_mig_type>
+      <custrecord_gw_mt_xml_filename>gw_a0401_b2bs_egui.xml.ftl</custrecord_gw_mt_xml_filename>
+      <isinactive>F</isinactive>
+      <name>Issue B2BS EGUI</name>
+    </instance>
+    <instance scriptid="val_111481_t2411467_475">
+      <custrecord_gw_mt_action_mode>CANCEL</custrecord_gw_mt_action_mode>
+      <custrecord_gw_mt_bus_tran_type>B2BS</custrecord_gw_mt_bus_tran_type>
+      <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
+      <custrecord_gw_mt_mig_type>A0501</custrecord_gw_mt_mig_type>
+      <custrecord_gw_mt_xml_filename>gw_a0501_b2bs_egui.xml.ftl</custrecord_gw_mt_xml_filename>
+      <isinactive>F</isinactive>
+      <name>Cancel B2BS EGUI</name>
+    </instance>
+    <instance scriptid="val_111444_t2411467_978">
+      <custrecord_gw_mt_action_mode>REJECT</custrecord_gw_mt_action_mode>
+      <custrecord_gw_mt_bus_tran_type>B2BS</custrecord_gw_mt_bus_tran_type>
+      <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
+      <custrecord_gw_mt_mig_type>A0601</custrecord_gw_mt_mig_type>
+      <custrecord_gw_mt_xml_filename>gw_a0601_b2bs_egui.xml.ftl</custrecord_gw_mt_xml_filename>
+      <isinactive>F</isinactive>
+      <name>Reject B2B EGUI</name>
+    </instance>
+    <instance scriptid="val_111477_t2411467_863">
+      <custrecord_gw_mt_action_mode>ISSUE</custrecord_gw_mt_action_mode>
+      <custrecord_gw_mt_bus_tran_type>B2BS</custrecord_gw_mt_bus_tran_type>
+      <custrecord_gw_mt_egui_type>Allowance</custrecord_gw_mt_egui_type>
+      <custrecord_gw_mt_mig_type>B0401</custrecord_gw_mt_mig_type>
+      <custrecord_gw_mt_xml_filename>gw_b0401_b2bs_egui.xml.ftl</custrecord_gw_mt_xml_filename>
+      <isinactive>F</isinactive>
+      <name>Issue B2B Allowance</name>
+    </instance>
+    <instance scriptid="val_111480_t2411467_389">
+      <custrecord_gw_mt_action_mode>CANCEL</custrecord_gw_mt_action_mode>
+      <custrecord_gw_mt_bus_tran_type>B2BS</custrecord_gw_mt_bus_tran_type>
+      <custrecord_gw_mt_egui_type>Allowance</custrecord_gw_mt_egui_type>
+      <custrecord_gw_mt_mig_type>B0501</custrecord_gw_mt_mig_type>
+      <custrecord_gw_mt_xml_filename>gw_b0501_b2bs_egui.xml.ftl</custrecord_gw_mt_xml_filename>
+      <isinactive>F</isinactive>
+      <name>Cancel B2BS Allowance</name>
+    </instance>
+    <instance scriptid="val_111475_t2411467_451">
+      <custrecord_gw_mt_action_mode>ISSUE</custrecord_gw_mt_action_mode>
+      <custrecord_gw_mt_bus_tran_type>B2BE</custrecord_gw_mt_bus_tran_type>
+      <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
+      <custrecord_gw_mt_mig_type>A0101</custrecord_gw_mt_mig_type>
+      <custrecord_gw_mt_xml_filename>gw_a0101_b2be_egui.xml.ftl</custrecord_gw_mt_xml_filename>
+      <isinactive>F</isinactive>
+      <name>Issue B2B Exchange EGUI</name>
+    </instance>
+    <instance scriptid="val_111475_t2411467_452">
+      <custrecord_gw_mt_action_mode>ConfirmIssuance</custrecord_gw_mt_action_mode>
+      <custrecord_gw_mt_bus_tran_type>B2BE</custrecord_gw_mt_bus_tran_type>
+      <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
+      <custrecord_gw_mt_mig_type>A0102</custrecord_gw_mt_mig_type>
+      <custrecord_gw_mt_xml_filename>gw_a0102_b2be_egui.xml.ftl</custrecord_gw_mt_xml_filename>
+      <isinactive>F</isinactive>
+      <name>Confirm B2B Exchange EGUI Issuance</name>
+    </instance>
+    <instance scriptid="val_111475_t2411467_453">
+      <custrecord_gw_mt_action_mode>RejectIssuance</custrecord_gw_mt_action_mode>
+      <custrecord_gw_mt_bus_tran_type>B2BE</custrecord_gw_mt_bus_tran_type>
+      <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
+      <custrecord_gw_mt_mig_type>A0301</custrecord_gw_mt_mig_type>
+      <custrecord_gw_mt_xml_filename>gw_a0301_b2be_egui.xml.ftl</custrecord_gw_mt_xml_filename>
+      <isinactive>F</isinactive>
+      <name>Reject B2B Exchange EGUI Issuance</name>
+    </instance>
+    <instance scriptid="val_111475_t2411467_454">
+      <custrecord_gw_mt_action_mode>ConfirmIssuanceRejection</custrecord_gw_mt_action_mode>
+      <custrecord_gw_mt_bus_tran_type>B2BE</custrecord_gw_mt_bus_tran_type>
+      <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
+      <custrecord_gw_mt_mig_type>A0302</custrecord_gw_mt_mig_type>
+      <custrecord_gw_mt_xml_filename>gw_a0302_b2be_egui.xml.ftl</custrecord_gw_mt_xml_filename>
+      <isinactive>F</isinactive>
+      <name>Confirm B2B Exchange EGUI Rejection</name>
+    </instance>
+    <instance scriptid="val_111479_t2411467_866">
+      <custrecord_gw_mt_action_mode>CANCEL</custrecord_gw_mt_action_mode>
+      <custrecord_gw_mt_bus_tran_type>B2BE</custrecord_gw_mt_bus_tran_type>
+      <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
+      <custrecord_gw_mt_mig_type>A0201</custrecord_gw_mt_mig_type>
+      <custrecord_gw_mt_xml_filename>gw_a0201_b2be_egui.xml.ftl</custrecord_gw_mt_xml_filename>
+      <isinactive>F</isinactive>
+      <name>Cancel B2B Exchange EGUI</name>
+    </instance>
+    <instance scriptid="val_111479_t2411467_867">
+      <custrecord_gw_mt_action_mode>ConfirmCancellation</custrecord_gw_mt_action_mode>
+      <custrecord_gw_mt_bus_tran_type>B2BE</custrecord_gw_mt_bus_tran_type>
+      <custrecord_gw_mt_egui_type>EGUI</custrecord_gw_mt_egui_type>
+      <custrecord_gw_mt_mig_type>A0202</custrecord_gw_mt_mig_type>
+      <custrecord_gw_mt_xml_filename>gw_a0202_b2be_egui.xml.ftl</custrecord_gw_mt_xml_filename>
+      <isinactive>F</isinactive>
+      <name>Cancel B2B Exchange EGUI</name>
+    </instance>
+    <instance scriptid="val_111446_t2411467_886">
+      <custrecord_gw_mt_action_mode>ISSUE</custrecord_gw_mt_action_mode>
+      <custrecord_gw_mt_bus_tran_type>B2BE</custrecord_gw_mt_bus_tran_type>
+      <custrecord_gw_mt_egui_type>Allowance</custrecord_gw_mt_egui_type>
+      <custrecord_gw_mt_mig_type>B0101</custrecord_gw_mt_mig_type>
+      <custrecord_gw_mt_xml_filename>gw_b0101_b2be_egui.xml.ftl</custrecord_gw_mt_xml_filename>
+      <isinactive>F</isinactive>
+      <name>Issue B2B Exchange Allowance</name>
+    </instance>
+    <instance scriptid="val_111446_t2411467_887">
+      <custrecord_gw_mt_action_mode>ConfirmIssuance</custrecord_gw_mt_action_mode>
+      <custrecord_gw_mt_bus_tran_type>B2BE</custrecord_gw_mt_bus_tran_type>
+      <custrecord_gw_mt_egui_type>Allowance</custrecord_gw_mt_egui_type>
+      <custrecord_gw_mt_mig_type>B0201</custrecord_gw_mt_mig_type>
+      <custrecord_gw_mt_xml_filename>gw_b0201_b2be_egui.xml.ftl</custrecord_gw_mt_xml_filename>
+      <isinactive>F</isinactive>
+      <name>Issue B2B Exchange Allowance</name>
+    </instance>
+    <instance scriptid="val_111478_t2411467_821">
+      <custrecord_gw_mt_action_mode>CANCEL</custrecord_gw_mt_action_mode>
+      <custrecord_gw_mt_bus_tran_type>B2BE</custrecord_gw_mt_bus_tran_type>
+      <custrecord_gw_mt_egui_type>Allowance</custrecord_gw_mt_egui_type>
+      <custrecord_gw_mt_mig_type>B0201</custrecord_gw_mt_mig_type>
+      <custrecord_gw_mt_xml_filename>gw_b0401_b2c_egui.xml.ftl</custrecord_gw_mt_xml_filename>
+      <isinactive>F</isinactive>
+      <name>Cancel B2B Exchange Allowance</name>
+    </instance>
+    <instance scriptid="val_111478_t2411467_822">
+      <custrecord_gw_mt_action_mode>ConfirmCancellation</custrecord_gw_mt_action_mode>
+      <custrecord_gw_mt_bus_tran_type>B2BE</custrecord_gw_mt_bus_tran_type>
+      <custrecord_gw_mt_egui_type>Allowance</custrecord_gw_mt_egui_type>
+      <custrecord_gw_mt_mig_type>B0202</custrecord_gw_mt_mig_type>
+      <custrecord_gw_mt_xml_filename>gw_b0402_b2c_egui.xml.ftl</custrecord_gw_mt_xml_filename>
+      <isinactive>F</isinactive>
+      <name>Cancel B2B Exchange Allowance</name>
+    </instance>
+  </instances>
 </customrecordtype>

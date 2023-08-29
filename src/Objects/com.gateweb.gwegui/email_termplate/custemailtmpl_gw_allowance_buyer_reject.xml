@@ -1,0 +1,12 @@
+<emailtemplate scriptid="custemailtmpl_gw_allowance_buyer_reject">
+  <addcompanyaddress>T</addcompanyaddress>
+  <addunsubscribelink>T</addunsubscribelink>
+  <description></description>
+  <isinactive>F</isinactive>
+  <isprivate>F</isprivate>
+  <mediaitem></mediaitem>
+  <name>買方不同意開立折讓單通知</name>
+  <recordtype>CUSTOM</recordtype>
+  <subject>買方不同意開立折讓單通知 - 發票號碼 - ${customrecord.custrecord_egui_invoice_number}</subject>
+  <usesmedia>F</usesmedia>
+</emailtemplate>

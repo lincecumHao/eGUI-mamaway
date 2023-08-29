@@ -1,0 +1,12 @@
+<emailtemplate scriptid="custemailtmpl_gw_allowance_created_notification">
+  <addcompanyaddress>T</addcompanyaddress>
+  <addunsubscribelink>T</addunsubscribelink>
+  <description></description>
+  <isinactive>F</isinactive>
+  <isprivate>F</isprivate>
+  <mediaitem></mediaitem>
+  <name>折讓證明單已開立</name>
+  <recordtype>CUSTOM</recordtype>
+  <subject>開立折讓單通知 - 折讓單號碼 - ${customrecord.custrecord_allowance_number}</subject>
+  <usesmedia>F</usesmedia>
+</emailtemplate>

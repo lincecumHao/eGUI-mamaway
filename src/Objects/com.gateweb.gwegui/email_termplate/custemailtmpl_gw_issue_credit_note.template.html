@@ -1,0 +1,148 @@
+<div style="text-align: center;"><span style="font-size:20px;"><strong>是否開立折讓單通知</strong></span><br />
+<span style="color:#ff0000;"><span style="font-size:14px;">本通知信是由「關網資訊 雲端電子發票系統」自動產生與發送，請勿直接回覆!</span></span></div>
+
+<div style="text-align: center;">&nbsp;</div>
+
+<table cellpadding="1" cellspacing="1" style="width:70%; table-layout: fixed;margin-left:auto;margin-right:auto;">
+<tbody>
+	<tr>
+	<td style="text-align: left;"><span style="font-size: 14px;">您好：</span></td>
+	</tr>
+	<tr>
+	<td style="text-align: left;">是否同意開立折讓單內容如下，確認後請點選下方按鈕送出資料。</td>
+	</tr>
+</tbody>
+</table>
+&nbsp;
+
+<table cellpadding="1" cellspacing="1" style="width:70%; table-layout: fixed;margin-left:auto;margin-right:auto;">
+<tbody>
+	<tr>
+	<td style="text-align: left;">折讓單資訊 :</td>
+	</tr>
+</tbody>
+</table>
+
+<hr style="border:2px solid black;" width="70%" />
+<table cellpadding="1" cellspacing="1" id="information" style="width:70%; table-layout: fixed;margin-left:auto;margin-right:auto;">
+<tbody>
+	<tr>
+	<td>賣方統編</td>
+	<td>公司名稱</td>
+	</tr>
+	<tr>
+	<td>${customrecord.custrecord_seller_id}</td>
+	<td>${customrecord.custrecord_seller_name}</td>
+	</tr>
+	<tr>
+	<td>買方統編</td>
+	<td>公司名稱</td>
+	</tr>
+	<tr>
+	<td>${customrecord.custrecord_buyer_id}</td>
+	<td>${customrecord.custrecord_buyer_name}</td>
+	</tr>
+</tbody>
+</table>
+&nbsp;
+
+<table cellpadding="1" cellspacing="1" style="width:70%; table-layout: fixed;margin-left:auto;margin-right:auto;">
+<tbody>
+	<tr>
+	<td style="text-align: left;">折讓單號碼 :&nbsp;${customrecord.custrecord_allowance_number}</td>
+	</tr>
+	<tr>
+	<td style="text-align: left;">折讓原因 :&nbsp;${customrecord.custrecord_allowance_reason}</td>
+	</tr>
+	<tr>
+	<td style="text-align: left;">折讓總金額 :&nbsp;${customrecord.custrecord_allowance_total_amount}</td>
+	</tr>
+	<tr>
+	<td style="text-align: left;">&nbsp;</td>
+	</tr>
+	<tr>
+	<td style="text-align: left;">折讓單明細如下 :</td>
+	</tr>
+</tbody>
+</table>
+&nbsp;
+
+<table cellpadding="1" cellspacing="1" style="width:68%; table-layout: fixed;margin-left:auto;margin-right:auto;border: 1px solid black;border-width:1px;border-radius:5px;">
+<tbody>
+	<tr>
+	<td><span style="font-size:18px;">品名:</span></td>
+	</tr>
+	<tr>
+	<td>。發票號碼 :&nbsp;${customrecord.custrecord_egui_invoice_number}</td>
+	</tr>
+	<tr>
+	<td>。發票日期 :&nbsp;${customrecord.custrecord_egui_invoice_date}</td>
+	</tr>
+	<tr>
+	<td>。退貨數量 :&nbsp;${customrecord.custrecord_return_quantity}</td>
+	</tr>
+	<tr>
+	<td>。金額(未稅) :&nbsp;${customrecord.custrecord_amount_without_tax}</td>
+	</tr>
+	<tr>
+	<td>。稅額 :&nbsp;${customrecord.custrecord_tax_amount}</td>
+	</tr>
+</tbody>
+</table>
+
+<hr style="height: 2px;border-top:2px dashed black" width="70%" />
+<table cellpadding="1" cellspacing="1" style="width:70%; table-layout: fixed;margin-left:auto;margin-right:auto;">
+<tbody>
+	<tr>
+	<td style="text-align: left;"><span style="font-size:18px;">備註：</span></td>
+	</tr>
+	<tr>
+	<td style="text-align: left;">1. 請於7日內(含例假日)協助確認內容是否無誤，7日後自動失效。</td>
+	</tr>
+	<tr>
+	<td style="text-align: left;">2.貴公司按下同意日即為折讓單開立日。 同意後電子折讓單將於24小時內上傳財務部電子發票平台，以利申報查核。</td>
+	</tr>
+	<tr>
+	<td style="text-align: left;">3. 貴公司按下同意後系統會自動發送折讓單電子檔予以備存，作為記帳申報憑證。</td>
+	</tr>
+	<tr>
+	<td style="text-align: left;">4. 對於內容有疑慮請與關網資訊股份有限公司聯絡。</td>
+	</tr>
+</tbody>
+</table>
+&nbsp;
+
+<!--<div style="text-align: center;">-->
+<!--	<a href="http://www.gateweb.com.tw/" target="_blank">關網資訊股份有限公司</a>-->
+<!--	<form action="link">-->
+<!--		<input type="submit" value="請由此連結確認" />-->
+<!--	</form>-->
+<!--</div>-->
+<div style="text-align: center;">
+	@@button_link@@&nbsp;
+</div>
+
+
+<hr style="border:2px solid black;" width="70%" />
+<table cellpadding="1" cellspacing="1" style="width:70%; table-layout: fixed;margin-left:auto;margin-right:auto;">
+<tbody>
+	<tr>
+	<td style="text-align: left;">關於我們：</td>
+	</tr>
+	<tr>
+	<td style="text-align: left;">若貴公司也有開立電子發票的需求。</td>
+	</tr>
+	<tr>
+	<td style="text-align: left;">歡迎造訪我們的官方網站「<a href="http://www.gateweb.com.tw/" target="_blank">關網資訊股份有限公司</a>」，或直接來電洽詢，謝謝！</td>
+	</tr>
+	<tr>
+	<td style="text-align: left;">關網業務服務專線：(02) 7750-5070。</td>
+	</tr>
+	<tr>
+	<td style="text-align: left;">最適合中小企業的雲端電子發票</td>
+	</tr>
+	<tr>
+	<td style="text-align: right;">關網資訊股份有限公司 敬上</td>
+	</tr>
+</tbody>
+</table>

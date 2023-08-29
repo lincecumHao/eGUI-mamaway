@@ -1,4 +1,4 @@
-<customrecordtype scriptid="customrecord_gw_egui_config">
+<customrecordtype scriptid="customrecord_gw_allowance_consent_notify">
   <accesstype>NONENEEDED</accesstype>
   <allowattachments>T</allowattachments>
   <allowinlinedeleting>F</allowinlinedeleting>
@@ -13,7 +13,7 @@
   <description></description>
   <enabledle>T</enabledle>
   <enablekeywords>T</enablekeywords>
-  <enablemailmerge>F</enablemailmerge>
+  <enablemailmerge>T</enablemailmerge>
   <enablenametranslation>F</enablenametranslation>
   <enablenumbering>F</enablenumbering>
   <enableoptimisticlocking>T</enableoptimisticlocking>
@@ -23,25 +23,25 @@
   <iconbuiltin>T</iconbuiltin>
   <iconindex></iconindex>
   <includeinsearchmenu>T</includeinsearchmenu>
-  <includename>T</includename>
+  <includename>F</includename>
   <isinactive>F</isinactive>
   <isordered>F</isordered>
   <numberinginit></numberinginit>
   <numberingmindigits></numberingmindigits>
   <numberingprefix></numberingprefix>
   <numberingsuffix></numberingsuffix>
-  <recordname>電子發票系統設定</recordname>
-  <showcreationdate>F</showcreationdate>
+  <recordname>GW Allowance Consent Notification</recordname>
+  <showcreationdate>T</showcreationdate>
   <showcreationdateonlist>F</showcreationdateonlist>
   <showid>T</showid>
-  <showlastmodified>F</showlastmodified>
+  <showlastmodified>T</showlastmodified>
   <showlastmodifiedonlist>F</showlastmodifiedonlist>
   <shownotes>T</shownotes>
   <showowner>F</showowner>
   <showownerallowchange>F</showownerallowchange>
   <showowneronlist>F</showowneronlist>
   <customrecordcustomfields>
-    <customrecordcustomfield scriptid="custrecord_gw_conf_ns_acct_id">
+    <customrecordcustomfield scriptid="custrecord_unique_id">
       <accesslevel>2</accesslevel>
       <allowquickadd>F</allowquickadd>
       <applyformatting>F</applyformatting>
@@ -55,13 +55,13 @@
       <displaywidth></displaywidth>
       <dynamicdefault></dynamicdefault>
       <encryptatrest>F</encryptatrest>
-      <fieldtype>TEXT</fieldtype>
+      <fieldtype>INTEGER</fieldtype>
       <globalsearch>F</globalsearch>
       <help></help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
       <isparent>F</isparent>
-      <label>NetSuite Account Id</label>
+      <label>Unique Id</label>
       <linktext></linktext>
       <maxlength></maxlength>
       <maxvalue></maxvalue>
@@ -80,163 +80,7 @@
       <storevalue>T</storevalue>
       <subtab></subtab>
     </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_gw_conf_print_base_url">
-      <accesslevel>2</accesslevel>
-      <allowquickadd>F</allowquickadd>
-      <applyformatting>F</applyformatting>
-      <checkspelling>F</checkspelling>
-      <defaultchecked>F</defaultchecked>
-      <defaultselection></defaultselection>
-      <defaultvalue></defaultvalue>
-      <description></description>
-      <displayheight></displayheight>
-      <displaytype>NORMAL</displaytype>
-      <displaywidth></displaywidth>
-      <dynamicdefault></dynamicdefault>
-      <encryptatrest>F</encryptatrest>
-      <fieldtype>TEXT</fieldtype>
-      <globalsearch>F</globalsearch>
-      <help></help>
-      <isformula>F</isformula>
-      <ismandatory>F</ismandatory>
-      <isparent>F</isparent>
-      <label>Print Base Url</label>
-      <linktext></linktext>
-      <maxlength></maxlength>
-      <maxvalue></maxvalue>
-      <minvalue></minvalue>
-      <onparentdelete></onparentdelete>
-      <parentsubtab></parentsubtab>
-      <rolerestrict>F</rolerestrict>
-      <searchcomparefield></searchcomparefield>
-      <searchdefault></searchdefault>
-      <searchlevel>2</searchlevel>
-      <selectrecordtype></selectrecordtype>
-      <showinlist>T</showinlist>
-      <sourcefilterby></sourcefilterby>
-      <sourcefrom></sourcefrom>
-      <sourcelist></sourcelist>
-      <storevalue>T</storevalue>
-      <subtab></subtab>
-    </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_gw_config_dl_base_url">
-      <accesslevel>2</accesslevel>
-      <allowquickadd>F</allowquickadd>
-      <applyformatting>F</applyformatting>
-      <checkspelling>F</checkspelling>
-      <defaultchecked>F</defaultchecked>
-      <defaultselection></defaultselection>
-      <defaultvalue></defaultvalue>
-      <description></description>
-      <displayheight></displayheight>
-      <displaytype>NORMAL</displaytype>
-      <displaywidth></displaywidth>
-      <dynamicdefault></dynamicdefault>
-      <encryptatrest>F</encryptatrest>
-      <fieldtype>TEXT</fieldtype>
-      <globalsearch>F</globalsearch>
-      <help></help>
-      <isformula>F</isformula>
-      <ismandatory>F</ismandatory>
-      <isparent>F</isparent>
-      <label>Download Base Url</label>
-      <linktext></linktext>
-      <maxlength></maxlength>
-      <maxvalue></maxvalue>
-      <minvalue></minvalue>
-      <onparentdelete></onparentdelete>
-      <parentsubtab></parentsubtab>
-      <rolerestrict>F</rolerestrict>
-      <searchcomparefield></searchcomparefield>
-      <searchdefault></searchdefault>
-      <searchlevel>2</searchlevel>
-      <selectrecordtype></selectrecordtype>
-      <showinlist>T</showinlist>
-      <sourcefilterby></sourcefilterby>
-      <sourcefrom></sourcefrom>
-      <sourcelist></sourcelist>
-      <storevalue>T</storevalue>
-      <subtab></subtab>
-    </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_gw_conf_turnkey_base_url">
-      <accesslevel>2</accesslevel>
-      <allowquickadd>F</allowquickadd>
-      <applyformatting>F</applyformatting>
-      <checkspelling>F</checkspelling>
-      <defaultchecked>F</defaultchecked>
-      <defaultselection></defaultselection>
-      <defaultvalue></defaultvalue>
-      <description></description>
-      <displayheight></displayheight>
-      <displaytype>NORMAL</displaytype>
-      <displaywidth></displaywidth>
-      <dynamicdefault></dynamicdefault>
-      <encryptatrest>F</encryptatrest>
-      <fieldtype>TEXT</fieldtype>
-      <globalsearch>F</globalsearch>
-      <help></help>
-      <isformula>F</isformula>
-      <ismandatory>F</ismandatory>
-      <isparent>F</isparent>
-      <label>Turnkey Base Url</label>
-      <linktext></linktext>
-      <maxlength></maxlength>
-      <maxvalue></maxvalue>
-      <minvalue></minvalue>
-      <onparentdelete></onparentdelete>
-      <parentsubtab></parentsubtab>
-      <rolerestrict>F</rolerestrict>
-      <searchcomparefield></searchcomparefield>
-      <searchdefault></searchdefault>
-      <searchlevel>2</searchlevel>
-      <selectrecordtype></selectrecordtype>
-      <showinlist>T</showinlist>
-      <sourcefilterby></sourcefilterby>
-      <sourcefrom></sourcefrom>
-      <sourcelist></sourcelist>
-      <storevalue>T</storevalue>
-      <subtab></subtab>
-    </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_gw_conf_active">
-      <accesslevel>2</accesslevel>
-      <allowquickadd>F</allowquickadd>
-      <applyformatting>F</applyformatting>
-      <checkspelling>F</checkspelling>
-      <defaultchecked>F</defaultchecked>
-      <defaultselection></defaultselection>
-      <defaultvalue></defaultvalue>
-      <description></description>
-      <displayheight></displayheight>
-      <displaytype>NORMAL</displaytype>
-      <displaywidth></displaywidth>
-      <dynamicdefault></dynamicdefault>
-      <encryptatrest>F</encryptatrest>
-      <fieldtype>CHECKBOX</fieldtype>
-      <globalsearch>F</globalsearch>
-      <help></help>
-      <isformula>F</isformula>
-      <ismandatory>F</ismandatory>
-      <isparent>F</isparent>
-      <label>Active</label>
-      <linktext></linktext>
-      <maxlength></maxlength>
-      <maxvalue></maxvalue>
-      <minvalue></minvalue>
-      <onparentdelete></onparentdelete>
-      <parentsubtab></parentsubtab>
-      <rolerestrict>F</rolerestrict>
-      <searchcomparefield></searchcomparefield>
-      <searchdefault></searchdefault>
-      <searchlevel>2</searchlevel>
-      <selectrecordtype></selectrecordtype>
-      <showinlist>T</showinlist>
-      <sourcefilterby></sourcefilterby>
-      <sourcefrom></sourcefrom>
-      <sourcelist></sourcelist>
-      <storevalue>T</storevalue>
-      <subtab></subtab>
-    </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_gw_conf_tax_calc_method">
+    <customrecordcustomfield scriptid="custrecord_gw_voucher_main_id">
       <accesslevel>2</accesslevel>
       <allowquickadd>F</allowquickadd>
       <applyformatting>F</applyformatting>
@@ -255,8 +99,8 @@
       <help></help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
-      <isparent>F</isparent>
-      <label>Tax Calculation Method</label>
+      <isparent>T</isparent>
+      <label>GW Voucher Main Id</label>
       <linktext></linktext>
       <maxlength></maxlength>
       <maxvalue></maxvalue>
@@ -267,7 +111,7 @@
       <searchcomparefield></searchcomparefield>
       <searchdefault></searchdefault>
       <searchlevel>2</searchlevel>
-      <selectrecordtype>[scriptid=customrecord_gw_tax_calc_method_option]</selectrecordtype>
+      <selectrecordtype>[scriptid=customrecord_gw_voucher_main]</selectrecordtype>
       <showinlist>T</showinlist>
       <sourcefilterby></sourcefilterby>
       <sourcefrom></sourcefrom>
@@ -275,10 +119,361 @@
       <storevalue>T</storevalue>
       <subtab></subtab>
     </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_gw_conf_acceptable_variation">
+    <customrecordcustomfield scriptid="custrecord_new_voucher_date">
       <accesslevel>2</accesslevel>
       <allowquickadd>F</allowquickadd>
-      <applyformatting>T</applyformatting>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help></help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>New Voucher Date</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>T</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_new_voucher_year_month">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help></help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>New Voucher Year Month</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>T</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_notification_expired_date">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>DATE</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help></help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Notification Expired Date</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>T</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_allowance_number">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>Source from Voucher Main voucherNumber</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Allowance Number</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>F</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom>[scriptid=customrecord_gw_voucher_main.custrecord_gw_voucher_number]</sourcefrom>
+      <sourcelist>[scriptid=customrecord_gw_allowance_consent_notify.custrecord_gw_voucher_main_id]</sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_allowance_reason">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>RICHTEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>Source from Voucher Main mainRemark</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Allowance Reason</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>F</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom>[scriptid=customrecord_gw_voucher_main.custrecord_gw_main_remark]</sourcefrom>
+      <sourcelist>[scriptid=customrecord_gw_allowance_consent_notify.custrecord_gw_voucher_main_id]</sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_egui_invoice_number">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>Source from Voucher Details ORIGINALGUINUMBER</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>eGUI Invoice Number</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>F</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_egui_invoice_date">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>Source from Voucher Details ORIGINALGUIDATE</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>eGUI Invoice Date</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>F</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_amount_without_tax">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>Source from Voucher Details ITEMAMOUNT</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Amount Without Tax</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>F</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_tax_amount">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>Source from Voucher Details ITEM TAX AMOUNT</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Tax Amount</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>F</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_allowance_total_amount">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
       <checkspelling>F</checkspelling>
       <defaultchecked>F</defaultchecked>
       <defaultselection></defaultselection>
@@ -291,11 +486,11 @@
       <encryptatrest>F</encryptatrest>
       <fieldtype>FLOAT</fieldtype>
       <globalsearch>F</globalsearch>
-      <help></help>
+      <help>Source from Voucher Main totalAmount</help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
       <isparent>F</isparent>
-      <label>Tax Calculation Acceptable Variation</label>
+      <label>Allowance Total Amount</label>
       <linktext></linktext>
       <maxlength></maxlength>
       <maxvalue></maxvalue>
@@ -307,209 +502,14 @@
       <searchdefault></searchdefault>
       <searchlevel>2</searchlevel>
       <selectrecordtype></selectrecordtype>
-      <showinlist>T</showinlist>
+      <showinlist>F</showinlist>
       <sourcefilterby></sourcefilterby>
-      <sourcefrom></sourcefrom>
-      <sourcelist></sourcelist>
+      <sourcefrom>[scriptid=customrecord_gw_voucher_main.custrecord_gw_total_amount]</sourcefrom>
+      <sourcelist>[scriptid=customrecord_gw_allowance_consent_notify.custrecord_gw_voucher_main_id]</sourcelist>
       <storevalue>T</storevalue>
       <subtab></subtab>
     </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_gw_conf_egui_init_fmt">
-      <accesslevel>2</accesslevel>
-      <allowquickadd>F</allowquickadd>
-      <applyformatting>F</applyformatting>
-      <checkspelling>F</checkspelling>
-      <defaultchecked>F</defaultchecked>
-      <defaultselection></defaultselection>
-      <defaultvalue></defaultvalue>
-      <description></description>
-      <displayheight></displayheight>
-      <displaytype>NORMAL</displaytype>
-      <displaywidth></displaywidth>
-      <dynamicdefault></dynamicdefault>
-      <encryptatrest>F</encryptatrest>
-      <fieldtype>SELECT</fieldtype>
-      <globalsearch>F</globalsearch>
-      <help></help>
-      <isformula>F</isformula>
-      <ismandatory>F</ismandatory>
-      <isparent>F</isparent>
-      <label>Issue Egui Default format</label>
-      <linktext></linktext>
-      <maxlength></maxlength>
-      <maxvalue></maxvalue>
-      <minvalue></minvalue>
-      <onparentdelete>NO_ACTION</onparentdelete>
-      <parentsubtab></parentsubtab>
-      <rolerestrict>F</rolerestrict>
-      <searchcomparefield></searchcomparefield>
-      <searchdefault></searchdefault>
-      <searchlevel>2</searchlevel>
-      <selectrecordtype>[scriptid=customrecord_gw_ap_doc_type_option]</selectrecordtype>
-      <showinlist>T</showinlist>
-      <sourcefilterby></sourcefilterby>
-      <sourcefrom></sourcefrom>
-      <sourcelist></sourcelist>
-      <storevalue>T</storevalue>
-      <subtab></subtab>
-    </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_gw_conf_allowance_init_fmt">
-      <accesslevel>2</accesslevel>
-      <allowquickadd>F</allowquickadd>
-      <applyformatting>F</applyformatting>
-      <checkspelling>F</checkspelling>
-      <defaultchecked>F</defaultchecked>
-      <defaultselection></defaultselection>
-      <defaultvalue></defaultvalue>
-      <description></description>
-      <displayheight></displayheight>
-      <displaytype>NORMAL</displaytype>
-      <displaywidth></displaywidth>
-      <dynamicdefault></dynamicdefault>
-      <encryptatrest>F</encryptatrest>
-      <fieldtype>SELECT</fieldtype>
-      <globalsearch>F</globalsearch>
-      <help></help>
-      <isformula>F</isformula>
-      <ismandatory>F</ismandatory>
-      <isparent>F</isparent>
-      <label>Issue Allowance Default format</label>
-      <linktext></linktext>
-      <maxlength></maxlength>
-      <maxvalue></maxvalue>
-      <minvalue></minvalue>
-      <onparentdelete>NO_ACTION</onparentdelete>
-      <parentsubtab></parentsubtab>
-      <rolerestrict>F</rolerestrict>
-      <searchcomparefield></searchcomparefield>
-      <searchdefault></searchdefault>
-      <searchlevel>2</searchlevel>
-      <selectrecordtype>[scriptid=customrecord_gw_ap_doc_type_option]</selectrecordtype>
-      <showinlist>T</showinlist>
-      <sourcefilterby></sourcefilterby>
-      <sourcefrom></sourcefrom>
-      <sourcelist></sourcelist>
-      <storevalue>T</storevalue>
-      <subtab></subtab>
-    </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_gw_config_item_field">
-      <accesslevel>2</accesslevel>
-      <allowquickadd>F</allowquickadd>
-      <applyformatting>F</applyformatting>
-      <checkspelling>F</checkspelling>
-      <defaultchecked>F</defaultchecked>
-      <defaultselection></defaultselection>
-      <defaultvalue></defaultvalue>
-      <description></description>
-      <displayheight></displayheight>
-      <displaytype>NORMAL</displaytype>
-      <displaywidth></displaywidth>
-      <dynamicdefault></dynamicdefault>
-      <encryptatrest>F</encryptatrest>
-      <fieldtype>TEXT</fieldtype>
-      <globalsearch>F</globalsearch>
-      <help></help>
-      <isformula>F</isformula>
-      <ismandatory>F</ismandatory>
-      <isparent>F</isparent>
-      <label>Item Name Internal Id</label>
-      <linktext></linktext>
-      <maxlength></maxlength>
-      <maxvalue></maxvalue>
-      <minvalue></minvalue>
-      <onparentdelete></onparentdelete>
-      <parentsubtab></parentsubtab>
-      <rolerestrict>F</rolerestrict>
-      <searchcomparefield></searchcomparefield>
-      <searchdefault></searchdefault>
-      <searchlevel>2</searchlevel>
-      <selectrecordtype></selectrecordtype>
-      <showinlist>T</showinlist>
-      <sourcefilterby></sourcefilterby>
-      <sourcefrom></sourcefrom>
-      <sourcelist></sourcelist>
-      <storevalue>T</storevalue>
-      <subtab></subtab>
-    </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_gw_config_temp_folder_id">
-      <accesslevel>2</accesslevel>
-      <allowquickadd>F</allowquickadd>
-      <applyformatting>F</applyformatting>
-      <checkspelling>F</checkspelling>
-      <defaultchecked>F</defaultchecked>
-      <defaultselection></defaultselection>
-      <defaultvalue></defaultvalue>
-      <description></description>
-      <displayheight></displayheight>
-      <displaytype>NORMAL</displaytype>
-      <displaywidth></displaywidth>
-      <dynamicdefault></dynamicdefault>
-      <encryptatrest>F</encryptatrest>
-      <fieldtype>TEXT</fieldtype>
-      <globalsearch>F</globalsearch>
-      <help></help>
-      <isformula>F</isformula>
-      <ismandatory>F</ismandatory>
-      <isparent>F</isparent>
-      <label>Gateweb Temp Folder</label>
-      <linktext></linktext>
-      <maxlength></maxlength>
-      <maxvalue></maxvalue>
-      <minvalue></minvalue>
-      <onparentdelete></onparentdelete>
-      <parentsubtab></parentsubtab>
-      <rolerestrict>F</rolerestrict>
-      <searchcomparefield></searchcomparefield>
-      <searchdefault></searchdefault>
-      <searchlevel>2</searchlevel>
-      <selectrecordtype></selectrecordtype>
-      <showinlist>T</showinlist>
-      <sourcefilterby></sourcefilterby>
-      <sourcefrom></sourcefrom>
-      <sourcelist></sourcelist>
-      <storevalue>T</storevalue>
-      <subtab></subtab>
-    </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_gw_config_allowance_prefix">
-      <accesslevel>2</accesslevel>
-      <allowquickadd>F</allowquickadd>
-      <applyformatting>F</applyformatting>
-      <checkspelling>F</checkspelling>
-      <defaultchecked>F</defaultchecked>
-      <defaultselection></defaultselection>
-      <defaultvalue></defaultvalue>
-      <description></description>
-      <displayheight></displayheight>
-      <displaytype>NORMAL</displaytype>
-      <displaywidth></displaywidth>
-      <dynamicdefault></dynamicdefault>
-      <encryptatrest>F</encryptatrest>
-      <fieldtype>TEXT</fieldtype>
-      <globalsearch>F</globalsearch>
-      <help></help>
-      <isformula>F</isformula>
-      <ismandatory>F</ismandatory>
-      <isparent>F</isparent>
-      <label>Allowance Prefix</label>
-      <linktext></linktext>
-      <maxlength></maxlength>
-      <maxvalue></maxvalue>
-      <minvalue></minvalue>
-      <onparentdelete></onparentdelete>
-      <parentsubtab></parentsubtab>
-      <rolerestrict>F</rolerestrict>
-      <searchcomparefield></searchcomparefield>
-      <searchdefault></searchdefault>
-      <searchlevel>2</searchlevel>
-      <selectrecordtype></selectrecordtype>
-      <showinlist>T</showinlist>
-      <sourcefilterby></sourcefilterby>
-      <sourcefrom></sourcefrom>
-      <sourcelist></sourcelist>
-      <storevalue>T</storevalue>
-      <subtab></subtab>
-    </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_gw_conf_allowance_consent_n">
+    <customrecordcustomfield scriptid="custrecord_buyer_agree">
       <accesslevel>2</accesslevel>
       <allowquickadd>F</allowquickadd>
       <applyformatting>F</applyformatting>
@@ -529,7 +529,7 @@
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
       <isparent>F</isparent>
-      <label>Allowance Consent Notification</label>
+      <label>Buyer Agree</label>
       <linktext></linktext>
       <maxlength></maxlength>
       <maxvalue></maxvalue>
@@ -548,7 +548,7 @@
       <storevalue>T</storevalue>
       <subtab></subtab>
     </customrecordcustomfield>
-    <customrecordcustomfield scriptid="custrecord_gw_conf_allowance_consent_np">
+    <customrecordcustomfield scriptid="custrecord_item_description">
       <accesslevel>2</accesslevel>
       <allowquickadd>F</allowquickadd>
       <applyformatting>F</applyformatting>
@@ -564,11 +564,50 @@
       <encryptatrest>F</encryptatrest>
       <fieldtype>TEXT</fieldtype>
       <globalsearch>F</globalsearch>
+      <help>Source from Voucher Details DESCRIPTION</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Item Description</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>F</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_buyer_reject">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>CHECKBOX</fieldtype>
+      <globalsearch>F</globalsearch>
       <help></help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
       <isparent>F</isparent>
-      <label>Allowance Consent Notification Parameter</label>
+      <label>Buyer Reject</label>
       <linktext></linktext>
       <maxlength></maxlength>
       <maxvalue></maxvalue>
@@ -587,43 +626,292 @@
       <storevalue>T</storevalue>
       <subtab></subtab>
     </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_reject_reason">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>CLOBTEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help></help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Reject Reason</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>T</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_seller_id">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>Source from Voucher Main seller</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Seller Id</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>F</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom>[scriptid=customrecord_gw_voucher_main.custrecord_gw_seller]</sourcefrom>
+      <sourcelist>[scriptid=customrecord_gw_allowance_consent_notify.custrecord_gw_voucher_main_id]</sourcelist>
+      <storevalue>T</storevalue>
+      <subtab>[scriptid=customrecord_gw_allowance_consent_notify.tab_51_t2642807_263]</subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_seller_name">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>Source from Voucher Main sellerName</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Seller Name</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>F</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom>[scriptid=customrecord_gw_voucher_main.custrecord_gw_seller_name]</sourcefrom>
+      <sourcelist>[scriptid=customrecord_gw_allowance_consent_notify.custrecord_gw_voucher_main_id]</sourcelist>
+      <storevalue>T</storevalue>
+      <subtab>[scriptid=customrecord_gw_allowance_consent_notify.tab_51_t2642807_263]</subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_return_quantity">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>Source from Voucher Details ITEMSEQ</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Return Quantity</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>F</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab></subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_buyer_id">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>Source from Voucher Main buyer</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Buyer Id</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>F</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom>[scriptid=customrecord_gw_voucher_main.custrecord_gw_buyer]</sourcefrom>
+      <sourcelist>[scriptid=customrecord_gw_allowance_consent_notify.custrecord_gw_voucher_main_id]</sourcelist>
+      <storevalue>T</storevalue>
+      <subtab>[scriptid=customrecord_gw_allowance_consent_notify.tab_52_t2642807_522]</subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_buyer_name">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>Source from Voucher Main buyerName</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Buyer Name</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>F</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom>[scriptid=customrecord_gw_voucher_main.custrecord_gw_buyer_name]</sourcefrom>
+      <sourcelist>[scriptid=customrecord_gw_allowance_consent_notify.custrecord_gw_voucher_main_id]</sourcelist>
+      <storevalue>T</storevalue>
+      <subtab>[scriptid=customrecord_gw_allowance_consent_notify.tab_52_t2642807_522]</subtab>
+    </customrecordcustomfield>
+    <customrecordcustomfield scriptid="custrecord_buyer_email">
+      <accesslevel>2</accesslevel>
+      <allowquickadd>F</allowquickadd>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <encryptatrest>F</encryptatrest>
+      <fieldtype>TEXT</fieldtype>
+      <globalsearch>F</globalsearch>
+      <help>Source From Credit Memo Email</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <isparent>F</isparent>
+      <label>Buyer Email</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <parentsubtab></parentsubtab>
+      <rolerestrict>F</rolerestrict>
+      <searchcomparefield></searchcomparefield>
+      <searchdefault></searchdefault>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <showinlist>F</showinlist>
+      <sourcefilterby></sourcefilterby>
+      <sourcefrom></sourcefrom>
+      <sourcelist></sourcelist>
+      <storevalue>T</storevalue>
+      <subtab>[scriptid=customrecord_gw_allowance_consent_notify.tab_52_t2642807_522]</subtab>
+    </customrecordcustomfield>
   </customrecordcustomfields>
-  <instances>
-    <instance scriptid="val_9598_2130928_280">
-      <custrecord_gw_conf_acceptable_variation>1</custrecord_gw_conf_acceptable_variation>
-      <custrecord_gw_conf_active>F</custrecord_gw_conf_active>
-      <custrecord_gw_conf_allowance_consent_n>F</custrecord_gw_conf_allowance_consent_n>
-      <custrecord_gw_conf_allowance_consent_np></custrecord_gw_conf_allowance_consent_np>
-      <custrecord_gw_conf_allowance_init_fmt>[scriptid=customrecord_gw_ap_doc_type_option.val_352585_t2302493_331]</custrecord_gw_conf_allowance_init_fmt>
-      <custrecord_gw_conf_egui_init_fmt>[scriptid=customrecord_gw_ap_doc_type_option.val_352585_t2302493_352]</custrecord_gw_conf_egui_init_fmt>
-      <custrecord_gw_conf_ns_acct_id></custrecord_gw_conf_ns_acct_id>
-      <custrecord_gw_conf_print_base_url>https://gw-ns-service-dev.tweinv.com</custrecord_gw_conf_print_base_url>
-      <custrecord_gw_conf_tax_calc_method>[scriptid=customrecord_gw_tax_calc_method_option.val_111434_t2411467_263]</custrecord_gw_conf_tax_calc_method>
-      <custrecord_gw_conf_turnkey_base_url>https://sstest.gwis.com.tw:443</custrecord_gw_conf_turnkey_base_url>
-      <custrecord_gw_config_allowance_prefix></custrecord_gw_config_allowance_prefix>
-      <custrecord_gw_config_dl_base_url>https://gw-ns-service-dev.tweinv.com</custrecord_gw_config_dl_base_url>
-      <custrecord_gw_config_item_field></custrecord_gw_config_item_field>
-      <custrecord_gw_config_temp_folder_id></custrecord_gw_config_temp_folder_id>
-      <isinactive>F</isinactive>
-      <name>測試設定-default</name>
-    </instance>
-    <instance scriptid="val_9599_2130928_608">
-      <custrecord_gw_conf_acceptable_variation>1</custrecord_gw_conf_acceptable_variation>
-      <custrecord_gw_conf_active>F</custrecord_gw_conf_active>
-      <custrecord_gw_conf_allowance_consent_n>F</custrecord_gw_conf_allowance_consent_n>
-      <custrecord_gw_conf_allowance_consent_np></custrecord_gw_conf_allowance_consent_np>
-      <custrecord_gw_conf_allowance_init_fmt>[scriptid=customrecord_gw_ap_doc_type_option.val_352585_t2302493_331]</custrecord_gw_conf_allowance_init_fmt>
-      <custrecord_gw_conf_egui_init_fmt>[scriptid=customrecord_gw_ap_doc_type_option.val_352585_t2302493_352]</custrecord_gw_conf_egui_init_fmt>
-      <custrecord_gw_conf_ns_acct_id></custrecord_gw_conf_ns_acct_id>
-      <custrecord_gw_conf_print_base_url>https://gw-ns-service.tweinv.com</custrecord_gw_conf_print_base_url>
-      <custrecord_gw_conf_tax_calc_method>[scriptid=customrecord_gw_tax_calc_method_option.val_111434_t2411467_263]</custrecord_gw_conf_tax_calc_method>
-      <custrecord_gw_conf_turnkey_base_url>https://api.gwis.com.tw</custrecord_gw_conf_turnkey_base_url>
-      <custrecord_gw_config_allowance_prefix></custrecord_gw_config_allowance_prefix>
-      <custrecord_gw_config_dl_base_url>https://gw-ns-service.tweinv.com</custrecord_gw_config_dl_base_url>
-      <custrecord_gw_config_item_field></custrecord_gw_config_item_field>
-      <custrecord_gw_config_temp_folder_id></custrecord_gw_config_temp_folder_id>
-      <isinactive>F</isinactive>
-      <name>正式環境設定-default</name>
-    </instance>
-  </instances>
+  <subtabs>
+    <subtab scriptid="tab_51_t2642807_263">
+      <tabparent></tabparent>
+      <tabtitle>Seller Information</tabtitle>
+    </subtab>
+    <subtab scriptid="tab_52_t2642807_522">
+      <tabparent></tabparent>
+      <tabtitle>Buyer Information</tabtitle>
+    </subtab>
+    <subtab scriptid="tab_54_t2642807_230">
+      <tabparent></tabparent>
+      <tabtitle>Allowance Items</tabtitle>
+    </subtab>
+  </subtabs>
 </customrecordtype>

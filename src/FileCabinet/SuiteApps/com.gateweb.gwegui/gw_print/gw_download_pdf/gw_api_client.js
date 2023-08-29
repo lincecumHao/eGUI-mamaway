@@ -1,4 +1,4 @@
-define(['N/url', 'N/https'], function (url, https) {
+define(['N/url', 'N/https', 'N/runtime'], function (url, https, runtime) {
   /**
    * Module Description...
    *
@@ -125,9 +125,37 @@ define(['N/url', 'N/https'], function (url, https) {
 
   function postToGwApi(xmlFileObjects) {}
 
-  exports.downloadPdfs = downloadPdfs
-  exports.printToPrinter = printToPrinter
-  exports.DOCTYPE = documentType
-  exports.DOCSTATUS = documentStatus
+  function getAllowanceContent(params) {
+    log.debug({
+      title: 'in getAllowanceContent - params',
+      details: params
+    });
+
+    var pdfUrl = url.resolveScript({
+      scriptId: dlPdfSlId,
+      deploymentId: dlPdfSlDeploymentId,
+      returnExternalUrl: true,
+    });
+
+    var response = https.post({
+      url: pdfUrl,
+      headers: getHeaders(),
+      body: JSON.stringify(params)
+    });
+
+    log.debug({
+      title: 'in getAllowanceContent - response',
+      details: response
+    });
+
+    return response.body;
+  }
+
+  exports.downloadPdfs = downloadPdfs;
+  exports.printToPrinter = printToPrinter;
+  exports.DOCTYPE = documentType;
+  exports.DOCSTATUS = documentStatus;
+  exports.downloadSinglePdf = downloadSinglePdf;
+  exports.getAllowanceContent = getAllowanceContent;
   return exports
 })

@@ -1,15 +1,15 @@
-<suitelet scriptid="customscript_gw_sl_download_pdf">
+<suitelet scriptid="customscript_gw_sl_allowance_consent">
   <description></description>
   <isinactive>F</isinactive>
-  <name>GW SL PDF DOWNLOAD</name>
+  <name>GW SL Allowance Consent</name>
   <notifyadmins>F</notifyadmins>
   <notifyemails></notifyemails>
-  <notifyowner>T</notifyowner>
+  <notifyowner>F</notifyowner>
   <notifyuser>F</notifyuser>
-  <scriptfile>[/SuiteApps/com.gateweb.gwegui/gw_print/gw_download_pdf/gw_sl_download_pdf.js]</scriptfile>
+  <scriptfile>[/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_sl_allowance_consent.js]</scriptfile>
   <scriptdeployments>
-    <scriptdeployment scriptid="customdeploy_gw_sl_download_pdf">
-      <allemployees>F</allemployees>
+    <scriptdeployment scriptid="customdeploy_gw_sl_allowance_consent">
+      <allemployees>T</allemployees>
       <allpartners>F</allpartners>
       <allroles>T</allroles>
       <audslctrole></audslctrole>
@@ -19,7 +19,7 @@
       <loglevel>DEBUG</loglevel>
       <runasrole>ADMINISTRATOR</runasrole>
       <status>RELEASED</status>
-      <title>GW SL PDF DOWNLOAD</title>
+      <title>GW SL Allowance Consent</title>
     </scriptdeployment>
   </scriptdeployments>
 </suitelet>
