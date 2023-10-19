@@ -8,7 +8,7 @@ define([
   'N/format',
   'N/search',
   'N/record',
-  './gw_common_configure',
+  './gw_common_configure' 
 ], function (xml, format, search, record, gwconfigure) {
   var _gw_voucher_main_search_id = 'customsearch_gw_voucher_main_search'
   var _gw_voucher_properties = 'customrecord_gw_voucher_properties'
@@ -980,10 +980,13 @@ define([
           _result.values[
             'CUSTRECORD_GW_VOUCHER_MAIN_INTERNAL_ID.custrecord_gw_original_gui_yearmonth'
           ]
-
+        /**
         var _item_tax_type = gwconfigure.getGwTaxTypeFromNSTaxCode(
           _dtl_item_tax_code
         )
+        */
+        var _item_tax_type = getTaxTypeByTaxCode(_dtl_item_tax_code) 
+         
         var _taxAmount = Math.round(
           (convertToFloat(_dtl_item_tax_rate) * convertToFloat(_item_amount)) /
             100
@@ -1748,11 +1751,13 @@ define([
           _result.values[
             'CUSTRECORD_GW_VOUCHER_MAIN_INTERNAL_ID.custrecord_gw_original_gui_yearmonth'
           ]
-
+        /**
         var _item_tax_type = gwconfigure.getGwTaxTypeFromNSTaxCode(
           _dtl_item_tax_code
         )
-
+        */
+        var _item_tax_type = getTaxTypeByTaxCode(_dtl_item_tax_code) 
+       
         //折讓單的稅別要四捨五入(_allowanceTaxAmount)
         var _allowanceTaxAmount = Math.round(
           convertToFloat(_item_tax_amount)
@@ -1980,6 +1985,8 @@ define([
       if (select_error_item==true){
 	      _filterArray.push('and');
 	      _filterArray.push(['custrecord_gw_voucher_upload_status',search.Operator.ISNOT, 'E']); 
+	      _filterArray.push('and');
+	      _filterArray.push(['custrecord_gw_invoice_type',search.Operator.IS, '07']); 
 	      //custrecord_gw_voucher_format_code
 	      _filterArray.push('and'); 
 	      _filterArray.push([
@@ -2532,11 +2539,13 @@ define([
           _result.values[
             'CUSTRECORD_GW_VOUCHER_MAIN_INTERNAL_ID.custrecord_gw_original_gui_yearmonth'
           ]
-
+        /**
         var _item_tax_type = gwconfigure.getGwTaxTypeFromNSTaxCode(
           _dtl_item_tax_code
         )
-
+        */
+        var _item_tax_type = getTaxTypeByTaxCode(_dtl_item_tax_code) 
+     
         //折讓單的稅別要四捨五入(_allowanceTaxAmount)
         var _allowanceTaxAmount = Math.round(
           convertToFloat(_item_tax_amount)
@@ -2987,6 +2996,37 @@ define([
       log.debug(e.name, e.message)
     }
   }
+  
+  function getTaxTypeByTaxCode(dtl_item_tax_code){	   
+	  var _tax_type = '1'
+	    try {
+	      var _mySearch = search.create({
+	        type: 'customrecord_gw_ap_doc_tax_type_option',
+	        columns: [
+	          search.createColumn({ name: 'custrecord_gw_ap_doc_tax_type_value' }),
+	          search.createColumn({ name: 'custrecord_gw_tax_type_tax_code' }),
+	          search.createColumn({ name: 'custrecord_gw_ap_doc_tax_type_text' }) 
+	        ],
+	      }) 
+	      
+	      _mySearch.run().each(function (result) { 	 
+	        var internalid = result.id  
+	        var _tax_type_list_id = result.getValue({name: 'custrecord_gw_tax_type_tax_code'})
+	       
+	        if(_tax_type_list_id !='' && _tax_type_list_id==dtl_item_tax_code){
+	           _tax_type = result.getValue({name: 'custrecord_gw_ap_doc_tax_type_value'}) 
+	        }
+	         
+	        return true
+	      })
+	    } catch (e) {
+	      log.debug(e.name, e.message)
+	      	  
+	    } 
+	    return _tax_type
+  }
+		  
+		  
 
   /////////////////////////////////////////////////////////////////////////////////////////////
   return {

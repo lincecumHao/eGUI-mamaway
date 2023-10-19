@@ -210,9 +210,17 @@ define([
     var _voucher_upload_status = _voucher_record.getValue({
       fieldId: 'custrecord_gw_voucher_upload_status',
     })
-    var _voucher_upload_status_desc = invoiceutility.getUploadStatusDesc(
-      _voucher_upload_status
-    )
+    var _voucher_upload_status_desc = invoiceutility.getUploadStatusDesc(_voucher_upload_status)
+    //NE-338
+    var _gw_need_upload_egui_mig = _voucher_record.getValue({
+      fieldId: 'custrecord_gw_need_upload_egui_mig',
+    })
+    
+    if (_voucher_upload_status=='C' && _gw_need_upload_egui_mig=='NONE' && _is_gw_voucher_format_35_code =='35'){
+    	_voucher_upload_status_desc = invoiceutility.getUploadStatusDesc('EU')
+    }else if (_is_gw_voucher_format_35_code !='35'){
+    	_voucher_upload_status_desc = invoiceutility.getUploadStatusDesc('M')
+    }
 
     //處理重傳
     reApplyTaskButton(
@@ -745,6 +753,8 @@ define([
           _document_list_ary.push(_ns_document_type_id) 
       }
       //////////////////////////////////////////////////////////////////////////////////////////
+      //NE-355
+      if (_item_amount<0)_unit_price=-1*_unit_price
       
       sublist.setSublistValue({
         id: 'customer_search_internal_id',
@@ -973,7 +983,7 @@ define([
         search.createColumn({ name: 'custrecord_gw_upload_response_status' }),
         search.createColumn({ name: 'custrecord_gw_upload_response_message' }),
         search.createColumn({ name: 'custrecord_gw_download_voucher_status' }),
-        search.createColumn({ name: 'custrecord_gw_download_voucher_message' }),
+        search.createColumn({ name: 'custrecord_gw_download_voucher_message' })
       ],
     })
 
@@ -994,7 +1004,7 @@ define([
     _mySearch.run().each(function (result) {
       var _result = JSON.parse(JSON.stringify(result))
       log.debug('searchUploadLogDetails result', JSON.stringify(result))
-
+   
       var _upload_voucher_date =
         _result.values.custrecord_gw_upload_voucher_date
       var _upload_voucher_time =
@@ -1034,6 +1044,7 @@ define([
       var _voucher_upload_status_desc = invoiceutility.getUploadStatusDesc(
         _download_voucher_status
       )
+
       if (stringutility.trim(_download_voucher_status) == '')
         _voucher_upload_status_desc = '上傳中'
       sublist.setSublistValue({
@@ -1193,6 +1204,10 @@ define([
     var _need_upload_egui_mig = _record.getValue({
       fieldId: 'custrecord_gw_need_upload_egui_mig',
     })
+    //NE-338
+    if(_need_upload_egui_mig=='RETRIEVE'){
+       _voucher_upload_status_desc = invoiceutility.getUploadStatusDesc('RT')
+    } 
 
     return _voucher_status_desc + ':' + _voucher_upload_status_desc
   }

@@ -254,7 +254,15 @@ define([
     var _is_printed_pdf = _voucher_record.getValue({
       fieldId: 'custrecord_gw_is_printed_pdf',
     })
-    if (_is_printed_pdf == true) {
+    
+    var _gw_invoice_type = _voucher_record.getValue({
+      fieldId: 'custrecord_gw_invoice_type',
+    })
+    var _voucher_format_code = _voucher_record.getValue({
+      fieldId: 'custrecord_gw_voucher_format_code',
+    })
+        
+    if (_is_printed_pdf == true || _gw_invoice_type != '07' || _voucher_format_code != '33') {
       var _print_pdf_button = form.getButton({
         id: 'custpage_print_pdf_button',
       })
@@ -351,9 +359,16 @@ define([
     var _voucher_upload_status = _voucher_record.getValue({
       fieldId: 'custrecord_gw_voucher_upload_status',
     })
-    var _voucher_upload_status_desc = invoiceutility.getUploadStatusDesc(
-      _voucher_upload_status
-    )
+    var _voucher_upload_status_desc = invoiceutility.getUploadStatusDesc(_voucher_upload_status)
+    //NE-338
+    var _gw_need_upload_egui_mig = _voucher_record.getValue({
+      fieldId: 'custrecord_gw_need_upload_egui_mig',
+    })
+    if (_gw_need_upload_egui_mig=='RETRIEVE'){
+    	_voucher_upload_status_desc = invoiceutility.getUploadStatusDesc('RT')
+    }else if (_gw_need_upload_egui_mig=='NONE'){
+    	_voucher_upload_status_desc = invoiceutility.getUploadStatusDesc('M')
+    }
 
     var _voucher_upload_status_field = form.addField({
       id: 'custpage_voucher_upload_status',

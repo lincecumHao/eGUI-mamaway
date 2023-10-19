@@ -927,7 +927,15 @@ define([
         text: 'B2B-存證'
       })	   
       //////////////////////////////////////////////////////////////
-      
+      //NE-338 
+      var _field_allowance_log_type = _current_record.getField({
+          fieldId: 'custpage_allowance_log_type'
+      })  
+  	  _field_allowance_log_type.insertSelectOption({
+          value: 'RETRIEVE',
+          isSelected: true,
+          text: '折讓單待回收'
+      }) 
       
     } catch (e) {
       console.log(e.name + ':' + e.message)
@@ -2525,6 +2533,8 @@ define([
         var _invoiceNumber = ''
         if (stringutility.trim(manual_voucher_number) != '') {
           _invoiceNumber = manual_voucher_number
+          //NE-338
+          _default_upload_status = 'C'
         } else {
           /**	
           _invoiceNumber = invoiceutility.getAssignLogNumber(
@@ -2769,6 +2779,8 @@ define([
             fieldId: 'custrecord_gw_voucher_upload_status',
             value: _default_upload_status
           })
+          //NE-338
+          _default_upload_status = 'A'
 
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_sales_amount',
@@ -2805,11 +2817,12 @@ define([
             fieldId: 'custrecord_gw_voucher_extra_memo',
             value: _main.extraMemo
           })
-
+        
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_need_upload_egui_mig',
             value: assignLogType
           })
+          
           //20201105 walter modify
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_main_apply_user_id',
@@ -3212,10 +3225,14 @@ define([
               ) {
                 var _obj = _deductionEGUIItems_TYPE_1.eGUIResult[a]
                 _history_Deduction_EGUIItems.push(_obj)
+                
+                _main.invoice_type = _obj.invoice_type
+                _creditMemoFormatCode = invoiceutility.getAllowanceTaxCode(_obj.format_code)                
               }
             }
           }
         }
+        
         var _deductionEGUIItems_TYPE_2
         if (_deductionZeroAmount != 0) {
           var _checkField = '2'
@@ -3248,6 +3265,9 @@ define([
               ) {
                 var _obj = _deductionEGUIItems_TYPE_2.eGUIResult[a]
                 _history_Deduction_EGUIItems.push(_obj)
+                
+                _main.invoice_type = _obj.invoice_type
+                _creditMemoFormatCode = invoiceutility.getAllowanceTaxCode(_obj.format_code)
               }
             }
           }
@@ -3284,16 +3304,19 @@ define([
               ) {
                 var _obj = _deductionEGUIItems_TYPE_3.eGUIResult[a]
                 _history_Deduction_EGUIItems.push(_obj)
+                
+                _main.invoice_type = _obj.invoice_type
+                _creditMemoFormatCode = invoiceutility.getAllowanceTaxCode(_obj.format_code)
               }
             }
           }
         }
-
+        
         //可扣抵歷史發票
         var _all_Deduction_EGUIItems = meargeHistoryEGUI(
           _history_Deduction_EGUIItems
         )
-        //alert('_all_Deduction_EGUIItems='+JSON.stringify(_all_Deduction_EGUIItems));
+        
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
         //20201113 walter modify 檢查稅差
         /**
@@ -3549,6 +3572,11 @@ define([
             fieldId: 'custrecord_gw_total_amount',
             value: _net_value * stringutility.convertToFloat(_main.total_amount)
           })
+                      
+          if (_main.invoice_type != '07' || 
+        	  _creditMemoFormatCode != '33' || 
+        	  _main.upload_egui_mig == 'NONE' ) assignLogType='NONE'
+
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_need_upload_egui_mig',
             value: assignLogType
@@ -4347,7 +4375,9 @@ define([
 
         var _document_type = 'INVOICE'
         if (stringutility.trim(_discount) === 'SALES_ORDER') {
-          _document_type = 'SALES_ORDER'
+            _document_type = 'SALES_ORDER'
+           	//NE-355 客戶押金項目的單價欄位改為負數
+            _unit_price=Math.abs(_unit_price)
         }
         //alert('_total_tax_amount='+_total_tax_amount+' ,_total_sum_amount='+_total_sum_amount);
         //目前taxCode=10 [應稅] , taxCode=5 [免稅] ,
@@ -4954,11 +4984,16 @@ define([
           invoiceType
         ])
       }
-      _filterArray.push('and')
-      if(taxType=='9'){//混合稅
-         _filterArray.push(['custrecord_gw_tax_amount', search.Operator.GREATERTHAN, 0])
-      }else{
-    	_filterArray.push(['custrecord_gw_tax_type', search.Operator.IS, taxType])
+      _filterArray.push('and')      
+      if(taxType =='2' || taxType =='3'){ //免稅(3)及零稅(2)
+    	  //_filterArray.push(['custrecord_gw_tax_type', search.Operator.IS, taxType])     
+    	  _filterArray.push([
+	        ['custrecord_gw_tax_type', search.Operator.IS, taxType],
+	        'or',
+	        ['custrecord_gw_tax_type', search.Operator.IS, '9'] //混合稅
+	      ])      
+      }else{ //混合稅
+    	_filterArray.push(['custrecord_gw_tax_amount', search.Operator.GREATERTHAN, 0])
       } 
 
       //20201102 walter modify 不擋部門
@@ -5040,14 +5075,14 @@ define([
           search.Operator.NOTEQUALTO,
           0
         ])
-      } else if (disconutTaxType == '2') {
+      } else if (disconutTaxType == '2') {//零稅
         _filterArray.push('and')
         _filterArray.push([
           'sum(formulanumeric:{custrecord_gw_zero_sales_amount}-{custrecord_gw_discount_zero_amount})',
           search.Operator.NOTEQUALTO,
           0
         ])
-      } else if (disconutTaxType == '3') {
+      } else if (disconutTaxType == '3') {//免稅
         _filterArray.push('and')
         _filterArray.push([
           'sum(formulanumeric:{custrecord_gw_free_sales_amount}-{custrecord_gw_discount_free_amount})',
@@ -5065,7 +5100,7 @@ define([
         //_filterArray.push(['custrecord_gw_need_upload_egui_mig',search.Operator.ISNOT, 'NONE']);
       }
       _search.filterExpression = _filterArray
-      //alert('_filterArray='+JSON.stringify(_filterArray));
+      //alert('CHK _filterArray='+JSON.stringify(_filterArray));
       var _amountSum = 0
       _search.run().each(function (result) {
         var _seller = result.getValue({
@@ -5193,6 +5228,9 @@ define([
           name: 'custrecord_gw_voucher_date',
           sort: search.Sort.DESC
         }),
+        search.createColumn({ name: 'custrecord_gw_invoice_type' }), //Invoice_Type 07
+        search.createColumn({ name: 'custrecord_gw_voucher_format_code' }), //35.... 
+        search.createColumn({ name: 'custrecord_gw_need_upload_egui_mig' }), //ALL, NONE
         search.createColumn({ name: 'custrecord_gw_mig_type' }), //MigType
         search.createColumn({ name: 'custrecord_gw_voucher_number' }), //憑證號碼
         search.createColumn({ name: 'custrecord_gw_voucher_yearmonth' }), //憑證期別
@@ -5266,28 +5304,37 @@ define([
     if (checkField == '1') {
       //應稅欄位
       _filterArray.push('and')
+      
+      _filterArray.push([
+        ['custrecord_gw_tax_type', search.Operator.ISNOT, '2'],
+        'and',
+        ['custrecord_gw_tax_type', search.Operator.ISNOT, '3']
+      ])
+      /**
       _filterArray.push([
         ['custrecord_gw_tax_type', search.Operator.IS, taxType],
         'or',
         ['custrecord_gw_tax_type', search.Operator.IS, checkField]
       ])
-    } else if (checkField == '2') {
-      //零稅欄位
+      */
+    } else if (checkField == '2' || checkField == '3') {
+      //零稅欄位(2) | 免稅欄位(3)
       _filterArray.push('and')
+      
       _filterArray.push([
+        ['custrecord_gw_tax_type', search.Operator.IS, taxType],
+        'or',
+        ['custrecord_gw_tax_type', search.Operator.IS, '9']
+      ])
+      /**
+       _filterArray.push([
         ['custrecord_gw_tax_type', search.Operator.IS, taxType],
         'or',
         ['custrecord_gw_tax_type', search.Operator.IS, checkField]
       ])
-    } else if (checkField == '3') {
-      //免稅欄位
-      _filterArray.push('and')
-      _filterArray.push([
-        ['custrecord_gw_tax_type', search.Operator.IS, taxType],
-        'or',
-        ['custrecord_gw_tax_type', search.Operator.IS, checkField]
-      ])
-    }
+       */
+      
+    }  
 
     //20201102 walter modify 不擋部門
     /**
@@ -5352,7 +5399,7 @@ define([
       //_filterArray.push(['custrecord_gw_need_upload_egui_mig',search.Operator.ISNOT, 'NONE']);
     }
     _search.filterExpression = _filterArray
-
+    //alert('geteGUIDeductionItems filterArray='+JSON.stringify(_filterArray));
     var _amountSum = 0
     var _count = 0
     var _result = _search.run().getRange({
@@ -5405,6 +5452,16 @@ define([
       var _discount_zero_amount = _result[i].getValue({
         name: 'custrecord_gw_discount_zero_amount'
       })
+      
+      var _gw_invoice_type = _result[i].getValue({
+        name: 'custrecord_gw_invoice_type'
+      })
+      var _gw_voucher_format_code = _result[i].getValue({
+        name: 'custrecord_gw_voucher_format_code'
+      }) 
+      var _gw_need_upload_egui_mig = _result[i].getValue({
+          name: 'custrecord_gw_need_upload_egui_mig'
+      })
       ///////////////////////////////////////////////////////////////////////////////////
       //可扣抵餘額
       var _balance_amount = 0
@@ -5424,13 +5481,16 @@ define([
           stringutility.convertToFloat(_free_sales_amount) -
           stringutility.convertToFloat(_discount_free_amount)
       }
-
+ 
       _amountSum += _balance_amount
 
       if (deductionTotalAmount >= _balance_amount) {
         var _obj = {
           internalid: _internalid,
           mig_type: _mig_type,
+          invoice_type: _gw_invoice_type,
+          format_code: _gw_voucher_format_code,
+          upload_egui_mig: _gw_need_upload_egui_mig,
           voucher_number: _voucher_number,
           voucher_date: _voucher_date,
           voucher_yearmonth: _voucher_yearmonth,
@@ -5440,34 +5500,24 @@ define([
           discount_count: stringutility.convertToFloat(_discount_count) + 1, //折讓次數累計
           deduction_amount: _balance_amount, //本次折讓金額
           deduction_field: checkField, //扣抵欄位
-          discount_sales_amount: 0, //扣抵應稅欄位
-          discount_zero_amount: 0, //扣抵零稅欄位
-          discount_free_amount: 0, //扣抵免稅欄位
-          discount_amount: 0 //折讓金額累計
+          discount_sales_amount: stringutility.convertToFloat(_discount_sales_amount), //扣抵應稅欄位
+          discount_zero_amount: stringutility.convertToFloat(_discount_zero_amount), //扣抵零稅欄位
+          discount_free_amount: stringutility.convertToFloat(_discount_free_amount), //扣抵免稅欄位
+          discount_amount: stringutility.convertToFloat(_discount_amount) //折讓金額累計
         }
 
         if (checkField == '1') {
           //應稅欄位
-          _obj.discount_sales_amount = stringutility.convertToFloat(
-            _sales_amount
-          )
+          _obj.discount_sales_amount = stringutility.convertToFloat(_sales_amount)
           _obj.discount_amount = stringutility.convertToFloat(_sales_amount)
         } else if (checkField == '2') {
           //零稅欄位
-          _obj.discount_zero_amount = stringutility.convertToFloat(
-            _zero_sales_amount
-          )
-          _obj.discount_amount = stringutility.convertToFloat(
-            _zero_sales_amount
-          )
+          _obj.discount_zero_amount = stringutility.convertToFloat(_zero_sales_amount)
+          _obj.discount_amount = stringutility.convertToFloat(_zero_sales_amount)
         } else if (checkField == '3') {
           //免稅欄位
-          _obj.discount_free_amount = stringutility.convertToFloat(
-            _free_sales_amount
-          )
-          _obj.discount_amount = stringutility.convertToFloat(
-            _free_sales_amount
-          )
+          _obj.discount_free_amount = stringutility.convertToFloat(_free_sales_amount)
+          _obj.discount_amount = stringutility.convertToFloat(_free_sales_amount)
         }
         //扣掉金額
         deductionTotalAmount -= _balance_amount
@@ -5479,6 +5529,9 @@ define([
         var _obj = {
           internalid: _internalid,
           mig_type: _mig_type,
+          invoice_type: _gw_invoice_type,
+          format_code: _gw_voucher_format_code,
+          upload_egui_mig: _gw_need_upload_egui_mig,
           voucher_number: _voucher_number,
           voucher_date: _voucher_date,
           voucher_yearmonth: _voucher_yearmonth,
@@ -5488,11 +5541,12 @@ define([
           discount_count: _discount_count,
           deduction_amount: deductionTotalAmount,
           deduction_field: checkField, //扣抵欄位
-          discount_sales_amount: 0, //扣抵應稅欄位
-          discount_zero_amount: 0, //扣抵零稅欄位
-          discount_free_amount: 0, //扣抵免稅欄位
-          discount_amount: 0
+          discount_sales_amount: stringutility.convertToFloat(_discount_sales_amount), //扣抵應稅欄位
+          discount_zero_amount: stringutility.convertToFloat(_discount_zero_amount), //扣抵零稅欄位
+          discount_free_amount: stringutility.convertToFloat(_discount_free_amount), //扣抵免稅欄位 
+          discount_amount: stringutility.convertToFloat(_discount_amount)
         }
+        
         if (checkField == '1') {
           //應稅欄位
           _obj.discount_sales_amount =
@@ -5523,13 +5577,14 @@ define([
         break
       }
     }
+     
     if (_amountSum >= deductionTotalAmount) _ok = true
 
     var _checkObj = {
       checkResult: _ok,
       eGUIResult: _objAry
     }
-    //alert('_checkObj='+JSON.stringify(_checkObj));
+     
     return _checkObj
   }
 

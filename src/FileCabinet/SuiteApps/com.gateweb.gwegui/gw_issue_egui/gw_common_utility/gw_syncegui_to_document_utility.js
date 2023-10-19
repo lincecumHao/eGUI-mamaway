@@ -158,6 +158,9 @@ define(['N/record',
   
   function getGwEvidenceStatus(gw_voucher_status, voucher_upload_status, need_upload_egui_mig) {   	
 	var _gw_evidence_status_id = -1
+	
+	  log.debug('getGwEvidenceStatus', 'gw_voucher_status='+gw_voucher_status+',voucher_upload_status='+voucher_upload_status+',need_upload_egui_mig='+need_upload_egui_mig)
+	   
     try {      	
     	 var _gw_evidence_status = ''
     	 if (gw_voucher_status.toUpperCase().indexOf('CANCEL') !=-1) {
@@ -184,7 +187,7 @@ define(['N/record',
     		 }
     		 */
     		 if (need_upload_egui_mig == 'NONE') {
-    			 _gw_evidence_status ='PC'
+    			 _gw_evidence_status ='PC' 
     		 } else  {
     			 if (gw_voucher_status.toUpperCase().indexOf('CANCEL_ISSUE') !=-1) {
         			 _gw_evidence_status ='CI'
@@ -217,7 +220,9 @@ define(['N/record',
     		 }
     		 */
     		 if (need_upload_egui_mig == 'NONE') {
-    			 _gw_evidence_status = 'PA'
+    			 _gw_evidence_status = 'PA' 
+    		     //NE-338
+    			 if (voucher_upload_status == 'C')_gw_evidence_status = 'I'+voucher_upload_status
     		 } else {
     			 if (voucher_upload_status == 'A') {
         			 _gw_evidence_status = voucher_upload_status

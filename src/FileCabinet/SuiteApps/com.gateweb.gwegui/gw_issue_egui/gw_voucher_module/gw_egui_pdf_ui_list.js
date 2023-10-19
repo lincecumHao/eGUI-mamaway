@@ -306,12 +306,12 @@ define([
     ///////////////////////////////////////////////////////////////////////////
     if (voucher_upload_status != '') {
       _filterArray.push('and')
-      if (voucher_upload_status == 'NONE') {
+      if (voucher_upload_status == 'NONE') {  
         _filterArray.push([
           'custrecord_gw_need_upload_egui_mig',
           search.Operator.IS,
           voucher_upload_status,
-        ])
+        ]) 
       } else {
         _filterArray.push([
           'custrecord_gw_voucher_upload_status',
@@ -402,6 +402,7 @@ define([
         var _buyer = _result.values.custrecord_gw_buyer
         var _buyer_name = _result.values.custrecord_gw_buyer_name
         var _invoice_type = _result.values.custrecord_gw_invoice_type
+        var _voucher_format_code = _result.values.custrecord_gw_voucher_format_code
         var _sales_amount = _result.values.custrecord_gw_sales_amount
         var _free_sales_amount = _result.values.custrecord_gw_free_sales_amount
         var _zero_sales_amount = _result.values.custrecord_gw_zero_sales_amount
@@ -551,7 +552,10 @@ define([
             stringutility.trim(_need_upload_egui_mig) == 'NONE'
           ) {
             _voucher_manual_egui = '是'
-            _voucher_upload_status = 'M'
+            //_voucher_upload_status = 'M'
+            //NE-338
+            if (_voucher_format_code!='35')_voucher_upload_status = 'M'
+            else _voucher_upload_status = 'EU'  	
           }
 
           var _voucher_upload_status_desc = invoiceutility.getUploadStatusDesc(
@@ -1149,7 +1153,7 @@ define([
     _sublist.addField({
       id: 'customer_voucher_manual_egui',
       type: serverWidget.FieldType.TEXT,
-      label: '是否歷史發票',
+      label: '是否歷史或外部發票',
     })
     _sublist.addField({
       id: 'customer_voucher_isprinted',

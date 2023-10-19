@@ -297,6 +297,7 @@ define([
         var _voucher_status_desc = invoiceutility.getVoucherStatusDesc(
           _voucher_status
         )
+        
         subListObj.setSublistValue({
           id: 'customer_voucher_upload_status',
           line: i,
@@ -304,13 +305,17 @@ define([
         })
 
         var _voucher_manual_egui = ' '
-        if (stringutility.trim(_need_upload_egui_mig) == 'N') {
+        if (stringutility.trim(_need_upload_egui_mig) == 'NONE') {
           _voucher_manual_egui = '是'
-          _voucher_upload_status = 'M'
+          //_voucher_upload_status = 'M'
+          //NE-338
+          _voucher_upload_status = 'EU'  	
         }
-        var _voucher_upload_status_desc = invoiceutility.getUploadStatusDesc(
-          _voucher_upload_status
-        )
+        log.debug({ title: 'need_upload_egui_mig', details: _need_upload_egui_mig })
+        log.debug({ title: 'voucher_upload_status', details: _voucher_upload_status })
+        
+        var _voucher_upload_status_desc = invoiceutility.getUploadStatusDesc(_voucher_upload_status)
+        log.debug({ title: 'voucher_upload_status_desc', details: _voucher_upload_status_desc })
         if (stringutility.trim(_uploadstatus_messag) != '') {
           //put error message
           _voucher_upload_status_desc =

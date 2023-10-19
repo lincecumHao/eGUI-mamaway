@@ -199,5 +199,11 @@
       <isinactive>F</isinactive>
       <name>單張開立發票</name>
     </instance>
+    <instance scriptid="val_gw_issue_status_eu">
+      <custrecord_gw_evidence_status_text>憑證已開立, 外部代上傳</custrecord_gw_evidence_status_text>
+      <custrecord_gw_evidence_status_value>EU</custrecord_gw_evidence_status_value>
+      <isinactive>F</isinactive>
+      <name>外部憑證已開立</name>
+    </instance>
   </instances>
 </customrecordtype>

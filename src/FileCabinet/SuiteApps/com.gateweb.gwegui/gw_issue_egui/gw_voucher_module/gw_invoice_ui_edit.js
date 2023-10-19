@@ -1790,11 +1790,20 @@ define([
             value: _customer_deposit_text
           })
           //放未稅金額
+          //NE-338
+          //NE-355 客戶押金項目的單價欄位改為負數
+          sublist.setSublistValue({
+            id: 'custpage_unit_price',
+            line: row,
+            value: _deduction_amount
+          })
+          /**
           sublist.setSublistValue({
             id: 'custpage_unit_price',
             line: row,
             value: Math.abs(_deduction_amount)
           })
+          */
           sublist.setSublistValue({
             id: 'custpage_item_quantity',
             line: row,

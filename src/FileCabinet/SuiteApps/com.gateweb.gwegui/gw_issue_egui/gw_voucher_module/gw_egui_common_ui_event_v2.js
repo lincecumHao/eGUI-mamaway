@@ -695,7 +695,9 @@ define([
 	        	  var values = {}
 	              values['custrecord_gw_voucher_status'] = 'VOUCHER_SUCCESS'
 	              values['custrecord_gw_voucher_upload_status'] = 'A'
-	              values['custrecord_gw_need_upload_egui_mig'] = 'NONE'
+	              //values['custrecord_gw_need_upload_egui_mig'] = 'NONE'
+	              //NE-338
+	              values['custrecord_gw_need_upload_egui_mig'] = 'RETRIEVE'	  
 	           	  values['custrecord_gw_uploadstatus_messag'] = ''
 	              var _id = record.submitFields({
 	                type: 'customrecord_gw_voucher_main',

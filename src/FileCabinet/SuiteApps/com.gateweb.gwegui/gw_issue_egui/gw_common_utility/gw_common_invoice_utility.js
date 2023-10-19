@@ -30,6 +30,21 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
 	  return _print_mark
   }
   
+  function getAllowanceTaxCode(invoiceTaxCode) {
+    const invTaxCodeMapAllowanceTaxCode = {
+      '31':'33',
+      '32':'34',
+      '35':'33',
+      '36':'34',
+      '37':'38'
+    }
+    log.debug({
+      title: 'getAllowanceTaxCode - invoiceTaxCode | mapped taxCode',
+      details: `${invoiceTaxCode} | ${invTaxCodeMapAllowanceTaxCode[invoiceTaxCode]}`
+    })
+    return invTaxCodeMapAllowanceTaxCode[invoiceTaxCode]
+  }
+  
   //字串補0
   function getInvoiceTypeDesc(invoiceType) {
     var invoiceTypeDesc = ''
@@ -165,6 +180,12 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
       case 'M':
         statusDesc = '不上傳'
         break
+      case 'EU':
+          statusDesc = '外部平台代上傳'
+          break
+      case 'RT':
+          statusDesc = '待回收上傳' //RETRIEVE
+          break
       case 'D':
         statusDesc = '已刪除'
         break
@@ -1932,6 +1953,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
 	getRandomNumNew: getRandomNumNew,
 	checkInvoiceManualNumberExistRange: checkInvoiceManualNumberExistRange,
     getAssignLogNumberAndCheckDuplicate: getAssignLogNumberAndCheckDuplicate,
+    getAllowanceTaxCode: getAllowanceTaxCode,
     getManualOpenID: getManualOpenID,
     getPrintMark: getPrintMark
   }

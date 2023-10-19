@@ -549,6 +549,9 @@ define([
       ]) //status=A
       _filterArray.push('and')
       _filterArray.push(['custrecord_gw_need_upload_egui_mig', 'isnot', 'NONE'])
+      //NE-338
+      _filterArray.push('and')
+      _filterArray.push(['custrecord_gw_need_upload_egui_mig', 'isnot', 'RETRIEVE'])
       _filterArray.push('and')
       _filterArray.push(['custrecord_gw_is_completed_detail', 'is', true])
       _filterArray.push('and')

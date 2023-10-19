@@ -177,10 +177,11 @@ define([
     ])
     //不上傳-清單
     _filterArray.push('and')
+    //NE-338
     _filterArray.push([
       'custrecord_gw_need_upload_egui_mig',
       search.Operator.IS,
-      'NONE',
+      'RETRIEVE',
     ])
     //排除上傳過
     if (voucher_upload_status != '') {
@@ -495,15 +496,14 @@ define([
             line: _index,
             value: _voucher_upload_status,
           })
-          if (
-            stringutility.trim(_need_upload_egui_mig) == 'NONE' &&
-            _voucher_upload_status == 'A'
-          ) {
-            _voucher_upload_status = 'M'
+          /**
+          if (stringutility.trim(_need_upload_egui_mig) == 'NONE' && _voucher_upload_status == 'A') {
+             _voucher_upload_status = 'M'
           }
-          var _voucher_upload_status_desc = invoiceutility.getUploadStatusDesc(
-            _voucher_upload_status
-          )
+          */
+          //NE-338
+          _voucher_upload_status = 'RT'
+          var _voucher_upload_status_desc = invoiceutility.getUploadStatusDesc(_voucher_upload_status)
           if (stringutility.trim(_uploadstatus_messag) != '') {
             _voucher_upload_status_desc =
               _voucher_upload_status_desc +

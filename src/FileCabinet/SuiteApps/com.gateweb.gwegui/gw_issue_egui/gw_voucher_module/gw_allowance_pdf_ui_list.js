@@ -531,6 +531,8 @@ define([
           })
           if (stringutility.trim(_need_upload_egui_mig) == 'NONE') {
             _voucher_upload_status = 'M'
+          } else if (stringutility.trim(_need_upload_egui_mig) == 'RETRIEVE') {
+        	  _voucher_upload_status = 'RT' //待回收
           }
           var _voucher_upload_status_desc = invoiceutility.getUploadStatusDesc(
             _voucher_upload_status
