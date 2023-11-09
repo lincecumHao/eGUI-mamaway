@@ -8,7 +8,13 @@
  *
  * @NScriptType UserEventScript
  */
-define([], () => {
+define([
+    '../gw_dao/gw_transaction_egui_fields',
+    'N/search'
+], (
+    gwTransactionEGUIFields,
+    search
+) => {
 
     let exports = {};
 
@@ -22,13 +28,87 @@ define([], () => {
             details: {
                 subsidiaryId: subsidiaryId,
                 valueType: typeof subsidiaryId
-            }})
+            }
+        })
         return APPLIED_SUBSIDIARY.indexOf(subsidiaryId) !== -1 && scriptContext.type === scriptContext.UserEventType.CREATE
     }
 
     function setDefaultValueForEGUI(scriptContext) {
-        scriptContext.newRecord.setValue({fieldId: 'custbody_gw_evidence_issue_status', value: DEFAULT_ISSUE_VOUCHER_STATUS_ID})
-        scriptContext.newRecord.setValue({fieldId: 'custbody_gw_is_issue_egui', value: true})
+        log.debug({
+            title: 'setDefaultValueForEGUI - gwTransactionEGUIFields.defaultValueFields',
+            details: gwTransactionEGUIFields.defaultValueFields
+        })
+        gwTransactionEGUIFields.defaultValueFields.forEach(function (fieldId) {
+            log.debug({
+                title: 'setDefaultValueForEGUI - fieldId',
+                details: {
+                    fieldId: fieldId,
+                    objectValue: gwTransactionEGUIFields.fields[fieldId]
+                }
+            })
+            scriptContext.newRecord.setValue({
+                fieldId: gwTransactionEGUIFields.fields[fieldId].id,
+                value: gwTransactionEGUIFields.fields[fieldId].defaultValue
+            })
+        })
+    }
+
+    function isNeedToClearValueForEGUI(scriptContext) {
+        log.debug({
+            title: 'isNeedToClearValueForEGUI - scriptContext.type',
+            details: scriptContext.type
+        })
+        log.debug({
+            title: 'isNeedToClearValueForEGUI - scriptContext.UserEventType enumerable',
+            details: scriptContext.UserEventType
+        })
+        const subsidiaryId = scriptContext.newRecord.getValue({fieldId: 'subsidiary'})
+        return APPLIED_SUBSIDIARY.indexOf(subsidiaryId) !== -1 && scriptContext.type === scriptContext.UserEventType.COPY
+    }
+
+    function clearValueForEGUI(scriptContext) {
+        gwTransactionEGUIFields.allFieldIds.forEach(function (fieldId) {
+            scriptContext.newRecord.setValue({
+                fieldId: gwTransactionEGUIFields.fields[fieldId].id,
+                value: gwTransactionEGUIFields.fields[fieldId].defaultValue
+            })
+        })
+    }
+
+    function setSourceFieldValue(scriptContext) {
+        let lookFieldsObject = {}
+        gwTransactionEGUIFields.sourcedFields.forEach(function (fieldId) {
+            if (!lookFieldsObject[`${gwTransactionEGUIFields.fields[fieldId].sourceRecord}`]) {
+                lookFieldsObject[`${gwTransactionEGUIFields.fields[fieldId].sourceRecord}`] = {}
+                lookFieldsObject[`${gwTransactionEGUIFields.fields[fieldId].sourceRecord}`].fieldIds = []
+            }
+            lookFieldsObject[`${gwTransactionEGUIFields.fields[fieldId].sourceRecord}`].fieldIds.push(gwTransactionEGUIFields.fields[fieldId].sourceFieldId)
+        })
+        log.debug({
+            title: 'setSourceFieldValue - lookFieldsObject',
+            details: lookFieldsObject
+        })
+        Object.keys(lookFieldsObject).map(function (key) {
+            const customerId = scriptContext.newRecord.getValue({fieldId: 'entity'})
+            if (key === 'customer') {
+                const lookupResultObject = search.lookupFields({
+                    type: key,
+                    id: customerId,
+                    columns: lookFieldsObject[key].fieldIds
+                })
+                log.debug({
+                    title: 'setSourceFieldValue - lookupResultObject',
+                    details: lookupResultObject
+                })
+
+                Object.keys(lookupResultObject).map(function (eachLookupResultObjectKey) {
+                    scriptContext.newRecord.setValue({
+                        fieldId: eachLookupResultObjectKey.replace('custentity', 'custbody'),
+                        value: lookupResultObject[eachLookupResultObjectKey]
+                    })
+                })
+            }
+        })
     }
 
     /**
@@ -41,11 +121,20 @@ define([], () => {
      * @since 2015.2
      */
     const beforeLoad = (scriptContext) => {
-        if(isNeedToSetDefaultValueForEGUI(scriptContext)) {
-            // proceed to set Default value for eGUI
-            log.debug({title: 'beforeLoad - setDefaultValueForEGUI', details: 'start'})
-            setDefaultValueForEGUI(scriptContext)
+        try {
+            if (isNeedToClearValueForEGUI(scriptContext)) {
+                // proceed to set Default value for eGUI
+                log.debug({title: 'beforeLoad - clearValueForEGUI', details: 'start'})
+                clearValueForEGUI(scriptContext)
+                setSourceFieldValue(scriptContext)
+            }
+        } catch (e) {
+            log.error({
+                title: 'beforeLoad - e',
+                details: e
+            })
         }
+
     }
 
     /**
@@ -57,11 +146,19 @@ define([], () => {
      * @since 2015.2
      */
     const beforeSubmit = (scriptContext) => {
-        if(isNeedToSetDefaultValueForEGUI(scriptContext)) {
-            // proceed to set Default value for eGUI
-            log.debug({title: 'beforeSubmit - setDefaultValueForEGUI', details: 'start'})
-            setDefaultValueForEGUI(scriptContext)
+        try {
+            if (isNeedToSetDefaultValueForEGUI(scriptContext)) {
+                // proceed to set Default value for eGUI
+                log.debug({title: 'beforeSubmit - setDefaultValueForEGUI', details: 'start'})
+                setDefaultValueForEGUI(scriptContext)
+            }
+        } catch (e) {
+            log.error({
+                title: 'beforeSubmit - error',
+                details: e
+            })
         }
+
     }
 
     /**
@@ -76,7 +173,7 @@ define([], () => {
 
     }
 
-    // exports.beforeLoad = beforeLoad;
+    exports.beforeLoad = beforeLoad;
     exports.beforeSubmit = beforeSubmit;
     // exports.afterSubmit = afterSubmit;
     return exports;
