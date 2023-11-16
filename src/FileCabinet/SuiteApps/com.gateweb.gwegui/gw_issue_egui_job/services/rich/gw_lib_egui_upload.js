@@ -112,5 +112,13 @@ define([
         })
     }
 
+    exports.mainProcess = function (eachObject) {
+        log.debug({
+            title: 'mainProcess - eachObject',
+            details: eachObject
+        })
+
+    }
+
     return exports
 });

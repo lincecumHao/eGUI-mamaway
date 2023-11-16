@@ -86,7 +86,7 @@ define(['./services/rich/gw_lib_egui_upload'], (gwLibEguiUpload) => {
         try {
             //TODO - proceed main process
             log.debug({title: 'proceed main process - searchResults', details: searchResults})
-            // gwLibBinAdjustment.mainProcess(searchResults[0]);
+            gwLibEguiUpload.mainProcess(searchResults[0]);
         } catch (e) {
             // eslint-disable-next-line suitescript/log-args
             log.error({title: '[reduce stage] - error', details: e});
