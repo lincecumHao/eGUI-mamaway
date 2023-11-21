@@ -10,7 +10,7 @@
  *
  */
 
-define(['./services/rich/gw_lib_egui_upload'], (gwLibEguiUpload) => {
+define(['./services/rich/gw_lib_voucher_upload'], (gwLibVoucherUpload) => {
 
     let exports = {};
 
@@ -29,7 +29,7 @@ define(['./services/rich/gw_lib_egui_upload'], (gwLibEguiUpload) => {
 
     const getInputData = (inputContext) => {
         // get pending upload data
-        return gwLibEguiUpload.getPendingUploadData()
+        return gwLibVoucherUpload.getPendingUploadData()
     }
 
     /**
@@ -86,7 +86,7 @@ define(['./services/rich/gw_lib_egui_upload'], (gwLibEguiUpload) => {
         try {
             //TODO - proceed main process
             log.debug({title: 'proceed main process - searchResults', details: searchResults})
-            gwLibEguiUpload.mainProcess(searchResults[0]);
+            gwLibVoucherUpload.mainProcess(searchResults[0]);
         } catch (e) {
             // eslint-disable-next-line suitescript/log-args
             log.error({title: '[reduce stage] - error', details: e});
