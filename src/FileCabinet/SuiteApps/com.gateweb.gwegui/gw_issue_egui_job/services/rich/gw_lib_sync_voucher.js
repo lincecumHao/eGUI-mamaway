@@ -891,5 +891,123 @@ define([
         return richProcessSearchResult
     }
 
+    function getSearchPendingUpdateStatusFilters() {
+        let searchFilters = []
+        searchFilters.push(['custrecord_gw_voucher_upload_status', 'is', 'P'])
+
+        return searchFilters
+    }
+
+    exports.getPendingUpdateStatusData = function () {
+        let searchFilters = getSearchPendingUpdateStatusFilters()
+        let searchColumns = getSearchColumns()
+
+        return search.create({
+            type: 'customrecord_gw_voucher_main', filters: searchFilters, columns: searchColumns
+        })
+    }
+
+    function getVoucherStatusThroughRich(eachObject, richBaseURL, companyInformation, getRichTokenResponse) {
+        let responseObj = {
+            code: 0, body: ''
+        }
+        const xmlMigType = invoiceutility.getMigType('APPLY', eachObject.custrecord_gw_voucher_type, eachObject.custrecord_gw_mig_type)
+        let url = `${richBaseURL}/api/v1/mig/${xmlMigType}/${companyInformation.values.custrecord_gw_be_company_key}?migNumber=${eachObject.custrecord_gw_voucher_number}&migDate=${eachObject.custrecord_gw_voucher_date}`
+        log.debug({
+            title: 'getVoucherStatusThroughRich - url', details: url
+        })
+        let headers = {}
+        headers['Authorization'] = `Bearer ${getRichTokenResponse.body.id_token}`
+        headers['Accept'] = `application/json`
+        headers['Accept-Language'] = `en-us`
+        headers['Content-Type'] = 'application/json'
+
+        let response = https.get({
+            url: url, headers: headers
+        })
+
+        responseObj.code = response.code
+        if (response.code !== 200) {
+            responseObj.body = 'Error Occurs: ' + response.body
+        } else {
+            responseObj.body = JSON.parse(response.body)
+        }
+        log.debug({
+            title: 'getVoucherStatusThroughRich responseCode', details: responseObj
+        })
+
+        return responseObj
+    }
+
+    function proceedToUpdateVoucherMain(eachObject, getVoucherStatusResponse) {
+        const statusMapping = {
+            '上傳成功': 'C',
+            '上傳失敗': 'E'
+        }
+        let submitFieldsObject = {}
+        submitFieldsObject['custrecord_gw_voucher_upload_status'] = statusMapping[getVoucherStatusResponse.body.uploadStatus]
+        if(statusMapping[getVoucherStatusResponse.body.uploadStatus] === 'E') submitFieldsObject['custrecord_gw_uploadstatus_messag'] = getVoucherStatusResponse.body.natErrorMessage
+
+        if(eachObject.custrecord_gw_voucher_status.indexOf('CANCEL') !== -1 && getVoucherStatusResponse.body.status === '作廢') {
+            submitFieldsObject['custrecord_gw_voucher_status'] = (statusMapping[getVoucherStatusResponse.body.uploadStatus] === 'C') ? 'CANCEL_SUCCESS' : 'CANCEL_ERROR'
+        }
+
+        log.debug({
+            title: 'proceedToUpdateVoucherMain - submitFieldsObject',
+            details: submitFieldsObject
+        })
+
+        const resultId = record.submitFields({
+            type: 'customrecord_gw_voucher_main',
+            id: eachObject.id,
+            values: submitFieldsObject
+        })
+
+        log.debug({
+            title: 'proceedToUpdateVoucherMain - resultId',
+            details: resultId
+        })
+    }
+
+    exports.downloadVoucherStatus = function (eachObject) {
+        log.debug({title: 'downloadVoucherStatus', details: 'start...'
+        })
+        log.debug({
+            title: 'downloadVoucherStatus - eachObject',
+            details: eachObject
+        })
+        const richProcessSearchResult = richProcess()[0]
+        if (richProcessSearchResult.values.custrecord_gw_conf_rich_process) {
+            const sellerId = eachObject.custrecord_gw_seller
+            //get company key and company account id
+            const companyInformationArray = getRichCompanyInformationBySellerId(sellerId)
+            log.debug({
+                title: 'downloadVoucherStatus - companyInformationArray', details: companyInformationArray
+            })
+            if (companyInformationArray.length === 0) throw 'Can Not Find Mapped Company Info For Rich Process'
+            // proceed rich process
+            const richBaseURL = richProcessSearchResult.values.custrecord_gw_conf_rich_base_url
+            // get token
+            const getRichTokenResponse = getRichToken(richBaseURL, companyInformationArray[0])
+            log.debug({
+                title: 'downloadVoucherStatus - getRichTokenResponse', details: getRichTokenResponse
+            })
+            if (getRichTokenResponse.code !== 200) {
+                throw getRichTokenResponse
+            }
+
+            const getVoucherStatusResponse = getVoucherStatusThroughRich(eachObject, richBaseURL, companyInformationArray[0], getRichTokenResponse)
+            log.debug({
+                title: 'downloadVoucherStatus - getVoucherStatusResponse', details: getVoucherStatusResponse
+            })
+
+            if(getVoucherStatusResponse.body.uploadStatus !== '等待上傳') {
+                // TODO - proceed to update voucher main VOUCHERUPLOADSTATUS
+                proceedToUpdateVoucherMain(eachObject, getVoucherStatusResponse)
+            }
+        }
+        log.debug({title: 'downloadVoucherStatus', details: 'end...'})
+    }
+
     return exports
 });
