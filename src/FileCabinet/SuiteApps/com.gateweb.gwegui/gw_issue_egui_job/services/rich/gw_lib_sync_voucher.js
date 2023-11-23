@@ -39,6 +39,10 @@ define([
     let exports = {}
 
     const DEFAULT_PASSWORD = '1qaz2wsx'
+    const statusMapping = {
+        '上傳成功': 'C',
+        '上傳失敗': 'E'
+    }
 
     function getSearchFilters() {
         let filters = []
@@ -939,11 +943,7 @@ define([
         return responseObj
     }
 
-    function proceedToUpdateVoucherMain(eachObject, getVoucherStatusResponse) {
-        const statusMapping = {
-            '上傳成功': 'C',
-            '上傳失敗': 'E'
-        }
+    function updateVoucherMain(eachObject, getVoucherStatusResponse) {
         let submitFieldsObject = {}
         submitFieldsObject['custrecord_gw_voucher_upload_status'] = statusMapping[getVoucherStatusResponse.body.uploadStatus]
         if(statusMapping[getVoucherStatusResponse.body.uploadStatus] === 'E') submitFieldsObject['custrecord_gw_uploadstatus_messag'] = getVoucherStatusResponse.body.natErrorMessage
@@ -953,7 +953,7 @@ define([
         }
 
         log.debug({
-            title: 'proceedToUpdateVoucherMain - submitFieldsObject',
+            title: 'updateVoucherMain - submitFieldsObject',
             details: submitFieldsObject
         })
 
@@ -964,9 +964,57 @@ define([
         })
 
         log.debug({
-            title: 'proceedToUpdateVoucherMain - resultId',
+            title: 'updateVoucherMain - resultId',
             details: resultId
         })
+    }
+
+    function updateUploadLog(eachObject, getVoucherStatusResponse) {
+        log.debug({title: 'updateUploadLog', details: 'start...'})
+        //TODO - find existing log by voucher main id
+        //TODO - update log
+        const searchType = 'customrecord_gw_xml_upload_log'
+        let searchFilters = []
+        searchFilters.push(['custrecord_gw_upload_voucher.internalid', 'anyof', eachObject.id])
+        searchFilters.push('AND')
+        searchFilters.push(['custrecord_gw_download_voucher_status', 'isempty', ''])
+
+        let searchColumns = []
+        searchColumns.push('internalid')
+        var customrecord_gw_xml_upload_logSearchObj = search.create({
+            type: searchType,
+            filters: searchFilters,
+            columns: searchColumns
+        });
+        var searchResultCount = customrecord_gw_xml_upload_logSearchObj.runPaged().count;
+        log.debug("customrecord_gw_xml_upload_logSearchObj result count",searchResultCount);
+        customrecord_gw_xml_upload_logSearchObj.run().each(function(result){
+            // .run().each has a limit of 4,000 results
+            const logRecordId = result.id
+            let submitFieldsObject = {}
+            submitFieldsObject['custrecord_gw_download_voucher_status'] = statusMapping[getVoucherStatusResponse.body.uploadStatus]
+            submitFieldsObject['custrecord_gw_download_voucher_date'] = dateutility.getCompanyLocatDate()
+            submitFieldsObject['custrecord_gw_download_voucher_time'] = dateutility.getCompanyLocatTime()
+            if(statusMapping[getVoucherStatusResponse.body.uploadStatus] === 'E') {
+                //TODO set error msg
+                submitFieldsObject['custrecord_gw_download_voucher_message'] = getVoucherStatusResponse.body.natErrorMessage
+            }
+            const resultId = record.submitFields({
+                type: searchType,
+                id: logRecordId,
+                values: submitFieldsObject
+            })
+            log.debug({title: 'updateUploadLog - resultId', details: resultId})
+            return true;
+        });
+
+        log.debug({title: 'updateUploadLog', details: 'end...'})
+    }
+
+    function updateLinkedTransaction(eachObject, getVoucherStatusResponse) {
+        log.debug({title: 'updateLinkedTransaction', details: 'start...'})
+        //TODO - find the linked transaction
+        //TODO - update upload status
     }
 
     exports.downloadVoucherStatus = function (eachObject) {
@@ -1001,9 +1049,12 @@ define([
                 title: 'downloadVoucherStatus - getVoucherStatusResponse', details: getVoucherStatusResponse
             })
 
-            if(getVoucherStatusResponse.body.uploadStatus !== '等待上傳') {
+            if(getVoucherStatusResponse.code === 200 && getVoucherStatusResponse.body.uploadStatus !== '等待上傳') {
                 // TODO - proceed to update voucher main VOUCHERUPLOADSTATUS
-                proceedToUpdateVoucherMain(eachObject, getVoucherStatusResponse)
+                updateVoucherMain(eachObject, getVoucherStatusResponse)
+                updateUploadLog(eachObject, getVoucherStatusResponse)
+                updateLinkedTransaction(eachObject, getVoucherStatusResponse)
+
             }
         }
         log.debug({title: 'downloadVoucherStatus', details: 'end...'})
