@@ -43,6 +43,13 @@ define([
         '上傳成功': 'C',
         '上傳失敗': 'E'
     }
+    const TRANSACTION_TYPE_MAPPING = {
+        'CustInvc': record.Type.INVOICE,
+        'CustCred': record.Type.CREDIT_MEMO,
+        'CustDep': record.Type.CUSTOMER_DEPOSIT,
+        'CashSale': record.Type.CASH_SALE,
+        'CashRfnd': record.Type.CASH_REFUND
+    }
 
     function getSearchFilters() {
         let filters = []
@@ -1011,10 +1018,250 @@ define([
         log.debug({title: 'updateUploadLog', details: 'end...'})
     }
 
-    function updateLinkedTransaction(eachObject, getVoucherStatusResponse) {
+    function updateLinkedTransaction(eachObject, getVoucherStatusResponse, linkedTransactionArray) {
         log.debug({title: 'updateLinkedTransaction', details: 'start...'})
+        linkedTransactionArray.forEach(function (eachLinkedTransactionObject) {
+            const uploadStatus = statusMapping[getVoucherStatusResponse.body.uploadStatus]
+            let voucherStatus = eachObject.custrecord_gw_voucher_status
+            if(eachObject.custrecord_gw_voucher_status.indexOf('CANCEL') !== -1 && getVoucherStatusResponse.body.status === '作廢') {
+                voucherStatus = (statusMapping[getVoucherStatusResponse.body.uploadStatus] === 'C') ? 'CANCEL_SUCCESS' : 'CANCEL_ERROR'
+            }
+            log.debug({
+                title: 'uploadStatus|voucherStatus',
+                details: {
+                    uploadStatus,
+                    voucherStatus
+                }
+            })
+            const mappedStatus = synceguidocument.getGwEvidenceStatus(voucherStatus, uploadStatus, 'ALL')
+            log.debug({
+                title: 'updateLinkedTransaction - mappedStatus',
+                details: mappedStatus
+            })
+            const resultId = record.submitFields({
+                type: eachLinkedTransactionObject.linkedTransactionType,
+                id: eachLinkedTransactionObject.linkedTransactionId,
+                values: {
+                    custbody_gw_evidence_issue_status: mappedStatus
+                }
+            })
+
+            log.debug({
+                title: 'updateLinkedTransaction - submitFields result id',
+                details: resultId
+            })
+        })
+    }
+
+    function updateDepositVoucherRecordStatus(eachObject, getVoucherStatusResponse, linkedTransactionArray) {
+        let uploadStatus = statusMapping[getVoucherStatusResponse.body.uploadStatus]
+        let voucherStatus = eachObject.custrecord_gw_voucher_status
+        if(eachObject.custrecord_gw_voucher_status.indexOf('CANCEL') !== -1 && getVoucherStatusResponse.body.status === '作廢' && uploadStatus === 'C') {
+            voucherStatus = 'D'
+        }
+        linkedTransactionArray.forEach(function (eachLinkedTransactionObject) {
+            if(eachLinkedTransactionObject.linkedTransactionType === record.Type.CUSTOMER_DEPOSIT) {
+                const recordType = 'customrecord_gw_deposit_voucher_record'
+                let searchFilters = []
+                searchFilters.push(['custrecord_gw_deposit_voucher_main_id',' equalto', eachObject.id])
+                let searchColumns = []
+                searchColumns.push('custrecord_gw_deposit_voucher_status')
+                searchColumns.push('custrecord_gw_deposit_voucher_main_id')
+                var customrecord_gw_deposit_voucher_recordSearchObj = search.create({
+                    type: recordType,
+                    filters: searchFilters,
+                    columns: searchColumns
+                })
+                var searchResultCount = customrecord_gw_deposit_voucher_recordSearchObj.runPaged().count
+                log.debug('customrecord_gw_deposit_voucher_recordSearchObj result count', searchResultCount)
+                customrecord_gw_deposit_voucher_recordSearchObj.run().each(function(result){
+                    // .run().each has a limit of 4,000 results
+                    const resultId = record.submitFields({
+                        type: recordType,
+                        id: result.id,
+                        values: {
+                            custrecord_gw_deposit_voucher_status: voucherStatus
+                        }
+                    })
+                    log.debug({
+                        title: 'updateDepositVoucherRecordStatus - submitFields resultId',
+                        details: resultId
+                    })
+                    return true;
+                })
+            }
+        })
+    }
+
+    function getLinkedTransaction(eachObject, getVoucherStatusResponse) {
+        log.debug({title: 'getLinkedTransaction', details: 'start...'})
         //TODO - find the linked transaction
-        //TODO - update upload status
+        const searchType = 'customrecord_gw_voucher_details'
+        let searchFilters = []
+        searchFilters.push(['custrecord_gw_voucher_main_internal_id.internalid', 'anyof', eachObject.id])
+        searchFilters.push('AND')
+        searchFilters.push(['custrecord_gw_ns_document_apply_id.mainline', 'is', 'T'])
+        let searchColumns = []
+        searchColumns.push(
+            search.createColumn({
+                name: 'internalid',
+                join: 'CUSTRECORD_GW_NS_DOCUMENT_APPLY_ID',
+                summary: 'GROUP',
+                sort: search.Sort.ASC
+            })
+        )
+        searchColumns.push(
+            search.createColumn({
+                name: 'type',
+                join: 'CUSTRECORD_GW_NS_DOCUMENT_APPLY_ID',
+                summary: 'GROUP'
+            })
+        )
+        var customrecord_gw_voucher_detailsSearchObj = search.create({
+            type: searchType,
+            filters: searchFilters,
+            columns: searchColumns
+        });
+        var searchResultCount = customrecord_gw_voucher_detailsSearchObj.runPaged().count;
+        log.debug('customrecord_gw_voucher_detailsSearchObj result count',searchResultCount);
+        let linkedTransactionArray = []
+        customrecord_gw_voucher_detailsSearchObj.run().each(function(result){
+            // .run().each has a limit of 4,000 results
+            log.debug({
+                title: 'updateLinkedTransaction - find the linked transaction - result',
+                details: result
+            })
+            const linkedTransactionId = result.getValue({name: 'internalid', join: 'CUSTRECORD_GW_NS_DOCUMENT_APPLY_ID', summary: 'GROUP'})
+            const linkedTransactionType = result.getValue({name: 'type', join: 'CUSTRECORD_GW_NS_DOCUMENT_APPLY_ID', summary: 'GROUP'})
+            const uploadStatus = statusMapping[getVoucherStatusResponse.body.uploadStatus]
+            let voucherStatus = eachObject.custrecord_gw_voucher_status
+            if(eachObject.custrecord_gw_voucher_status.indexOf('CANCEL') !== -1 && getVoucherStatusResponse.body.status === '作廢') {
+                voucherStatus = (statusMapping[getVoucherStatusResponse.body.uploadStatus] === 'C') ? 'CANCEL_SUCCESS' : 'CANCEL_ERROR'
+            }
+            linkedTransactionArray.push({
+                linkedTransactionId: linkedTransactionId,
+                linkedTransactionType: TRANSACTION_TYPE_MAPPING[linkedTransactionType]
+            })
+            return true
+        })
+
+        return linkedTransactionArray
+    }
+
+    function getVoucherDetailsSummaryAmountByVoucherMainId(eachObject) {
+        const recordType = 'customrecord_gw_voucher_details'
+        let searchFilters = []
+        searchFilters.push(['custrecord_gw_voucher_main_internal_id.internalid', 'anyof', eachObject.id])
+        searchFilters.push('AND')
+        searchFilters.push(['custrecord_gw_ns_document_apply_id.type', 'anyof', 'CustDep'])
+        searchFilters.push('AND')
+        searchFilters.push(['custrecord_gw_ns_document_apply_id.mainline', 'is', 'T'])
+
+        let searchColumns = []
+        searchColumns.push(
+            search.createColumn({
+                name: 'custrecord_gw_dtl_item_tax_code',
+                summary: 'GROUP'
+            })
+        )
+        searchColumns.push(
+            search.createColumn({
+                name: 'custrecord_gw_item_amount',
+                summary: 'SUM'
+            })
+        )
+        let customrecord_gw_voucher_detailsSearchObj = search.create({
+            type: recordType,
+            filters: searchFilters,
+            columns: searchColumns
+        })
+        let searchResultCount = customrecord_gw_voucher_detailsSearchObj.runPaged().count
+        log.debug('customrecord_gw_voucher_detailsSearchObj result count', searchResultCount)
+        let voucherDetailsArray = []
+        customrecord_gw_voucher_detailsSearchObj.run().each(function(result){
+            // .run().each has a limit of 4,000 results
+            log.debug({
+                title: 'checkDepositVoucherRecordAndReturnAmount - result',
+                details: result
+            })
+            voucherDetailsArray.push(JSON.parse(JSON.stringify(result)))
+            return true
+        })
+
+        return voucherDetailsArray
+    }
+
+    function getDeductedAmount(voucherDetailsSummaryAmountArray) {
+        let deductedAmount = 0
+        log.debug({
+            title: 'getDeductedAmount - voucherDetailsSummaryAmountArray',
+            details: voucherDetailsSummaryAmountArray
+        })
+        voucherDetailsSummaryAmountArray.forEach(function (eachVoucherDetailsObject) {
+            deductedAmount += stringutility.convertToFloat(eachVoucherDetailsObject.values['SUM(custrecord_gw_item_amount)'])
+        })
+
+        log.debug({
+            title: 'getDeductedAmount - deductedAmount',
+            details: deductedAmount
+        })
+
+        return deductedAmount
+    }
+
+    function checkDepositVoucherRecordAndReturnAmount(eachObject, getVoucherStatusResponse, linkedTransactionArray) {
+        if(statusMapping[getVoucherStatusResponse.body.uploadStatus] !== 'C') return
+        const voucherDetailsSummaryAmountArray = getVoucherDetailsSummaryAmountByVoucherMainId(eachObject)
+        linkedTransactionArray.forEach(function (eachLinkedTransactionObject) {
+            if(eachLinkedTransactionObject.linkedTransactionType === record.Type.INVOICE) {
+                const recordType = 'customrecord_gw_deposit_voucher_record'
+                let searchFilters = []
+                searchFilters.push(['custrecord_gw_deposit_voucher_main_id', 'equalto', eachObject.id])
+                let searchColumns = []
+                searchColumns.push('custrecord_gw_deposit_voucher_status')
+                searchColumns.push('custrecord_gw_deposit_voucher_main_id')
+                searchColumns.push('custrecord_gw_deposit_dedcuted_amount')
+                var customrecord_gw_deposit_voucher_recordSearchObj = search.create({
+                    type: recordType,
+                    filters: searchFilters,
+                    columns: searchColumns
+                })
+                var searchResultCount = customrecord_gw_deposit_voucher_recordSearchObj.runPaged().count
+                log.debug('customrecord_gw_deposit_voucher_recordSearchObj result count', searchResultCount)
+                customrecord_gw_deposit_voucher_recordSearchObj.run().each(function(result){
+                    // .run().each has a limit of 4,000 results
+                    let deductedAmount = stringutility.convertToFloat(result.getValue({name: 'custrecord_gw_deposit_dedcuted_amount'}))
+                    deductedAmount -= getDeductedAmount(voucherDetailsSummaryAmountArray)
+                    log.debug({
+                        title: 'checkDepositVoucherRecordAndReturnAmount - deductedAmount',
+                        details: deductedAmount
+                    })
+                    const resultId = record.submitFields({
+                        type: recordType,
+                        id: result.id,
+                        values: {
+                            custrecord_gw_deposit_dedcuted_amount: deductedAmount
+                        }
+                    })
+                    log.debug({
+                        title: 'updateDepositVoucherRecordStatus - submitFields resultId',
+                        details: resultId
+                    })
+                    return true;
+                })
+            }
+        })
+
+
+    }
+
+    function returnEGUIDiscountAmount(eachObject, getVoucherStatusResponse, linkedTransactionArray) {
+        if(statusMapping[getVoucherStatusResponse.body.uploadStatus] !== 'C') return
+        const xmlMigType = invoiceutility.getMigType('APPLY', eachObject.custrecord_gw_voucher_type, eachObject.custrecord_gw_mig_type)
+        if(xmlMigType !== 'B0201' || xmlMigType !== 'D0501') {
+            //TODO get voucher details by voucher main id
+            //TODO update
+        }
     }
 
     exports.downloadVoucherStatus = function (eachObject) {
@@ -1053,8 +1300,16 @@ define([
                 // TODO - proceed to update voucher main VOUCHERUPLOADSTATUS
                 updateVoucherMain(eachObject, getVoucherStatusResponse)
                 updateUploadLog(eachObject, getVoucherStatusResponse)
-                updateLinkedTransaction(eachObject, getVoucherStatusResponse)
+                const linkedTransactionArray = getLinkedTransaction(eachObject, getVoucherStatusResponse)
+                updateLinkedTransaction(eachObject, getVoucherStatusResponse, linkedTransactionArray)
 
+                //TODO - updateDepositVoucherRecordStatus
+                updateDepositVoucherRecordStatus(eachObject, getVoucherStatusResponse, linkedTransactionArray)
+                //TODO - checkDepositVoucherRecordAndReturnAmount
+                checkDepositVoucherRecordAndReturnAmount(eachObject, getVoucherStatusResponse, linkedTransactionArray)
+                //TODO - returnEGUIDiscountAmount
+                returnEGUIDiscountAmount(eachObject, getVoucherStatusResponse, linkedTransactionArray)
+                //TODO - sendByVoucherId
             }
         }
         log.debug({title: 'downloadVoucherStatus', details: 'end...'})

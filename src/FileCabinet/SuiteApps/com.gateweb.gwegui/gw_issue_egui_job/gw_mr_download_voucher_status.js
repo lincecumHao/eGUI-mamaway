@@ -20,6 +20,10 @@ define([
 
     const getInputData = (inputContext) => {
         // get pending update status data
+        log.debug({
+            title: '[getInputData stage]',
+            details: 'start...'
+        })
         return gwLibSyncVoucher.getPendingUpdateStatusData()
     }
 
