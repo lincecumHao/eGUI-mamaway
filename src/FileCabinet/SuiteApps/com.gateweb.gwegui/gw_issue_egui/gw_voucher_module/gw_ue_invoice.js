@@ -60,6 +60,7 @@ define([
      */
     const beforeSubmit = (scriptContext) => {
         try {
+            const subsidiaryId = scriptContext.newRecord.getValue({fieldId: 'subsidiary'}) || null
             if (((subsidiaryId && APPLIED_SUBSIDIARY.indexOf(subsidiaryId) !== -1) || !subsidiaryId)
                 && gwLibTransactionUtil.isNeedToSetDefaultValueForEGUI(scriptContext)) {
                 // proceed to set Default value for eGUI
