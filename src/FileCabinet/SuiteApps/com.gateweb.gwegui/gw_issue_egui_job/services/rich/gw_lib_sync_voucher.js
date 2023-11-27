@@ -1256,12 +1256,91 @@ define([
     }
 
     function returnEGUIDiscountAmount(eachObject, getVoucherStatusResponse, linkedTransactionArray) {
+        const taxCodeAndFieldMapping = {
+            '1': 'custrecord_gw_discount_sales_amount',
+            '2': 'custrecord_gw_discount_zero_amount',
+            '3': 'custrecord_gw_discount_free_amount'
+        }
+        log.debug({
+            title: 'returnEGUIDiscountAmount',
+            details: 'start...'
+        })
+        log.debug({
+            title: 'returnEGUIDiscountAmount - getVoucherStatusResponse',
+            details: getVoucherStatusResponse
+        })
         if(statusMapping[getVoucherStatusResponse.body.uploadStatus] !== 'C') return
         const xmlMigType = invoiceutility.getMigType('APPLY', eachObject.custrecord_gw_voucher_type, eachObject.custrecord_gw_mig_type)
-        if(xmlMigType !== 'B0201' || xmlMigType !== 'D0501') {
-            //TODO get voucher details by voucher main id
-            //TODO update
-        }
+        log.debug({
+            title: 'returnEGUIDiscountAmount - xmlMigType',
+            details: xmlMigType
+        })
+        if(xmlMigType !== 'B0201' || xmlMigType !== 'D0501') return
+        //TODO get voucher details by voucher main id
+        const voucherDetailsArray = getVoucherDetailsByVoucherMainId(eachObject.id)
+        //TODO update
+        voucherDetailsArray.forEach(function (voucherDetailsObject, index) {
+            log.debug({
+                title: `returnEGUIDiscountAmount - voucherDetailsObject, index: ${index}`, details: voucherDetailsObject
+            })
+            const originalVoucherMainId = voucherDetailsObject.values.custrecord_gw_original_gui_internal_id
+            const itemAmount = Math.abs(voucherDetailsObject.values.custrecord_gw_item_amount) // return Amt
+            const itemTaxCode = gwTaxType21.getTaxTypeByTaxCode(voucherDetailsObject.values.custrecord_gw_dtl_item_tax_code)
+            log.debug({
+                title: 'returnEGUIDiscountAmount - voucher details info',
+                details: {
+                    originalVoucherMainId,
+                    itemAmount,
+                    itemTaxCode
+                }
+            })
+            let voucherMainRecordObject = record.load({
+                type: 'customrecord_gw_voucher_main',
+                id: originalVoucherMainId
+            })
+            const matchedFieldId = taxCodeAndFieldMapping[itemTaxCode.value]
+            log.debug({title: `returnEGUIDiscountAmount - matchedFieldId`, details: matchedFieldId})
+            let fieldValue = voucherMainRecordObject.getValue({fieldId: matchedFieldId})
+            let discountCount = voucherMainRecordObject.getValue({fieldId: 'custrecord_gw_discount_count'})
+            let discountAmount = voucherMainRecordObject.getValue({fieldId: 'custrecord_gw_discount_amount'})
+            log.debug({
+                title: 'returnEGUIDiscountAmount - existing voucher main value',
+                details: {
+                    matchedFieldId,
+                    fieldValue,
+                    discountCount,
+                    discountAmount
+                }
+            })
+            fieldValue -= itemAmount
+            discountCount -= 1
+            discountAmount -= itemAmount
+            log.debug({
+                title: 'returnEGUIDiscountAmount - updated voucher main value',
+                details: {
+                    matchedFieldId,
+                    fieldValue,
+                    discountCount,
+                    discountAmount
+                }
+            })
+            voucherMainRecordObject.setValue({
+                fieldId: matchedFieldId,
+                value: fieldValue
+            })
+            voucherMainRecordObject.setValue({
+                fieldId: 'custrecord_gw_discount_count',
+                value: discountCount
+            })
+            voucherMainRecordObject.setValue({
+                fieldId: 'custrecord_gw_discount_amount',
+                value: discountAmount
+            })
+            const resultId = voucherMainRecordObject.save()
+            log.debug({title: 'returnEGUIDiscountAmount - resultId', details: resultId})
+        })
+
+
     }
 
     exports.downloadVoucherStatus = function (eachObject) {
