@@ -19,7 +19,8 @@ define([
     '../../../gw_issue_egui/gw_common_utility/gw_common_invoice_utility',
     '../../../gw_issue_egui/gw_common_utility/gw_common_migxml_utility',
     '../../../gw_issue_egui/gw_common_utility/gw_common_configure',
-    '../../../gw_dao/taxType/gw_dao_tax_type_21'
+    '../../../gw_dao/taxType/gw_dao_tax_type_21',
+    '../../../gw_issue_egui/services/email/gw_service_egui_email'
 ], (
     search,
     runtime,
@@ -33,7 +34,8 @@ define([
     invoiceutility,
     migxmlutility,
     gwconfigure,
-    gwTaxType21
+    gwTaxType21,
+    gwServiceEGUIEmail
 ) => {
 
     let exports = {}
@@ -193,9 +195,11 @@ define([
         setXmlMainAndAmountValue(_xmlDocument, _select_path, 'Seller', 'Identifier', voucherMainRecordObject.custrecord_gw_seller)
         setXmlMainAndAmountValue(_xmlDocument, _select_path, 'Seller', 'Name', voucherMainRecordObject.custrecord_gw_seller_name)
         setXmlMainAndAmountValue(_xmlDocument, _select_path, 'Seller', 'Address', voucherMainRecordObject.custrecord_gw_seller_address)
+
         setXmlMainAndAmountValue(_xmlDocument, _select_path, 'Buyer', 'Identifier', voucherMainRecordObject.custrecord_gw_buyer)
         setXmlMainAndAmountValue(_xmlDocument, _select_path, 'Buyer', 'Name', voucherMainRecordObject.custrecord_gw_buyer_name)
         setXmlMainAndAmountValue(_xmlDocument, _select_path, 'Buyer', 'Address', voucherMainRecordObject.custrecord_gw_buyer_address)
+
         setXmlMainAndAmountValue(_xmlDocument, _select_path, 'Main', 'InvoiceType', voucherMainRecordObject.custrecord_gw_invoice_type)
         setXmlMainAndAmountValue(_xmlDocument, _select_path, 'Main', 'RandomNumber', voucherMainRecordObject.custrecord_gw_random_number)
         setXmlMainAndAmountValue(_xmlDocument, _select_path, 'Main', 'MainRemark', voucherMainRecordObject.custrecord_gw_main_remark)
@@ -1343,6 +1347,40 @@ define([
 
     }
 
+    function sendEmailNotification(eachObject, getVoucherStatusResponse, linkedTransactionArray) {
+        log.debug({
+            title: 'sendEmailNotification',
+            details: 'start...'
+        })
+        log.debug({
+            title: 'sendEmailNotification - eachObject',
+            details: eachObject
+        })
+        log.debug({
+            title: 'sendEmailNotification - getVoucherStatusResponse',
+            details: getVoucherStatusResponse
+        })
+        if(statusMapping[getVoucherStatusResponse.body.uploadStatus] !== 'C') return
+        const emailSubjectMapping = {
+            'C0401': `發票開立通知-開立成功-${eachObject.custrecord_gw_voucher_number}`,
+            'C0501': `發票作廢通知-開立成功-${eachObject.custrecord_gw_voucher_number}`,
+            'D0401': `折讓單開立通知-開立成功-${eachObject.custrecord_gw_voucher_number}`,
+            'D0501': `折讓單作廢通知-開立成功-${eachObject.custrecord_gw_voucher_number}`
+        }
+        const xmlMigType = invoiceutility.getMigType('APPLY', eachObject.custrecord_gw_voucher_type, eachObject.custrecord_gw_mig_type)
+        log.debug({
+            title: 'sendEmailNotification - xmlMigType',
+            details: xmlMigType
+        })
+        if(!emailSubjectMapping[xmlMigType]) return
+        let emailSubject = emailSubjectMapping[xmlMigType]
+        log.debug({
+            title: 'sendEmailNotification - emailSubject',
+            details: emailSubject
+        })
+        gwServiceEGUIEmail.sendByVoucherId(emailSubject, eachObject.id)
+    }
+
     exports.downloadVoucherStatus = function (eachObject) {
         log.debug({title: 'downloadVoucherStatus', details: 'start...'
         })
@@ -1389,6 +1427,7 @@ define([
                 //TODO - returnEGUIDiscountAmount
                 returnEGUIDiscountAmount(eachObject, getVoucherStatusResponse, linkedTransactionArray)
                 //TODO - sendByVoucherId
+                sendEmailNotification(eachObject, getVoucherStatusResponse, linkedTransactionArray)
             }
         }
         log.debug({title: 'downloadVoucherStatus', details: 'end...'})
