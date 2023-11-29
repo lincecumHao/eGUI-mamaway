@@ -37,20 +37,12 @@ define([
     gwTaxType21,
     gwServiceEGUIEmail
 ) => {
-
     let exports = {}
 
     const DEFAULT_PASSWORD = '1qaz2wsx'
     const statusMapping = {
         '上傳成功': 'C',
         '上傳失敗': 'E'
-    }
-    const TRANSACTION_TYPE_MAPPING = {
-        'CustInvc': record.Type.INVOICE,
-        'CustCred': record.Type.CREDIT_MEMO,
-        'CustDep': record.Type.CUSTOMER_DEPOSIT,
-        'CashSale': record.Type.CASH_SALE,
-        'CashRfnd': record.Type.CASH_REFUND
     }
 
     function getSearchFilters() {
@@ -685,6 +677,7 @@ define([
             uploadLogRecordObject.setValue({
                 fieldId: 'custrecord_gw_upload_seller_ban', value: voucherMainRecordObject.custrecord_gw_seller,
             })
+            // not existing
             uploadLogRecordObject.setValue({
                 fieldId: 'custrecord_gw_upload_buyer_id',
                 value: voucherMainRecordObject.custrecord_gw_original_buyer_id,
@@ -745,6 +738,7 @@ define([
     }
 
     function updateVoucherMainRecord(voucherMainRecordObject, generatedObject, uploadResultResponse) {
+        const CANCEL_MIG_TYPE = ['A0201', 'C0501', 'A0501', 'B0201', 'D0501', 'B0501']
         try {
             log.debug({
                 title: 'updateVoucherMainRecord', details: 'start...'
@@ -758,21 +752,29 @@ define([
                 log.debug({
                     title: 'updateVoucherMainRecord - responseBody', details: responseBody
                 })
-                submitFieldsObject['custrecord_gw_voucher_status'] = 'VOUCHER_ERROR'
+                if(CANCEL_MIG_TYPE.indexOf(generatedObject.xmlMigType) !== -1) {
+                    submitFieldsObject['custrecord_gw_voucher_status'] = 'CANCEL_ERROR'
+                } else {
+                    submitFieldsObject['custrecord_gw_voucher_status'] = 'VOUCHER_ERROR'
+                }
+
                 submitFieldsObject['custrecord_gw_voucher_upload_status'] = 'E'
                 submitFieldsObject['custrecord_gw_uploadstatus_messag'] = responseBody.subErrors[0].message
             } else {
                 submitFieldsObject['custrecord_gw_voucher_upload_status'] = 'P'
+                if(CANCEL_MIG_TYPE.indexOf(generatedObject.xmlMigType) !== -1) {
+                    submitFieldsObject['custrecord_gw_voucher_status'] = 'CANCEL_UPLOAD'
+                    submitFieldsObject['custrecord_upload_xml_file_name'] = generatedObject.fileName
+                }
                 // submitFieldsObject['custrecord_gw_uploadstatus_messag'] = uploadResultResponse.body.message
             }
 
             const resultId = record.submitFields({
-                type: 'customrecord_gw_voucher_main', id: voucherMainRecordObject.id, values: submitFieldsObject
+                type: 'customrecord_gw_voucher_main',
+                id: voucherMainRecordObject.id,
+                values: submitFieldsObject
             })
-
-            log.debug({
-                title: 'updateVoucherMainRecord - resultId', details: resultId
-            })
+            log.debug({title: 'updateVoucherMainRecord - resultId', details: resultId})
 
         } catch (e) {
             log.error({
@@ -1099,6 +1101,13 @@ define([
 
     function getLinkedTransaction(eachObject, getVoucherStatusResponse) {
         log.debug({title: 'getLinkedTransaction', details: 'start...'})
+        const TRANSACTION_TYPE_MAPPING = {
+            'CustInvc': record.Type.INVOICE,
+            'CustCred': record.Type.CREDIT_MEMO,
+            'CustDep': record.Type.CUSTOMER_DEPOSIT,
+            'CashSale': record.Type.CASH_SALE,
+            'CashRfnd': record.Type.CASH_REFUND
+        }
         //TODO - find the linked transaction
         const searchType = 'customrecord_gw_voucher_details'
         let searchFilters = []
@@ -1431,6 +1440,259 @@ define([
             }
         }
         log.debug({title: 'downloadVoucherStatus', details: 'end...'})
+    }
+
+    exports.getPendingVoidVoucherData = function () {
+        const recordType = 'customrecord_gw_voucher_apply_list'
+        let searchFilters = []
+        searchFilters.push(['custrecord_gw_voucher_apply_type', 'is', 'CANCEL'])
+        searchFilters.push('AND')
+        searchFilters.push([
+            ['custrecord_gw_voucher_open_type', 'is', 'SINGLE-ALLOWANCE-SCHEDULE'],
+            'OR',
+            ['custrecord_gw_voucher_open_type', 'is', 'SINGLE-EGUI-SCHEDULE']
+        ])
+        searchFilters.push('AND')
+        searchFilters.push(['custrecord_gw_completed_schedule_task', 'is', 'N'])
+        searchFilters.push('AND')
+        searchFilters.push(['custrecord_gw_voucher_flow_status', 'is', 'CANCEL_APPROVE'])
+        let searchColumns = []
+        searchColumns.push('internalid')
+        searchColumns.push('custrecord_gw_voucher_apply_type')
+        searchColumns.push('custrecord_gw_voucher_open_type')
+        searchColumns.push('custrecord_gw_voucher_apply_date')
+        searchColumns.push('custrecord_gw_voucher_apply_time')
+        searchColumns.push('custrecord_gw_voucher_apply_seller')
+        searchColumns.push('custrecord_gw_voucher_void_comment')
+        searchColumns.push('custrecord_gw_voucher_flow_status')
+        searchColumns.push('custrecord_gw_invoice_todo_list')
+        searchColumns.push('custrecord_gw_creditmemo_todo_list')
+        let customrecord_gw_voucher_apply_listSearchObj = search.create({
+            type: recordType,
+            filters: searchFilters,
+            columns: searchColumns
+        })
+        let searchResultCount = customrecord_gw_voucher_apply_listSearchObj.runPaged().count
+        log.debug({
+            title: 'getPendingVoidVoucherData - customrecord_gw_voucher_apply_listSearchObj result count',
+            details: searchResultCount
+        })
+
+        return customrecord_gw_voucher_apply_listSearchObj
+    }
+
+    function getVoucherMainByIds(voucherMainIds) {
+        const recordType = 'customrecord_gw_voucher_main'
+        let searchFilters = []
+        searchFilters.push(['internalid', 'anyof', voucherMainIds])
+        let searchColumns = []
+        searchColumns.push('custrecord_gw_voucher_number')
+        searchColumns.push(
+            search.createColumn({
+            name: 'custrecord_gw_voucher_date',
+            sort: search.Sort.ASC
+        }))
+        searchColumns.push('custrecord_gw_voucher_time')
+        searchColumns.push('custrecord_gw_voucher_yearmonth')
+        searchColumns.push('custrecord_gw_seller')
+        searchColumns.push('custrecord_gw_buyer')
+        searchColumns.push('custrecord_gw_mig_type')
+        searchColumns.push('custrecord_gw_original_buyer_id')
+        searchColumns.push('custrecord_gw_voucher_status')
+        searchColumns.push('custrecord_gw_need_upload_egui_mig')
+
+        let customrecord_gw_voucher_mainSearchObj = search.create({
+            type: recordType,
+            filters: searchFilters,
+            columns: searchColumns
+        });
+        let searchResultCount = customrecord_gw_voucher_mainSearchObj.runPaged().count;
+        log.debug('getVoucherMainByIds - customrecord_gw_voucher_mainSearchObj result count', searchResultCount);
+        let voucherMainRecordArray = []
+        customrecord_gw_voucher_mainSearchObj.run().each(function(result){
+            // .run().each has a limit of 4,000 results
+            let voucherMainObject = JSON.parse(JSON.stringify(result)).values
+            voucherMainObject.id = result.id
+            // voucherMainRecordArray.push(JSON.parse(JSON.stringify(result)))
+            voucherMainRecordArray.push(voucherMainObject)
+            return true
+        })
+
+        return voucherMainRecordArray
+    }
+
+    function setGeneralValue(xmlString, voucherObject, voucherMainRecordObject) {
+        xmlString += `<BuyerId>${voucherMainRecordObject.custrecord_gw_buyer}</BuyerId>`
+        xmlString += `<SellerId>${voucherMainRecordObject.custrecord_gw_seller}</SellerId>`
+        xmlString += `<CancelDate>${dateutility.getCompanyLocatDate()}</CancelDate>`
+        xmlString += `<CancelTime>${dateutility.getCompanyLocatTime()}</CancelTime>`
+        xmlString += `<CancelReason>${voucherObject.custrecord_gw_voucher_void_comment}</CancelReason>`
+
+        return xmlString
+    }
+
+
+    function generateXMLForVoid(voucherType, voucherObject, voucherMainRecordObject) {
+        log.debug({
+            title: 'generateXMLForVoid',
+            details: 'start...'
+        })
+        log.debug({
+            title: 'generateXMLForVoid - voucherType',
+            details: voucherType
+        })
+        log.debug({
+            title: 'generateXMLForVoid - voucherObject',
+            details: voucherObject
+        })
+        log.debug({
+            title: 'generateXMLForVoid - voucherMainRecordObject',
+            details: voucherMainRecordObject
+        })
+        const migTypeMapping = {
+            'EGUI': {
+                'B2BS': `<CancelInvoice xmlns="urn:GEINV:eInvoiceMessage:C0501:3.1">`,
+                'B2C': `<CancelInvoice xmlns="urn:GEINV:eInvoiceMessage:C0501:3.1">`,
+                'B2BE': `<CancelInvoice xmlns="urn:GEINV:eInvoiceMessage:A0201:3.1">`
+            },
+            'ALLOWANCE': {
+                'B2BS': `<CancelAllowance xmlns="urn:GEINV:eInvoiceMessage:D0501:3.1">`,
+                'B2C': `<CancelAllowance xmlns="urn:GEINV:eInvoiceMessage:D0501:3.1">`,
+                'B2B': `<CancelAllowance xmlns="urn:GEINV:eInvoiceMessage:B0501:3.1">`,
+                'B2BE': `<CancelAllowance xmlns="urn:GEINV:eInvoiceMessage:B0201:3.1">`
+            }
+        }
+        let  xmlString = `<?xml version="1.0" encoding="utf-8"?>${migTypeMapping[voucherType][voucherMainRecordObject.custrecord_gw_mig_type]}`
+        try {
+            if (voucherType === 'EGUI') {
+                xmlString += `<CancelInvoiceNumber>${voucherMainRecordObject.custrecord_gw_voucher_number}</CancelInvoiceNumber>`
+                xmlString += `<InvoiceDate>${voucherMainRecordObject.custrecord_gw_voucher_date}</InvoiceDate>`
+                xmlString = setGeneralValue(xmlString, voucherObject, voucherMainRecordObject)
+                if (voucherMainRecordObject.custrecord_gw_mig_type === 'B2BE') {
+                    xmlString += '<Remark>' + '' + '</Remark>'
+                }
+                xmlString += '</CancelInvoice>'
+            } else {
+                xmlString += `<CancelAllowanceNumber>${voucherMainRecordObject.custrecord_gw_voucher_number}</CancelAllowanceNumber>`
+                xmlString += `<AllowanceDate><${voucherMainRecordObject.custrecord_gw_voucher_date}</AllowanceDate>`
+                xmlString = setGeneralValue(xmlString, voucherObject, voucherMainRecordObject)
+                xmlString += '</CancelAllowance>'
+            }
+        } catch (e) {
+            log.error({
+                title: 'generateXMLForVoid - e',
+                details: e
+            })
+        }
+        return xmlString
+    }
+
+    function updateVoucherApplyRecord(voucherObject) {
+        log.debug({
+            title: 'updateVoucherApplyRecord',
+            details: 'start...'
+        })
+        log.debug({
+            title: 'updateVoucherApplyRecord - voucherObject',
+            details: voucherObject
+        })
+        let submitFieldsObject = {}
+        submitFieldsObject['custrecord_gw_invoice_todo_list'] = ''
+        submitFieldsObject['custrecord_gw_creditmemo_todo_list'] = ''
+        submitFieldsObject['custrecord_gw_completed_schedule_task'] = true
+        const resultId = record.submitFields({
+            type: 'customrecord_gw_voucher_apply_list',
+            id: voucherObject.internalid.value,
+            values: submitFieldsObject
+        })
+        log.debug({
+            title: 'updateVoucherApplyRecord - resultId',
+            details: resultId
+        })
+    }
+
+    exports.proceedVoidVoucherProcess = function (voucherObject) {
+        log.debug({title: 'proceedVoidVoucherProcess', details: 'start...'})
+        log.debug({title: 'proceedVoidVoucherProcess - voucherObject', details: voucherObject})
+        try {
+            const richProcessSearchResult = richProcess()[0]
+            if (richProcessSearchResult.values.custrecord_gw_conf_rich_process) {
+                let voucherType = ''
+                let voucherMainArray = []
+                if(voucherObject.custrecord_gw_voucher_open_type.includes('EGUI')) {
+                    //TODO - Void EGUI
+                    voucherType = 'EGUI'
+                    voucherMainArray = getVoucherMainByIds(voucherObject.custrecord_gw_invoice_todo_list.split(','))
+                    log.debug({
+                        title: `proceedVoidVoucherProcess - ${voucherType} - voucherMainArray`,
+                        details: voucherMainArray
+                    })
+                    //id (id: internalid)
+                    //comment (id: custrecord_gw_voucher_void_comment)
+                    //apply id (id: custrecord_gw_invoice_todo_list)
+                } else {
+                    //TODO - Void Allowance
+                    voucherType = 'ALLOWANCE'
+                    voucherMainArray = getVoucherMainByIds(voucherObject.custrecord_gw_creditmemo_todo_list.split(','))
+                    log.debug({
+                        title: `proceedVoidVoucherProcess - ${voucherType} - voucherMainArray`,
+                        details: voucherMainArray
+                    })
+
+                }
+
+                voucherMainArray.forEach(function (voucherMainRecordObject) {
+                    log.debug({
+                        title: 'proceedVoidVoucherProcess - voucherMainRecordObject',
+                        details: voucherMainRecordObject
+                    })
+                    const sellerId = voucherMainRecordObject.custrecord_gw_seller
+                    //get company key and company account id
+                    const companyInformationArray = getRichCompanyInformationBySellerId(sellerId)
+                    log.debug({
+                        title: 'mainProcess - companyInformationArray', details: companyInformationArray
+                    })
+                    if (companyInformationArray.length === 0) throw 'Can Not Find Mapped Company Info For Rich Process'
+                    // proceed rich process
+                    const richBaseURL = richProcessSearchResult.values.custrecord_gw_conf_rich_base_url
+                    // get token
+                    const getRichTokenResponse = getRichToken(richBaseURL, companyInformationArray[0])
+                    log.debug({
+                        title: 'mainProcess - getRichTokenResponse', details: getRichTokenResponse
+                    })
+                    if (getRichTokenResponse.code !== 200) {
+                        throw getRichTokenResponse
+                    }
+                    let generatedObject = {}
+
+                    generatedObject.migXML = generateXMLForVoid(voucherType, voucherObject, voucherMainRecordObject)
+                    generatedObject.xmlMigType = invoiceutility.getMigType('CANCEL', voucherType, voucherMainRecordObject.custrecord_gw_mig_type)
+                    generatedObject.fileName = `${generatedObject.xmlMigType}-${voucherMainRecordObject.custrecord_gw_voucher_number}-${new Date().getTime()}`
+                    log.debug({
+                        title: 'proceedVoidVoucherProcess - generatedObject',
+                        details: generatedObject
+                    })
+                    const uploadResultResponse = uploadThroughRich(richBaseURL, companyInformationArray[0], getRichTokenResponse, generatedObject)
+                    log.debug({
+                        title: 'proceedVoidVoucherProcess - uploadResultResponse',
+                        details: uploadResultResponse
+                    })
+                    createUploadLog(voucherMainRecordObject, generatedObject, uploadResultResponse)
+                    updateVoucherMainRecord(voucherMainRecordObject, generatedObject, uploadResultResponse)
+                    if (uploadResultResponse.code === 200) {
+                        const DEFAULT_UPLOAD_STATUS_CODE = 'P'
+                        synceguidocument.syncEguiUploadStatusToNSEvidenceStatus(voucherMainRecordObject.custrecord_gw_voucher_status, DEFAULT_UPLOAD_STATUS_CODE, voucherMainRecordObject.custrecord_gw_need_upload_egui_mig, voucherMainRecordObject.id)
+                    }
+                    updateVoucherApplyRecord(voucherObject)
+                })
+            }
+        } catch (e) {
+            log.error({
+                title: 'proceedVoidVoucherProcess - e',
+                details: e
+            })
+        }
+        log.debug({title: 'proceedVoidVoucherProcess', details: 'end...'})
     }
 
     return exports
