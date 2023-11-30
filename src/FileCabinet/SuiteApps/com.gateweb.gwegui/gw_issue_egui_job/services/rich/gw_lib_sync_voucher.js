@@ -126,7 +126,7 @@ define([
             responseObj.body = JSON.parse(response.body)
         }
         log.debug({
-            title: 'getToken responseCode', details: responseObj
+            title: 'getToken responseObj', details: responseObj
         })
 
         return responseObj
@@ -962,7 +962,7 @@ define([
             responseObj.body = JSON.parse(response.body)
         }
         log.debug({
-            title: 'getVoucherStatusThroughRich responseCode', details: responseObj
+            title: 'getVoucherStatusThroughRich responseObj', details: responseObj
         })
 
         return responseObj
