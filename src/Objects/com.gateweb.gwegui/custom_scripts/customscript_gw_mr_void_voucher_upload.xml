@@ -1,7 +1,7 @@
 <mapreducescript scriptid="customscript_gw_mr_void_voucher_upload">
   <description></description>
   <isinactive>F</isinactive>
-  <name>GW MR Void Voucher Upload</name>
+  <name>GW MR VOID VOUCHER UPLOAD</name>
   <notifyadmins>F</notifyadmins>
   <notifyemails></notifyemails>
   <notifyowner>T</notifyowner>
@@ -15,7 +15,7 @@
       <queueallstagesatonce>T</queueallstagesatonce>
       <runasrole>ADMINISTRATOR</runasrole>
       <status>NOTSCHEDULED</status>
-      <title>GW MR Void Voucher Upload</title>
+      <title>GW MR VOID VOUCHER UPLOAD</title>
       <yieldaftermins>60</yieldaftermins>
       <recurrence>
         <single>

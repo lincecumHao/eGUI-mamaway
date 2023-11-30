@@ -1,7 +1,7 @@
 <mapreducescript scriptid="customscript_gw_mr_download_voucher_sts">
   <description></description>
   <isinactive>F</isinactive>
-  <name>GW MR Download Voucher Status</name>
+  <name>GW MR DOWNLOAD VOUCHER STATUS</name>
   <notifyadmins>F</notifyadmins>
   <notifyemails></notifyemails>
   <notifyowner>T</notifyowner>
@@ -15,7 +15,7 @@
       <queueallstagesatonce>T</queueallstagesatonce>
       <runasrole>ADMINISTRATOR</runasrole>
       <status>NOTSCHEDULED</status>
-      <title>GW MR Download Voucher Status</title>
+      <title>GW MR DOWNLOAD VOUCHER STATUS</title>
       <yieldaftermins>60</yieldaftermins>
       <recurrence>
         <single>

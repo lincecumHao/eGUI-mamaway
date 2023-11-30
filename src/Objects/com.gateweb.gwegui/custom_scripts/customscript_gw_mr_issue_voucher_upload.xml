@@ -1,13 +1,13 @@
-<mapreducescript scriptid="customscript_gw_mr_voucher_upload">
+<mapreducescript scriptid="customscript_gw_mr_issue_voucher_upload">
   <description></description>
   <isinactive>F</isinactive>
-  <name>GW MR VOUCHER Upload</name>
+  <name>GW MR ISSUE VOUCHER UPLOAD</name>
   <notifyadmins>F</notifyadmins>
   <notifyemails></notifyemails>
   <notifyowner>T</notifyowner>
-  <scriptfile>[/SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/gw_mr_voucher_upload.js]</scriptfile>
+  <scriptfile>[/SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/gw_mr_issue_voucher_upload.js]</scriptfile>
   <scriptdeployments>
-    <scriptdeployment scriptid="customdeploy_gw_mr_voucher_upload">
+    <scriptdeployment scriptid="customdeploy_gw_mr_issue_voucher_upload">
       <buffersize>1</buffersize>
       <concurrencylimit>1</concurrencylimit>
       <isdeployed>T</isdeployed>
@@ -15,7 +15,7 @@
       <queueallstagesatonce>T</queueallstagesatonce>
       <runasrole>ADMINISTRATOR</runasrole>
       <status>NOTSCHEDULED</status>
-      <title>GW MR VOUCHER Upload</title>
+      <title>GW MR ISSUE VOUCHER UPLOAD</title>
       <yieldaftermins>60</yieldaftermins>
       <recurrence>
         <single>
