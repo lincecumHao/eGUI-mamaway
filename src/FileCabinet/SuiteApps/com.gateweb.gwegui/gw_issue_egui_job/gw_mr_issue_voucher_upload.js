@@ -29,6 +29,10 @@ define(['./services/rich/gw_lib_sync_voucher'], (gwLibSyncVoucher) => {
 
     const getInputData = (inputContext) => {
         // get pending upload data
+        log.debug({
+            title: '[getInputData stage]',
+            details: 'start...'
+        })
         return gwLibSyncVoucher.getPendingUploadData()
     }
 

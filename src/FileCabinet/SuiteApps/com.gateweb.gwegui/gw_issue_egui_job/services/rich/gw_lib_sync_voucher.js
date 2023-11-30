@@ -68,9 +68,17 @@ define([
         let searchFilters = getSearchFilters()
         let searchColumns = getSearchColumns()
 
-        return search.create({
+        let getPendingUploadDataSearchObject = search.create({
             type: 'customrecord_gw_voucher_main', filters: searchFilters, columns: searchColumns
         })
+
+        let searchResultCount = getPendingUploadDataSearchObject.runPaged().count
+        log.debug({
+            title: 'getPendingUploadData - searchResultCount',
+            details: searchResultCount
+        })
+
+        return getPendingUploadDataSearchObject
     }
 
     function getRichCompanyInformationBySellerId(sellerId) {
@@ -915,9 +923,17 @@ define([
         let searchFilters = getSearchPendingUpdateStatusFilters()
         let searchColumns = getSearchColumns()
 
-        return search.create({
+        let getPendingUpdateStatusDataSearchObject = search.create({
             type: 'customrecord_gw_voucher_main', filters: searchFilters, columns: searchColumns
         })
+
+        let searchResultCount = getPendingUpdateStatusDataSearchObject.runPaged().count
+        log.debug({
+            title: 'getPendingUpdateStatusData - searchResultCount',
+            details: searchResultCount
+        })
+
+        return getPendingUpdateStatusDataSearchObject
     }
 
     function getVoucherStatusThroughRich(eachObject, richBaseURL, companyInformation, getRichTokenResponse) {

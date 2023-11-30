@@ -16,6 +16,10 @@ define(['./services/rich/gw_lib_sync_voucher'], (gwLibSyncVoucher) => {
 
     const getInputData = (inputContext) => {
         //TODO - get pending void voucher data
+        log.debug({
+            title: '[getInputData stage]',
+            details: 'start...'
+        })
         return gwLibSyncVoucher.getPendingVoidVoucherData()
     }
 
