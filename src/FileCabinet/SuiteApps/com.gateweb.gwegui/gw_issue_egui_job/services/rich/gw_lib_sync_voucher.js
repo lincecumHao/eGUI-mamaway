@@ -861,12 +861,8 @@ define([
                 const uploadResultResponse = uploadThroughRich(richBaseURL, companyInformationArray[0], getRichTokenResponse, generatedObject)
                 createUploadLog(eachObject, generatedObject, uploadResultResponse)
                 updateVoucherMainRecord(eachObject, generatedObject, uploadResultResponse)
-                // if(uploadResultResponse.code === 200) updateNetSuiteTransactionByVoucherMainId(eachObject.id)
-                if (uploadResultResponse.code === 200) {
-                    const DEFAULT_UPLOAD_STATUS_CODE = 'P'
-                    synceguidocument.syncEguiUploadStatusToNSEvidenceStatus(eachObject.custrecord_gw_voucher_status, DEFAULT_UPLOAD_STATUS_CODE, eachObject.custrecord_gw_need_upload_egui_mig, eachObject.id)
-                }
-            }
+                let uploadStatusCode = (uploadResultResponse.code === 200) ? 'P' : 'E'
+                synceguidocument.syncEguiUploadStatusToNSEvidenceStatus(eachObject.custrecord_gw_voucher_status, uploadStatusCode, eachObject.custrecord_gw_need_upload_egui_mig, eachObject.id)            }
             log.debug({
                 title: 'mainProcess', details: 'end...'
             })
@@ -1679,10 +1675,8 @@ define([
                     })
                     createUploadLog(voucherMainRecordObject, generatedObject, uploadResultResponse)
                     updateVoucherMainRecord(voucherMainRecordObject, generatedObject, uploadResultResponse)
-                    if (uploadResultResponse.code === 200) {
-                        const DEFAULT_UPLOAD_STATUS_CODE = 'P'
-                        synceguidocument.syncEguiUploadStatusToNSEvidenceStatus(voucherMainRecordObject.custrecord_gw_voucher_status, DEFAULT_UPLOAD_STATUS_CODE, voucherMainRecordObject.custrecord_gw_need_upload_egui_mig, voucherMainRecordObject.id)
-                    }
+                    let uploadStatusCode = (uploadResultResponse.code === 200) ? 'P' : 'E'
+                    synceguidocument.syncEguiUploadStatusToNSEvidenceStatus(voucherMainRecordObject.custrecord_gw_voucher_status, uploadStatusCode, voucherMainRecordObject.custrecord_gw_need_upload_egui_mig, voucherMainRecordObject.id)
                     updateVoucherApplyRecord(voucherObject)
                 })
             }
