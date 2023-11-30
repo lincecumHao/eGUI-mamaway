@@ -375,7 +375,7 @@ define([
                 title: `setXMLDetailsForEGUI - voucherDetailsObject, index: ${index}`, details: voucherDetailsObject
             })
             if (index !== 0) isFirstItem = false
-            let itemDesc = voucherDetailsObject.values.custrecord_gw_item_description
+            let itemDesc = (voucherDetailsObject.values.custrecord_gw_item_description.length > 0) ? voucherDetailsObject.values.custrecord_gw_item_description.length : ' '
             let itemQuantity = Math.round(stringutility.convertToFloat(voucherDetailsObject.values.custrecord_gw_item_quantity)).toString()
             let itemUnit = voucherDetailsObject.values.custrecord_gw_item_unit
             let itemAmount = voucherDetailsObject.values.custrecord_gw_item_amount
@@ -384,7 +384,7 @@ define([
             itemTaxRate.replace('%', '')
             itemTaxRate = Math.round(stringutility.convertToFloat(itemTaxRate)).toString()
             let itemSeq = voucherDetailsObject.values.custrecord_gw_item_seq
-            let itemRemark = voucherDetailsObject.values.custrecord_gw_item_remark
+            let itemRemark = (voucherDetailsObject.values.custrecord_gw_item_remark.length > 0) ? voucherDetailsObject.values.custrecord_gw_item_remark : ' '
             if (voucherMainRecordObject.custrecord_gw_mig_type !== 'B2E' && voucherMainRecordObject.custrecord_gw_buyer === '0000000000') {
                 itemAmount = (stringutility.convertToFloat(itemTotalAmount) === 0) ? Math.round(stringutility.convertToFloat(itemAmount) * (1 + stringutility.convertToFloat(itemTaxRate) / 100)).toString() : itemTotalAmount
             }
@@ -515,7 +515,7 @@ define([
             let itemTaxType = (taxObj) ? taxObj.value : '1';
             let _allowanceTaxAmount = Math.round(stringutility.convertToFloat(voucherDetailsObject.values.custrecord_gw_item_tax_amount)).toString()
 
-            let itemDesc = voucherDetailsObject.values.custrecord_gw_item_description
+            let itemDesc = (voucherDetailsObject.values.custrecord_gw_item_description.length > 0) ? voucherDetailsObject.values.custrecord_gw_item_description : ' '
             let itemQuantity = Math.round(stringutility.convertToFloat(voucherDetailsObject.values.custrecord_gw_item_quantity)).toString()
             let itemUnit = voucherDetailsObject.values.custrecord_gw_item_unit
             let itemAmount = voucherDetailsObject.values.custrecord_gw_item_amount
@@ -524,7 +524,7 @@ define([
             itemTaxRate.replace('%', '')
             itemTaxRate = Math.round(stringutility.convertToFloat(itemTaxRate)).toString()
             let itemSeq = voucherDetailsObject.values.custrecord_gw_item_seq
-            let itemRemark = voucherDetailsObject.values.custrecord_gw_item_remark
+            let itemRemark = (voucherDetailsObject.values.custrecord_gw_item_remark.length > 0) ? voucherDetailsObject.values.custrecord_gw_item_remark : ' '
             let unitPrice = (stringutility.convertToFloat(itemQuantity) !== 0) ? (stringutility.convertToFloat(itemAmount) / stringutility.convertToFloat(itemQuantity)).toFixed(gwconfigure.getGwNumericToFixed()).toString() : '0'
             let originalInvoiceNumber = voucherDetailsObject.values.custrecord_gw_original_gui_number
             let originalInvoiceDate = voucherDetailsObject.values.custrecord_gw_original_gui_date
