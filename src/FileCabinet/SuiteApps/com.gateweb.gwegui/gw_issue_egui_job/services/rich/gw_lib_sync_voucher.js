@@ -383,7 +383,7 @@ define([
                 title: `setXMLDetailsForEGUI - voucherDetailsObject, index: ${index}`, details: voucherDetailsObject
             })
             if (index !== 0) isFirstItem = false
-            let itemDesc = (voucherDetailsObject.values.custrecord_gw_item_description.length > 0) ? voucherDetailsObject.values.custrecord_gw_item_description.length : ' '
+            let itemDesc = (voucherDetailsObject.values.custrecord_gw_item_description.length > 0) ? voucherDetailsObject.values.custrecord_gw_item_description : ' '
             let itemQuantity = Math.round(stringutility.convertToFloat(voucherDetailsObject.values.custrecord_gw_item_quantity)).toString()
             let itemUnit = voucherDetailsObject.values.custrecord_gw_item_unit
             let itemAmount = voucherDetailsObject.values.custrecord_gw_item_amount
