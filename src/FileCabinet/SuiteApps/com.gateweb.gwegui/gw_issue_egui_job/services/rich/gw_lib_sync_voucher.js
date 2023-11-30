@@ -837,7 +837,7 @@ define([
             log.debug({
                 title: 'mainProcess', details: 'start...'
             })
-            log.debug({
+            log.audit({
                 title: 'mainProcess - eachObject', details: eachObject
             })
             const richProcessSearchResult = richProcess()[0]
@@ -1218,7 +1218,7 @@ define([
 
     function getDeductedAmount(voucherDetailsSummaryAmountArray) {
         let deductedAmount = 0
-        log.debug({
+        log.audit({
             title: 'getDeductedAmount - voucherDetailsSummaryAmountArray',
             details: voucherDetailsSummaryAmountArray
         })
@@ -1276,11 +1276,9 @@ define([
                 })
             }
         })
-
-
     }
 
-    function returnEGUIDiscountAmount(eachObject, getVoucherStatusResponse, linkedTransactionArray) {
+    function returnEGUIDiscountAmount(eachObject, getVoucherStatusResponse) {
         const taxCodeAndFieldMapping = {
             '1': 'custrecord_gw_discount_sales_amount',
             '2': 'custrecord_gw_discount_zero_amount',
@@ -1290,7 +1288,7 @@ define([
             title: 'returnEGUIDiscountAmount',
             details: 'start...'
         })
-        log.debug({
+        log.audit({
             title: 'returnEGUIDiscountAmount - getVoucherStatusResponse',
             details: getVoucherStatusResponse
         })
@@ -1364,20 +1362,18 @@ define([
             const resultId = voucherMainRecordObject.save()
             log.debug({title: 'returnEGUIDiscountAmount - resultId', details: resultId})
         })
-
-
     }
 
-    function sendEmailNotification(eachObject, getVoucherStatusResponse, linkedTransactionArray) {
+    function sendEmailNotification(eachObject, getVoucherStatusResponse) {
         log.debug({
             title: 'sendEmailNotification',
             details: 'start...'
         })
-        log.debug({
+        log.audit({
             title: 'sendEmailNotification - eachObject',
             details: eachObject
         })
-        log.debug({
+        log.audit({
             title: 'sendEmailNotification - getVoucherStatusResponse',
             details: getVoucherStatusResponse
         })
@@ -1405,7 +1401,7 @@ define([
     exports.downloadVoucherStatus = function (eachObject) {
         log.debug({title: 'downloadVoucherStatus', details: 'start...'
         })
-        log.debug({
+        log.audit({
             title: 'downloadVoucherStatus - eachObject',
             details: eachObject
         })
@@ -1549,15 +1545,15 @@ define([
             title: 'generateXMLForVoid',
             details: 'start...'
         })
-        log.debug({
+        log.audit({
             title: 'generateXMLForVoid - voucherType',
             details: voucherType
         })
-        log.debug({
+        log.audit({
             title: 'generateXMLForVoid - voucherObject',
             details: voucherObject
         })
-        log.debug({
+        log.audit({
             title: 'generateXMLForVoid - voucherMainRecordObject',
             details: voucherMainRecordObject
         })
@@ -1604,7 +1600,7 @@ define([
             title: 'updateVoucherApplyRecord',
             details: 'start...'
         })
-        log.debug({
+        log.audit({
             title: 'updateVoucherApplyRecord - voucherObject',
             details: voucherObject
         })
@@ -1625,7 +1621,7 @@ define([
 
     exports.proceedVoidVoucherProcess = function (voucherObject) {
         log.debug({title: 'proceedVoidVoucherProcess', details: 'start...'})
-        log.debug({title: 'proceedVoidVoucherProcess - voucherObject', details: voucherObject})
+        log.audit({title: 'proceedVoidVoucherProcess - voucherObject', details: voucherObject})
         try {
             const richProcessSearchResult = richProcess()[0]
             if (richProcessSearchResult.values.custrecord_gw_conf_rich_process) {
