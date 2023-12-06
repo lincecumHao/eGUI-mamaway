@@ -79,6 +79,9 @@ define([
                     objectValue: gwTransactionEGUIFields.fields[fieldId]
                 }
             })
+            if(gwTransactionEGUIFields.fields[fieldId].id === 'custbody_gw_evidence_issue_status') {
+                gwTransactionEGUIFields.fields[fieldId].defaultValue = getDefaultStatusByStatusCode('MI')
+            }
             scriptContext.newRecord.setValue({
                 fieldId: gwTransactionEGUIFields.fields[fieldId].id,
                 value: gwTransactionEGUIFields.fields[fieldId].defaultValue
@@ -92,6 +95,34 @@ define([
 
     exports.isNeedToClearValueForEGUI = function (scriptContext) {
         return scriptContext.type === scriptContext.UserEventType.COPY
+    }
+
+    function getDefaultStatusByStatusCode(statusCode) {
+        var recordType = 'customrecord_gw_evidence_status'
+        var searchFilters = []
+        searchFilters.push(['custrecord_gw_evidence_status_value', 'is', statusCode])
+        var searchColumns = []
+        searchColumns.push('name')
+        searchColumns.push('id')
+        var customrecord_gw_evidence_statusSearchObj = search.create({
+            type: recordType,
+            filters:searchFilters,
+            columns: searchColumns
+        });
+        var searchResultCount = customrecord_gw_evidence_statusSearchObj.runPaged().count;
+        log.debug("customrecord_gw_evidence_statusSearchObj result count",searchResultCount);
+        var defaultStatusId = null
+        customrecord_gw_evidence_statusSearchObj.run().each(function(result){
+            // .run().each has a limit of 4,000 results
+            defaultStatusId = result.id
+            return true
+        })
+
+        log.debug({
+            title: 'getDefaultStatusByStatusCode - defaultStatusId',
+            details: defaultStatusId
+        })
+        return defaultStatusId
     }
 
     return exports;
