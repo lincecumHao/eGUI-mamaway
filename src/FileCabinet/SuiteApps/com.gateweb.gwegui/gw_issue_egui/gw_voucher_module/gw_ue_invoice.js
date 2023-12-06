@@ -1,7 +1,7 @@
 /**
  *
  * @copyright 2023 GateWeb
- * @author Chesley Lo <{chesleylo@gateweb.com.tw}>
+ * @author Chesley Lo <chesleylo@gateweb.com.tw>
  *
  * @NApiVersion 2.1
  * @NModuleScope Public
@@ -20,8 +20,6 @@ define([
 
     let exports = {};
 
-    const APPLIED_SUBSIDIARY = ['11']
-
     /**
      * Defines the function definition that is executed before record is loaded.
      * @param {Object} scriptContext
@@ -33,9 +31,7 @@ define([
      */
     const beforeLoad = (scriptContext) => {
         try {
-            const subsidiaryId = scriptContext.newRecord.getValue({fieldId: 'subsidiary'}) || null
-            if (((subsidiaryId && APPLIED_SUBSIDIARY.indexOf(subsidiaryId) !== -1) || !subsidiaryId)
-                && gwLibTransactionUtil.isNeedToClearValueForEGUI(scriptContext)) {
+            if (gwLibTransactionUtil.isNeedToClearValueForEGUI(scriptContext)) {
                 // proceed to set Default value for eGUI
                 log.debug({title: 'beforeLoad - clearValueForEGUI', details: 'start'})
                 gwLibTransactionUtil.clearValueForEGUI(scriptContext)
@@ -60,9 +56,7 @@ define([
      */
     const beforeSubmit = (scriptContext) => {
         try {
-            const subsidiaryId = scriptContext.newRecord.getValue({fieldId: 'subsidiary'}) || null
-            if (((subsidiaryId && APPLIED_SUBSIDIARY.indexOf(subsidiaryId) !== -1) || !subsidiaryId)
-                && gwLibTransactionUtil.isNeedToSetDefaultValueForEGUIData(scriptContext)) {
+            if (gwLibTransactionUtil.isNeedToSetDefaultValueForEGUIData(scriptContext)) {
                 // proceed to set Default value for eGUI
                 log.debug({title: 'beforeSubmit - setDefaultValueForEGUI', details: 'start'})
                 gwLibTransactionUtil.setDefaultValueForEGUI(scriptContext)

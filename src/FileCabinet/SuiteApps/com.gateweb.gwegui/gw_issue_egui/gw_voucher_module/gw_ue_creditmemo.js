@@ -12,8 +12,6 @@ define(['../../gw_library/gw_lib_transaction_util'], (gwLibTransactionUtil) => {
 
     let exports = {};
 
-    const APPLIED_SUBSIDIARY = ['11']
-
     /**
      * Defines the function definition that is executed before record is loaded.
      * @param {Object} scriptContext
@@ -29,9 +27,7 @@ define(['../../gw_library/gw_lib_transaction_util'], (gwLibTransactionUtil) => {
                 title: 'beforeLoad - scriptContext.type',
                 details: scriptContext.type
             })
-            const subsidiaryId = scriptContext.newRecord.getValue({fieldId: 'subsidiary'}) || null
-            if(((subsidiaryId && APPLIED_SUBSIDIARY.indexOf(subsidiaryId) !== -1) || !subsidiaryId)
-                && gwLibTransactionUtil.isNeedToClearCreditMemoEGUIData(scriptContext)) {
+            if(gwLibTransactionUtil.isNeedToClearCreditMemoEGUIData(scriptContext)) {
                 gwLibTransactionUtil.clearValueForEGUI(scriptContext)
                 gwLibTransactionUtil.setSourceFieldValue(scriptContext)
             }
@@ -57,9 +53,7 @@ define(['../../gw_library/gw_lib_transaction_util'], (gwLibTransactionUtil) => {
                 title: 'beforeSubmit - scriptContext.type',
                 details: scriptContext.type
             })
-            const subsidiaryId = scriptContext.newRecord.getValue({fieldId: 'subsidiary'}) || null
-            if(((subsidiaryId && APPLIED_SUBSIDIARY.indexOf(subsidiaryId) !== -1) || !subsidiaryId)
-                && gwLibTransactionUtil.isNeedToSetDefaultValueForEGUIData(scriptContext)) {
+            if(gwLibTransactionUtil.isNeedToSetDefaultValueForEGUIData(scriptContext)) {
                 gwLibTransactionUtil.setDefaultValueForEGUI(scriptContext)
             }
         } catch (e) {
