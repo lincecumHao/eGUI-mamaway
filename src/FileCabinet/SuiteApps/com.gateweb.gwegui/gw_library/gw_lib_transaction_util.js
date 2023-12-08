@@ -8,10 +8,12 @@
  */
 define([
     '../gw_issue_egui/gw_dao/gw_transaction_egui_fields',
-    'N/search'
+    'N/search',
+    'N/runtime'
 ], (
     gwTransactionEGUIFields,
-    search
+    search,
+    runtime
 ) => {
 
     let exports = {};
@@ -90,8 +92,8 @@ define([
                     objectValue: gwTransactionEGUIFields.fields[fieldId]
                 }
             })
-            if(gwTransactionEGUIFields.fields[fieldId].id === 'custbody_gw_evidence_issue_status') {
-                gwTransactionEGUIFields.fields[fieldId].defaultValue = getDefaultStatusByStatusCode('MI')
+            if(gwTransactionEGUIFields.fields[fieldId].id === 'custbody_gw_evidence_issue_status' && getDefaultIssueStatus()) {
+                gwTransactionEGUIFields.fields[fieldId].defaultValue = getDefaultIssueStatus()
             }
             scriptContext.newRecord.setValue({
                 fieldId: gwTransactionEGUIFields.fields[fieldId].id,
@@ -108,32 +110,28 @@ define([
         return scriptContext.type === scriptContext.UserEventType.COPY
     }
 
-    function getDefaultStatusByStatusCode(statusCode) {
-        var recordType = 'customrecord_gw_evidence_status'
-        var searchFilters = []
-        searchFilters.push(['custrecord_gw_evidence_status_value', 'is', statusCode])
-        var searchColumns = []
-        searchColumns.push('name')
-        searchColumns.push('id')
-        var customrecord_gw_evidence_statusSearchObj = search.create({
-            type: recordType,
-            filters:searchFilters,
-            columns: searchColumns
+    function getDefaultIssueStatus() {
+        log.debug({
+            title: 'getDefaultIssueStatus - runtime.accountId', details: runtime.accountId
+        })
+        const searchType = 'customrecord_gw_egui_config'
+        let searchFilters = []
+        searchFilters.push(['custrecord_gw_conf_ns_acct_id', 'is', runtime.accountId.toUpperCase()])
+        let searchColumns = []
+        searchColumns.push('custrecord_gw_conf_default_issue_sts')
+        var customrecord_gw_egui_configSearchObj = search.create({
+            type: searchType, filters: searchFilters, columns: searchColumns
         });
-        var searchResultCount = customrecord_gw_evidence_statusSearchObj.runPaged().count;
-        log.debug("customrecord_gw_evidence_statusSearchObj result count",searchResultCount);
-        var defaultStatusId = null
-        customrecord_gw_evidence_statusSearchObj.run().each(function(result){
+        var searchResultCount = customrecord_gw_egui_configSearchObj.runPaged().count;
+        log.debug('customrecord_gw_egui_configSearchObj result count', searchResultCount);
+        let defaultIssueStatus = null
+        customrecord_gw_egui_configSearchObj.run().each(function (result) {
             // .run().each has a limit of 4,000 results
-            defaultStatusId = result.id
-            return true
+            defaultIssueStatus = result.getValue({name: 'custrecord_gw_conf_default_issue_sts'})
+            return true;
         })
 
-        log.debug({
-            title: 'getDefaultStatusByStatusCode - defaultStatusId',
-            details: defaultStatusId
-        })
-        return defaultStatusId
+        return defaultIssueStatus
     }
 
     return exports;

@@ -30,7 +30,7 @@ define(['../../library/ramda.min'], function (ramda) {
         custbody_gw_evidence_issue_status: {
             id: 'custbody_gw_evidence_issue_status',
             fieldType: 'LIST',
-            defaultValue: 14,
+            defaultValue: '',
             needToSetDefaultValue: true,
             sourceField: false,
             needToClearForCreditMemo: true
