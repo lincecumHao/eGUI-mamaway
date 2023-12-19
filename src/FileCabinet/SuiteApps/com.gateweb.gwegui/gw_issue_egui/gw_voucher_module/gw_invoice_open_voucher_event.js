@@ -51,6 +51,7 @@ define([
 
   function onButtonClickForAllowance() {
     var _internalId = _current_record.id
+    console.log('onButtonClickForAllowance-_internalId', _internalId);
     if (_internalId != 0) {
       try {
         var _user_obj = runtime.getCurrentUser()
@@ -64,6 +65,10 @@ define([
           fieldId: 'subsidiary'
         })
 
+        var eguiNumber = _invoice_record.getValue({
+          fieldId: 'custbody_gw_gui_num_start'
+        });
+
         //var _user_subsidiary = _user_obj.subsidiary
         var _selected_business_no = getBusinessNoBySubsidiary(_subsidiary)
 
@@ -72,7 +77,8 @@ define([
         var _params = {
           custpage_businessno: _selected_business_no,
           invoice_hiddent_listid: _invoice_hiddent_listid,
-          creditmemo_hiddent_listid: _creditmemo_hiddent_listid
+          creditmemo_hiddent_listid: _creditmemo_hiddent_listid,
+          eguiNumber: eguiNumber
         }
 
         window.location = url.resolveScript({
