@@ -87,7 +87,7 @@ define([
         author: this.getAuthor(eguiObjUpdated),
         body: this.getEmailContent(eguiObjUpdated),
         recipients: this.getRecipients(eguiObjUpdated),
-        subject: subject
+        subject: this.getSubject(subject, eguiObjUpdated)
       }
 
       log.debug({ title: 'isB2B', details: isB2B(eguiObjUpdated.buyerTaxId) })
@@ -115,6 +115,10 @@ define([
       var recipient = eguiObj.buyerEmail || 'se10@gateweb.com.tw'
       recipients.push(recipient)
       return recipients
+    }
+
+    getSubject(subject, eguiObjUpdated) {
+      return `${subject} - ${eguiObjUpdated.documentNumber}`
     }
 
     getAttachmentFiles(eguiObj) {

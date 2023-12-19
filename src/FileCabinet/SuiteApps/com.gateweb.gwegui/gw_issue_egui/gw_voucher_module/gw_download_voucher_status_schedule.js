@@ -1031,17 +1031,15 @@ define([
             //20211001 walter 只Mail開立成功的
             var _email_sublect = ''
             if (_upload_mig_type=='C0401') { //發票開立
-            	_email_sublect = '發票開立通知'
+            	_email_sublect = '電子發票開立通知'
             } else if (_upload_mig_type=='C0501') {//發票作廢
-            	_email_sublect = '發票作廢通知'
+            	_email_sublect = '電子發票作廢通知'
             } else if (_upload_mig_type=='D0401') {//折讓單開立
             	_email_sublect = '折讓單開立通知'
             } else if (_upload_mig_type=='D0501') {//折讓單作廢
             	_email_sublect = '折讓單作廢通知'
             }
             if (_status == 'C' && _email_sublect.length !=0) {
-            	_email_sublect = _email_sublect+'-開立成功' 
-				
 				log.debug('email result :', 'start mail')
 				var result = gwEmailService.sendByVoucherId(_email_sublect, parseInt(_applyId))
 				log.debug('email result :', result)			
