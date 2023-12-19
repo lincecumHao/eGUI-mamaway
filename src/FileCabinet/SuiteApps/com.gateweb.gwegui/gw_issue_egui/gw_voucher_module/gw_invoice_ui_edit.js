@@ -1597,6 +1597,17 @@ define([
     })
     _custpage_tax_type.defaultValue = _ns_tax_type_code
     log.debug('ns_tax_type_code', _ns_tax_type_code)
+    
+    //20231214
+    var _custpage_tax_rate = form.getField({
+        id: 'custpage_tax_rate'
+    })      
+    if (_ns_tax_type_code=='1' || _ns_tax_type_code=='9'){
+    	_custpage_tax_rate.defaultValue = '5'
+    } else {
+    	_custpage_tax_rate.defaultValue = '0'
+    } 
+    
     /////////////////////////////////////////////////////////////////////////////////////////////////
     //處理總計計部分-START
     var _sales_amount_field = form.getField({
@@ -2552,6 +2563,16 @@ define([
       id: 'custpage_tax_type'
     })
     _custpage_tax_type.defaultValue = _ns_tax_type_code
+        
+    //20231214
+    var _custpage_tax_rate = form.getField({
+        id: 'custpage_tax_rate'
+    })      
+    if (_ns_tax_type_code=='1' || _ns_tax_type_code=='9'){
+    	_custpage_tax_rate.defaultValue = '5'
+    } else {
+    	_custpage_tax_rate.defaultValue = '0'
+    } 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     var _sales_amount_field = form.getField({
       id: 'custpage_sales_amount'
