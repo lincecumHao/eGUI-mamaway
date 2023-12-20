@@ -50,8 +50,6 @@ define([
     var searchColumns = JSON.parse(JSON.stringify(columns))
     var searchFilters = []
     searchFilters.push(['isinactive', 'is', false])
-    searchFilters.push('AND')
-    searchFilters.push(['custrecord_gw_ec_is_active', 'is', true])
     var result = searchLib.runSearch(recordTypeId, searchColumns, searchFilters)
     allOptions = result.map(function (recordObj) {
       var optionObject = {}

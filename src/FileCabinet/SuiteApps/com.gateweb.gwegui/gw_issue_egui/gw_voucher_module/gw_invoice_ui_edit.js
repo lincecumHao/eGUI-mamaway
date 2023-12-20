@@ -15,7 +15,8 @@ define([
   '../gw_common_utility/gw_common_configure',
   '../../gw_dao/taxType/gw_dao_tax_type_21',
   '../../gw_dao/carrierType/gw_dao_carrier_type_21',
-  '../../gw_dao/busEnt/gw_dao_business_entity_21'
+  '../../gw_dao/busEnt/gw_dao_business_entity_21',
+  '../../gw_dao/settings/gw_dao_egui_config',
 ], function (
   config,
   serverWidget,
@@ -28,7 +29,8 @@ define([
   gwconfigure,
   taxyype21,
   carriertypedao,
-  businessEntityDao
+  businessEntityDao,
+  gwDaoEguiConfig
 ) {
   var _numericToFixed = gwconfigure.getGwNumericToFixed() //小數點位數
   var _invoiceActionScriptId = gwconfigure.getGwInvoiceActionScriptId()
@@ -54,6 +56,9 @@ define([
 
   //放公司基本資料
   var _companyObjAry = []
+
+  var isEGUIDepartmentEnable = true
+  var isEGUIClassEnable = true
 
   //取得賣方公司資料
   function getSellerInfo(businessNo) {
@@ -1501,12 +1506,12 @@ define([
     var _dept_codeField = form.getField({
       id: 'custpage_dept_code'
     })
-    _dept_codeField.defaultValue = _default_department_id
+    // _dept_codeField.defaultValue = _default_department_id
 
     var _classificationField = form.getField({
       id: 'custpage_classification'
     })
-    _classificationField.defaultValue = _selectClassification
+    // _classificationField.defaultValue = _selectClassification
 
     var _voucherExtraMemoField = form.getField({
       id: 'custpage_voucher_extra_memo'
@@ -2516,12 +2521,12 @@ define([
     var _dept_codeField = form.getField({
       id: 'custpage_dept_code'
     })
-    _dept_codeField.defaultValue = _default_department_id
+    // _dept_codeField.defaultValue = _default_department_id
 
     var _classificationField = form.getField({
       id: 'custpage_classification'
     })
-    _classificationField.defaultValue = _selectClassification
+    // _classificationField.defaultValue = _selectClassification
     log.debug(
       '_customer_id',
       '_customer_id=' +
@@ -2610,6 +2615,10 @@ define([
     /////////////////////////////////////////////////////////////////////////////////////////
   }
 
+  function getEGUIConfig() {
+
+  }
+
   function onRequest(context) {
     //取得開立統編
     var _selected_business_no = context.request.parameters.custpage_businessno
@@ -2684,6 +2693,12 @@ define([
 
     /////////////////////////////////////////////////////////////////////////////////////////
     createFormHeader(_selected_business_no, form, context)
+
+    var eGUIConfig = gwDaoEguiConfig.getSetting()
+    log.debug({
+      title: 'onRequest - eGUIConfig',
+      details: eGUIConfig
+    })
 
     if (_selected_invoice_Id != null) {
       var _idAry = _selected_invoice_Id.split(',')
