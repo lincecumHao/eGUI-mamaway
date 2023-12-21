@@ -1506,12 +1506,14 @@ define([
     var _dept_codeField = form.getField({
       id: 'custpage_dept_code'
     })
-    if(isEGUIDepartmentEnable) _dept_codeField.defaultValue = _default_department_id
+    (isEGUIDepartmentEnable) ? _dept_codeField.defaultValue = _default_department_id
+        : _dept_codeField.updateDisplayType({displayType: serverWidget.FieldDisplayType.DISABLED})
 
     var _classificationField = form.getField({
       id: 'custpage_classification'
     })
-    if(isEGUIClassEnable) _classificationField.defaultValue = _selectClassification
+    (isEGUIClassEnable) ? _classificationField.defaultValue = _selectClassification
+        : _classificationField.updateDisplayType({displayType: serverWidget.FieldDisplayType.DISABLED})
 
     var _voucherExtraMemoField = form.getField({
       id: 'custpage_voucher_extra_memo'
@@ -2521,12 +2523,14 @@ define([
     var _dept_codeField = form.getField({
       id: 'custpage_dept_code'
     })
-    if(isEGUIDepartmentEnable) _dept_codeField.defaultValue = _default_department_id
-
+    (isEGUIDepartmentEnable) ? _dept_codeField.defaultValue = _default_department_id
+        : _dept_codeField.updateDisplayType({displayType: serverWidget.FieldDisplayType.DISABLED})
     var _classificationField = form.getField({
       id: 'custpage_classification'
     })
-    if(isEGUIClassEnable) _classificationField.defaultValue = _selectClassification
+    (isEGUIClassEnable) ? _classificationField.defaultValue = _selectClassification
+        : _classificationField.updateDisplayType({displayType: serverWidget.FieldDisplayType.DISABLED})
+
     log.debug(
       '_customer_id',
       '_customer_id=' +
