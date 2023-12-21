@@ -4,7 +4,7 @@
     <label>折讓(電子發票)管理</label>
     <links>
         <link>
-            <linklabel>折讓(電子發票)作廢作業</linklabel>
+            <linklabel>折讓(電子發票)管理作業</linklabel>
             <linkobject>[scriptid=customscript_gw_allowance_cancel_ui_list.customdeploy_gw_allowance_cancel_ui_list]</linkobject>
             <linktasktype>SCRIPT</linktasktype>
             <shortlist>F</shortlist>
