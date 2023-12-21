@@ -22,12 +22,6 @@
       <shortlist>F</shortlist>
     </link>
     <link>
-      <linklabel>系統加密設定</linklabel>
-      <linkobject>[scriptid=customscript_gw_sl_credential_setup_page.customdeploy_gw_sl_credential_setup_page]</linkobject>
-      <linktasktype>SCRIPT</linktasktype>
-      <shortlist>F</shortlist>
-    </link>
-    <link>
       <linklabel>電子發票系統設定</linklabel>
       <linkobject>[scriptid=customrecord_gw_egui_config]</linkobject>
       <linktasktype>LIST</linktasktype>
