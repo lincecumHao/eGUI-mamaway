@@ -19,6 +19,7 @@ define([
   '../../gw_dao/taxType/gw_dao_tax_type_21',
   '../../gw_dao/docFormat/gw_dao_doc_format_21', 
   '../../gw_dao/carrierType/gw_dao_carrier_type_21',
+  '../../gw_dao/settings/gw_dao_egui_config'
 ], function (
   runtime,
   config,
@@ -33,7 +34,8 @@ define([
   synceguidocument,
   taxyype21,
   doc_format_21,
-  carriertypedao
+  carriertypedao,
+  gwDaoEguiConfig
 ) {
   var _invoceFormatCode = gwconfigure.getGwVoucherFormatInvoiceCode()
   var _creditMemoFormatCode = gwconfigure.getGwVoucherFormatAllowanceCode()
@@ -1865,20 +1867,20 @@ log.debug('檢查 jsonObj',  JSON.stringify(jsonObj))
       //default format code
       var _voucherFormatCode = _invoceFormatCode
       if (voucher_type === 'EGUI' && _tax_diff_error == false) {
+        var eGUIConfig = gwDaoEguiConfig.getSetting()
         //發票號碼 apply_dept_code, apply_class
         //_documentNumber = invoiceutility.getAssignLogNumber(invoice_type, jsonObj.sellerIdentifier, stringutility.trim(jsonObj.department), stringutility.trim(jsonObj.classId), _year_month, need_upload_mig, _documentDate);
         var _assignlog_dept_code = apply_dept_code
         var _assignlog_class_code = apply_class 
           
-        if (stringutility.trim(apply_dept_code) == 'USE_INVOICE') {
-          //以單據為主 = USE_INVOICE
-          _assignlog_dept_code = stringutility.trim(jsonObj.department)         
-        }
-        if (stringutility.trim(apply_class) == 'USE_INVOICE') {
-          //以單據為主 = USE_INVOICE
-          _assignlog_class_code = stringutility.trim(jsonObj.classId)          
-        }
-         
+        _assignlog_dept_code = (stringutility.trim(apply_dept_code) == 'USE_INVOICE' && eGUIConfig.isEGUIDepartment)
+            ? stringutility.trim(jsonObj.department) : ''
+        _assignlog_class_code = (stringutility.trim(apply_dept_code) == 'USE_INVOICE' && eGUIConfig.isEGUIDepartment)
+            ? stringutility.trim(jsonObj.classId) : ''
+        log.debug({
+          title: '_assignlog_dept_code | _assignlog_class_code',
+          details: `${_assignlog_dept_code} | ${_assignlog_class_code}`
+        })
         if (need_upload_mig != 'ALL' && voucher_type != need_upload_mig) {
          /**
           _documentNumber = invoiceutility.getAssignLogNumber(

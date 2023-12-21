@@ -73,7 +73,17 @@ define(['../../library/ramda.min'], function (ramda) {
       id: 'custrecord_gw_config_allowance_prefix',
       sourceField: '',
       outputField: 'allowancePrefix'
-    }
+    },
+    custrecord_gw_conf_egui_department: {
+      id: 'custrecord_gw_conf_egui_department',
+      sourceField: '',
+      outputField: 'isEGUIDepartment'
+    },
+    custrecord_gw_conf_egui_class: {
+      id: 'custrecord_gw_conf_egui_class',
+      sourceField: '',
+      outputField: 'isEGUIClass'
+    },
   }
 
   var fieldInputMapping = ramda.reduce(
