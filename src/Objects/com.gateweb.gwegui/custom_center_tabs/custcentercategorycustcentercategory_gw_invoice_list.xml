@@ -4,7 +4,7 @@
     <label>電子發票管理</label>
     <links>
         <link>
-            <linklabel>電子發票作廢作業</linklabel>
+            <linklabel>電子發票管理作業</linklabel>
             <linkobject>[scriptid=customscript_gw_egui_cancel_ui_list.customdeploy_gw_egui_cancel_ui_list]</linkobject>
             <linktasktype>SCRIPT</linktasktype>
             <shortlist>F</shortlist>

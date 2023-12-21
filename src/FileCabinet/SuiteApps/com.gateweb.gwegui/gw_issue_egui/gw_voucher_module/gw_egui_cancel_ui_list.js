@@ -1153,7 +1153,7 @@ define([
   function onRequest(context) {
     ////////////////////////////////////////////////////////////////////////////
     var form = serverWidget.createForm({
-      title: '電子發票作廢作業',
+      title: '電子發票管理作業',
     })
     //Hiddent Element
     var _hidden_button_field = form.addField({
