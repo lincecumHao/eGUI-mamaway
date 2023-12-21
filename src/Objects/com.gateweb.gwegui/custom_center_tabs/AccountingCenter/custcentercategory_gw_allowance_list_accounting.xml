@@ -16,12 +16,6 @@
             <shortlist>F</shortlist>
         </link>
         <link>
-            <linklabel>折讓(電子發票)列印作業</linklabel>
-            <linkobject>[scriptid=customscript_gw_allowance_paper_ui_list.customdeploy_gw_allowance_paper_ui_list]</linkobject>
-            <linktasktype>SCRIPT</linktasktype>
-            <shortlist>F</shortlist>
-        </link>
-        <link>
             <linklabel>折讓(電子發票)回收作業</linklabel>
             <linkobject>[scriptid=customscript_gw_voucher_reupload_ui_list.customdeploy_gw_voucher_reupload_ui_list]</linkobject>
             <linktasktype>SCRIPT</linktasktype>
