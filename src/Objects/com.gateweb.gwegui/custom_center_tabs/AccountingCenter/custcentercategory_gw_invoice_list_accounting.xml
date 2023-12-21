@@ -15,11 +15,5 @@
             <linktasktype>SCRIPT</linktasktype>
             <shortlist>F</shortlist>
         </link>
-        <link>
-            <linklabel>電子發票列印作業</linklabel>
-            <linkobject>[scriptid=customscript_gw_egui_print_ui_list.customdeploy_gw_egui_print_ui_list]</linkobject>
-            <linktasktype>SCRIPT</linktasktype>
-            <shortlist>F</shortlist>
-        </link>
     </links>
 </centercategory>
