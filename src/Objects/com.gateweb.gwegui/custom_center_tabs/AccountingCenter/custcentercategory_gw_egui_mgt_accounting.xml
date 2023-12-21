@@ -28,12 +28,6 @@
       <shortlist>F</shortlist>
     </link>
     <link>
-      <linklabel>員工支出匯入排程管理</linklabel>
-      <linkobject>[scriptid=customrecord_gw_exp_csv_import_task]</linkobject>
-      <linktasktype>LIST</linktasktype>
-      <shortlist>F</shortlist>
-    </link>
-    <link>
       <linklabel></linklabel>
       <linkobject>[scriptid=customrecord_gw_business_entity]</linkobject>
       <linktasktype>LIST</linktasktype>
