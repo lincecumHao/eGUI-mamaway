@@ -38,10 +38,6 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
       '36':'34',
       '37':'38'
     }
-    log.debug({
-      title: 'getAllowanceTaxCode - invoiceTaxCode | mapped taxCode',
-      details: `${invoiceTaxCode} | ${invTaxCodeMapAllowanceTaxCode[invoiceTaxCode]}`
-    })
     return invTaxCodeMapAllowanceTaxCode[invoiceTaxCode]
   }
   
