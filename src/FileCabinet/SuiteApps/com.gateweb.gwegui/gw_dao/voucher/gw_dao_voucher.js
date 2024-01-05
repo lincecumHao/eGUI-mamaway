@@ -190,7 +190,8 @@ define([
 
   function updateEguiObj(eguiObj) {
     var egui = JSON.parse(JSON.stringify(eguiObj))
-    egui.migTypeOption = gwMigTypeDao.getById(egui.migTypeOption.value)
+    const defaultMigTypeOption = gwMigTypeDao.getIssueEguiMigType('B2C')
+    egui.migTypeOption = egui.migTypeOption.value ? gwMigTypeDao.getById(egui.migTypeOption.value) : defaultMigTypeOption
     egui.taxRate = parseFloat(egui.taxRate) / 100
     egui.sellerProfile = gwBusinessEntityDao.getByTaxId(egui.sellerTaxId)
     if (isB2CEgui(egui)) {

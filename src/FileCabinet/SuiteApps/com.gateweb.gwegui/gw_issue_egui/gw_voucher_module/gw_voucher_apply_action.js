@@ -33,6 +33,11 @@ define([
   var _voucher_detail_record = gwconfigure.getGwVoucherDetailsRecord()
   var _invoce_control_field_id = gwconfigure.getInvoceControlFieldId()
   var _gw_voucher_properties = gwconfigure.getGwVoucherProperties() //設定檔
+  
+  //EGUI
+  var _egui_gw_dm_mig_type = 1
+  //ALLOWANCE
+  var _allowance_gw_dm_mig_type = 4
 
   //放稅別資料
   var _taxObjAry = []
@@ -284,6 +289,13 @@ define([
           values['custrecord_gw_voucher_upload_status'] = upload_status //upload_status=A
           //作廢成功(CANCEL_APPROVE)
           values['custrecord_gw_voucher_status'] = voucher_status
+          //20230324 NE-236
+          if (_voucher_type=='EGUI'){
+        	  values['custrecord_gw_dm_mig_type'] = _egui_gw_dm_mig_type 
+          }else{
+        	  values['custrecord_gw_dm_mig_type'] = _allowance_gw_dm_mig_type  
+          } 
+          log.debug('voucher_main_record values ',_voucher_type+' = '+ values.toString())
           var _id = record.submitFields({
             type: _voucher_main_record,
             id: _internalId,
@@ -457,7 +469,7 @@ define([
 
     return voucher_status
   }
-
+   
   function onRequest(context) {
     //審核結果
     var _pass_voucherflow_status =
@@ -467,15 +479,20 @@ define([
     log.debug('pass_voucherflow_status', _pass_voucherflow_status)
     log.debug('voucher_hiddent_listid', _voucher_hiddent_listid)
     try {
-      //1.處理審核資料
-      processApproveFlow(_pass_voucherflow_status, _voucher_hiddent_listid)
-
-      //2.Forward To Apply Page
-      log.debug('FORWARD TASK', 'START FORWARD TO APPLY')
-      redirect.toSuitelet({
-        scriptId: 'customscript_gw_voucher_apply_list',
-        deploymentId: 'customdeploy_gw_voucher_apply_list',
-      })
+        //20230324 預先處理
+        _egui_gw_dm_mig_type = invoiceutility.getVoucherMigType('EGUI')
+        _allowance_gw_dm_mig_type = invoiceutility.getVoucherMigType('ALLOWANCE')
+        log.debug('egui_gw_dm_mig_type', _egui_gw_dm_mig_type)
+        log.debug('allowance_gw_dm_mig_type', _allowance_gw_dm_mig_type)
+        //1.處理審核資料
+        processApproveFlow(_pass_voucherflow_status, _voucher_hiddent_listid)
+        log.debug('處理審核資料', 'DONE')
+        //2.Forward To Apply Page
+        log.debug('FORWARD TASK', 'START FORWARD TO APPLY')
+        redirect.toSuitelet({
+           scriptId: 'customscript_gw_voucher_apply_list',
+           deploymentId: 'customdeploy_gw_voucher_apply_list',
+        })
     } catch (e) {
       log.error(e.name, e.message)
     }

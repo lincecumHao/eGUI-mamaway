@@ -16,7 +16,7 @@ define([
   '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_configure',
   '../gw_common_utility/gw_common_invoice_utility',
-  '../gw_common_utility/gw_common_gwmessage_utility'
+  '../gw_common_utility/gw_common_gwmessage_utility' 
 ], function (
   runtime,
   dialog,
@@ -30,7 +30,7 @@ define([
   stringutility,
   gwconfigure,
   invoiceutility,
-  gwmessage
+  gwmessage 
 ) {
   function initializeVar() {
     _allowance_pre_code = getAllowancePreCode() 
@@ -150,7 +150,7 @@ define([
       }
     }
   }
-
+ 
   //發票資料格式
   function changeMigType(changeFieldId) {
     //課稅別
@@ -2602,6 +2602,14 @@ define([
             fieldId: 'custrecord_gw_voucher_type',
             value: _voucher_type
           })
+          /////////////////////////////////////////////////////////////////
+          //20230324 NE-236
+          var _gw_dm_mig_type = invoiceutility.getVoucherMigType(_voucher_type)
+          _voucherMainRecord.setValue({
+            fieldId: 'custrecord_gw_dm_mig_type',
+            value: _gw_dm_mig_type
+          })
+          /////////////////////////////////////////////////////////////////
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_number',
             value: _invoiceNumber
@@ -3385,7 +3393,16 @@ define([
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_type',
             value: _voucher_type
+          }) 
+          /////////////////////////////////////////////////////////////////
+          //20230324 NE-236
+          var _gw_dm_mig_type = invoiceutility.getVoucherMigType(_voucher_type)
+
+          _voucherMainRecord.setValue({
+            fieldId: 'custrecord_gw_dm_mig_type',
+            value: _gw_dm_mig_type
           })
+          /////////////////////////////////////////////////////////////////
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_voucher_number',
             value: _allowanceNumber
