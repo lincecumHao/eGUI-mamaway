@@ -10,7 +10,11 @@
  *
  */
 
-define([], () => {
+define([
+    './services/rich/gw_lib_sync_voucher'
+], (
+    gwLibSyncVoucher
+) => {
 
     let exports = {};
 
@@ -28,7 +32,12 @@ define([], () => {
      */
 
     const getInputData = (inputContext) => {
-
+        // get get Pending Sync Data For None Upload Voucher
+        log.debug({
+            title: '[getInputData stage]',
+            details: 'start...'
+        })
+        return gwLibSyncVoucher.getPendingSyncDataForNoneUploadVoucher()
     }
 
     /**
@@ -49,7 +58,16 @@ define([], () => {
      */
 
     const map = (mapContext) => {
-
+        try {
+            const result = JSON.parse(mapContext.value);
+            log.debug('[map stage] - result', result);
+            mapContext.write({
+                key: result.id,
+                value: result.values
+            });
+        } catch (e) {
+            log.error('[map stage] - error', e);
+        }
     }
 
     /**
@@ -68,7 +86,19 @@ define([], () => {
      * @since 2015.2
      */
     const reduce = (reduceContext) => {
-
+        log.debug('[reduce stage] - reduceContext', reduceContext);
+        let searchResults = reduceContext.values.map((value) => {
+            return JSON.parse(value);
+        });
+        log.debug({title: '[reduce stage] - searchResults', details: searchResults});
+        try {
+            //TODO - proceed main process
+            log.debug({title: 'proceed To Sync To B2B2 - searchResults', details: searchResults})
+            gwLibSyncVoucher.proceedToSyncToB2B2(searchResults[0])
+        } catch (e) {
+            // eslint-disable-next-line suitescript/log-args
+            log.error({title: '[reduce stage] - error', details: e});
+        }
     }
 
 

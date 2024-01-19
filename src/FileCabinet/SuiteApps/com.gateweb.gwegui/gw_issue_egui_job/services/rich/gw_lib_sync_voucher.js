@@ -1701,5 +1701,195 @@ define([
         log.debug({title: 'proceedVoidVoucherProcess', details: 'end...'})
     }
 
+    function getPendingSyncDataForNoneUploadVoucherSearchFilters() {
+        let searchFilters = []
+        searchFilters.push(['custrecord_gw_need_upload_egui_mig', 'is', 'NONE'])
+        searchFilters.push('AND')
+        searchFilters.push(['custrecord_gw_is_sync_to_b2b2', 'is', 'F'])
+        searchFilters.push('AND')
+        searchFilters.push(['custrecord_gw_dont_sync_to_b2b2', 'is', 'F'])
+
+        return searchFilters
+    }
+
+    function getPendingSyncDataForNoneUploadVoucherSearchColumns() {
+        let searchColumns = []
+        searchColumns.push('internalid')
+        searchColumns.push('custrecord_gw_voucher_number')
+        searchColumns.push('custrecord_gw_voucher_format_code')
+        searchColumns.push('custrecord_gw_voucher_status')
+        searchColumns.push('custrecord_gw_voucher_date')
+        searchColumns.push('custrecord_gw_buyer')
+        searchColumns.push('custrecord_gw_buyer_name')
+        searchColumns.push('custrecord_gw_seller')
+        searchColumns.push('custrecord_gw_seller_name')
+        searchColumns.push('custrecord_gw_sales_amount')
+        searchColumns.push('custrecord_gw_tax_amount')
+        searchColumns.push('custrecord_gw_total_amount')
+        searchColumns.push('custrecord_gw_tax_type')
+        searchColumns.push('custrecord_gw_free_sales_amount')
+        searchColumns.push('custrecord_gw_zero_sales_amount')
+        searchColumns.push('custrecord_gw_voucher_yearmonth')
+        searchColumns.push('custrecord_gw_customs_export_no')
+        searchColumns.push('custrecord_gw_customs_export_date')
+        searchColumns.push('custrecord_gw_applicable_zero_tax')
+        searchColumns.push('custrecord_gw_clearance_mark')
+
+        return searchColumns
+    }
+
+    exports.getPendingSyncDataForNoneUploadVoucher = function () {
+        let searchFilters = getPendingSyncDataForNoneUploadVoucherSearchFilters()
+        let searchColumns = getPendingSyncDataForNoneUploadVoucherSearchColumns()
+
+        let getPendingSyncDataForNoneUploadVoucherSearchObject = search.create({
+            type: 'customrecord_gw_voucher_main', filters: searchFilters, columns: searchColumns
+        })
+
+        let searchResultCount = getPendingSyncDataForNoneUploadVoucherSearchObject.runPaged().count
+        log.debug({
+            title: 'getPendingSyncDataForNoneUploadVoucher - searchResultCount',
+            details: searchResultCount
+        })
+
+        return getPendingSyncDataForNoneUploadVoucherSearchObject
+    }
+
+    function setDontSyncToB2B2(voucherObject) {
+        record.submitFields({
+            type: 'customrecord_gw_voucher_main',
+            id: voucherObject.internalid.value,
+            values: {
+                custrecord_gw_dont_sync_to_b2b2: true
+            }
+        })
+    }
+
+    function getRequestObject(voucherObject) {
+        let requestObject = {
+            invoiceNumber: voucherObject.custrecord_gw_voucher_number,
+            typeCode: voucherObject.custrecord_gw_voucher_format_code,
+            invoiceStatus: (voucherObject.custrecord_gw_voucher_status === 'VOUCHER_SUCCESS') ? 1 : 2,
+            invoiceDate: voucherObject.custrecord_gw_voucher_date,
+            buyer: voucherObject.custrecord_gw_buyer,
+            buyerName: voucherObject.custrecord_gw_buyer_name,
+            seller: voucherObject.custrecord_gw_seller,
+            sellerName: voucherObject.custrecord_gw_seller_name,
+            salesAmount: (voucherObject.custrecord_gw_buyer === '0000000000') ? voucherObject.custrecord_gw_total_amount : voucherObject.custrecord_gw_sales_amount,
+            taxAmount: (voucherObject.custrecord_gw_buyer === '0000000000') ? 0 : voucherObject.custrecord_gw_tax_amount,
+            totalAmount: voucherObject.custrecord_gw_total_amount,
+            taxType: voucherObject.custrecord_gw_tax_type,
+            freeTaxSalesAmount: voucherObject.custrecord_gw_free_sales_amount,
+            zeroTaxSalesAmount: voucherObject.custrecord_gw_zero_sales_amount,
+            currency: 'TWD',
+            yearMonth: voucherObject.custrecord_gw_voucher_yearmonth,
+            source: 'NetSuite',
+            customsClearanceMark: voucherObject.custrecord_gw_clearance_mark,
+            zeroTaxMark: voucherObject.custrecord_gw_applicable_zero_tax,
+            outputDate: voucherObject.custrecord_gw_customs_export_date,
+            commonNumber: voucherObject.custrecord_gw_customs_export_no
+        }
+
+        log.debug({
+            title: 'getRequestObject - requestObject',
+            details: requestObject
+        })
+
+        return requestObject
+    }
+
+    function composeRequestParam(voucherObject) {
+        let requestParamArray = []
+        requestParamArray.push(getRequestObject(voucherObject))
+        return requestParamArray
+    }
+
+    function syncVoucherThroughRich(richBaseURL, requestParam) {
+        const REQUEST_TOKEN = `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzZWN1cmUtYXBpIiwiYXVkIjoic2VjdXJlLWFwcCIsInN1YiI6Ijg2NTA5MDgwIiwiZXhwIjoxNzA2ODY1Nzg4LCJyb2wiOlsiUk9MRV9BRE1JTiJdfQ.fvSw7HUE2lFp2VVV_DPA2Bvx3eahQzqErVC7LE5jgGSMmX3q5ZaWPCSMwBTotLG6DaDwlIYausLHao6mR7gyLA`
+        log.debug({
+            title: 'syncVoucherThroughRich',
+            details: 'start...'
+        })
+        let responseObj = {
+            code: 0, body: ''
+        }
+        let url = `${richBaseURL}/api/v1/voucher`
+        log.audit({
+            title: 'syncVoucherThroughRich - url',
+            details: url
+        })
+        let headers = {}
+        headers['Authorization'] = REQUEST_TOKEN
+        headers['Accept'] = `text/html, application/json, application/xhtml+xml, application/xml;q=0.9, image/webp, */*;q=0.8, application/pdf`
+        headers['Accept-Language'] = `en-us`
+        headers['Content-Type'] = 'application/json'
+
+        let response = https.post({
+            url: url, body: JSON.stringify(requestParam), headers: headers
+        })
+        log.debug({
+            title: 'syncVoucherThroughRich - response',
+            details: response
+        })
+        responseObj.code = response.code
+        if (response.code !== 200) {
+            responseObj.body = 'Error Occurs: ' + response.body
+        } else {
+            responseObj.body = JSON.parse(response.body)
+        }
+
+        return responseObj
+    }
+
+    function setIsSynced(voucherObject) {
+        record.submitFields({
+            type: 'customrecord_gw_voucher_main',
+            id: voucherObject.internalid.value,
+            values: {
+                custrecord_gw_is_sync_to_b2b2: true
+            }
+        })
+    }
+
+    exports.proceedToSyncToB2B2 = function (voucherObject) {
+        log.audit({
+            title: 'proceedToSyncToB2B2 - voucherObject',
+            details: voucherObject
+        })
+        const richProcessSearchResult = richProcess()[0]
+        if (richProcessSearchResult.values.custrecord_gw_conf_rich_process) {
+            //get company key and company account id
+            const companyInformationArray = getRichCompanyInformationBySellerId(voucherObject.custrecord_gw_seller)
+            log.audit({
+                title: 'proceedToSyncToB2B2 - companyInformationArray',
+                details: companyInformationArray
+            })
+
+            if(companyInformationArray.length !== 0 && companyInformationArray[0].values.custrecord_gw_be_company_key && companyInformationArray[0].values.custrecord_gw_be_company_account) {
+                //TODO proceed to sync voucher to B2B2
+                log.debug({
+                    title: 'proceedToSyncToB2B2',
+                    details: 'start...'
+                })
+                const richBaseURL = richProcessSearchResult.values.custrecord_gw_conf_rich_base_url
+                const requestParam = composeRequestParam(voucherObject)
+                const syncVoucherResponse = syncVoucherThroughRich(richBaseURL, requestParam)
+                log.debug({
+                    title: 'proceedToSyncToB2B2 - syncVoucherResponse',
+                    details: syncVoucherResponse
+                })
+                if(syncVoucherResponse.code === 200 && syncVoucherResponse.body.finalStatus === 'C') {
+                    setIsSynced(voucherObject)
+                }
+            } else {
+                //TODO set custrecord_gw_dont_sync_to_b2b2 to true
+                setDontSyncToB2B2(voucherObject)
+            }
+        } else {
+            //TODO set custrecord_gw_dont_sync_to_b2b2 to true
+            setDontSyncToB2B2(voucherObject)
+        }
+    }
+
     return exports
 });
