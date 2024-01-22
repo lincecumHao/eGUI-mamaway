@@ -21,16 +21,34 @@ define([
     }
 
     function isOneWorldVersion() {
-        var configRecObj = config.load({
+        var featureRecObj = config.load({
             type: config.Type.FEATURES
         });
 
-        var isMultipleSubCustomerEnable = configRecObj.getValue({
+        var isMultipleSubCustomerEnable = featureRecObj.getValue({
             fieldId: 'multisubsidiarycustomer'
         })
 
         return typeof isMultipleSubCustomerEnable === 'boolean'
     }
+
+    function companyDateFormat() {
+        var companyPreferencesRecObj = config.load({
+            type: config.Type.COMPANY_PREFERENCES
+        });
+        var dateFormat = companyPreferencesRecObj.getValue({
+            fieldId: 'DATEFORMAT'
+        })
+
+        log.debug({
+            title: 'companyDateFormat - dateFormat',
+            details: dateFormat
+        })
+
+        return dateFormat
+    }
+
     exports.isOneWorldAccount = isOneWorldVersion
+    exports.companyDateFormat = companyDateFormat
     return exports;
 });
