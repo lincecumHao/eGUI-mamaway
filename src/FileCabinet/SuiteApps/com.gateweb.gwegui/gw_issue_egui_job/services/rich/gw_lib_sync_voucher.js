@@ -1712,6 +1712,8 @@ define([
         searchFilters.push(['custrecord_gw_is_sync_to_b2b2', 'is', 'F'])
         searchFilters.push('AND')
         searchFilters.push(['custrecord_gw_dont_sync_to_b2b2', 'is', 'F'])
+        searchFilters.push('AND')
+        searchFilters.push(['custrecord_gw_sync_error', 'isempty', ''])
 
         return searchFilters
     }
@@ -1850,7 +1852,18 @@ define([
             type: 'customrecord_gw_voucher_main',
             id: voucherObject.internalid.value,
             values: {
-                custrecord_gw_is_sync_to_b2b2: true
+                custrecord_gw_is_sync_to_b2b2: true,
+                custrecord_gw_sync_error: ''
+            }
+        })
+    }
+
+    function setSyncError(voucherObject, syncVoucherResponse) {
+        record.submitFields({
+            type: 'customrecord_gw_voucher_main',
+            id: voucherObject.internalid.value,
+            values: {
+                custrecord_gw_sync_error: JSON.stringify(syncVoucherResponse)
             }
         })
     }
@@ -1884,6 +1897,9 @@ define([
                 })
                 if(syncVoucherResponse.code === 200 && syncVoucherResponse.body.finalStatus === 'C') {
                     setIsSynced(voucherObject)
+                } else if (syncVoucherResponse.code === 200 && syncVoucherResponse.body.finalStatus === 'E') {
+                    //TODO set sync error
+                    setSyncError(voucherObject, syncVoucherResponse)
                 }
             } else {
                 //TODO set custrecord_gw_dont_sync_to_b2b2 to true
