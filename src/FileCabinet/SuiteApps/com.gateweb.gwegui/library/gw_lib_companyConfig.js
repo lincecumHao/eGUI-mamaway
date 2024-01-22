@@ -25,9 +25,11 @@ define([
             type: config.Type.FEATURES
         });
 
-        return configRecObj.getValue({
+        var isMultipleSubCustomerEnable = configRecObj.getValue({
             fieldId: 'multisubsidiarycustomer'
         })
+
+        return typeof isMultipleSubCustomerEnable === 'boolean'
     }
     exports.isOneWorldAccount = isOneWorldVersion
     return exports;
