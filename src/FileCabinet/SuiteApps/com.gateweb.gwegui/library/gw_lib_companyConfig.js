@@ -32,7 +32,7 @@ define([
         return typeof isMultipleSubCustomerEnable === 'boolean'
     }
 
-    function companyDateFormat() {
+    function getCompanyDateFormat() {
         var companyPreferencesRecObj = config.load({
             type: config.Type.COMPANY_PREFERENCES
         });
@@ -41,7 +41,7 @@ define([
         })
 
         log.debug({
-            title: 'companyDateFormat - dateFormat',
+            title: 'getCompanyDateFormat - dateFormat',
             details: dateFormat
         })
 
@@ -49,6 +49,6 @@ define([
     }
 
     exports.isOneWorldAccount = isOneWorldVersion
-    exports.companyDateFormat = companyDateFormat
+    exports.getCompanyDateFormat = getCompanyDateFormat
     return exports;
 });
