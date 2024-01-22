@@ -1891,5 +1891,192 @@ define([
         }
     }
 
+    function getPendingSyncAPVoucherDataSearchFilters() {
+        let searchFilters = []
+        searchFilters.push(['custrecord_gw_ap_doc_apply', 'is', 'T'])
+        searchFilters.push('AND')
+        searchFilters.push(['custrecord_gw_ap_doc_is_synced_to_b2b2', 'is', 'F'])
+        searchFilters.push('AND')
+        searchFilters.push(['custrecord_gw_ap_doc_dont_sync_to_b2b2', 'is', 'F'])
+
+        return searchFilters
+    }
+
+    function getPendingSyncAPVoucherDataSearchColumns() {
+        let searchColumns = []
+
+        searchColumns.push('internalid')
+        searchColumns.push(
+            search.createColumn({
+            name: 'custrecord_gw_ap_doc_type_value',
+            join: 'CUSTRECORD_GW_AP_DOC_TYPE'
+        }))
+        searchColumns.push('custrecord_gw_ap_doc_issue_date')
+        searchColumns.push('custrecord_gw_ap_doc_acct_period')
+        searchColumns.push('custrecord_gw_ap_doc_apply_period')
+        searchColumns.push('custrecord_gw_ap_doc_apply_period')
+        searchColumns.push('custrecord_gw_ap_doc_gui_num')
+        searchColumns.push('custrecord_gw_ap_doc_comm_num')
+        searchColumns.push(
+            search.createColumn({
+                name: 'custrecord_gw_ap_doc_status_value',
+                join: 'CUSTRECORD_GW_AP_DOC_STATUS'
+        }))
+        searchColumns.push('custrecord_gw_ap_doc_buyer_tax_id')
+        searchColumns.push('custrecord_gw_ap_doc_buyer_name')
+        searchColumns.push('custrecord_gw_ap_doc_seller_tax_id')
+        searchColumns.push('custrecord_gw_ap_doc_seller_name')
+        searchColumns.push(
+            search.createColumn({
+                name: 'custrecord_gw_ap_doc_tax_type_value',
+                join: 'CUSTRECORD_GW_AP_DOC_TAX_TYPE'
+        }))
+        searchColumns.push('custrecord_gw_ap_doc_sales_amt')
+        searchColumns.push('custrecord_gw_ap_doc_ztr_amt')
+        searchColumns.push('custrecord_gw_ap_doc_exempt_amt')
+        searchColumns.push('custrecord_gw_ap_doc_tax_amt')
+        searchColumns.push('custrecord_gw_ap_doc_total_amt')
+        searchColumns.push(
+            search.createColumn({
+            name: 'custrecord_gw_ap_doc_deduct_value',
+            join: 'CUSTRECORD_GW_AP_DOC_DEDUCT_CODE'
+        }))
+        searchColumns.push('custrecord_gw_ap_doc_co_mark')
+        searchColumns.push('custrecord_gw_ap_doc_co_qty')
+        searchColumns.push('custrecord_gw_ap_doc_custom_mark')
+        searchColumns.push(
+            search.createColumn({
+            name: 'custrecord_gw_ap_doc_currency_value',
+            join: 'CUSTRECORD_GW_AP_DOC_CURRENCY'
+        }))
+        searchColumns.push('custrecord_gw_ap_doc_zero_tax_mark')
+        searchColumns.push('custrecord_gw_ap_doc_close_date')
+        searchColumns.push('custrecord_gw_ap_doc_business_unit')
+        searchColumns.push('custrecord_gw_ap_doc_related_number')
+        searchColumns.push('custrecord_gw_ap_doc_source')
+        searchColumns.push('custrecord_gw_ap_doc_buyer')
+        searchColumns.push('custrecord_gw_ap_doc_is_synced_to_b2b2')
+        searchColumns.push('custrecord_gw_ap_doc_dont_sync_to_b2b2')
+
+        return searchColumns
+    }
+
+    exports.getPendingSyncAPVoucherData = function () {
+        let searchFilters = getPendingSyncAPVoucherDataSearchFilters()
+        let searchColumns = getPendingSyncAPVoucherDataSearchColumns()
+
+        let getPendingSyncAPVoucherDataSearchObject = search.create({
+            type: 'customrecord_gw_ap_doc', filters: searchFilters, columns: searchColumns
+        })
+
+        let searchResultCount = getPendingSyncAPVoucherDataSearchObject.runPaged().count
+        log.debug({
+            title: 'getPendingSyncAPVoucherData result count',
+            details: searchResultCount
+        })
+
+        return getPendingSyncAPVoucherDataSearchObject
+    }
+
+    function getRequestAPObject(APVoucherObject) {
+        let requestObject = {
+            invoiceNumber: APVoucherObject.custrecord_gw_ap_doc_gui_num,
+            typeCode: APVoucherObject['custrecord_gw_ap_doc_type_value.CUSTRECORD_GW_AP_DOC_TYPE'],
+            invoiceStatus: APVoucherObject['custrecord_gw_ap_doc_status_value.CUSTRECORD_GW_AP_DOC_STATUS'],
+            invoiceDate: APVoucherObject.custrecord_gw_ap_doc_issue_date,
+            buyer: APVoucherObject.custrecord_gw_ap_doc_buyer_tax_id,
+            buyerName: APVoucherObject.custrecord_gw_ap_doc_buyer_name,
+            seller: APVoucherObject.custrecord_gw_ap_doc_seller_tax_id,
+            sellerName: APVoucherObject.custrecord_gw_ap_doc_seller_name,
+            salesAmount: APVoucherObject.custrecord_gw_ap_doc_sales_amt,
+            taxAmount: APVoucherObject.custrecord_gw_ap_doc_tax_amt,
+            totalAmount: APVoucherObject.custrecord_gw_ap_doc_total_amt,
+            taxType: APVoucherObject['custrecord_gw_ap_doc_tax_type_value.CUSTRECORD_GW_AP_DOC_TAX_TYPE"'],
+            freeTaxSalesAmount: (APVoucherObject.custrecord_gw_ap_doc_exempt_amt === '.00') ? '0' : APVoucherObject.custrecord_gw_ap_doc_exempt_amt,
+            zeroTaxSalesAmount: (APVoucherObject.custrecord_gw_ap_doc_ztr_amt === '.00') ? '0' : APVoucherObject.custrecord_gw_ap_doc_ztr_amt,
+            currency: APVoucherObject['custrecord_gw_ap_doc_currency_value.CUSTRECORD_GW_AP_DOC_CURRENCY'],
+            yearMonth: APVoucherObject.custrecord_gw_ap_doc_apply_period.text,
+            source: 'NetSuite',
+            customsClearanceMark: APVoucherObject.custrecord_gw_ap_doc_custom_mark,
+            zeroTaxMark: APVoucherObject.custrecord_gw_ap_doc_zero_tax_mark,
+            outputDate: APVoucherObject.custrecord_gw_ap_doc_close_date,
+            commonNumber: APVoucherObject.custrecord_gw_ap_doc_related_number
+        }
+
+        log.debug({
+            title: 'getRequestAPObject - requestObject',
+            details: requestObject
+        })
+
+        return requestObject
+    }
+
+    function composeAPVoucherRequestParam(APVoucherObject) {
+        let requestAPParamArray = []
+        requestAPParamArray.push(getRequestAPObject(APVoucherObject))
+        return requestAPParamArray
+    }
+
+    function setDontSyncToB2B2ForAP(APVoucherObject) {
+        record.submitFields({
+            type: 'customrecord_gw_ap_doc',
+            id: APVoucherObject.internalid.value,
+            values: {
+                custrecord_gw_ap_doc_dont_sync_to_b2b2: true
+            }
+        })
+    }
+
+    function setIsSyncedForAP(APVoucherObject) {
+        record.submitFields({
+            type: 'customrecord_gw_ap_doc',
+            id: APVoucherObject.internalid.value,
+            values: {
+                custrecord_gw_ap_doc_is_synced_to_b2b2: true
+            }
+        })
+    }
+
+    exports.proceedToSyncAPToB2B2 = function (APVoucherObject) {
+        log.audit({
+            title: 'proceedToSyncAPToB2B2 - APVoucherObject',
+            details: APVoucherObject
+        })
+        const richProcessSearchResult = richProcess()[0]
+        if (richProcessSearchResult.values.custrecord_gw_conf_rich_process) {
+            //get company key and company account id
+            const companyInformationArray = getRichCompanyInformationBySellerId(APVoucherObject.custrecord_gw_ap_doc_buyer_tax_id)
+            log.audit({
+                title: 'proceedToSyncAPToB2B2 - companyInformationArray',
+                details: companyInformationArray
+            })
+
+            if(companyInformationArray.length !== 0 && companyInformationArray[0].values.custrecord_gw_be_company_key && companyInformationArray[0].values.custrecord_gw_be_company_account) {
+                //TODO proceed To Sync AP To B2B2
+                log.debug({
+                    title: 'proceedToSyncAPToB2B2',
+                    details: 'start...'
+                })
+                const richBaseURL = richProcessSearchResult.values.custrecord_gw_conf_rich_base_url
+                const requestParam = composeAPVoucherRequestParam(APVoucherObject)
+
+                const syncVoucherResponse = syncVoucherThroughRich(richBaseURL, requestParam)
+                log.debug({
+                    title: 'proceedToSyncAPToB2B2 - syncVoucherResponse',
+                    details: syncVoucherResponse
+                })
+                if(syncVoucherResponse.code === 200 && syncVoucherResponse.body.finalStatus === 'C') {
+                    setIsSyncedForAP(APVoucherObject)
+                }
+            } else {
+                //TODO set custrecord_gw_ap_doc_dont_sync_to_b2b2 to true
+                setDontSyncToB2B2ForAP(APVoucherObject)
+            }
+        } else {
+            //TODO set custrecord_gw_ap_doc_dont_sync_to_b2b2 to true
+            setDontSyncToB2B2ForAP(APVoucherObject)
+        }
+    }
+
     return exports
 });
