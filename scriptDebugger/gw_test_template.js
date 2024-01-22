@@ -11,7 +11,8 @@ require([
     log.debug({ title: 'result', details: result })
 
     var dateFormat = gwLibCompanyConfig.getCompanyDateFormat()
-    log.debug({ title: 'dateFormat', details: dateFormat })
+    var resultDate = gwDateUtil.getDateWithFormatInYYYYMMDD('01/22/2024', dateFormat)
+    log.debug({ title: 'resultDate', details: resultDate })
 
     log.debug({ title: 'Execution end...' })
 })

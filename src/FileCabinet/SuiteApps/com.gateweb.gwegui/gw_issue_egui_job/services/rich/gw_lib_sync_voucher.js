@@ -20,7 +20,9 @@ define([
     '../../../gw_issue_egui/gw_common_utility/gw_common_migxml_utility',
     '../../../gw_issue_egui/gw_common_utility/gw_common_configure',
     '../../../gw_dao/taxType/gw_dao_tax_type_21',
-    '../../../gw_issue_egui/services/email/gw_service_egui_email'
+    '../../../gw_issue_egui/services/email/gw_service_egui_email',
+    '../../../library/gw_date_util',
+    '../../../library/gw_lib_companyConfig'
 ], (
     search,
     runtime,
@@ -35,7 +37,9 @@ define([
     migxmlutility,
     gwconfigure,
     gwTaxType21,
-    gwServiceEGUIEmail
+    gwServiceEGUIEmail,
+    gwDateUtil,
+    gwLibCompanyConfig
 ) => {
     let exports = {}
 
@@ -1898,6 +1902,8 @@ define([
         searchFilters.push(['custrecord_gw_ap_doc_is_synced_to_b2b2', 'is', 'F'])
         searchFilters.push('AND')
         searchFilters.push(['custrecord_gw_ap_doc_dont_sync_to_b2b2', 'is', 'F'])
+        searchFilters.push('AND')
+        searchFilters.push(['custrecord_gw_ap_doc_sync_error', 'isempty', ''])
 
         return searchFilters
     }
@@ -1983,7 +1989,7 @@ define([
             invoiceNumber: APVoucherObject.custrecord_gw_ap_doc_gui_num,
             typeCode: APVoucherObject['custrecord_gw_ap_doc_type_value.CUSTRECORD_GW_AP_DOC_TYPE'],
             invoiceStatus: APVoucherObject['custrecord_gw_ap_doc_status_value.CUSTRECORD_GW_AP_DOC_STATUS'],
-            invoiceDate: APVoucherObject.custrecord_gw_ap_doc_issue_date,
+            invoiceDate: gwDateUtil.getDateWithFormatInYYYYMMDD(APVoucherObject.custrecord_gw_ap_doc_issue_date, gwLibCompanyConfig.getCompanyDateFormat()),
             buyer: APVoucherObject.custrecord_gw_ap_doc_buyer_tax_id,
             buyerName: APVoucherObject.custrecord_gw_ap_doc_buyer_name,
             seller: APVoucherObject.custrecord_gw_ap_doc_seller_tax_id,
@@ -1991,7 +1997,7 @@ define([
             salesAmount: APVoucherObject.custrecord_gw_ap_doc_sales_amt,
             taxAmount: APVoucherObject.custrecord_gw_ap_doc_tax_amt,
             totalAmount: APVoucherObject.custrecord_gw_ap_doc_total_amt,
-            taxType: APVoucherObject['custrecord_gw_ap_doc_tax_type_value.CUSTRECORD_GW_AP_DOC_TAX_TYPE"'],
+            taxType: APVoucherObject['custrecord_gw_ap_doc_tax_type_value.CUSTRECORD_GW_AP_DOC_TAX_TYPE'],
             freeTaxSalesAmount: (APVoucherObject.custrecord_gw_ap_doc_exempt_amt === '.00') ? '0' : APVoucherObject.custrecord_gw_ap_doc_exempt_amt,
             zeroTaxSalesAmount: (APVoucherObject.custrecord_gw_ap_doc_ztr_amt === '.00') ? '0' : APVoucherObject.custrecord_gw_ap_doc_ztr_amt,
             currency: APVoucherObject['custrecord_gw_ap_doc_currency_value.CUSTRECORD_GW_AP_DOC_CURRENCY'],
@@ -2000,7 +2006,8 @@ define([
             customsClearanceMark: APVoucherObject.custrecord_gw_ap_doc_custom_mark,
             zeroTaxMark: APVoucherObject.custrecord_gw_ap_doc_zero_tax_mark,
             outputDate: APVoucherObject.custrecord_gw_ap_doc_close_date,
-            commonNumber: APVoucherObject.custrecord_gw_ap_doc_related_number
+            commonNumber: APVoucherObject.custrecord_gw_ap_doc_related_number,
+            deductionCode: APVoucherObject['custrecord_gw_ap_doc_deduct_value.CUSTRECORD_GW_AP_DOC_DEDUCT_CODE']
         }
 
         log.debug({
@@ -2032,7 +2039,18 @@ define([
             type: 'customrecord_gw_ap_doc',
             id: APVoucherObject.internalid.value,
             values: {
-                custrecord_gw_ap_doc_is_synced_to_b2b2: true
+                custrecord_gw_ap_doc_is_synced_to_b2b2: true,
+                custrecord_gw_ap_doc_sync_error: ''
+            }
+        })
+    }
+
+    function setSyncErrorForAP(APVoucherObject, syncVoucherResponse) {
+        record.submitFields({
+            type: 'customrecord_gw_ap_doc',
+            id: APVoucherObject.internalid.value,
+            values: {
+                custrecord_gw_ap_doc_sync_error: JSON.stringify(syncVoucherResponse)
             }
         })
     }
@@ -2067,6 +2085,9 @@ define([
                 })
                 if(syncVoucherResponse.code === 200 && syncVoucherResponse.body.finalStatus === 'C') {
                     setIsSyncedForAP(APVoucherObject)
+                } else if (syncVoucherResponse.code === 200 && syncVoucherResponse.body.finalStatus === 'E') {
+                    //TODO set sync error
+                    setSyncErrorForAP(APVoucherObject, syncVoucherResponse)
                 }
             } else {
                 //TODO set custrecord_gw_ap_doc_dont_sync_to_b2b2 to true
