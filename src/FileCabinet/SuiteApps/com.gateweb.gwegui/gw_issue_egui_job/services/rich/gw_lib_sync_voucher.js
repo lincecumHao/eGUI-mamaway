@@ -718,8 +718,8 @@ define([
                 fieldId: 'custrecord_gw_upload_response_message', value: uploadResultResponse.body.message,
             })
 
-            var _upload_voucher_date = dateutility.getCompanyLocatDate()
-            var _upload_voucher_time = dateutility.getCompanyLocatTime()
+            var _upload_voucher_date = gwDateUtil.getCurrentDateInYYYYMMDD()
+            var _upload_voucher_time = gwDateUtil.getCurrentDateTime().time
             log.debug({
                 title: 'createUploadLog - _upload_voucher_date', details: _upload_voucher_date
             })
@@ -1022,8 +1022,8 @@ define([
             const logRecordId = result.id
             let submitFieldsObject = {}
             submitFieldsObject['custrecord_gw_download_voucher_status'] = statusMapping[getVoucherStatusResponse.body.uploadStatus]
-            submitFieldsObject['custrecord_gw_download_voucher_date'] = dateutility.getCompanyLocatDate()
-            submitFieldsObject['custrecord_gw_download_voucher_time'] = dateutility.getCompanyLocatTime()
+            submitFieldsObject['custrecord_gw_download_voucher_date'] = gwDateUtil.getCurrentDateInYYYYMMDD()
+            submitFieldsObject['custrecord_gw_download_voucher_time'] = gwDateUtil.getCurrentDateTime().time
             if(statusMapping[getVoucherStatusResponse.body.uploadStatus] === 'E') {
                 //TODO set error msg
                 submitFieldsObject['custrecord_gw_download_voucher_message'] = getVoucherStatusResponse.body.natErrorMessage
@@ -1536,8 +1536,8 @@ define([
     function setGeneralValue(xmlString, voucherObject, voucherMainRecordObject) {
         xmlString += `<BuyerId>${voucherMainRecordObject.custrecord_gw_buyer}</BuyerId>`
         xmlString += `<SellerId>${voucherMainRecordObject.custrecord_gw_seller}</SellerId>`
-        xmlString += `<CancelDate>${dateutility.getCompanyLocatDate()}</CancelDate>`
-        xmlString += `<CancelTime>${dateutility.getCompanyLocatTime()}</CancelTime>`
+        xmlString += `<CancelDate>${gwDateUtil.getCurrentDateInYYYYMMDD()}</CancelDate>`
+        xmlString += `<CancelTime>${gwDateUtil.getCurrentDateTime().time}</CancelTime>`
         xmlString += `<CancelReason>${voucherObject.custrecord_gw_voucher_void_comment}</CancelReason>`
 
         return xmlString
