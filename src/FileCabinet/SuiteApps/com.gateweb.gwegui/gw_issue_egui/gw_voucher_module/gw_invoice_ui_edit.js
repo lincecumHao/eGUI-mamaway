@@ -17,6 +17,8 @@ define([
   '../../gw_dao/carrierType/gw_dao_carrier_type_21',
   '../../gw_dao/busEnt/gw_dao_business_entity_21',
   '../../gw_dao/settings/gw_dao_egui_config',
+  '../gw_dao/gw_transaction_fields',
+  '../../library/gw_date_util'
 ], function (
   config,
   serverWidget,
@@ -30,7 +32,9 @@ define([
   taxyype21,
   carriertypedao,
   businessEntityDao,
-  gwDaoEguiConfig
+  gwDaoEguiConfig,
+  gwTransactionFields,
+  gwDateUtil
 ) {
   var _numericToFixed = gwconfigure.getGwNumericToFixed() //小數點位數
   var _invoiceActionScriptId = gwconfigure.getGwInvoiceActionScriptId()
@@ -126,26 +130,11 @@ define([
 
   //取得稅別資料
   function getTaxInformation(netsuiteId) {
+    log.audit({title: 'getTaxInformation - netsuiteId', details: netsuiteId})
+    log.audit({title: 'getTaxInformation - _taxObjAry', details: _taxObjAry})
     return _taxObjAry.filter(function (_obj) {
       return _obj.netsuite_id_value.toString() === netsuiteId.toString()
     })[0]
-    // var _taxObj
-    // try {
-    //   if (_taxObjAry != null) {
-    //     for (var i = 0; i < _taxObjAry.length; i++) {
-    //       var _obj = JSON.parse(JSON.stringify(_taxObjAry[i]))
-    //
-    //       if (_obj.netsuite_id_value == netsuiteId) {
-    //         _taxObj = _obj
-    //         break
-    //       }
-    //     }
-    //   }
-    // } catch (e) {
-    //   log.error(e.name, e.message)
-    // }
-    //
-    // return _taxObj
   }
   //取得稅別資料
   function getTaxInformationByTaxId(taxId) {
@@ -814,105 +803,258 @@ define([
     return _tax_amount.toFixed(_numericToFixed)
   }
 
-  function createInvoiceDetails(form, _selected_invoice_Id) {
-    //處理Detail
-    var sublist = form.addSublist({
-      id: 'invoicesublistid',
-      type: serverWidget.SublistType.LIST,
-      label: 'NS Invoice 商品清單'
-    })
-    //sublist.addMarkAllButtons();
+  function getSearchInvoiceFilters(selectedInvoiceIds) {
+    var searchFilters = []
+    searchFilters.push(['type', 'anyof', 'CustInvc'])
+    searchFilters.push('AND')
+    searchFilters.push(['taxline', 'is', 'F'])
+    searchFilters.push('AND')
+    searchFilters.push(['cogs', 'is', 'F'])
+    searchFilters.push('AND')
+    searchFilters.push(['shipping', 'is', 'F'])
+    searchFilters.push('AND')
+    searchFilters.push(['status', 'noneof', 'CustInvc:V'])
+    searchFilters.push('AND')
+    searchFilters.push([
+      [
+        ['mainline', 'is', 'T']
+      ],
+      'OR',
+      [
+        ['mainline', 'is', 'F'],
+        'AND',
+        ['item', 'noneof', '@NONE@']
+      ]
+    ])
 
-    var _idField = sublist.addField({
+    if (selectedInvoiceIds !== null) {
+      log.debug({title: 'getSearchInvoiceFilters - selectedInvoiceIds', details: selectedInvoiceIds})
+      var invoiceIdArray = selectedInvoiceIds.split(',')
+      log.debug({title: 'getSearchInvoiceFilters - invoiceIdArray', details: invoiceIdArray})
+      searchFilters.push('AND')
+      searchFilters.push(['internalid', 'anyof', invoiceIdArray])
+    }
+    return searchFilters;
+  }
+
+  function getSearchColumns() {
+    var searchColumns = []
+    gwTransactionFields.allSearchColumnFields.forEach(function (searchFieldId) {
+      searchColumns.push(searchFieldId)
+    })
+    log.debug({title: 'getSearchColumns - searchColumns', details: searchColumns})
+    return searchColumns;
+  }
+
+  function getSearchSetting() {
+    var searchSetting = []
+    searchSetting.push(
+        search.createSetting({
+          name: 'consolidationtype',
+          value: 'NONE'
+        })
+    )
+    return searchSetting;
+  }
+
+  function getInvoiceDetailsById(selectedInvoiceIds) {
+    log.debug({title: 'getInvoiceDetailsById - start ...', details: ''});
+    var searchFilters = getSearchInvoiceFilters(selectedInvoiceIds)
+    var searchColumns = getSearchColumns()
+    var searchSetting = getSearchSetting()
+    var invoiceSearchObj = search.create({
+      type: gwTransactionFields.recordId,
+      filters: searchFilters,
+      columns: searchColumns,
+      settings: searchSetting
+    });
+    var searchResultCount = invoiceSearchObj.runPaged().count;
+    log.debug({title: 'getInvoiceDetailsById - invoiceSearchObj result count', details: searchResultCount});
+    var searchResultArray = []
+
+    var searchObj = invoiceSearchObj.runPaged({
+      pageSize: 1000
+    });
+    log.debug({title: 'getInvoiceDetailsById - searchObj', details: searchObj})
+
+    searchObj.pageRanges.forEach(function (pageRange) {
+      searchObj.fetch({index: pageRange.index}).data.forEach(function (result) {
+        //Process each search result here
+        log.debug({title: 'getInvoiceDetailsById - result', details: result})
+        searchResultArray.push(JSON.parse(JSON.stringify(result)))
+      });
+    });
+
+    log.debug({title: 'getInvoiceDetailsById - searchResultArray', details: searchResultArray})
+    log.debug({title: 'getInvoiceDetailsById - end ...', details: ''});
+    return searchResultArray
+  }
+
+  function getSearchCreditMemoFilters(selectedCreditMemoIds) {
+    var searchFilters = []
+    searchFilters.push(['type', 'anyof', 'CustCred'])
+    searchFilters.push('AND')
+    searchFilters.push(['taxline', 'is', 'F'])
+    searchFilters.push('AND')
+    searchFilters.push(['cogs', 'is', 'F'])
+    searchFilters.push('AND')
+    searchFilters.push(['shipping', 'is', 'F'])
+    searchFilters.push('AND')
+    searchFilters.push([
+      [
+        ['mainline', 'is', 'T']
+      ],
+      'OR',
+      [
+        ['mainline', 'is', 'F'],
+        'AND',
+        ['item', 'noneof', '@NONE@']
+      ]
+    ])
+
+    if (selectedCreditMemoIds !== null) {
+      log.debug({title: 'getSearchCreditMemoFilters - selectedCreditMemoIds', details: selectedCreditMemoIds})
+      var creditMemoIdArray = selectedCreditMemoIds.split(',')
+      log.debug({title: 'getSearchCreditMemoFilters - creditMemoIdArray', details: creditMemoIdArray})
+      searchFilters.push('AND')
+      searchFilters.push(['internalid', 'anyof', creditMemoIdArray])
+    }
+    return searchFilters;
+  }
+
+  function getCreditMemoDetailsById(selectedCreditMemoIds) {
+    log.debug({title: 'getCreditMemoDetailsById - start ...', details: ''});
+    var searchFilters = getSearchCreditMemoFilters(selectedCreditMemoIds)
+    var searchColumns = getSearchColumns()
+    var searchSetting = getSearchSetting()
+    var creditMemoSearchObj = search.create({
+      type: gwTransactionFields.recordId,
+      filters: searchFilters,
+      columns: searchColumns,
+      settings: searchSetting
+    });
+    var searchResultCount = creditMemoSearchObj.runPaged().count;
+    log.debug({title: 'getCreditMemoDetailsById - creditMemoSearchObj result count', details: searchResultCount});
+    var searchResultArray = []
+
+    var searchObj = creditMemoSearchObj.runPaged({
+      pageSize: 1000
+    });
+    log.debug({title: 'getCreditMemoDetailsById - searchObj', details: searchObj})
+
+    searchObj.pageRanges.forEach(function (pageRange) {
+      searchObj.fetch({index: pageRange.index}).data.forEach(function (result) {
+        //Process each search result here
+        log.debug({title: 'getCreditMemoDetailsById - result', details: result})
+        searchResultArray.push(JSON.parse(JSON.stringify(result)))
+      });
+    });
+
+    log.debug({title: 'getCreditMemoDetailsById - searchResultArray', details: searchResultArray})
+    log.debug({title: 'getCreditMemoDetailsById - end ...', details: ''});
+    return searchResultArray
+  }
+
+  function composeResultObject(transactionSearchResultArray) {
+    let resultArray = []
+    transactionSearchResultArray.forEach(function (transactionSearchResultObject) {
+      log.audit({title: 'composeResultObject - transactionSearchResultObject', details: transactionSearchResultObject})
+      let optionObject = {};
+      gwTransactionFields.allFieldIds.forEach(function (searchFieldId) {
+        const searchColumnObject = gwTransactionFields.fields[searchFieldId]
+        log.audit({title: 'composeResultObject - searchColumnObject', details: searchColumnObject})
+        let attribute = searchColumnObject.name;
+        if (searchColumnObject.join) attribute = `${searchColumnObject.join}.${attribute}`
+        optionObject[searchColumnObject.outputField] =
+            (attribute !== '' && transactionSearchResultObject.values[attribute])
+                ? transactionSearchResultObject.values[attribute] : ''
+      })
+      optionObject.id = transactionSearchResultObject.id
+      optionObject.recordType = transactionSearchResultObject.recordType
+      log.audit({title: 'composeResultObject - optionObject', details: JSON.stringify(optionObject)})
+      resultArray.push(optionObject)
+    })
+    log.audit({title: 'composeResultObject - resultArray', details: JSON.stringify(resultArray)})
+    return resultArray
+  }
+
+  function createInvoiceSublistFields(sublist) {
+    sublist.addField({
       id: 'customer_search_invoice_id',
       label: 'Internal ID',
       type: serverWidget.FieldType.TEXT
-    })
-    _idField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
-    var _numberField = sublist.addField({
+    sublist.addField({
       id: 'customer_search_invoice_number',
       label: 'Invoice Number',
       type: serverWidget.FieldType.TEXT
-    })
-    _numberField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     //放dept_code
-    var _deptCodeField = sublist.addField({
+    sublist.addField({
       id: 'customer_search_invoice_deptcode',
       label: 'Internal ID',
       type: serverWidget.FieldType.TEXT
-    })
-    _deptCodeField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     //放classfication
-    var _classficationField = sublist.addField({
+    sublist.addField({
       id: 'customer_search_invoice_class',
       label: 'Internal ID',
       type: serverWidget.FieldType.TEXT
-    })
-    _classficationField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     //Discount
-    var _discountField = sublist.addField({
+    sublist.addField({
       id: 'customer_search_invoice_discount',
       label: 'Discount Item',
       type: serverWidget.FieldType.TEXT
-    })
-    _discountField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
-    var _seqField = sublist.addField({
+    sublist.addField({
       id: 'customer_search_invoice_seq',
       type: serverWidget.FieldType.TEXT,
       label: '順序'
     })
-
-    var _itemNameField = sublist.addField({
+    sublist.addField({
       id: 'custpage_item_name',
       type: serverWidget.FieldType.TEXT,
       label: '名稱'
-    })
-    _itemNameField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.ENTRY
     })
-
-    var _taxRateField = sublist.addField({
+    sublist.addField({
       id: 'customer_search_invoice_tax_rate',
       label: '稅率%',
       type: serverWidget.FieldType.TEXT
-    })
-    _taxRateField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
-    var _taxRateNoteField = sublist.addField({
+    sublist.addField({
       id: 'customer_search_invoice_tax_rate_note',
       label: '稅率%',
       type: serverWidget.FieldType.TEXT
     })
-
-    var _taxCodeField = sublist.addField({
+    sublist.addField({
       id: 'customer_search_invoice_tax_code',
       label: '稅別',
       type: serverWidget.FieldType.TEXT
-    })
-    _taxCodeField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
-
-    var _itemUnitField = sublist.addField({
+    sublist.addField({
       id: 'custpage_invoice_item_unit',
       type: serverWidget.FieldType.TEXT,
       label: '單位'
-    })
-    _itemUnitField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.ENTRY
     })
-
     sublist.addField({
       id: 'custpage_unit_price',
       type: serverWidget.FieldType.TEXT,
@@ -928,78 +1070,58 @@ define([
       type: serverWidget.FieldType.TEXT,
       label: '小計(未稅)'
     })
-    var _itemRemarkField = sublist.addField({
+    sublist.addField({
       id: 'custpage_item_remark',
       type: serverWidget.FieldType.TEXT,
       label: '明細備註'
-    })
-    _itemRemarkField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.ENTRY
     })
     /////////////////////////////////////////////////////////////////////////////////////////
     //20201105 walter modify
-    var _itemTaxAmountField = sublist.addField({
+    sublist.addField({
       id: 'custpage_invoice_item_tax_amount',
       label: 'Item Tax Amount',
       type: serverWidget.FieldType.TEXT
-    })
-    _itemTaxAmountField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
-
-    var _itemTotalAmountField = sublist.addField({
+    sublist.addField({
       id: 'custpage_invoice_item_total_amount',
       label: 'Item Toatl Amount',
       type: serverWidget.FieldType.TEXT
-    })
-    _itemTotalAmountField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
-
-    var _totalTaxAmountField = sublist.addField({
+    sublist.addField({
       id: 'custpage_invoice_total_tax_amount',
       label: 'Total Tax Amount',
       type: serverWidget.FieldType.TEXT
-    })
-    _totalTaxAmountField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
-
-    var _itemTotalAmountField = sublist.addField({
+    sublist.addField({
       id: 'custpage_invoice_total_sum_amount',
       label: 'Sum Toatl Amount',
       type: serverWidget.FieldType.TEXT
-    })
-    _itemTotalAmountField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
+  }
 
-    /////////////////////////////////////////////////////////////////////////////////////////
-    //1.處理 Invoice Detail Items
+  function createInvoiceDetails(form, invoiceDetailsArrayObject) {
+    //處理Detail
+    var sublist = form.addSublist({
+      id: 'invoicesublistid',
+      type: serverWidget.SublistType.LIST,
+      label: 'NS Invoice 商品清單'
+    })
+    //sublist.addMarkAllButtons();
+    createInvoiceSublistFields(sublist)
+
     var _selectDepartment = ''
     var _selectClassification = ''
-    var _mySearch = search.load({
-      id: _gw_invoice_detail_search_id
-    })
-    var _filterArray = []
-    if (_selected_invoice_Id != null) {
-      var _internalIdAry = _selected_invoice_Id.split(',')
-      _filterArray.push(['internalid', 'anyof', _internalIdAry])
-    }
-    ////////////////////////////////////////////////////////////////
-    //check this issue 20201028
-    _filterArray.push('and')
-    _filterArray.push(['recordtype', 'is', 'invoice'])
-    //_filterArray.push('and');
-    //_filterArray.push(['mainline','is', false]);
-    _filterArray.push('and')
-    _filterArray.push(['taxline', 'is', false]) //擋稅別科目
-    _filterArray.push('and')
-    _filterArray.push(['cogs', 'is', false]) //擋庫存及成本科目
-    ////////////////////////////////////////////////////////////////
-    _mySearch.filterExpression = _filterArray
-    log.debug('_filterArray', JSON.stringify(_filterArray))
-    ////////////////////////////////////////////////////////////////////////////////////////
+
     var row = 0
     //客戶代碼
     var _customer_id = 0
@@ -1063,13 +1185,12 @@ define([
     var _gw_gui_donation_code = ''
     ////////////////////////////////////////////////////////////
 
-    _mySearch.run().each(function (result) {
-      var _result = JSON.parse(JSON.stringify(result))
+    invoiceDetailsArrayObject.forEach(function (result){
+      log.debug({title: 'createInvoiceDetails - result', details: result})
 
-      var _recordType = _result.recordType //invoice
-      var _id = _result.id //948
-      var _valueObj = _result.values //object
-      var _mainline = _result.values.mainline
+      var _recordType = result.recordType //invoice
+      var _id = result.id //948
+      var _mainline = result.mainline
       log.debug('_mainline', '_mainline=' + _mainline)
 
       _last_id = _id
@@ -1078,42 +1199,42 @@ define([
 
       /////////////////////////////////////////////////////////////////////////////////////////////////
       //處理零稅率資訊
-      if (_result.values.custbody_gw_customs_export_category.length != 0) {
+      if (result.custbody_gw_customs_export_category.length != 0) {
         //海關出口單類別
         _gw_customs_export_category_value =
-          _result.values.custbody_gw_customs_export_category[0].value //3
+          result.custbody_gw_customs_export_category[0].value //3
         _gw_customs_export_category_text =
-          _result.values.custbody_gw_customs_export_category[0].text //D1-課稅區售與或退回保稅倉
+          result.custbody_gw_customs_export_category[0].text //D1-課稅區售與或退回保稅倉
         var _temp_ary = _gw_customs_export_category_text.split('-')
         _gw_customs_export_category_text = _temp_ary[0]
       }
-      if (_result.values.custbody_gw_applicable_zero_tax.length != 0) {
+      if (result.custbody_gw_applicable_zero_tax.length != 0) {
         //適用零稅率規定
         _gw_applicable_zero_tax_value =
-          _result.values.custbody_gw_applicable_zero_tax[0].value //5
+          result.custbody_gw_applicable_zero_tax[0].value //5
         _gw_applicable_zero_tax_text =
-          _result.values.custbody_gw_applicable_zero_tax[0].text //5-國際間之運輸
+          result.custbody_gw_applicable_zero_tax[0].text //5-國際間之運輸
         var _temp_ary = _gw_applicable_zero_tax_text.split('-')
         _gw_applicable_zero_tax_text = _temp_ary[0]
       }
-      if (_result.values.custbody_gw_egui_clearance_mark.length != 0) {
+      if (result.custbody_gw_egui_clearance_mark.length != 0) {
         //通關註記
         _gw_egui_clearance_mark_value =
-          _result.values.custbody_gw_egui_clearance_mark[0].value //5
+          result.custbody_gw_egui_clearance_mark[0].value //5
         _gw_egui_clearance_mark_text =
-          _result.values.custbody_gw_egui_clearance_mark[0].text //5-國際間之運輸
+          result.custbody_gw_egui_clearance_mark[0].text //5-國際間之運輸
         var _temp_ary = _gw_egui_clearance_mark_text.split('-')
         _gw_egui_clearance_mark_text = _temp_ary[0]
       }
       //海關出口號碼 : AA123456789012
-      _gw_customs_export_no = _result.values.custbody_gw_customs_export_no
+      _gw_customs_export_no = result.custbody_gw_customs_export_no
       //輸出或結匯日期 : 2021/01/22
       _gw_customs_export_date = convertExportDate(
-        _result.values.custbody_gw_customs_export_date
+        result.custbody_gw_customs_export_date
       )
       log.debug('_gw_customs_export_date', _gw_customs_export_date)
       /////////////////////////////////////////////////////////////////////////////////////////////////
-      var _trandate = _result.values.trandate
+      var _trandate = result.trandate
       var _dateStr = dateutility.getVoucherDateByDate(_trandate)
       if (
         stringutility.convertToFloat(_dateStr) >
@@ -1123,97 +1244,95 @@ define([
         _index_trandate = _trandate
       }
 
-      var _tranid = _result.values.tranid //AZ10000019
+      var _tranid = result.tranid //AZ10000019
 
       var _entityValue = 0 //529
       var _entityText = '' //11 se06_company公司
-      if (_result.values.entity.length != 0) {
-        _entityValue = _result.values.entity[0].value //529
-        _entityText = _result.values.entity[0].text //11 se06_company公司
+      if (result.entity.length != 0) {
+        _entityValue = result.entity[0].value //529
+        _entityText = result.entity[0].text //11 se06_company公司
       }
 
       //20211007 walter modify
-      _gw_gui_main_memo = _result.values.custbody_gw_gui_main_memo
+      _gw_gui_main_memo = result.custbody_gw_gui_main_memo
 
       //Invoice統編
-      _customer_ban = _result.values.custbody_gw_tax_id_number //99999997
+      _customer_ban = result.custbody_gw_tax_id_number //99999997
       if (stringutility.trim(_company_name) == '') {
-        _company_name = _result.values.custbody_gw_gui_title
-        _company_address = _result.values.custbody_gw_gui_address
+        _company_name = result.custbody_gw_gui_title
+        _company_address = result.custbody_gw_gui_address
       }
       //客戶Email
-      _customer_email = _result.values['customer.email']
+      _customer_email = result['customer.email']
       ///////////////////////////////////////////////////////////////////////
       //載具類別
-      if (_result.values.custbody_gw_gui_carrier_type.length != 0) {
+      if (result.custbody_gw_gui_carrier_type.length != 0) {
         _gw_gui_carrier_type =
-          _result.values.custbody_gw_gui_carrier_type[0].value
+          result.custbody_gw_gui_carrier_type[0].value
       }
-      _gw_gui_carrier_id_1 = _result.values.custbody_gw_gui_carrier_id_1
-      _gw_gui_carrier_id_2 = _result.values.custbody_gw_gui_carrier_id_2
+      _gw_gui_carrier_id_1 = result.custbody_gw_gui_carrier_id_1
+      _gw_gui_carrier_id_2 = result.custbody_gw_gui_carrier_id_2
       //捐贈代碼
-      _gw_gui_donation_code = _result.values.custbody_gw_gui_donation_code
+      _gw_gui_donation_code = result.custbody_gw_gui_donation_code
 
       ///////////////////////////////////////////////////////////////////////
       var _accountValue = '' //54
       var _accountText = '' //4000 Sales
-      if (_result.values.account.length != 0) {
-        _accountValue = _result.values.account[0].value //54
-        _accountText = _result.values.account[0].value //4000 Sales
+      if (result.account.length != 0) {
+        _accountValue = result.account[0].value //54
+        _accountText = result.account[0].value //4000 Sales
       }
       //createdfrom 主檔才做
-      if (_mainline == '*' && _result.values.createdfrom.length != 0) {
-        _sales_order_id = _result.values.createdfrom[0].value //633
+      if (_mainline == '*' && result.createdfrom.length != 0) {
+        _sales_order_id = result.createdfrom[0].value //633
         _sales_order_id_ary.push(_sales_order_id)
-        _sales_order_number = _result.values.createdfrom[0].text //sales order  #42
+        _sales_order_number = result.createdfrom[0].text //sales order  #42
       }
 
-      var _amount = stringutility.convertToFloat(_result.values.amount) //31428.57(未稅)
+      var _amount = stringutility.convertToFloat(result.amount) //31428.57(未稅)
       //20210707 walter modify
-      if (stringutility.convertToFloat(_result.values.quantity) < 0)
+      if (stringutility.convertToFloat(result.quantity) < 0)
         _amount = -1 * _amount
 
       //20201105 walter modify
       //NS 的總稅額
       var _ns_total_tax_amount = stringutility.convertToFloat(
-        _result.values.taxtotal
+        result.taxtotal
       ) //稅額總計 -5.00
       //NS 的總金額小計
       var _ns_total_sum_amount = stringutility.convertToFloat(
-        _result.values.total
+        result.total
       ) //金額總計(含稅)
 
       //NS 的稅額
       var _ns_item_tax_amount = stringutility.convertToFloat(
-        _result.values.taxamount
+        result.taxamount
       ) //稅額總計 -5.00
-      //NS 的Item金額小計
-      var _ns_item_total_amount = stringutility.convertToFloat(
-        _result.values.formulacurrency
-      ) //Item金額小計
-      if (stringutility.convertToFloat(_result.values.quantity) < 0)
+      var _ns_item_total_amount =
+          stringutility.convertToFloat(result.amount) + stringutility.convertToFloat(result.taxamount)
+      if (stringutility.convertToFloat(result.quantity) < 0)
         _ns_item_total_amount = -1 * _ns_item_total_amount
 
-      var _linesequencenumber = _result.values.linesequencenumber //1
-      var _line = _result.values.line //1
-      var _itemtype = _result.values.itemtype //InvtPart
+      var _linesequencenumber = result.linesequencenumber //1
+      var _line = result.line //1
+      var _itemtype = result.itemtype //InvtPart
 
-      var _memo = _result.values['memo']
-      //var _item_salesdescription = _result.values['item.salesdescription']
+      var _memo = result['memo']
+      //var _item_salesdescription = result['item.salesdescription']
       var _prodcut_id = ''
       var _prodcut_text = ''
-      if (_result.values.item.length != 0) {
-        _prodcut_id = _result.values.item[0].value //10519
-        _prodcut_text = _result.values.item[0].text //NI20200811000099
+      if (result.item.length != 0) {
+        _prodcut_id = result.item[0].value //10519
+        _prodcut_text = result.item[0].text //NI20200811000099
       }
       log.debug('ns_item_name_field', _ns_item_name_field)
-      var _item_displayname = _result.values[_ns_item_name_field] //SONY電視機
+      var _item_displayname = result[_ns_item_name_field] //SONY電視機
       if (_ns_item_name_field == 'item.displayname') {
         _item_displayname = _prodcut_text + _item_displayname
       }
       //if (stringutility.trim(_memo) != '') _item_displayname = _memo
 
-      var _item_taxItem_rate = _result.values['taxItem.rate'] //5.00%
+      var _item_taxItem_rate = result.taxRate //5.00%
       if (_item_taxItem_rate == '') {
         _item_taxItem_rate = '0'
       } else {
@@ -1225,9 +1344,9 @@ define([
       var _item_salestaxcodeValue = '' //10
       var _item_salestaxcodeText = '' //VAT-BIZ05
 
-      _item_salestaxcodeText = _result.values['taxItem.itemid'] //VAT-BIZ05
-      if (_result.values['taxItem.internalid'].length != 0) {
-        _item_salestaxcodeValue = _result.values['taxItem.internalid'][0].value //10
+      // _item_salestaxcodeText = result['taxItem.itemid'] //VAT-BIZ05
+      if (result.taxCode.length != 0) {
+        _item_salestaxcodeValue = result.taxCode[0].value //10
 
         //抓稅別資料
         _taxObj = getTaxInformation(_item_salestaxcodeValue)
@@ -1247,32 +1366,32 @@ define([
         }
       }
 
-      var _rate = _result.values.rate //單價3142.85714286
+      var _rate = result.rate //單價3142.85714286
       var _department = ''
-      if (_result.values.department.length != 0) {
-        _department = _result.values.department[0].value
+      if (result.department.length != 0) {
+        _department = result.department[0].value
         _selectDepartment = _department + ''
       }
       var _class = ''
-      if (_result.values.class.length != 0) {
-        _class = _result.values.class[0].value
+      if (result.class.length != 0) {
+        _class = result.class[0].value
         _selectClassification = _class
       }
-      var _quantity = _result.values.quantity
+      var _quantity = result.quantity
       //20210909 walter 預設值設為1
       if (_quantity.trim().length == 0) _quantity = '1'
 
       //單位
-      var _unitabbreviation = _result.values.unitabbreviation
+      var _unitabbreviation = result.unitabbreviation
 
       //額外備註
-      var _extra_memo = _result.values.custbody_gw_tcm_extra_memo
+      var _extra_memo = result.custbody_gw_tcm_extra_memo
       if (_index_tranid != _tranid) {
         _total_extra_memo += _extra_memo
         _index_tranid = _tranid
       }
       //明細備註
-      var _item_memo = _result.values.custcol_gw_item_memo
+      var _item_memo = result.custcol_gw_item_memo
 
       if (_itemtype === 'Discount') {
         //20210908 walter modify => 折扣項目作進Item, 不另外處理
@@ -1284,10 +1403,10 @@ define([
       //主檔才做
       if (_recordType == 'invoice' && _mainline == '*') {
         var _ns_tax_total_amount = stringutility.convertToFloat(
-          _result.values.taxtotal
+          result.taxtotal
         ) //稅額總計 -5.00
         var _ns_total_amount = stringutility.convertToFloat(
-          _result.values.total
+          result.total
         ) //金額總計
         //grossamount
         _ns_SumTotalAmount += _ns_total_amount
@@ -1906,101 +2025,76 @@ define([
     return _sumJsonObj
   }
 
-  function createCreditMemoDetails(form, _selected_creditmemo_Id) {
-    //處理Detail
-    var sublist = form.addSublist({
-      id: 'creditmemosublistid',
-      type: serverWidget.SublistType.LIST,
-      label: 'NS Credit Memo 商品清單'
-    })
-    //sublist.addMarkAllButtons();
-    
-    var _gw_gui_num_start_field= form.getField({
-      id: 'custbody_gw_gui_num_start'
-    })
-
-    var _idField = sublist.addField({
+  function createCreditMemoSublistFields(sublist) {
+    sublist.addField({
       id: 'customer_search_creditmemo_id',
       label: 'Internal ID',
       type: serverWidget.FieldType.TEXT
-    })
-    _idField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
-    var _numberField = sublist.addField({
+    sublist.addField({
       id: 'customer_search_creditmemo_number',
       label: 'Credit Memo Number',
       type: serverWidget.FieldType.TEXT
-    })
-    _numberField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
-
     //放dept_code
-    var _deptCodeField = sublist.addField({
+    sublist.addField({
       id: 'customer_search_creditmemo_deptcode',
       label: 'Internal ID',
       type: serverWidget.FieldType.TEXT
-    })
-    _deptCodeField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     //放classfication
-    var _classficationField = sublist.addField({
+    sublist.addField({
       id: 'customer_search_creditmemo_class',
       label: 'Internal ID',
       type: serverWidget.FieldType.TEXT
-    })
-    _classficationField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
     //Discount
-    var _discountField = sublist.addField({
+    sublist.addField({
       id: 'customer_search_creditmemo_discount',
       label: 'Discount Item',
       type: serverWidget.FieldType.TEXT
-    })
-    _discountField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
-    var _seqField = sublist.addField({
+    sublist.addField({
       id: 'customer_search_creditmemo_seq',
       type: serverWidget.FieldType.TEXT,
       label: '順序'
     })
-
-    var _itemNameField = sublist.addField({
+    sublist.addField({
       id: 'custpage_item_name',
       type: serverWidget.FieldType.TEXT,
       label: '名稱'
-    })
-    _itemNameField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.ENTRY
     })
-
-    var _taxRateField = sublist.addField({
+    sublist.addField({
       id: 'customer_search_creditmemo_tax_rate',
       label: '稅率%',
       type: serverWidget.FieldType.TEXT
-    })
-    _taxRateField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
-    var _taxRateNoteField = sublist.addField({
+    sublist.addField({
       id: 'customer_search_creditmemo_tax_rate_note',
       label: '稅率%',
       type: serverWidget.FieldType.TEXT
     })
-
-    var _taxCodeField = sublist.addField({
+    sublist.addField({
       id: 'customer_search_creditmemo_tax_code',
       label: '稅別',
       type: serverWidget.FieldType.TEXT
-    })
-    _taxCodeField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
-
     sublist.addField({
       id: 'custpage_creditmemo_item_unit',
       type: serverWidget.FieldType.TEXT,
@@ -2031,66 +2125,54 @@ define([
     })
     ////////////////////////////////////////////////////////////////////////////////////////
     //20201105 walter modify
-    var _itemTaxAmountField = sublist.addField({
+    sublist.addField({
       id: 'custpage_creditmemo_item_tax_amount',
       label: 'Item Tax Amount',
       type: serverWidget.FieldType.TEXT
-    })
-    _itemTaxAmountField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
-    var _itemTotalAmountField = sublist.addField({
+    sublist.addField({
       id: 'custpage_creditmemo_item_total_amount',
       label: 'Item Toatl Amount',
       type: serverWidget.FieldType.TEXT
-    })
-    _itemTotalAmountField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
 
-    var _totalTaxAmountField = sublist.addField({
+    sublist.addField({
       id: 'custpage_creditmemo_total_tax_amount',
       label: 'Item Tax Amount',
       type: serverWidget.FieldType.TEXT
-    })
-    _totalTaxAmountField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
-    var _totalAmountField = sublist.addField({
+    sublist.addField({
       id: 'custpage_creditmemo_total_sum_amount',
       label: 'Item Toatl Amount',
       type: serverWidget.FieldType.TEXT
-    })
-    _totalAmountField.updateDisplayType({
+    }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.HIDDEN
     })
-    /////////////////////////////////////////////////////////////////////////////////////////
+  }
+
+  function createCreditMemoDetails(form, creditMemoDetailsArrayObject) {
+    //處理Detail
+    var sublist = form.addSublist({
+      id: 'creditmemosublistid',
+      type: serverWidget.SublistType.LIST,
+      label: 'NS Credit Memo 商品清單'
+    })
+    //sublist.addMarkAllButtons();
+    var _gw_gui_num_start_field= form.getField({
+      id: 'custbody_gw_gui_num_start'
+    })
+    createCreditMemoSublistFields(sublist)
+
     //1.處理 CreditMemo Detail Items
     var _selectDepartment = ''
     var _selectClassification = ''
-    var _mySearch = search.load({
-      id: _gw_creditmemo_detail_search_id
-    })
-    var _filterArray = []
-    if (_selected_creditmemo_Id != null) {
-      var _internalIdAry = _selected_creditmemo_Id.split(',')
-      _filterArray.push(['internalid', 'anyof', _internalIdAry])
-    }
-    ////////////////////////////////////////////////////////////////
-    //check this issue 20201028
-    _filterArray.push('and')
-    _filterArray.push(['recordtype', 'is', 'creditmemo'])
-    //_filterArray.push('and');
-    //_filterArray.push(['mainline','is', false]);
-    _filterArray.push('and')
-    _filterArray.push(['taxline', 'is', false]) //擋稅別科目
-    _filterArray.push('and')
-    _filterArray.push(['cogs', 'is', false]) //擋庫存及成本科目
-    _filterArray.push('AND')
-    _filterArray.push([[['mainline', 'is', 'T']], 'OR', [['mainline', 'is', 'F'], 'AND', ['item', 'noneof', '@NONE@']]])
-    ////////////////////////////////////////////////////////////////
-    _mySearch.filterExpression = _filterArray
-    ////////////////////////////////////////////////////////////////////////////////////////
+
     var row = 0
     //客戶代碼
     var _customer_id = 0
@@ -2134,22 +2216,21 @@ define([
 
     //var _nsSalesAccountValue = getNSInvoiceAccount('CREDITMEMO_ACCOUNT', 'CREDITMEMO_DETAIL_ACCOUNT');
 
-    _mySearch.run().each(function (result) {
-      var _result = JSON.parse(JSON.stringify(result))
+    creditMemoDetailsArrayObject.forEach(function (result) {
+      log.debug({title: 'createCreditMemoDetails - result', details: result})
 
-      var _recordType = _result.recordType //creditmemo
-      var _id = _result.id //948
-      var _valueObj = _result.values //object
-      var _mainline = _result.values.mainline
+      var _recordType = result.recordType //creditmemo
+      var _id = result.id //948
+      var _mainline = result.mainline
       log.debug('_mainline', '_mainline=' + _mainline)
       log.debug('credit memo result', JSON.stringify(result))
 
       /////////////////////////////////////////////////////////////////////////////////////////////////
       //處理零稅率資訊
-      if (_result.values.custbody_gw_customs_export_category.length != 0) {
+      if (result.custbody_gw_customs_export_category.length != 0) {
         //海關出口單類別
         _gw_customs_export_category_value =
-          _result.values.custbody_gw_customs_export_category[0].value //3
+            result.custbody_gw_customs_export_category[0].value //3
         var _customs_export_category_record = record.load({
           type: 'customrecord_gw_customs_export_category',
           id: parseInt(_gw_customs_export_category_value, 10),
@@ -2159,10 +2240,10 @@ define([
           { fieldId: 'custrecord_gw_customers_export_cate_id' }
         )
       }
-      if (_result.values.custbody_gw_applicable_zero_tax.length != 0) {
+      if (result.custbody_gw_applicable_zero_tax.length != 0) {
         //適用零稅率規定
         _gw_applicable_zero_tax_value =
-          _result.values.custbody_gw_applicable_zero_tax[0].value //5
+            result.custbody_gw_applicable_zero_tax[0].value //5
         var _ap_doc_exempt_option_record = record.load({
           type: 'customrecord_gw_ap_doc_exempt_option',
           id: parseInt(_gw_applicable_zero_tax_value, 10),
@@ -2172,10 +2253,10 @@ define([
           fieldId: 'custrecord_gw_ap_doc_exempt_value'
         })
       }
-      if (_result.values.custbody_gw_egui_clearance_mark.length != 0) {
+      if (result.custbody_gw_egui_clearance_mark.length != 0) {
         //通關註記
         _gw_egui_clearance_mark_value =
-          _result.values.custbody_gw_egui_clearance_mark[0].value //5
+            result.custbody_gw_egui_clearance_mark[0].value //5
         var _ap_doc_custom_option_record = record.load({
           type: 'customrecord_gw_ap_doc_custom_option',
           id: parseInt(_gw_egui_clearance_mark_value, 10),
@@ -2186,15 +2267,15 @@ define([
         })
       }
       //海關出口號碼 : AA123456789012
-      _gw_customs_export_no = _result.values.custbody_gw_customs_export_no
+      _gw_customs_export_no = result.custbody_gw_customs_export_no
       //輸出或結匯日期 : 2021/01/22
       _gw_customs_export_date = convertExportDate(
-        _result.values.custbody_gw_customs_export_date
+          result.custbody_gw_customs_export_date
       )
       log.debug('_gw_customs_export_date', _gw_customs_export_date)
       /////////////////////////////////////////////////////////////////////////////////////////////////
 
-      var _trandate = _result.values.trandate
+      var _trandate = result.trandate
       var _dateStr = dateutility.getVoucherDateByDate(_trandate)
       if (
         stringutility.convertToFloat(_dateStr) >
@@ -2203,20 +2284,20 @@ define([
         _index_date = _dateStr
         _index_trandate = _trandate
       }
-      var _tranid = _result.values.tranid //AZ10000019
+      var _tranid = result.tranid //AZ10000019
 
       var _entityValue = '' //529
       var _entityText = '' //11 se06_company公司
-      if (_result.values.entity.length != 0) {
-        _entityValue = _result.values.entity[0].value //529
-        _entityText = _result.values.entity[0].text //11 se06_company公司
+      if (result.entity.length != 0) {
+        _entityValue = result.entity[0].value //529
+        _entityText = result.entity[0].text //11 se06_company公司
       }
 
       //Invoice統編
-      _customer_ban = _result.values.custbody_gw_tax_id_number //99999997
+      _customer_ban = result.custbody_gw_tax_id_number //99999997
       if (stringutility.trim(_company_name) == '') {
-        _company_name = _result.values.custbody_gw_gui_title
-        _company_address = _result.values.custbody_gw_gui_address
+        _company_name = result.custbody_gw_gui_title
+        _company_address = result.custbody_gw_gui_address
         //公司名稱
         //_companyObj = getCustomerRecord(_customer_ban)
         if (typeof _companyObj !== 'undefined') {
@@ -2224,53 +2305,50 @@ define([
         }
       }
       //客戶Email
-      _customer_email = _result.values['customer.email']
+      _customer_email = result['customer.email']
 
       var _accountValue = '' //54
       var _accountText = '' //4000 Sales
-      if (_result.values.account.length != 0) {
-        _accountValue = _result.values.account[0].value //54
-        _accountText = _result.values.account[0].value //4000 Sales
+      if (result.account.length != 0) {
+        _accountValue = result.account[0].value //54
+        _accountText = result.account[0].value //4000 Sales
       }
-      var _amount = stringutility.convertToFloat(_result.values.amount) //31428.57(未稅)
+      var _amount = stringutility.convertToFloat(result.amount) //31428.57(未稅)
       //20201105 walter modify
       //NS 的總稅額
       var _ns_total_tax_amount = stringutility.convertToFloat(
-        _result.values.taxtotal
+        result.taxtotal
       ) //稅額總計 -5.00
       //NS 的總金額小計
       var _ns_total_sum_amount = stringutility.convertToFloat(
-        _result.values.total
+        result.total
       ) //金額總計(含稅)
       //NS 的稅額
       var _ns_item_tax_amount = stringutility.convertToFloat(
-        _result.values.taxamount
+        result.taxamount
       ) //稅額總計 -5.00
-      //NS 的Item金額小計
-      var _ns_item_total_amount = stringutility.convertToFloat(
-        _result.values.formulacurrency
-      ) //Item金額小計
+      var _ns_item_total_amount =
+          stringutility.convertToFloat(result.amount) + stringutility.convertToFloat(result.taxamount)
+      var _linesequencenumber = result.linesequencenumber //1
+      var _line = result.line //1
+      var _itemtype = result.itemtype //InvtPart
 
-      var _linesequencenumber = _result.values.linesequencenumber //1
-      var _line = _result.values.line //1
-      var _itemtype = _result.values.itemtype //InvtPart
-
-      var _memo = _result.values['memo'] //雅結~~
-      //var _item_salesdescription = _result.values['item.salesdescription']
+      var _memo = result['memo'] //雅結~~
+      //var _item_salesdescription = result['item.salesdescription']
       var _prodcut_id = ''
       var _prodcut_text = ''
-      if (_result.values.item.length != 0) {
-        _prodcut_id = _result.values.item[0].value //10519
-        _prodcut_text = _result.values.item[0].text //NI20200811000099
+      if (result.item.length != 0) {
+        _prodcut_id = result.item[0].value //10519
+        _prodcut_text = result.item[0].text //NI20200811000099
       }
       log.debug('ns_item_name_field', _ns_item_name_field)
-      var _item_displayname = _result.values[_ns_item_name_field] //SONY電視機
+      var _item_displayname = result[_ns_item_name_field] //SONY電視機
       if (_ns_item_name_field == 'item.displayname') {
         _item_displayname = _prodcut_text + _item_displayname
       }
       //if (stringutility.trim(_memo) != '') _item_displayname = _memo
 
-      var _item_taxItem_rate = _result.values['taxItem.rate'] //5.00%
+      var _item_taxItem_rate = result.taxRate //5.00%
       if (_item_taxItem_rate == '') {
         _item_taxItem_rate = '0'
       } else {
@@ -2280,11 +2358,11 @@ define([
       _tax_rate = _item_taxItem_rate
 
       var _item_salestaxcodeValue = '' //10
-      var _item_salestaxcodeText = _result.values['taxItem.itemid'] //VAT-BIZ05
+      // var _item_salestaxcodeText = result['taxItem.itemid'] //VAT-BIZ05
 
-      if (_result.values['taxItem.internalid'].length != 0) {
-        _item_salestaxcodeValue = _result.values['taxItem.internalid'][0].value //10
-        //_item_salestaxcodeText  = _result.values['taxItem.internalid'][0].text;   //VAT-BIZ05
+      if (result.taxCode.length != 0) {
+        _item_salestaxcodeValue = result.taxCode[0].value //10
+        //_item_salestaxcodeText  = result['taxItem.internalid'][0].text;   //VAT-BIZ05
         _taxObj = getTaxInformation(_item_salestaxcodeValue)
         if (typeof _taxObj !== 'undefined') {
           if (_taxObj.voucher_property_value == '2') _hasZeroTax = true //零稅率
@@ -2300,24 +2378,24 @@ define([
         }
       }
       /////////////////////////////////////////////////////////////////////////////////
-      var _rate = _result.values.fxrate //3047.61904762
+      var _rate = result.fxrate //3047.61904762
 
       var _department = ''
-      if (_result.values.department.length != 0) {
-        _department = _result.values.department[0].value
+      if (result.department.length != 0) {
+        _department = result.department[0].value
         _selectDepartment = _department + ''
       }
       var _class = ''
-      if (_result.values.class.length != 0) {
-        _class = _result.values.class[0].value
+      if (result.class.length != 0) {
+        _class = result.class[0].value
         _selectClassification = _class
       }
 
-      var _quantity = _result.values.quantity
+      var _quantity = result.quantity
       //20210909 walter 預設值設為1
       if (_quantity.trim().length == 0) _quantity = '1'
       //單位
-      var _unitabbreviation = _result.values.unitabbreviation
+      var _unitabbreviation = result.unitabbreviation
 
       if (_itemtype === 'Discount') {
         //20210908 walter modify => 折扣項目作進Item, 不另外處理
@@ -2328,10 +2406,10 @@ define([
       //主檔才做
       if (_recordType == 'creditmemo' && _mainline == '*') {
         var _ns_tax_total_amount = stringutility.convertToFloat(
-          _result.values.taxtotal
+          result.taxtotal
         ) //稅額總計 -5.00
         var _ns_total_amount = stringutility.convertToFloat(
-          _result.values.total
+          result.total
         ) //金額總計
         //grossamount
         _ns_SumTotalAmount += _ns_total_amount
@@ -2345,7 +2423,7 @@ define([
         // &&  _itemtype != 'Discount'
       ) {
     	  
-        _gw_gui_num_start_field.defaultValue = _result.values.custbody_gw_gui_num_start
+        _gw_gui_num_start_field.defaultValue = result.custbody_gw_gui_num_start
     	  
         //抓第1筆當部門
         if (_default_department_id.length == 0) {
@@ -2709,13 +2787,19 @@ define([
     if (_selected_invoice_Id != null) {
       var _idAry = _selected_invoice_Id.split(',')
       if (_idAry.length > 1) {
-        createInvoiceDetails(form, _selected_invoice_Id)
+        const invoiceSearchResultArray = getInvoiceDetailsById(_selected_invoice_Id)
+        const invoiceDetailsArrayObject = composeResultObject(invoiceSearchResultArray)
+        log.debug({title: 'invoiceDetailsArrayObject', details: invoiceDetailsArrayObject})
+        createInvoiceDetails(form, invoiceDetailsArrayObject)
       }
     }
     if (_selected_creditmemo_Id != null) {
       var _idAry = _selected_creditmemo_Id.split(',')
       if (_idAry.length > 1) {
-        createCreditMemoDetails(form, _selected_creditmemo_Id)
+        const creditMemoSearchResultArray = getCreditMemoDetailsById(_selected_creditmemo_Id)
+        const creditMemoDetailsArrayObject = composeResultObject(creditMemoSearchResultArray)
+        log.debug({title: 'creditMemoDetailsArrayObject', details: creditMemoDetailsArrayObject})
+        createCreditMemoDetails(form, creditMemoDetailsArrayObject)
       }
     }
     /////////////////////////////////////////////////////////////////////////////////////////
