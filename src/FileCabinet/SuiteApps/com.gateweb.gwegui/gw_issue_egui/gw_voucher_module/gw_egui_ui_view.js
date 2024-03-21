@@ -322,7 +322,9 @@ define([
     _buyer_name.defaultValue = _voucher_record.getValue({
       fieldId: 'custrecord_gw_buyer_name',
     })
-
+    _buyer_name.updateDisplayType({
+      displayType: serverWidget.FieldDisplayType.DISABLED,
+    })
     //買方E-mail
     var _buyer_email = form.addField({
       id: 'custpage_buyer_email',
@@ -333,7 +335,9 @@ define([
     _buyer_email.defaultValue = _voucher_record.getValue({
       fieldId: 'custrecord_gw_buyer_email',
     })
-
+    _buyer_email.updateDisplayType({
+      displayType: serverWidget.FieldDisplayType.DISABLED,
+    })
     //買方地址
     var _customs_buyer_address = form.addField({
       id: 'custpage_buyer_address',
@@ -344,6 +348,9 @@ define([
     _customs_buyer_address.defaultValue = _voucher_record.getValue({
       fieldId: 'custrecord_gw_buyer_address',
     })
+    _customs_buyer_address.updateDisplayType({
+      displayType: serverWidget.FieldDisplayType.DISABLED,
+    })
     //發票備註
     var _main_remark = form.addField({
       id: 'custpage_main_remark',
@@ -353,6 +360,9 @@ define([
     })
     _main_remark.defaultValue = _voucher_record.getValue({
       fieldId: 'custrecord_gw_main_remark',
+    })
+    _main_remark.updateDisplayType({
+      displayType: serverWidget.FieldDisplayType.DISABLED,
     })
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //載具類別
@@ -365,6 +375,9 @@ define([
     _carrier_type.addSelectOption({
       value: '',
       text: '-----',
+    })
+    _carrier_type.updateDisplayType({
+      displayType: serverWidget.FieldDisplayType.DISABLED,
     })
     /////////////////////////////////////////////////////////////////////////////////////////
     //20210913 walter add
@@ -398,6 +411,9 @@ define([
     _carrier_id_1.defaultValue = _voucher_record.getValue({
       fieldId: 'custrecord_gw_carrierid1',
     })
+    _carrier_id_1.updateDisplayType({
+      displayType: serverWidget.FieldDisplayType.DISABLED,
+    })
     var _carrier_id_2 = form.addField({
       id: 'custpage_carrier_id_2',
       type: serverWidget.FieldType.TEXT,
@@ -406,7 +422,10 @@ define([
     })
     _carrier_id_2.defaultValue = _voucher_record.getValue({
       fieldId: 'custrecord_gw_carrierid2',
-    }) 
+    })
+    _carrier_id_2.updateDisplayType({
+      displayType: serverWidget.FieldDisplayType.DISABLED,
+    })
     //捐贈碼
     var _npo_ban_field = form.addField({
       id: 'custpage_npo_ban',
@@ -416,6 +435,9 @@ define([
     })
     _npo_ban_field.defaultValue = _voucher_record.getValue({
       fieldId: 'custrecord_gw_npoban',
+    })
+    _npo_ban_field.updateDisplayType({
+      displayType: serverWidget.FieldDisplayType.DISABLED,
     })
     //通關註記
     var _customs_clearance_mark = form.addField({
@@ -468,6 +490,10 @@ define([
     _mig_type.addSelectOption({
       value: 'B2C',
       text: '存證',
+    })
+    _mig_type.addSelectOption({
+      value: 'Exchange',
+      text: '交換',
     })
     _mig_type.defaultValue = _voucher_record.getValue({
       fieldId: 'custrecord_gw_mig_type',
@@ -647,28 +673,25 @@ define([
       displayType: serverWidget.FieldDisplayType.HIDDEN,
     })
 
-    var _seqField = sublist.addField({
+    sublist.addField({
       id: 'customer_search_invoice_seq',
       type: serverWidget.FieldType.TEXT,
       label: '順序',
     })
-    var _itemNameField = sublist.addField({
+    sublist.addField({
       id: 'custpage_item_name',
       type: serverWidget.FieldType.TEXT,
       label: '名稱',
     })
-    var _taxRateNoteField = sublist.addField({
+    sublist.addField({
       id: 'customer_search_invoice_tax_rate_note',
       label: '稅率%',
       type: serverWidget.FieldType.TEXT,
     })
-    var _itemUnitField = sublist.addField({
+    sublist.addField({
       id: 'custpage_invoice_item_unit',
       type: serverWidget.FieldType.TEXT,
       label: '單位',
-    })
-	_itemUnitField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.ENTRY,
     })
     sublist.addField({
       id: 'custpage_unit_price',
@@ -685,15 +708,16 @@ define([
       type: serverWidget.FieldType.TEXT,
       label: '小計(未稅)',
     })
-    var _itemRemarkField = sublist.addField({
+    sublist.addField({
       id: 'custpage_item_remark',
       type: serverWidget.FieldType.TEXT,
       label: '明細備註',
     })
-    _itemRemarkField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.ENTRY,
+    sublist.addField({
+      id: 'custpage_item_relate_number',
+      type: serverWidget.FieldType.TEXT,
+      label: 'Item Relate Number',
     })
-    //_itemRemarkField.maxLength = 40;
 
     //1.處理 Voucher Detail Items
     var _selectDepartment = ''
@@ -713,7 +737,8 @@ define([
         search.createColumn({ name: 'custrecord_gw_item_remark' }),
         search.createColumn({ name: 'custrecord_gw_dtl_item_tax_rate' }),
         search.createColumn({ name: 'custrecord_gw_ns_document_type' }),
-        search.createColumn({ name: 'custrecord_gw_ns_document_apply_id' })
+        search.createColumn({ name: 'custrecord_gw_ns_document_apply_id' }),
+        search.createColumn({ name: 'custrecord_gw_dtl_item_relate_number' })
       ],
     })
 
@@ -801,6 +826,11 @@ define([
         id: 'custpage_item_remark',
         line: row,
         value: stringutility.trimOrAppendBlank(_item_remark),
+      })
+      sublist.setSublistValue({
+        id: 'custpage_item_relate_number',
+        line: row,
+        value: stringutility.trimOrAppendBlank(_result.values['custrecord_gw_dtl_item_relate_number']),
       })
 
       row++

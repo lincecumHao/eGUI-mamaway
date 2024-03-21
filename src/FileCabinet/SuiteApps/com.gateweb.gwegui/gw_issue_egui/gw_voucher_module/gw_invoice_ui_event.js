@@ -3006,6 +3006,11 @@ define([
                 fieldId: 'custrecord_gw_dtl_voucher_apply_period',
                 value: _applyPeriod
               })
+              _voucherMainRecord.setCurrentSublistValue({
+                sublistId: voucherDetailSublistId,
+                fieldId: 'custrecord_gw_dtl_item_relate_number',
+                value: _obj.itemRelateNumber
+              })
               _voucherMainRecord.commitLine({
                 sublistId: voucherDetailSublistId
               })
@@ -4377,6 +4382,8 @@ define([
           fieldId: 'custpage_invoice_total_sum_amount',
           line: i
         })
+        var invoiceItemRelateNumber = _current_record.getSublistValue({
+          sublistId: _invoiceSublistId, fieldId: 'custpage_item_relate_number', line: i})
 
         var _document_type = 'INVOICE'
         if (stringutility.trim(_discount) === 'SALES_ORDER') {
@@ -4410,7 +4417,8 @@ define([
           total_tax_amount: _total_tax_amount,
           total_sum_amount: _total_sum_amount,
           item_tax_amount: _item_tax_amount,
-          item_total_amount: _item_total_amount
+          item_total_amount: _item_total_amount,
+          itemRelateNumber: invoiceItemRelateNumber
         }
         //alert('item obj='+JSON.stringify(_obj));
         if (_taxObj.voucher_property_value == '3') {
@@ -4554,6 +4562,9 @@ define([
           line: i
         })
 
+        var creditMemoItemRelateNumber = _current_record.getSublistValue({
+          sublistId: _invoiceSublistId, fieldId: 'custpage_item_relate_number', line: i})
+
         //目前taxCode=10 [應稅] , taxCode=5 [免稅] ,
         //1=應稅 [5]
         //2=零稅率 [0]
@@ -4581,7 +4592,8 @@ define([
           total_tax_amount: _total_tax_amount,
           total_sum_amount: _total_sum_amount,
           item_tax_amount: _item_tax_amount,
-          item_total_amount: _item_total_amount
+          item_total_amount: _item_total_amount,
+          itemRelateNumber: creditMemoItemRelateNumber
         }
 
         if (_taxObj.voucher_property_value == '3') {
