@@ -845,6 +845,7 @@ define([
               nsDocumentNumber: _tranid,
               nsDocumentItemId: _item_internalid_value,
               nsDocumentItemSeq: _linesequencenumber,
+              itemRelateNumber: _result.values['custcol_gw_item_relate_number'] || ''
             }
             _line_index++
 
@@ -2500,7 +2501,10 @@ log.debug('檢查 jsonObj',  JSON.stringify(jsonObj))
                 value: historyInvoiceObj.documentYearMonth,
               })
             }
-
+            _voucherDetailRecord.setValue({
+              fieldId: 'custrecord_gw_dtl_item_relate_number',
+              value: stringutility.trim(_detailObj.itemRelateNumber),
+            })
             try {
               var callId = _voucherDetailRecord.save()
             } catch (e) {
