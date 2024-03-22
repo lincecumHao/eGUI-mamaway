@@ -186,7 +186,8 @@ define([
     unitPrice,
     amount,
     sequenceNumber,
-    itemremark
+    itemremark,
+    itemRelateNumber
   ) {
     try {
       var _migInvoiceNode = xml.XPath.select({
@@ -252,6 +253,13 @@ define([
                 itemremark,
                 false
               )
+              converNode(
+                  _childNodes[j].firstChild,
+                  'ProductItem',
+                  'RelateNumber',
+                  itemRelateNumber,
+                  false
+              )
             } else {
               var _productItemNode = _childNodes[j].lastChild
               //複製筆數
@@ -277,6 +285,7 @@ define([
                 true
               )
               converNode(_copiedNode, 'Remark', 'Remark', itemremark, true)
+              converNode(_copiedNode, 'RelateNumber', 'RelateNumber', itemRelateNumber, true)
 
               _childNodes[j].appendChild(_copiedNode)
             }
@@ -1090,6 +1099,10 @@ define([
           _result.values[
             'CUSTRECORD_GW_VOUCHER_MAIN_INTERNAL_ID.custrecord_gw_original_gui_yearmonth'
           ]
+        var itemRelateNumber =
+            _result.values[
+                'CUSTRECORD_GW_VOUCHER_MAIN_INTERNAL_ID.custrecord_gw_dtl_item_relate_number'
+                ]
         /**
         var _item_tax_type = gwconfigure.getGwTaxTypeFromNSTaxCode(
           _dtl_item_tax_code
@@ -1169,7 +1182,8 @@ define([
             _unit_price,
             _item_amount,
             _item_seq,
-            _item_remark
+            _item_remark,
+            itemRelateNumber
           )
         } else {
           setAllowanceXmlDetailsItemValue(

@@ -64,6 +64,8 @@ define([
   var isEGUIDepartmentEnable = true
   var isEGUIClassEnable = true
 
+  var fieldHiddenControl = serverWidget.FieldDisplayType.HIDDEN
+
   //取得賣方公司資料
   function getSellerInfo(businessNo) {
     var _companyObj
@@ -206,7 +208,7 @@ define([
       label: '適用零稅率規定'
     })
     _applicable_zero_tax_field.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     
     var _gw_gui_num_start_field = form.addField({
@@ -215,7 +217,7 @@ define([
       label: '發票號碼起號'
     })
     _gw_gui_num_start_field.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     
     //海關出口單類別
@@ -225,7 +227,7 @@ define([
       label: '海關出口單類別'
     })
     _customs_export_category_field.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     //海關出口號碼
     var _customs_export_no_field = form.addField({
@@ -234,7 +236,7 @@ define([
       label: '海關出口號碼'
     })
     _customs_export_no_field.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     //輸出或結匯日期
     var _customs_export_date_field = form.addField({
@@ -243,7 +245,7 @@ define([
       label: '輸出或結匯日期'
     })
     _customs_export_date_field.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     ////////////////////////////////////////////////////////////////////////////////////////////////
     var _row01_fieldgroupid = form.addFieldGroup({
@@ -259,7 +261,7 @@ define([
       container: 'row01_fieldgroupid'
     })
     _company_ban.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     //公司地址
     var _company_address = form.addField({
@@ -269,7 +271,7 @@ define([
       container: 'row01_fieldgroupid'
     })
     _company_address.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     //公司名稱
     var _company_name = form.addField({
@@ -307,7 +309,7 @@ define([
       container: 'row01_fieldgroupid'
     })
     _print_type.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
 
     //發票資料格式
@@ -319,7 +321,7 @@ define([
     })
     _mig_type.addSelectOption({
       value: 'B2C',
-      text: 'B2C-存證'
+      text: 'B2C/B2B-存證'
     })
     //發票備註
     var _main_remark = form.addField({
@@ -473,7 +475,7 @@ define([
       text: '2:經海關'
     })
     _customs_clearance_mark.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
 
     //課稅別
@@ -534,7 +536,7 @@ define([
       container: 'row01_fieldgroupid'
     })
     _hidden_voucher_extra_memo.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     //////////////////////////////////////////////////////////////////////////////////////////////
     //未稅銷售額
@@ -590,7 +592,7 @@ define([
       container: 'row01_fieldgroupid'
     })
     _sum_item_total_amount_field.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
 
     //憑證日期
@@ -712,7 +714,7 @@ define([
       container: 'row01_fieldgroupid'
     })
     _voucherOpenTypeField.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
   }
 
@@ -984,14 +986,14 @@ define([
       label: 'Internal ID',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     sublist.addField({
       id: 'customer_search_invoice_number',
       label: 'Invoice Number',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     //放dept_code
     sublist.addField({
@@ -999,7 +1001,7 @@ define([
       label: 'Internal ID',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     //放classfication
     sublist.addField({
@@ -1007,7 +1009,7 @@ define([
       label: 'Internal ID',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     //Discount
     sublist.addField({
@@ -1015,7 +1017,7 @@ define([
       label: 'Discount Item',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     sublist.addField({
       id: 'customer_search_invoice_seq',
@@ -1034,7 +1036,7 @@ define([
       label: '稅率%',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     sublist.addField({
       id: 'customer_search_invoice_tax_rate_note',
@@ -1046,7 +1048,7 @@ define([
       label: '稅別',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     sublist.addField({
       id: 'custpage_invoice_item_unit',
@@ -1077,6 +1079,15 @@ define([
     }).updateDisplayType({
       displayType: serverWidget.FieldDisplayType.ENTRY
     })
+
+    sublist.addField({
+      id: 'custpage_item_relate_number',
+      type: serverWidget.FieldType.TEXT,
+      label: 'Item Relate Number'
+    }).updateDisplayType({
+      displayType: serverWidget.FieldDisplayType.ENTRY
+    })
+    
     /////////////////////////////////////////////////////////////////////////////////////////
     //20201105 walter modify
     sublist.addField({
@@ -1084,28 +1095,28 @@ define([
       label: 'Item Tax Amount',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     sublist.addField({
       id: 'custpage_invoice_item_total_amount',
       label: 'Item Toatl Amount',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     sublist.addField({
       id: 'custpage_invoice_total_tax_amount',
       label: 'Total Tax Amount',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     sublist.addField({
       id: 'custpage_invoice_total_sum_amount',
       label: 'Sum Toatl Amount',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
   }
 
@@ -1549,7 +1560,11 @@ define([
           line: row,
           value: stringutility.trimOrAppendBlank(_ns_total_sum_amount)
         })
-
+        sublist.setSublistValue({
+          id: 'custpage_item_relate_number',
+          line: row,
+          value: result.custcol_gw_item_relate_number || ' '
+        })
         row++
         /////////////////////////////////////////////////////////////////////////////////////////
         //處理總計
@@ -2031,14 +2046,14 @@ define([
       label: 'Internal ID',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     sublist.addField({
       id: 'customer_search_creditmemo_number',
       label: 'Credit Memo Number',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     //放dept_code
     sublist.addField({
@@ -2046,7 +2061,7 @@ define([
       label: 'Internal ID',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     //放classfication
     sublist.addField({
@@ -2054,7 +2069,7 @@ define([
       label: 'Internal ID',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     //Discount
     sublist.addField({
@@ -2062,7 +2077,7 @@ define([
       label: 'Discount Item',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     sublist.addField({
       id: 'customer_search_creditmemo_seq',
@@ -2081,7 +2096,7 @@ define([
       label: '稅率%',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     sublist.addField({
       id: 'customer_search_creditmemo_tax_rate_note',
@@ -2093,7 +2108,7 @@ define([
       label: '稅別',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     sublist.addField({
       id: 'custpage_creditmemo_item_unit',
@@ -2123,6 +2138,14 @@ define([
     _itemRemarkField.updateDisplayType({
       displayType: serverWidget.FieldDisplayType.ENTRY
     })
+
+    sublist.addField({
+      id: 'custpage_item_relate_number',
+      type: serverWidget.FieldType.TEXT,
+      label: 'Item Relate Number'
+    }).updateDisplayType({
+      displayType: serverWidget.FieldDisplayType.ENTRY
+    })
     ////////////////////////////////////////////////////////////////////////////////////////
     //20201105 walter modify
     sublist.addField({
@@ -2130,14 +2153,14 @@ define([
       label: 'Item Tax Amount',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     sublist.addField({
       id: 'custpage_creditmemo_item_total_amount',
       label: 'Item Toatl Amount',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
 
     sublist.addField({
@@ -2145,14 +2168,14 @@ define([
       label: 'Item Tax Amount',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     sublist.addField({
       id: 'custpage_creditmemo_total_sum_amount',
       label: 'Item Toatl Amount',
       type: serverWidget.FieldType.TEXT
     }).updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
   }
 
@@ -2538,7 +2561,11 @@ define([
           line: row,
           value: stringutility.trimOrAppendBlank(_ns_total_sum_amount)
         })
-
+        sublist.setSublistValue({
+          id: 'custpage_item_relate_number',
+          line: row,
+          value: result.custcol_gw_item_relate_number || ' '
+        })
         row++
 
         _sumSalesAmount += stringutility.convertToFloat(_amount)
@@ -2739,7 +2766,7 @@ define([
       label: 'HIDDEN'
     })
     _hiddenfield.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     //紀錄可扣餘額
     var _hidden_deposit_voucher_field = form.addField({
@@ -2748,7 +2775,7 @@ define([
       label: 'HIDDEN'
     })
     _hidden_deposit_voucher_field.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     //////////////////////////////////////////////////////////////////////////////////////////
     //發票List
@@ -2758,7 +2785,7 @@ define([
       label: 'HIDDEN'
     })
     _hiddeninvoicelistld.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     _hiddeninvoicelistld.defaultValue = _selected_invoice_Id
     //折讓單List
@@ -2768,7 +2795,7 @@ define([
       label: 'HIDDEN'
     })
     _hiddencreditmemolistld.updateDisplayType({
-      displayType: serverWidget.FieldDisplayType.HIDDEN
+      displayType: fieldHiddenControl
     })
     _hiddencreditmemolistld.defaultValue = _selected_creditmemo_Id
     //////////////////////////////////////////////////////////////////////////////////////////

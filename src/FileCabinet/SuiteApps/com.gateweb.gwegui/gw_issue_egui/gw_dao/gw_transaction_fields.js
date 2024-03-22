@@ -301,6 +301,13 @@ define(['../../library/ramda.min'], function (ramda) {
             name: 'custcol_gw_item_memo',
             join: '',
         },
+        custcol_gw_item_relate_number: {
+            id: 'custcol_gw_item_relate_number',
+            sourceField: 'custcol_gw_item_relate_number',
+            outputField: 'custcol_gw_item_relate_number',
+            name: 'custcol_gw_item_relate_number',
+            join: '',
+        },
         'item.displayname': {
             id: 'item.displayname',
             sourceField: 'item.displayname',
