@@ -4563,7 +4563,7 @@ define([
         })
 
         var creditMemoItemRelateNumber = _current_record.getSublistValue({
-          sublistId: _invoiceSublistId, fieldId: 'custpage_item_relate_number', line: i})
+          sublistId: _creditMemoSublistId, fieldId: 'custpage_item_relate_number', line: i})
 
         //目前taxCode=10 [應稅] , taxCode=5 [免稅] ,
         //1=應稅 [5]
