@@ -205,5 +205,11 @@
       <isinactive>F</isinactive>
       <name>外部憑證已開立</name>
     </instance>
+    <instance scriptid="val_gw_issue_status_es">
+      <custrecord_gw_evidence_status_text>出口外銷免開發票</custrecord_gw_evidence_status_text>
+      <custrecord_gw_evidence_status_value>ES</custrecord_gw_evidence_status_value>
+      <isinactive>F</isinactive>
+      <name>出口外銷免開發票</name>
+    </instance>
   </instances>
 </customrecordtype>
