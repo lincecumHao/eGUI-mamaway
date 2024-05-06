@@ -1,4 +1,4 @@
-define(['./moment-with-locales'], function (moment, config) {
+define(['./moment-with-locales'], function (moment) {
   /**
    * Module Description...
    *
@@ -65,11 +65,17 @@ define(['./moment-with-locales'], function (moment, config) {
     return moment(dateStr)
   }
 
+  function getDateWithFormat(dateStr, currentFormat, newFormat) {
+    var currentDate = moment(dateStr, currentFormat)
+    return moment(currentDate).format(newFormat)
+  }
+
   exports.getGuiPeriod = getGuiPeriod
   exports.getGracePeriod = getGracePeriod
   exports.getNsCompatibleDate = getNsCompatibleDate
   exports.getCurrentDateTime = getCurrentDateTime
   exports.getDateObject = getDateObject
   exports.getCurrentDateInYYYYMMDD = getCurrentDateInYYYYMMDD
+  exports.getDateWithFormat = getDateWithFormat
   return exports
 })
