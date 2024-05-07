@@ -1,4 +1,4 @@
-<transactionbodycustomfield scriptid="custbody_export_serial_number">
+<transactionbodycustomfield scriptid="custbody_gw_export_serial_number">
   <accesslevel>2</accesslevel>
   <applyformatting>F</applyformatting>
   <bodycustomerpayment>F</bodycustomerpayment>
