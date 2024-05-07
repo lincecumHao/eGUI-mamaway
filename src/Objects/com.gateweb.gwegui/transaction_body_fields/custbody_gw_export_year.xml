@@ -56,5 +56,5 @@
   <sourcefrom></sourcefrom>
   <sourcelist></sourcelist>
   <storevalue>T</storevalue>
-  <subtab>[appid=com.gateweb.gwegui, scriptid=custtab_gw_st_egui]</subtab>
+  <subtab>[scriptid=custtab_gw_st_egui]</subtab>
 </transactionbodycustomfield>
