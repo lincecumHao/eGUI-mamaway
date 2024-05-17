@@ -105,6 +105,9 @@ define([
         var cr = currentRecord.get()
         try {
             var fieldValue = cr.getValue({fieldId: scriptContext.fieldId})
+            console.log('validateField - fieldValue', fieldValue)
+            console.log('validateField - fieldValue.length', fieldValue.length)
+
             if(scriptContext.fieldId === 'custbody_gw_export_import_customs_area') {
                 if(fieldValue.length > 2) {
                     alert('輸入關別最多為兩碼')
@@ -121,19 +124,23 @@ define([
                     validateResult = false
                 }
             }else if(scriptContext.fieldId === 'custbody_gw_export_case_number') {
-                var exportSerialNumber = cr.getValue({fieldId: 'custbody_gw_export_serial_number'})
-                var caseNumberLength = 8 - exportSerialNumber.length
-                if(caseNumberLength < fieldValue.length && fieldValue.length < 3 || fieldValue.length > 4) {
+                if(fieldValue.length !== 0 && fieldValue.length < 3 || fieldValue.length > 4) {
                     alert('箱(艙)號為3~4碼, 請確認輸入是否有誤')
                     validateResult = false
                 }
             }else if(scriptContext.fieldId === 'custbody_gw_export_serial_number') {
-                var exportCaseNumber = cr.getValue({fieldId: 'custbody_gw_export_case_number'})
-                var totalLength = 8 - exportCaseNumber.length
-                if(totalLength < fieldValue.length && fieldValue.length < 4 || fieldValue.length > 5) {
+                if(fieldValue.length !== 0 && fieldValue.length < 4 || fieldValue.length > 5) {
                     alert('自編流水號為4~5碼, 請確認輸入是否有誤')
                     validateResult = false
                 }
+            }
+
+            if(validateResult === false) {
+                cr.setValue({
+                    fieldId: scriptContext.fieldId,
+                    value: '',
+                    ignoreFieldChange: true
+                })
             }
         } catch (e) {
             console.log('validateField - e', JSON.stringify(e))
@@ -186,6 +193,49 @@ define([
         return true;
     }
 
+    function validateExportSalesRequiredField(cr) {
+        var errorMessage = ''
+        var exportSalesClearanceMark = cr.getValue({fieldId: 'custbody_gw_egui_clearance_mark'}) // 通關註記 - 必填
+        var exportSalesApplicableZeroTax = cr.getValue({fieldId: 'custbody_gw_applicable_zero_tax'}) // 適用零稅率規定 - 必填
+        var exportSalesCustomsExportCategory = cr.getValue({fieldId: 'custbody_gw_customs_export_category'}) // 海關出口報單類別 - 如為經海關則必填
+        var exportSalesCustomsExportDate = cr.getValue({fieldId: 'custbody_gw_customs_export_date'}) // 輸出或結匯日期 - 必填
+
+        if(!exportSalesClearanceMark) errorMessage += '通關註記為必填' + '\n'
+        if(!exportSalesApplicableZeroTax) errorMessage += '適用零稅率規定為必填' + '\n'
+        if(exportSalesClearanceMark === '2' && !exportSalesCustomsExportCategory) errorMessage += '經海關, 海關出口報單類別為必填' + '\n'
+        if(!exportSalesCustomsExportDate) errorMessage += '輸出或結匯日期為必填' + '\n'
+
+        console.log('validateExportSalesRequiredField - Export Sales Info', {
+            exportSalesClearanceMark: exportSalesClearanceMark,
+            exportSalesApplicableZeroTax: exportSalesApplicableZeroTax,
+            exportSalesCustomsExportCategory: exportSalesCustomsExportCategory,
+            exportSalesCustomsExportDate: exportSalesCustomsExportDate
+        })
+
+        console.log('validateExportSalesRequiredField - errorMessage', errorMessage)
+        alert(errorMessage)
+
+        var exportSalesImportCustomsArea = cr.getValue({fieldId: 'custbody_gw_export_import_customs_area'}) // 輸入關別 - 如為經海關則必填
+        if(exportSalesClearanceMark === '2' && !exportSalesImportCustomsArea) errorMessage += '經海關, 輸入關別為必填' + '\n'
+
+        var exportSalesTransportCustomsArea = cr.getValue({fieldId: 'custbody_gw_export_transport_customs_a'}) // 轉運關別 - 如為經海關且有轉運關別則選填
+
+        var exportSalesExportYear = cr.getValue({fieldId: 'custbody_gw_export_year'}) // 民國年度 - 如為經海關則必填
+        if(exportSalesClearanceMark === '2' && !exportSalesExportYear) errorMessage += '經海關, 民國年度為必填' + '\n'
+
+        var exportSalesExportCaseNumber = cr.getValue({fieldId: 'custbody_gw_export_case_number'}) // 箱(艙)號 - 如為經海關則必填
+        if(exportSalesClearanceMark === '2' && !exportSalesExportCaseNumber) errorMessage += '經海關, 箱(艙)號為必填' + '\n'
+
+        var exportSalesExportSerialNumber = cr.getValue({fieldId: 'custbody_gw_export_serial_number'}) // 自編流水號 - 如為經海關則必填
+        if(exportSalesClearanceMark === '2' && !exportSalesExportSerialNumber) errorMessage += '經海關, 自編流水號為必填' + '\n'
+
+        var exportSalesZeroTaxSalesAmount = cr.getValue({fieldId: 'custbody_gw_gui_sales_amt_tax_zero'}) // 零稅銷售額 - 必填
+        if(!exportSalesZeroTaxSalesAmount) errorMessage += '零稅銷售額為必填' + '\n'
+
+
+        return false
+    }
+
     /**
      * Validation function to be executed when record is saved.
      *
@@ -196,8 +246,20 @@ define([
      * @since 2015.2
      */
     function saveRecord(scriptContext) {
+        var returnFlag = false
+        var cr = currentRecord.get()
 
-        return true;
+        var exportSalesInfoCompleted = cr.getValue({
+            fieldId: 'custbody_gw_es_info_completed'
+        })
+        console.log('saveRecord - exportSalesInfoCompleted', exportSalesInfoCompleted)
+        if(exportSalesInfoCompleted) {
+            //TODO - validate required field value
+            returnFlag = validateExportSalesRequiredField(cr)
+        }
+
+
+        return returnFlag
     }
 
     exports.pageInit = pageInit;
