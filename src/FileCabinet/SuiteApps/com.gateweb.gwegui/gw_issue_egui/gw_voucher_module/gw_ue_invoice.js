@@ -13,16 +13,28 @@ define([
     'N/search',
     '../../gw_library/gw_lib_transaction_util',
     'N/record',
-    '../../library/gw_date_util'
+    '../../library/gw_date_util',
+    'N/ui/serverWidget'
 ], (
     gwTransactionEGUIFields,
     search,
     gwLibTransactionUtil,
     record,
-    gwDateUtil
+    gwDateUtil,
+    serverWidget
 ) => {
 
     let exports = {};
+
+    function isExportSalesInvoice(scriptContext) {
+        return scriptContext.newRecord.getValue({fieldId: 'custbody_gw_es_info_completed'})
+    }
+
+    function updateFieldsDisplayType(scriptContext) {
+        const form = scriptContext.form
+        form.getField({id: 'custbody_gw_evidence_issue_status'}).updateDisplayType({displayType: serverWidget.FieldDisplayType.INLINE})
+        form.getField({id: 'custbody_gw_es_info_completed'}).updateDisplayType({displayType: serverWidget.FieldDisplayType.DISABLED})
+    }
 
     /**
      * Defines the function definition that is executed before record is loaded.
@@ -40,6 +52,10 @@ define([
                 log.debug({title: 'beforeLoad - clearValueForEGUI', details: 'start'})
                 gwLibTransactionUtil.clearValueForEGUI(scriptContext)
                 gwLibTransactionUtil.setSourceFieldValue(scriptContext)
+            }
+
+            if (scriptContext.type === scriptContext.UserEventType.EDIT && isExportSalesInvoice(scriptContext)) {
+                updateFieldsDisplayType(scriptContext)
             }
         } catch (e) {
             log.error({
@@ -127,6 +143,11 @@ define([
         columns.push(getSearchColumn('custrecord_gw_ap_doc_custom_text', 'CUSTBODY_GW_EGUI_CLEARANCE_MARK'))
         columns.push(getSearchColumn('custrecord_gw_ap_doc_custom_value', 'CUSTBODY_GW_EGUI_CLEARANCE_MARK'))
         columns.push(getSearchColumn('fxamount'))
+        columns.push(getSearchColumn('custbody_gw_export_import_customs_area'))
+        columns.push(getSearchColumn('custbody_gw_export_transport_customs_a'))
+        columns.push(getSearchColumn('custbody_gw_export_year'))
+        columns.push(getSearchColumn('custbody_gw_export_case_number'))
+        columns.push(getSearchColumn('custbody_gw_export_serial_number'))
         var invoiceSearchObj = search.create({
             type: search.Type.INVOICE,
             filters,
@@ -149,9 +170,12 @@ define([
         }
         const recordType = 'customrecord_gw_business_entity'
         let filters = []
-        filters.push(['custrecord_gw_be_ns_subsidiary', 'anyof', subsidiary])
-        filters.push('OR')
-        filters.push(['custrecord_gw_be_ns_id', 'is', subsidiary])
+        if(subsidiary) {
+            filters.push(['custrecord_gw_be_ns_subsidiary', 'anyof', subsidiary])
+            filters.push('OR')
+            filters.push(['custrecord_gw_be_ns_id', 'is', subsidiary])
+        }
+
         let columns = []
         columns.push('custrecord_gw_be_tax_id_number')
         columns.push('custrecord_gw_be_gui_title')
@@ -209,6 +233,13 @@ define([
         return voucherMainRecordObject
     }
 
+    function getCustomsExportNumber(invoiceInfoObject) {
+        const fieldsValueObject = invoiceInfoObject.values
+        const transportCustomsArea = invoiceInfoObject.values.custbody_gw_export_transport_customs_a.length === 2
+            ? invoiceInfoObject.values.custbody_gw_export_transport_customs_a : '  '
+        return `${fieldsValueObject.custbody_gw_export_import_customs_area}${transportCustomsArea}${fieldsValueObject.custbody_gw_export_year}${fieldsValueObject.custbody_gw_export_case_number}${fieldsValueObject.custbody_gw_export_serial_number}`
+    }
+
     function createOrUpdateExportedSalesVoucherMain(scriptContext) {
         log.audit({title: 'createOrUpdateExportedSalesVoucherMain', details: 'start...'})
         const invoiceInfoObject = getExportedSalesInformationById(scriptContext.newRecord.id)
@@ -222,7 +253,7 @@ define([
 
         voucherMainRecordObject.setValue({
             fieldId: 'name',
-            value: `ExportedSales-${scriptContext.newRecord.id}`
+            value: `ExportedSales-${invoiceInfoObject.values.tranid}`
         })
         voucherMainRecordObject.setValue({
             fieldId: 'custrecord_gw_voucher_type',
@@ -241,22 +272,20 @@ define([
         })
 
         const subsidiary = scriptContext.newRecord.getValue({fieldId: 'subsidiary'})
-        if(subsidiary) {
-            // TODO get seller info by subsidiary id
-            const sellerInfoObject = getSellerInfoBySubsidiaryId(subsidiary)
-            voucherMainRecordObject.setValue({
-                fieldId: 'custrecord_gw_seller',
-                value: sellerInfoObject.sellerTaxId
-            })
-            voucherMainRecordObject.setValue({
-                fieldId: 'custrecord_gw_seller_name',
-                value: sellerInfoObject.sellerName
-            })
-            voucherMainRecordObject.setValue({
-                fieldId: 'custrecord_gw_seller_address',
-                value: sellerInfoObject.sellerAddress
-            })
-        }
+        // TODO get seller info by subsidiary id
+        const sellerInfoObject = getSellerInfoBySubsidiaryId(subsidiary)
+        voucherMainRecordObject.setValue({
+            fieldId: 'custrecord_gw_seller',
+            value: sellerInfoObject.sellerTaxId
+        })
+        voucherMainRecordObject.setValue({
+            fieldId: 'custrecord_gw_seller_name',
+            value: sellerInfoObject.sellerName
+        })
+        voucherMainRecordObject.setValue({
+            fieldId: 'custrecord_gw_seller_address',
+            value: sellerInfoObject.sellerAddress
+        })
 
         //custrecord_gw_buyer - INV: 統一編號(id: custbody_gw_tax_id_number)
         voucherMainRecordObject.setValue({
@@ -311,7 +340,8 @@ define([
         //custrecord_gw_customs_export_no - INV: 海關出口報單號碼(id: custbody_gw_customs_export_no)
         voucherMainRecordObject.setValue({
             fieldId: 'custrecord_gw_customs_export_no',
-            value: invoiceInfoObject.values['custbody_gw_customs_export_no']
+            // value: invoiceInfoObject.values['custbody_gw_customs_export_no']
+            value: getCustomsExportNumber(invoiceInfoObject)
         })
         //custrecord_gw_customs_export_date - INV: 輸出或結匯日期(id: custbody_gw_customs_export_date) - need to convert to YYYMMDD
         voucherMainRecordObject.setValue({
@@ -319,6 +349,7 @@ define([
             value: gwDateUtil.getYYYMMDD(scriptContext.newRecord.getValue({fieldId: 'custbody_gw_customs_export_date'}), 'MM/DD/YYYY')
         })
         voucherMainRecordObject.setValue({fieldId: 'custrecord_gw_ns_transaction', value: scriptContext.newRecord.id})
+        voucherMainRecordObject.setValue({fieldId: 'custrecord_gw_need_upload_egui_mig', value: 'NONE'})
 
         const resultId = voucherMainRecordObject.save({ignoreMandatoryFields: true})
         log.debug({title: 'createOrUpdateExportedSalesVoucherMain - resultId', details: resultId})
@@ -341,6 +372,8 @@ define([
                 log.debug({
                     title: 'afterSubmit - date convert',
                     details: {
+                        esInfoCompleted_old,
+                        esInfoCompleted_new,
                         tranDate: scriptContext.newRecord.getValue({fieldId: 'trandate'}),
                         getGuiPeriod: gwDateUtil.getGuiPeriod(scriptContext.newRecord.getValue({fieldId: 'trandate'})),
                         getGracePeriod: gwDateUtil.getGracePeriod(scriptContext.newRecord.getValue({fieldId: 'trandate'})),

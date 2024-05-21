@@ -138,9 +138,9 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
   }
 
   function afterSubmit(context) {
-    var frm = context.form
+    var currentEvidenceIssueStatus = context.newRecord.getValue({fieldId: 'custbody_gw_evidence_issue_status'})
     try {
-      if (context.type == context.UserEventType.EDIT) {
+      if (currentEvidenceIssueStatus !== getExportSalesStatusId() && context.type === context.UserEventType.EDIT) {
         var _current_record = context.newRecord
 
         //發票號碼
@@ -249,7 +249,8 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
   }
 
   function beforeSubmit(context) {
-    if (context.type == context.UserEventType.EDIT) {
+    var currentEvidenceIssueStatus = context.newRecord.getValue({fieldId: 'custbody_gw_evidence_issue_status'})
+    if (currentEvidenceIssueStatus !== getExportSalesStatusId() && context.type === context.UserEventType.EDIT) {
       if (!validateCustomsExportNumberLength(context)) {
         throw error.create({
           name: '零稅率資訊',
@@ -303,6 +304,27 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
       log.error(e.name, e.message)
     }
     return _result
+  }
+
+  function getExportSalesStatusId() {
+    var exportSalesStatusId = null
+    var filters = [];
+    filters.push(['custrecord_gw_evidence_status_value', 'is', 'ES']);
+    var columns = [];
+    columns.push('custrecord_gw_evidence_status_value');
+    columns.push('custrecord_gw_evidence_status_text');
+    var getExportSalesEvidenceStatusSearchObj = search.create({
+      type: 'customrecord_gw_evidence_status',
+      filters: filters,
+      columns: columns,
+    });
+    getExportSalesEvidenceStatusSearchObj.run().each(function(result){
+      // .run().each has a limit of 4,000 results
+      exportSalesStatusId = result.id;
+      return true;
+    })
+
+    return exportSalesStatusId;
   }
 
   exports.beforeSubmit = beforeSubmit
