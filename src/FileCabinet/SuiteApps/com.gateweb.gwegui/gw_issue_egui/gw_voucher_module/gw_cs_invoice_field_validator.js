@@ -3,7 +3,7 @@
  * @copyright 2024 GateWeb
  * @author Chesley Lo <chesleylo@gateweb.com.tw>
  *
- * @NApiVersion 2.x
+ * @NApiVersion 2.1
  * @NModuleScope Public
  *
  * @NScriptType ClientScript
