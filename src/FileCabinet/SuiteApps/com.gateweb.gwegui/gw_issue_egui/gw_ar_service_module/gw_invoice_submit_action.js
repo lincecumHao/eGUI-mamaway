@@ -5,7 +5,7 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
   error
 ) {
   /**
-   * @NApiVersion 2.x
+   * @NApiVersion 2.1
    * @NScriptType UserEventScript
    * @NModuleScope Public
    */
@@ -119,11 +119,11 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
       values['custrecord_gw_customs_export_category'] = customs_export_category
       values['custrecord_gw_customs_export_no'] = customs_export_no
       values['custrecord_gw_customs_export_date'] = customs_export_date
-      log.debug(
-        'saveToVoucherMain',
-        'internalid=' + internalid + ', values=' + values
-      )
-      var _id = record.submitFields({
+      log.debug({
+        title: `saveToVoucherMain - id: ${internalid}`,
+        details: values
+      })
+      record.submitFields({
         type: 'customrecord_gw_voucher_main',
         id: internalid,
         values: values,
@@ -137,12 +137,31 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
     }
   }
 
+  function getCustomsExportNumber(context) {
+    const exportSalesImportCustomsArea = context.newRecord.getValue({fieldId: 'custbody_gw_export_import_customs_area'})
+    const transportCustomsArea = (context.newRecord.getValue({fieldId: 'custbody_gw_export_transport_customs_a'})).length === 2 ?
+        context.newRecord.getValue({fieldId: 'custbody_gw_export_transport_customs_a'}) : '  '
+    const exportYear = context.newRecord.getValue({fieldId: 'custbody_gw_export_year'})
+    const exportCaseNumber = context.newRecord.getValue({fieldId: 'custbody_gw_export_case_number'})
+    const exportSerialNumber = context.newRecord.getValue({fieldId: 'custbody_gw_export_serial_number'})
+
+    return `${exportSalesImportCustomsArea}${transportCustomsArea}${exportYear}${exportCaseNumber}${exportSerialNumber}`
+  }
+
   function afterSubmit(context) {
     var currentEvidenceIssueStatus = context.newRecord.getValue({fieldId: 'custbody_gw_evidence_issue_status'})
+    var esInfoCompleted = context.newRecord.getValue({fieldId: 'custbody_gw_es_info_completed'})
+    log.debug({
+      title: 'afterSubmit - start...',
+      details: {
+        currentEvidenceIssueStatus: currentEvidenceIssueStatus,
+        esInfoCompleted: esInfoCompleted
+      }
+    })
     try {
-      if (currentEvidenceIssueStatus !== getExportSalesStatusId() && context.type === context.UserEventType.EDIT) {
+      if (context.type === context.UserEventType.EDIT && esInfoCompleted && currentEvidenceIssueStatus !== getExportSalesStatusId()) {
+        // TODO - proceed to update voucher main
         var _current_record = context.newRecord
-
         //發票號碼
         var _gui_num_start = _current_record.getValue({
           fieldId: 'custbody_gw_gui_num_start'
@@ -170,9 +189,12 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
           fieldId: 'custbody_gw_customs_export_category'
         })
         //海關出口號碼
-        var _customs_export_no = _current_record.getValue({
-          fieldId: 'custbody_gw_customs_export_no'
-        })
+        // var _customs_export_no = _current_record.getValue({
+        //   fieldId: 'custbody_gw_customs_export_no'
+        // })
+
+        var _customs_export_no = getCustomsExportNumber(context)
+        log.debug({title: 'afterSubmit - _customs_export_no', details: _customs_export_no})
         //輸出或結匯日期
         var _customs_export_date = _current_record.getValue({
           fieldId: 'custbody_gw_customs_export_date'
@@ -180,12 +202,6 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
 
         if (_gui_num_start !== '' || _allowance_num_start != '') {
           //save to voucher main
-          /**
-          var _internalid =
-            _gui_num_start.length != 0
-              ? searchVoucherByNumber(_gui_num_start)
-              : searchVoucherByNumber(_allowance_num_start)
-          */
           var _internalid = searchVoucherByInternalId(_current_record.id)
 
           var _tradition_date = convertExportDate(_customs_export_date)
@@ -249,16 +265,6 @@ define(['N/record', 'N/search', 'N/format', 'N/error'], function (
   }
 
   function beforeSubmit(context) {
-    var currentEvidenceIssueStatus = context.newRecord.getValue({fieldId: 'custbody_gw_evidence_issue_status'})
-    if (currentEvidenceIssueStatus !== getExportSalesStatusId() && context.type === context.UserEventType.EDIT) {
-      if (!validateCustomsExportNumberLength(context)) {
-        throw error.create({
-          name: '零稅率資訊',
-          message: '海關出口報單號碼長度須為14碼,海關出口報單類別不可空白!',
-          notifyOff: true
-        })
-      }
-    }
   }
 
   //驗證資料

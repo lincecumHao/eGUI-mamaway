@@ -25,6 +25,8 @@ define([
 ) => {
 
     let exports = {};
+    let singleCreateStatusId = null
+    let exportSalesStatusId = null
 
     function isExportSalesInvoice(scriptContext) {
         return scriptContext.newRecord.getValue({fieldId: 'custbody_gw_es_info_completed'})
@@ -148,6 +150,7 @@ define([
         columns.push(getSearchColumn('custbody_gw_export_year'))
         columns.push(getSearchColumn('custbody_gw_export_case_number'))
         columns.push(getSearchColumn('custbody_gw_export_serial_number'))
+        columns.push(getSearchColumn('custbody_gw_gui_sales_amt_tax_zero'))
         var invoiceSearchObj = search.create({
             type: search.Type.INVOICE,
             filters,
@@ -315,12 +318,12 @@ define([
         //custrecord_gw_zero_sales_amount - INV total amount (need to convert to TWD)
         voucherMainRecordObject.setValue({
             fieldId: 'custrecord_gw_zero_sales_amount',
-            value: invoiceInfoObject.values['fxamount']
+            value: invoiceInfoObject.values['custbody_gw_gui_sales_amt_tax_zero']
         })
         //custrecord_gw_total_amount - INV total amount (need to convert to TWD)
         voucherMainRecordObject.setValue({
             fieldId: 'custrecord_gw_total_amount',
-            value: invoiceInfoObject.values['fxamount']
+            value: invoiceInfoObject.values['custbody_gw_gui_sales_amt_tax_zero']
         })
         //custrecord_voucher_sale_tax_apply_period - need to convert to 申報期別
         voucherMainRecordObject.setValue({
@@ -355,6 +358,29 @@ define([
         log.debug({title: 'createOrUpdateExportedSalesVoucherMain - resultId', details: resultId})
     }
 
+    function getIssueStatusId() {
+        let filters = []
+        let columns = []
+        columns.push('custrecord_gw_evidence_status_value')
+        columns.push('custrecord_gw_evidence_status_text')
+        let getExportSalesEvidenceStatusSearchObj = search.create({
+            type: 'customrecord_gw_evidence_status',
+            filters,
+            columns
+        })
+        getExportSalesEvidenceStatusSearchObj.run().each(function(result){
+            // .run().each has a limit of 4,000 results
+            switch (result.getValue({name: 'custrecord_gw_evidence_status_value'})) {
+                case 'ES':
+                    exportSalesStatusId = result.id
+                    break;
+                case 'MI':
+                    singleCreateStatusId = result.id
+            }
+            return true
+        })
+    }
+
     /**
      * Defines the function definition that is executed after record is submitted.
      * @param {Object} scriptContext
@@ -366,9 +392,10 @@ define([
     const afterSubmit = (scriptContext) => {
         try {
             if (scriptContext.type !== scriptContext.UserEventType.DELETE) {
+                getIssueStatusId()
                 const esInfoCompleted_old = scriptContext.oldRecord.getValue({fieldId: 'custbody_gw_es_info_completed'})
                 const esInfoCompleted_new = scriptContext.newRecord.getValue({fieldId: 'custbody_gw_es_info_completed'})
-
+                const currentEvidenceIssueStatus = scriptContext.newRecord.getValue({fieldId: 'custbody_gw_evidence_issue_status'})
                 log.debug({
                     title: 'afterSubmit - date convert',
                     details: {
@@ -385,7 +412,7 @@ define([
                     }
                 })
                 
-                if(esInfoCompleted_new) {
+                if(esInfoCompleted_new && currentEvidenceIssueStatus === exportSalesStatusId) {
                     createOrUpdateExportedSalesVoucherMain(scriptContext)
                 }
             }
