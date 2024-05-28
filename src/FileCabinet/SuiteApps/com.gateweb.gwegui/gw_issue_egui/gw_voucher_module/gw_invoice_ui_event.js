@@ -2696,24 +2696,24 @@ define([
           })
 
           //零稅率資訊
-          if (stringutility.trim(_main.applicable_zero_tax) != '') {
-            _voucherMainRecord.setValue({
-              fieldId: 'custrecord_gw_applicable_zero_tax',
-              value: parseInt(_main.applicable_zero_tax)
-            })
-          }
-          _voucherMainRecord.setValue({
-            fieldId: 'custrecord_gw_customs_export_category',
-            value: stringutility.trim(_main.customs_export_category)
-          })
-          _voucherMainRecord.setValue({
-            fieldId: 'custrecord_gw_customs_export_no',
-            value: stringutility.trim(_main.customs_export_no)
-          })
-          _voucherMainRecord.setValue({
-            fieldId: 'custrecord_gw_customs_export_date',
-            value: stringutility.trim(_main.customs_export_date)
-          })
+          // if (stringutility.trim(_main.applicable_zero_tax) != '') {
+          //   _voucherMainRecord.setValue({
+          //     fieldId: 'custrecord_gw_applicable_zero_tax',
+          //     value: parseInt(_main.applicable_zero_tax)
+          //   })
+          // }
+          // _voucherMainRecord.setValue({
+          //   fieldId: 'custrecord_gw_customs_export_category',
+          //   value: stringutility.trim(_main.customs_export_category)
+          // })
+          // _voucherMainRecord.setValue({
+          //   fieldId: 'custrecord_gw_customs_export_no',
+          //   value: stringutility.trim(_main.customs_export_no)
+          // })
+          // _voucherMainRecord.setValue({
+          //   fieldId: 'custrecord_gw_customs_export_date',
+          //   value: stringutility.trim(_main.customs_export_date)
+          // })
           //20210914 walter add
           var _print_mark = invoiceutility.getPrintMark(
             _main.npo_ban,
@@ -3490,22 +3490,22 @@ define([
           })
 
           //零稅率資訊
-          _voucherMainRecord.setValue({
-            fieldId: 'custrecord_gw_applicable_zero_tax',
-            value: stringutility.trim(_main.applicable_zero_tax)
-          })
-          _voucherMainRecord.setValue({
-            fieldId: 'custrecord_gw_customs_export_category',
-            value: stringutility.trim(_main.customs_export_category)
-          })
-          _voucherMainRecord.setValue({
-            fieldId: 'custrecord_gw_customs_export_no',
-            value: stringutility.trim(_main.customs_export_no)
-          })
-          _voucherMainRecord.setValue({
-            fieldId: 'custrecord_gw_customs_export_date',
-            value: stringutility.trim(_main.customs_export_date)
-          })
+          // _voucherMainRecord.setValue({
+          //   fieldId: 'custrecord_gw_applicable_zero_tax',
+          //   value: stringutility.trim(_main.applicable_zero_tax)
+          // })
+          // _voucherMainRecord.setValue({
+          //   fieldId: 'custrecord_gw_customs_export_category',
+          //   value: stringutility.trim(_main.customs_export_category)
+          // })
+          // _voucherMainRecord.setValue({
+          //   fieldId: 'custrecord_gw_customs_export_no',
+          //   value: stringutility.trim(_main.customs_export_no)
+          // })
+          // _voucherMainRecord.setValue({
+          //   fieldId: 'custrecord_gw_customs_export_date',
+          //   value: stringutility.trim(_main.customs_export_date)
+          // })
 
           if (_main.mig_type == 'C0401') {
             //TODO 要產生隨機碼
