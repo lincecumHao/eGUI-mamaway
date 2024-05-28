@@ -34,7 +34,8 @@ define([
 
     function updateFieldsDisplayType(scriptContext) {
         const form = scriptContext.form
-        form.getField({id: 'custbody_gw_evidence_issue_status'}).updateDisplayType({displayType: serverWidget.FieldDisplayType.INLINE})
+        const currentEvidenceIssueStatus = scriptContext.newRecord.getValue({fieldId: 'custbody_gw_evidence_issue_status'})
+        if(currentEvidenceIssueStatus) form.getField({id: 'custbody_gw_evidence_issue_status'}).updateDisplayType({displayType: serverWidget.FieldDisplayType.INLINE})
         form.getField({id: 'custbody_gw_es_info_completed'}).updateDisplayType({displayType: serverWidget.FieldDisplayType.DISABLED})
     }
 
@@ -243,6 +244,11 @@ define([
         return `${fieldsValueObject.custbody_gw_export_import_customs_area}${transportCustomsArea}${fieldsValueObject.custbody_gw_export_year}${fieldsValueObject.custbody_gw_export_case_number}${fieldsValueObject.custbody_gw_export_serial_number}`
     }
 
+    function getExportSalesDocumentNumber(scriptContext) {
+        const documentNumberPrefix = 'GWESINV'
+        return `${documentNumberPrefix}${scriptContext.newRecord.id}`
+    }
+
     function createOrUpdateExportedSalesVoucherMain(scriptContext) {
         log.audit({title: 'createOrUpdateExportedSalesVoucherMain', details: 'start...'})
         const invoiceInfoObject = getExportedSalesInformationById(scriptContext.newRecord.id)
@@ -256,7 +262,7 @@ define([
 
         voucherMainRecordObject.setValue({
             fieldId: 'name',
-            value: `ExportedSales-${invoiceInfoObject.values.tranid}`
+            value: getExportSalesDocumentNumber(scriptContext)
         })
         voucherMainRecordObject.setValue({
             fieldId: 'custrecord_gw_voucher_type',
@@ -353,12 +359,26 @@ define([
         })
         voucherMainRecordObject.setValue({fieldId: 'custrecord_gw_ns_transaction', value: scriptContext.newRecord.id})
         voucherMainRecordObject.setValue({fieldId: 'custrecord_gw_need_upload_egui_mig', value: 'NONE'})
-
         const resultId = voucherMainRecordObject.save({ignoreMandatoryFields: true})
         log.debug({title: 'createOrUpdateExportedSalesVoucherMain - resultId', details: resultId})
+        if(resultId && !existingVoucherMainId) {
+            // TODO write back Export Sales Document Number to invoice
+            const submitFieldsObject = {
+                custbody_gw_gui_num_start: getExportSalesDocumentNumber(scriptContext),
+                custbody_gw_gui_not_upload: true,
+                custbody_gw_is_issue_egui: true,
+                custbody_gw_lock_transaction: true
+            }
+            record.submitFields({
+                type: record.Type.INVOICE,
+                id: scriptContext.newRecord.id,
+                values: submitFieldsObject
+            })
+        }
     }
 
     function getIssueStatusId() {
+        log.audit({title: 'getIssueStatusId', details: 'start...'})
         let filters = []
         let columns = []
         columns.push('custrecord_gw_evidence_status_value')
@@ -393,14 +413,13 @@ define([
         try {
             if (scriptContext.type !== scriptContext.UserEventType.DELETE) {
                 getIssueStatusId()
-                const esInfoCompleted_old = scriptContext.oldRecord.getValue({fieldId: 'custbody_gw_es_info_completed'})
-                const esInfoCompleted_new = scriptContext.newRecord.getValue({fieldId: 'custbody_gw_es_info_completed'})
+                const esInfoCompleted = scriptContext.newRecord.getValue({fieldId: 'custbody_gw_es_info_completed'})
                 const currentEvidenceIssueStatus = scriptContext.newRecord.getValue({fieldId: 'custbody_gw_evidence_issue_status'})
                 log.debug({
                     title: 'afterSubmit - date convert',
                     details: {
-                        esInfoCompleted_old,
-                        esInfoCompleted_new,
+                        esInfoCompleted,
+                        currentEvidenceIssueStatus,
                         tranDate: scriptContext.newRecord.getValue({fieldId: 'trandate'}),
                         getGuiPeriod: gwDateUtil.getGuiPeriod(scriptContext.newRecord.getValue({fieldId: 'trandate'})),
                         getGracePeriod: gwDateUtil.getGracePeriod(scriptContext.newRecord.getValue({fieldId: 'trandate'})),
@@ -412,7 +431,7 @@ define([
                     }
                 })
                 
-                if(esInfoCompleted_new && currentEvidenceIssueStatus === exportSalesStatusId) {
+                if(esInfoCompleted && currentEvidenceIssueStatus === exportSalesStatusId) {
                     createOrUpdateExportedSalesVoucherMain(scriptContext)
                 }
             }

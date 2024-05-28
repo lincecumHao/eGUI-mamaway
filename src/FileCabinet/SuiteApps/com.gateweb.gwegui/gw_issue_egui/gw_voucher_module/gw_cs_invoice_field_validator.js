@@ -30,7 +30,6 @@ define([
      * @since 2015.2
      */
     function pageInit(scriptContext) {
-        // exportSalesStatusId = getExportSalesStatusId()
         getIssueStatusId()
     }
 
@@ -47,6 +46,9 @@ define([
      * @since 2015.2
      */
     function fieldChanged(scriptContext) {
+        if(scriptContext.fieldId === 'custbody_gw_evidence_issue_status' && validateEvidenceIssueStatus(scriptContext)) {
+            scriptContext.currentRecord.setValue({fieldId: 'custbody_gw_is_issue_egui', value: false})
+        }
     }
 
     /**
