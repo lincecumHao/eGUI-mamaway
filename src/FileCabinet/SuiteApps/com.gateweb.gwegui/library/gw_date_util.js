@@ -65,11 +65,27 @@ define(['./moment-with-locales'], function (moment, config) {
     return moment(dateStr)
   }
 
+  function getDateWithFormat(dateStr, currentFormat, newFormat) {
+    var currentDate = moment(dateStr, currentFormat)
+    return moment(currentDate).format(newFormat)
+  }
+
+  function getDateWithFormatInYYYYMMDD(dateStr, currentDateFormat) {
+    var formattedDateString = dateStr
+    if(currentDateFormat !== 'M/D/YYYY') {
+      formattedDateString = moment(dateStr).format('M/D/YYYY')
+    }
+
+    return moment(formattedDateString).format('YYYYMMDD')
+  }
+
   exports.getGuiPeriod = getGuiPeriod
   exports.getGracePeriod = getGracePeriod
   exports.getNsCompatibleDate = getNsCompatibleDate
   exports.getCurrentDateTime = getCurrentDateTime
   exports.getDateObject = getDateObject
   exports.getCurrentDateInYYYYMMDD = getCurrentDateInYYYYMMDD
+  exports.getDateWithFormat = getDateWithFormat
+  exports.getDateWithFormatInYYYYMMDD = getDateWithFormatInYYYYMMDD
   return exports
 })
