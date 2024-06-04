@@ -1,4 +1,4 @@
-<transactionbodycustomfield scriptid="custbody_gw_customs_prove_doc_name">
+<transactionbodycustomfield scriptid="custbody_gw_export_import_customs_area">
   <accesslevel>2</accesslevel>
   <applyformatting>F</applyformatting>
   <bodycustomerpayment>F</bodycustomerpayment>
@@ -34,11 +34,11 @@
   <fieldtype>TEXT</fieldtype>
   <fldsizelabel></fldsizelabel>
   <globalsearch>F</globalsearch>
-  <help></help>
+  <help>(1-2碼)</help>
   <isformula>F</isformula>
   <ismandatory>F</ismandatory>
   <isparent>F</isparent>
-  <label>證明文件名稱</label>
+  <label>輸入關別</label>
   <linktext></linktext>
   <maxlength></maxlength>
   <maxvalue></maxvalue>

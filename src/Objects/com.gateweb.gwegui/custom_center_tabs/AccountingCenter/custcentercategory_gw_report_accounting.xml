@@ -1,0 +1,13 @@
+<centercategory scriptid="custcentercategory_gw_report_accounting">
+  <center>ACCOUNTCENTER</center>
+  <centertab>[appid=com.gateweb.gwegui, scriptid=custcentertab_gw_egui_accounting]</centertab>
+  <label>相關報表</label>
+  <links>
+    <link>
+      <linklabel>出口外銷免開發票清單</linklabel>
+      <linkobject>[scriptid=customsearch_gw_es_inv_list]</linkobject>
+      <linktasktype>SRCH_RSLT</linktasktype>
+      <shortlist>F</shortlist>
+    </link>
+  </links>
+</centercategory>

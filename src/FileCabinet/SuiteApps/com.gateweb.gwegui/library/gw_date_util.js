@@ -1,4 +1,4 @@
-define(['./moment-with-locales'], function (moment, config) {
+define(['./moment-with-locales'], function (moment) {
   /**
    * Module Description...
    *
@@ -72,11 +72,17 @@ define(['./moment-with-locales'], function (moment, config) {
 
   function getDateWithFormatInYYYYMMDD(dateStr, currentDateFormat) {
     var formattedDateString = dateStr
-    if(currentDateFormat !== 'M/D/YYYY') {
+    if (currentDateFormat !== 'M/D/YYYY') {
       formattedDateString = moment(dateStr).format('M/D/YYYY')
     }
 
     return moment(formattedDateString).format('YYYYMMDD')
+  }
+  function getYYYMMDD(dateStr, currentFormat) {
+    var tempDateFormat = getDateWithFormat(dateStr, currentFormat, 'YYYYMMDD')
+    var year = parseInt(tempDateFormat.slice(0, 4))
+
+    return (year - 1911) + tempDateFormat.slice(4)
   }
 
   exports.getGuiPeriod = getGuiPeriod
@@ -87,5 +93,6 @@ define(['./moment-with-locales'], function (moment, config) {
   exports.getCurrentDateInYYYYMMDD = getCurrentDateInYYYYMMDD
   exports.getDateWithFormat = getDateWithFormat
   exports.getDateWithFormatInYYYYMMDD = getDateWithFormatInYYYYMMDD
+  exports.getYYYMMDD = getYYYMMDD
   return exports
 })

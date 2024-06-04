@@ -79,11 +79,29 @@ define([
         })
     }
 
+    function isExportInvoice(scriptContext) {
+        var flag = false
+        var currentEvidenceIssueStatusId = scriptContext.newRecord.getValue({fieldId: 'custbody_gw_evidence_issue_status'})
+        log.audit({title: 'isExportInvoice - currentEvidenceIssueStatusId', details: currentEvidenceIssueStatusId})
+        if(currentEvidenceIssueStatusId) {
+            var lookupResultObject = search.lookupFields({
+                type: 'customrecord_gw_evidence_status',
+                id: currentEvidenceIssueStatusId,
+                columns: ['custrecord_gw_evidence_status_value']
+            })
+            log.audit({title: 'isExportInvoice - lookupResultObject', details: lookupResultObject})
+            flag = lookupResultObject['custrecord_gw_evidence_status_value'] === 'ES'
+        }
+        if(flag) log.audit({title: 'isExportInvoice - flag: ' + flag, details: 'it is an Export Invoice so did not need to create eGUI'})
+        return flag
+    }
+
     exports.setDefaultValueForEGUI = function (scriptContext) {
         log.debug({
             title: 'setDefaultValueForEGUI - gwTransactionEGUIFields.defaultValueFields',
             details: gwTransactionEGUIFields.defaultValueFields
         })
+        if(isExportInvoice(scriptContext)) return
         gwTransactionEGUIFields.defaultValueFields.forEach(function (fieldId) {
             log.debug({
                 title: 'setDefaultValueForEGUI - fieldId',

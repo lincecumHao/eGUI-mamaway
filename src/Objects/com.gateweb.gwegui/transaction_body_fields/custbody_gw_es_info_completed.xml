@@ -1,4 +1,4 @@
-<transactionbodycustomfield scriptid="custbody_gw_customs_prove_doc_name">
+<transactionbodycustomfield scriptid="custbody_gw_es_info_completed">
   <accesslevel>2</accesslevel>
   <applyformatting>F</applyformatting>
   <bodycustomerpayment>F</bodycustomerpayment>
@@ -31,14 +31,14 @@
   <displaywidth></displaywidth>
   <dynamicdefault></dynamicdefault>
   <encryptatrest>F</encryptatrest>
-  <fieldtype>TEXT</fieldtype>
+  <fieldtype>CHECKBOX</fieldtype>
   <fldsizelabel></fldsizelabel>
   <globalsearch>F</globalsearch>
-  <help></help>
+  <help>當零稅率資訊已完成時, 請勾選Checkbox</help>
   <isformula>F</isformula>
   <ismandatory>F</ismandatory>
   <isparent>F</isparent>
-  <label>證明文件名稱</label>
+  <label>零稅率資訊已完成</label>
   <linktext></linktext>
   <maxlength></maxlength>
   <maxvalue></maxvalue>
