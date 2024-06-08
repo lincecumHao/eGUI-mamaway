@@ -4954,6 +4954,13 @@ define([
 
       _filterArray.push('and')
       _filterArray.push([
+        'custrecord_gw_voucher_status',
+        search.Operator.IS,
+        'VOUCHER_SUCCESS'
+      ])
+
+      _filterArray.push('and')
+      _filterArray.push([
         'custrecord_gw_voucher_type',
         search.Operator.IS,
         'EGUI'
