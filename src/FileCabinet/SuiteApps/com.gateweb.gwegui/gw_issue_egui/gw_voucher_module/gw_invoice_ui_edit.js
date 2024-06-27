@@ -2235,6 +2235,8 @@ define([
     var _gw_customs_export_no = ''
     //輸出或結匯日期
     var _gw_customs_export_date = ''
+    //扣抵發票號碼
+    var _gw_custpage_deduction_egui_number = ''
     ////////////////////////////////////////////////////////////
 
     //var _nsSalesAccountValue = getNSInvoiceAccount('CREDITMEMO_ACCOUNT', 'CREDITMEMO_DETAIL_ACCOUNT');
@@ -2438,6 +2440,7 @@ define([
         _ns_SumTotalAmount += _ns_total_amount
         _ns_SumTaxAmount += _ns_tax_total_amount
       }
+
       //只放Sales進來
       if (
         _recordType === 'creditmemo' &&
@@ -2721,6 +2724,37 @@ define([
     _sum_item_total_amount_field.defaultValue = _sum_item_total_amount.toFixed(
       _numericToFixed
     )
+
+    //扣抵發票號碼
+
+    var _custpage_allowance_deduction_period = form.getField({
+      id:'custpage_allowance_deduction_period'
+    })
+    var _custpage_deduction_egui_number = form.getField({
+      id:'custpage_deduction_egui_number'
+    })
+
+    if (!(form.getSublist({id:'invoicesublistid'}))){
+      //if (form.getSublist({id:'invoicesublistid'}) !== null){
+      var groupBy = function(xs, key) {
+        return xs.reduce(function(rv, x) {
+          (rv[x[key]] = rv[x[key]] || []).push(x);
+          return rv;
+        }, {});
+      };
+      var groupByGuiNum = Object.keys(groupBy(creditMemoDetailsArrayObject, 'custbody_gw_gui_num_start'))
+
+      if (groupByGuiNum.length === 1 && groupByGuiNum[0] !== '' ){
+        var _selectDeductionPeriod = form.getField({
+          id:'custpage_allowance_deduction_period'
+        })
+
+        _selectDeductionPeriod.defaultValue = 'user_selected'
+        _custpage_deduction_egui_number.defaultValue = groupByGuiNum[0]
+
+      }
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////
   }
 
@@ -2829,6 +2863,7 @@ define([
         createCreditMemoDetails(form, creditMemoDetailsArrayObject)
       }
     }
+
     /////////////////////////////////////////////////////////////////////////////////////////
     //status, yearMonth, deptCode
     form.addButton({
