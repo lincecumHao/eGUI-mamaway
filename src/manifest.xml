@@ -2,7 +2,7 @@
   <publisherid>com.gateweb</publisherid>
   <projectid>gwegui</projectid>
   <projectname>GW Taiwan EGUI</projectname>
-  <projectversion>24.07.01</projectversion>
+  <projectversion>24.09.01</projectversion>
   <frameworkversion>1.0</frameworkversion>
   <dependencies>
     <features>
