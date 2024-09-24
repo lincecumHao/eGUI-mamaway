@@ -11,6 +11,7 @@ define([
   'N/record',
   'N/format',
   'N/url',
+  'N/https',
   '../gw_common_utility/gw_common_validate_utility',
   '../gw_common_utility/gw_common_date_utility',
   '../gw_common_utility/gw_common_string_utility',
@@ -25,6 +26,7 @@ define([
   record,
   format,
   url,
+  https,
   validate,
   dateutility,
   stringutility,
@@ -1138,21 +1140,83 @@ define([
     return _jsonObj
   }
 
-  function submitDocument(assignlogScriptId, assignlogDeploymentId) {
+  function submitDocument() {
     try {
-    	 var _alert_message = '是否開立憑證'
-	     if (_item_detail_summary_error==true){ 
-	         _alert_message = '小計(含稅)金額與總金額(含稅)不一致,請確認是否仍要開立發票 !'
-	     }
-	     var options = {
-	        title: '憑證管理',
-	        message: _alert_message
-	     }
+      var _alert_message = '是否開立憑證'
+      if (_item_detail_summary_error === true){
+        _alert_message = '小計(含稅)金額與總金額(含稅)不一致,請確認是否仍要開立發票 !'
+      }
+      var options = {
+        title: '憑證管理',
+        message: _alert_message
+      }
 
-         dialog.confirm(options).then(successTask).catch(failureTask)
+      // 原舊方法走client端
+      // dialog.confirm(options).then(successTask).catch(failureTask)
+      dialog.confirm(options).then(saveData).catch(failureTask)
+
     } catch (e) {
       log.debug(e.name, e.message)
     }
+  }
+
+  function saveData(reason) {
+    if (reason === false) return
+
+    document.getElementById('custpage_create_voucher_button').disabled = true
+    document.getElementById('custpage_forward_back_button').disabled = true
+
+    loadAllTaxInformation()
+
+    let mainObj = getApplyMainObject()
+    let jsonDocumemtLists = splitDocumentDetail(mainObj.mig_type)
+    let result = callCreateEgui(mainObj, jsonDocumemtLists)
+
+    if (result.message !== '') {
+      gwmessage.showErrorMessage(result.title, result.message)
+      document.getElementById('custpage_forward_back_button').disabled = false
+      document.getElementById('custpage_create_voucher_button').disabled = false
+
+      return
+    }
+
+    //只有一張發票才跳轉畫面
+    if (result.eGuiCount + result.allowanceCount === 1) {
+      let voucherType = result.eGuiCount === 1 ? 'EGUI': 'ALLOWANCE'
+
+      let params = {
+        voucher_type: voucherType,
+        voucher_internal_id: result.forward_voucher_main_id
+      }
+
+      window.location = url.resolveScript({
+        scriptId: 'customscript_gw_' + voucherType.toLowerCase() + '_ui_view',
+        deploymentId: 'customdeploy_gw_' + voucherType.toLowerCase() + '_ui_view',
+        params: params,
+        returnExternalUrl: false
+      })
+    }
+
+  }
+
+  function callCreateEgui(mainObj, jsonDocumemtLists) {
+    let suiteletUrl = url.resolveScript({
+      scriptId: 'customscript_gw_api_createegui',
+      deploymentId: 'customdeploy_gw_api_createegui'
+    })
+
+    let jsonData = {
+      mainObj: mainObj,
+      jsonDocumemtLists: jsonDocumemtLists
+    }
+
+    let responseData = https.post({
+      url: suiteletUrl,
+      body: JSON.stringify(jsonData),
+      headers: { 'Content-Type': 'application/json' }
+    })
+
+    return JSON.parse(responseData.body)
   }
 
   function failureTask(reason) {
@@ -1994,7 +2058,7 @@ define([
     return _mig
   }
 
-  function getApplyMainObject(year_month) {
+  function getApplyMainObject() {
     var _applyId = 0
     //2.取得頁面填寫資料(GUI或Allowance)
     var _company_ban = _current_record.getValue({
@@ -2012,7 +2076,9 @@ define([
     var _print_type = _current_record.getValue({
       fieldId: 'custpage_print_type'
     })
-    var _mig_type = _current_record.getValue({ fieldId: 'custpage_mig_type' })
+    var _mig_type = _current_record.getValue({
+      fieldId: 'custpage_mig_type'
+    })
     var _main_remark = _current_record.getValue({
       fieldId: 'custpage_main_remark'
     })
@@ -2033,11 +2099,11 @@ define([
     var _buyer_address = _current_record.getValue({
       fieldId: 'custpage_buyer_address'
     })
+
     var _carrier_type = _current_record.getValue({
       fieldId: 'custpage_carrier_type'
     })
-    if (_carrier_type.length != 0)
-      _carrier_type = getCarryTypeValueByID(_carrier_type)
+    if (_carrier_type.length !== 0) _carrier_type = getCarryTypeValueByID(_carrier_type)
 
     var _carrier_id_1 = _current_record.getValue({
       fieldId: 'custpage_carrier_id_1'
@@ -2046,29 +2112,39 @@ define([
       fieldId: 'custpage_carrier_id_2'
     })
 
-    var _npo_ban = _current_record.getValue({ fieldId: 'custpage_npo_ban' })
+    var _npo_ban = _current_record.getValue({
+      fieldId: 'custpage_npo_ban'
+    })
     var _customs_clearance_mark = _current_record.getValue({
       fieldId: 'custpage_customs_clearance_mark'
     })
-    var _dept_code = _current_record.getValue({ fieldId: 'custpage_dept_code' })
+    var _dept_code = _current_record.getValue({
+      fieldId: 'custpage_dept_code'
+    })
     var _classification = _current_record.getValue({
       fieldId: 'custpage_classification'
     })
-    var _tax_type = _current_record.getValue({ fieldId: 'custpage_tax_type' })
-    var _tax_rate = _current_record.getValue({ fieldId: 'custpage_tax_rate' })
-    var _discountamount = _current_record.getValue({
+    var yearMonth = dateutility.getTaxYearMonthByDateObj(
+      _current_record.getValue({
+        fieldId: 'custpage_select_voucher_date'
+      })
+    )
+    var _tax_type = _current_record.getValue({
+      fieldId: 'custpage_tax_type'
+    })
+    var _tax_rate = _current_record.getValue({
+      fieldId: 'custpage_tax_rate'
+    })
+    var _discount_amount = _current_record.getValue({
       fieldId: 'custpage_sales_discount_amount'
     }) //折扣總金額(未稅)
     var _tax_amount = _current_record.getValue({
       fieldId: 'custpage_tax_amount'
     })
-    var _sales_amount = _current_record.getValue({
-      fieldId: 'custpage_sales_amount'
-    })
     var _total_amount = _current_record.getValue({
       fieldId: 'custpage_total_amount'
     })
-    var _gui_yearmonth_type = _current_record.getValue({
+    var _allowance_Deduction_Period = _current_record.getValue({
       fieldId: 'custpage_allowance_deduction_period'
     })
     //20210118 walter 零稅率資訊
@@ -2105,6 +2181,43 @@ define([
       _invoice_type = _format_code_ary[1]
     }
 
+    //new
+    //憑證日期
+    var _select_voucher_date = dateutility.getConvertDateByDateObj(_current_record.getValue({
+      fieldId: 'custpage_select_voucher_date'
+    }))
+    //折讓單扣抵發票號碼
+    var _deduction_egui_number = _current_record.getValue({
+      fieldId: 'custpage_deduction_egui_number'
+    })
+
+    //開立方式 (ALL, EGUI, ALLOWANCE, NONE)
+    var _assign_log_type = _current_record.getValue({
+      fieldId: 'custpage_allowance_log_type'
+    })
+    if (stringutility.trim(_manual_voucher_number) !== '') {
+      _assign_log_type = 'NONE' //手開發票不上傳
+    }
+
+    //開立方式==>MERGE-INVOICE, MERGE-CREDITMEMO, MERGE-ALL(INVOICE+CREDITMEMO), SINGLE(各別開)
+    //儲存至customrecord_gw_voucher_apply_lis用的代碼，因voucher_open_type名稱已被使用
+    var _voucher_open_type_apply_list = _current_record.getValue({
+      fieldId: 'custpage_voucher_open_type'
+    })
+
+    //取得DiscountItem List and Amount
+    var _invoice_selected_listid = _current_record.getValue({
+      fieldId: _invoice_hiddent_listid
+    })
+
+    var _creditmemo_selected_listid = _current_record.getValue({
+      fieldId: _creditmemo_hiddent_listid
+    })
+
+    var _deposit_voucher_hiddent_listid = _current_record.getValue({
+      fieldId: 'custpage_deposit_voucher_hiddent_listid'
+    })
+
     //this_period:當期, early_period:前期
     var _applyMainObj = {
       applyID: _applyId.toString(),
@@ -2125,24 +2238,32 @@ define([
       carrier_id_2: _carrier_id_2,
       npo_ban: _npo_ban,
       customs_clearance_mark: _customs_clearance_mark,
-      gui_yearmonth_type: _gui_yearmonth_type,
+      allowance_Deduction_Period: _allowance_Deduction_Period,
       dept_code: _dept_code,
       classification: _classification,
-      year_month: year_month,
+      year_month: yearMonth,
       tax_type: _tax_type,
       tax_rate: _tax_rate,
-      discountamount: _discountamount,
+      discount_amount: _discount_amount,
       tax_amount: _tax_amount,
       sales_amount: 0,
       free_sales_amount: 0,
       zero_sales_amount: 0,
       total_amount: _total_amount,
+      manual_voucher_number:_manual_voucher_number,
       egui_format_code: _format_code,
       applicable_zero_tax: _applicable_zero_tax,
       customs_export_category: _customs_export_category,
       customs_export_no: _customs_export_no,
       customs_export_date: _customs_export_date,
-      voucher_open_type: 'SINGLE' //先設 default value
+      voucher_open_type: 'SINGLE', //先設 default value
+      select_voucher_date: _select_voucher_date,
+      deduction_egui_number:_deduction_egui_number,
+      assign_log_type:_assign_log_type,
+      voucher_open_type_apply_list:_voucher_open_type_apply_list,
+      invoice_selected_listid:_invoice_selected_listid,
+      creditmemo_selected_listid:_creditmemo_selected_listid,
+      deposit_voucher_hiddent_listid:_deposit_voucher_hiddent_listid
     }
 
     return _applyMainObj
