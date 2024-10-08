@@ -41,16 +41,23 @@ define([
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   }
 
-  function getHtmlTemplateFile() {
-    var filename = 'eguiEmailTemplate.ftl'
+  function getHtmlTemplateFile(migType) {
+    let filename = (migType === 'C0401' || migtype === 'C0501')? 'eguiEmailTemplate.ftl': 'allowancesEmailTemplate.ftl'
+
     return isInDebuggerMode() ? `${debuggerPath}/${filename}` : `./${filename}`
   }
 
   function updateEguiObj(eguiObj) {
     var eguiObjClone = JSON.parse(JSON.stringify(eguiObj))
+
+    eguiObjClone.documentDate = eguiObjClone.documentDate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')
+    eguiObjClone.totalAmt = parseFloat(eguiObjClone.totalAmt).toLocaleString()
     eguiObjClone.lines = ramda.map((line) => {
       // line.unitPrice = Math.round(parseInt(line.unitPrice))
-      line.salesAmt = Math.round(parseInt(line.salesAmt))
+      line.quantity = parseInt(line.quantity).toLocaleString()
+      line.unitPrice = parseFloat(line.unitPrice).toLocaleString()
+      line.salesAmt = Math.round(parseInt(line.salesAmt)).toLocaleString()
+
       return line
     }, eguiObjClone.lines)
     return eguiObjClone
@@ -68,7 +75,7 @@ define([
   class EmailService {
     getEmailBody(eguiObj) {
       var htmlTemplateFile = file.load({
-        id: getHtmlTemplateFile()
+        id: getHtmlTemplateFile(eguiObj.migTypeOption.migType)
       })
       var htmlRenderer = render.create()
       htmlRenderer.templateContent = htmlTemplateFile.getContents()
