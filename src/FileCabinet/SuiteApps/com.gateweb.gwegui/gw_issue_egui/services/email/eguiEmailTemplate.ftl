@@ -33,7 +33,7 @@
             line-height: 1.6;">
     <p><strong style="color: #bf0d32;">請注意 :</strong></p>
     <ol style="line-height: 2;">
-      <li>若有發票內容相關疑問，請洽開立此電子發票之<strong style="color: #bf0d32;">${guiData.sellerName}</strong><#if guiData.sellerTel != ''>。聯絡電話： <span style="color:#bf0d32">${guiData.sellerTel}</span>。</#if></li>
+      <li>若有發票內容相關疑問，請洽開立此電子發票之<strong style="color: #bf0d32;">${guiData.sellerName}</strong>。<#if guiData.sellerTel != ''>聯絡電話： <span style="color:#bf0d32">${guiData.sellerTel}</span>。</#if></li>
       <li>若您為營業人：附件為<strong style="color: #bf0d32;">${guiData.sellerName}</strong>經由關網資訊雲端電子發票系統所開立之電子發票會計憑證圖檔。
       </li>
       <li>若您為消費者，本信件<strong style="color: #bf0d32;">無附送</strong>電子發票會計憑證圖檔。</li>
@@ -134,18 +134,18 @@
     </tr>
     <#list guiData.lines as guiLine>
     <tr>
-      <td style="width: 30%; padding: 8px;
+      <td style="width: 50%; padding: 8px;
                  border: 1px solid #ddd;
                  word-break: break-word;">${guiLine.itemName}</td>
       <td style="width: 10%;padding: 8px;
                  border: 1px solid #ddd;
                  word-break: break-word;
                  text-align: right;">${guiLine.quantity}</td>
-      <td style="width: 15%;padding: 8px;
+      <td style="width: 20%;padding: 8px;
                  border: 1px solid #ddd;
                  word-break: break-word;
                  text-align: right;">${guiLine.unitPrice}</td>
-      <td style="width: 15%;padding: 8px;
+      <td style="width: 20%;padding: 8px;
                  border: 1px solid #ddd;
                  word-break: break-word;
                  text-align: right;">${guiLine.salesAmt}</td>

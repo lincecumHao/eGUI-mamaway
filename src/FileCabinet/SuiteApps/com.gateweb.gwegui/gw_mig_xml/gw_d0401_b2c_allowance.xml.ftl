@@ -1,43 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Allowance xmlns="urn:GEINV:eInvoiceMessage:D0401:3.1">
     <Main>
-        <AllowanceNumber>${AllowanceMain.allowanceNumber}</AllowanceNumber>
-        <AllowanceDate>${AllowanceMain.allowanceDate}</AllowanceDate>
+        <AllowanceNumber>${guiData.documentNumber}</AllowanceNumber>
+        <AllowanceDate>${guiData.documentDate}</AllowanceDate>
         <Seller>
-            <Identifier>${AllowanceMain.sellerIdentifier}</Identifier>
-            <Name>${AllowanceMain.sellerName}</Name>
-            <EmailAddress>${AllowanceMain.sellerEmailAddress!""}</EmailAddress>
+            <Identifier>${guiData.sellerTaxId}</Identifier>
+            <Name>${guiData.sellerName}</Name>
+            <Address>${guiData.sellerAddress}</Address>
         </Seller>
         <Buyer>
-            <Identifier>${AllowanceMain.buyerIdentifier}</Identifier>
-            <#if AllowanceMain.buyerName?has_content>
-                <Name>${AllowanceMain.buyerName}</Name>
-            <#else>
-                <Name>0000</Name>
-            </#if>
-            <EmailAddress>${AllowanceMain.buyerEmailAddress!""}</EmailAddress>
-            <Address>${AllowanceMain.buyerAddress!""}</Address>
+            <Identifier>${guiData.buyerTaxId}</Identifier>
+            <Name>${guiData.buyerName}</Name>
+            <Address>${guiData.buyerAddress}</Address>
         </Buyer>
-        <AllowanceType>${AllowanceMain.allowanceType}</AllowanceType>
+        <AllowanceType>2</AllowanceType>
     </Main>
     <Details>
-        <#list AllowanceDetails as allowanceDetailEntity>
+        <#list guiData.lines as allowanceDetailEntity>
             <ProductItem>
-                <OriginalInvoiceDate>${allowanceDetailEntity.originalInvoiceDate}</OriginalInvoiceDate>
-                <OriginalInvoiceNumber>${allowanceDetailEntity.originalInvoiceNumber}</OriginalInvoiceNumber>
-                <OriginalSequenceNumber>${allowanceDetailEntity.allowanceSequenceNumber}</OriginalSequenceNumber>
-                <OriginalDescription>${allowanceDetailEntity.originalDescription}</OriginalDescription>
-                <Quantity>${allowanceDetailEntity.quantity?string("#.##")}</Quantity>
-                <UnitPrice>${allowanceDetailEntity.unitPrice?string("#.####")}</UnitPrice>
-                <Amount>${allowanceDetailEntity.amount?string("#.####")}</Amount>
-                <Tax>${allowanceDetailEntity.tax?string("#.####")}</Tax>
-                <AllowanceSequenceNumber>${allowanceDetailEntity.allowanceSequenceNumber}</AllowanceSequenceNumber>
-                <TaxType>${allowanceDetailEntity.taxType}</TaxType>
-            </ProductItem>
+			    <OriginalInvoiceDate>${allowanceDetailEntity.appliedDate}</OriginalInvoiceDate>
+			    <OriginalInvoiceNumber>${allowanceDetailEntity.appliedGui}</OriginalInvoiceNumber>
+			    <OriginalSequenceNumber>${allowanceDetailEntity.lineSeq}</OriginalSequenceNumber>
+			    <OriginalDescription>${allowanceDetailEntity.itemName}</OriginalDescription>
+			    <Quantity>${allowanceDetailEntity.quantity}</Quantity>
+			    <Unit/>
+			    <UnitPrice>${allowanceDetailEntity.unitPrice}</UnitPrice>
+			    <Amount>${allowanceDetailEntity.salesAmt}</Amount>
+			    <Tax>${allowanceDetailEntity.taxAmt}</Tax>
+			    <AllowanceSequenceNumber>${allowanceDetailEntity.lineSeq}1</AllowanceSequenceNumber>
+			    <TaxType>${allowanceDetailEntity.taxType}</TaxType>
+		        </ProductItem>
         </#list>
     </Details>
     <Amount>
-        <TaxAmount>${AllowanceMain.taxAmount?string("#")}</TaxAmount>
-        <TotalAmount>${AllowanceMain.totalAmount?string("#")}</TotalAmount>
+        <TaxAmount>${guiData.taxAmt}</TaxAmount>
+        <TotalAmount>${guiData.totalAmt}</TotalAmount>
     </Amount>
 </Allowance>

@@ -42,22 +42,15 @@ define([
   }
 
   function getHtmlTemplateFile(migType) {
-    let filename = (migType === 'C0401' || migtype === 'C0501')? 'eguiEmailTemplate.ftl': 'allowancesEmailTemplate.ftl'
-
+    let filename = (migType === 'C0401' || migType === 'C0501')? 'eguiEmailTemplate.ftl': 'allowanceEmailTemplate.ftl'
     return isInDebuggerMode() ? `${debuggerPath}/${filename}` : `./${filename}`
   }
 
   function updateEguiObj(eguiObj) {
     var eguiObjClone = JSON.parse(JSON.stringify(eguiObj))
-
-    eguiObjClone.documentDate = eguiObjClone.documentDate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')
-    eguiObjClone.totalAmt = parseFloat(eguiObjClone.totalAmt).toLocaleString()
     eguiObjClone.lines = ramda.map((line) => {
       // line.unitPrice = Math.round(parseInt(line.unitPrice))
-      line.quantity = parseInt(line.quantity).toLocaleString()
-      line.unitPrice = parseFloat(line.unitPrice).toLocaleString()
-      line.salesAmt = Math.round(parseInt(line.salesAmt)).toLocaleString()
-
+      line.salesAmt = Math.round(parseInt(line.salesAmt))
       return line
     }, eguiObjClone.lines)
     return eguiObjClone
@@ -102,7 +95,7 @@ define([
 
         log.debug({ title: 'isB2B', details: isB2B(eguiObjUpdated.buyerTaxId) })
         log.debug({ title: 'buyerTaxId', details: eguiObjUpdated.buyerTaxId })
-        if (isB2B(eguiObjUpdated.buyerTaxId)) {
+        if (isB2B(eguiObjUpdated.buyerTaxId) || eguiObjUpdated.migTypeOption.migType === 'D0401' || eguiObjUpdated.migTypeOption.migType === 'D0501') {
           emailContentObj.attachments = this.getAttachmentFiles(eguiObjUpdated)
         }
         return this.send(subject, emailContentObj)
@@ -116,7 +109,22 @@ define([
     }
 
     getEmailContent(eguiObj) {
-      return this.getEmailBody(eguiObj)
+      let eguiObjClone = JSON.parse(JSON.stringify(eguiObj))
+
+      //調整信件內容格式 ex:千分位 日期樣式
+      eguiObjClone.documentDate = eguiObjClone.documentDate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')
+      eguiObjClone.totalAmt = parseFloat(eguiObjClone.totalAmt).toLocaleString()
+      eguiObjClone.lines = ramda.map((line) => {
+        line.quantity = parseInt(line.quantity).toLocaleString()
+        line.unitPrice = parseFloat(line.unitPrice).toLocaleString()
+        line.salesAmt = Math.round(parseInt(line.salesAmt)).toLocaleString()
+        line.taxAmt = parseInt(line.taxAmt).toLocaleString()
+        line.totalAmt = parseInt(line.totalAmt).toLocaleString()
+
+        return line
+      }, eguiObjClone.lines)
+
+      return this.getEmailBody(eguiObjClone)
     }
 
     getAuthor(eguiObj) {
@@ -154,9 +162,9 @@ define([
       var pdfParams = {
         filename: eguiObj.uploadXmlFileName,
         xml: xmlString,
-        docType: 'invoice',
+        docType: eguiObj.documentType ==='EGUI'? 'invoice': 'allowance',
         docStatus: 2,
-        uploadDocument: eguiObj.needUploadMig,
+        uploadDocument: eguiObj.needUploadMig !== 'NONE' ? true: false,
         reprint: false
       }
       var pdfResponse = GwApi.downloadEGuiPdf(pdfParams)
