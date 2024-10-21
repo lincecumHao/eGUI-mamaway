@@ -95,8 +95,8 @@ define(['../../library/ramda.min'], function (ramda) {
     },
     custrecord_gw_original_gui_date: {
       id: 'custrecord_gw_original_gui_date',
-      sourceField: 'appliedDate',
-      outputField: 'appliedDate'
+      sourceField: 'appliedGuiDate',
+      outputField: 'appliedGuiDate'
     },
     custrecord_gw_original_gui_yearmonth: {
       id: 'custrecord_gw_original_gui_yearmonth',

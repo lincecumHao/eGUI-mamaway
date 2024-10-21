@@ -95,7 +95,7 @@ define([
 
         log.debug({ title: 'isB2B', details: isB2B(eguiObjUpdated.buyerTaxId) })
         log.debug({ title: 'buyerTaxId', details: eguiObjUpdated.buyerTaxId })
-        if (isB2B(eguiObjUpdated.buyerTaxId) || eguiObjUpdated.migTypeOption.migType === 'D0401' || eguiObjUpdated.migTypeOption.migType === 'D0501') {
+        if (isB2B(eguiObjUpdated.buyerTaxId) || eguiObj.documentType === 'ALLOWANCE' ) {
           emailContentObj.attachments = this.getAttachmentFiles(eguiObjUpdated)
         }
         return this.send(subject, emailContentObj)
@@ -162,9 +162,9 @@ define([
       var pdfParams = {
         filename: eguiObj.uploadXmlFileName,
         xml: xmlString,
-        docType: eguiObj.documentType ==='EGUI'? 'invoice': 'allowance',
+        docType: eguiObj.documentType === 'EGUI'? 'invoice': 'allowance',
         docStatus: 2,
-        uploadDocument: eguiObj.needUploadMig !== 'NONE' ? true: false,
+        uploadDocument: eguiObj.documentType === 'EGUI'? eguiObj.needUploadMig: true,
         reprint: false
       }
       var pdfResponse = GwApi.downloadEGuiPdf(pdfParams)
