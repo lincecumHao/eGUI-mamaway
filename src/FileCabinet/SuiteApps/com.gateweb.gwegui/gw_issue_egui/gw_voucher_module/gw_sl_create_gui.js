@@ -2443,7 +2443,7 @@ define(['N/format',
         title: 'checkVoucherTaxDifference - _tax_diff_error',
         details: _tax_diff_error
       })
-      _tax_diff_error = true
+
       return _tax_diff_error
     }
 
