@@ -1201,8 +1201,8 @@ define([
 
   function callCreateEgui(mainObj, jsonDocumemtLists) {
     let suiteletUrl = url.resolveScript({
-      scriptId: 'customscript_gw_api_createegui',
-      deploymentId: 'customdeploy_gw_api_createegui'
+      scriptId: 'customscript_gw_sl_create_gui',
+      deploymentId: 'customdeploy_gw_sl_create_gui'
     })
 
     let jsonData = {

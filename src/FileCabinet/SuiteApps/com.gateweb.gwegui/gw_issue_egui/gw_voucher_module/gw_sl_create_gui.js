@@ -7,7 +7,7 @@ define(['N/format',
     'N/record',
     'N/runtime',
     'N/search',
-    '../../gw_issue_egui/gw_common_utility/gw_common_date_utility',
+    '../gw_common_utility/gw_common_date_utility',
     '../../gw_issue_egui/gw_common_utility/gw_common_string_utility',
     '../../gw_issue_egui/gw_common_utility/gw_common_configure',
     '../../gw_issue_egui/gw_common_utility/gw_common_invoice_utility'
