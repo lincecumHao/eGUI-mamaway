@@ -2389,6 +2389,10 @@ define(['N/format',
 
     //檢查稅差
     function checkVoucherTaxDifference(details) {
+      log.audit({
+        title: 'checkVoucherTaxDifference - details',
+        details: details
+      })
       let _tax_diff_error = false
       try {
         let _ns_tax_rate = 0
@@ -2414,6 +2418,15 @@ define(['N/format',
         }
 
         if (_tax_diff_balance < 999) {
+          log.debug({
+            title: 'checkVoucherTaxDifference - before checkTaxDifference',
+            details: {
+              _ns_sales_amount,
+              _ns_tax_rate,
+              _ns_tax_amount,
+              _tax_diff_balance
+            }
+          })
           _tax_diff_error = invoiceutility.checkTaxDifference(
             _ns_sales_amount,
             _ns_tax_rate,
@@ -2425,6 +2438,12 @@ define(['N/format',
       } catch (e) {
         log.debug('checkVoucherTaxDifference_error',e.name + ':' + e.message)
       }
+
+      log.audit({
+        title: 'checkVoucherTaxDifference - _tax_diff_error',
+        details: _tax_diff_error
+      })
+      _tax_diff_error = true
       return _tax_diff_error
     }
 
