@@ -491,7 +491,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
           try {
             var callId = _assignLogRecord.save()
           } catch (e) {
-            console.log(e.name + ':' + e.message)
+            // console.log(e.name + ':' + e.message)
           }
 
           _resultNumber = _invoiceTrack + _assignlog_lastinvnumbe
@@ -588,7 +588,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
         return true
       })
     } catch (e) {
-      console.log(e.name + ':' + e.message)
+      // console.log(e.name + ':' + e.message)
     }
 
     return _resultAry
@@ -653,7 +653,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
         return true
       })
     } catch (e) {
-      console.log(e.name + ':' + e.message)
+      // console.log(e.name + ':' + e.message)
     }
     return _isError
   }
@@ -698,7 +698,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
         return true
       })
     } catch (e) {
-      console.log(e.name + ':' + e.message)
+      // console.log(e.name + ':' + e.message)
     }
     return _isError
   }
@@ -729,7 +729,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
         return true
       })
     } catch (e) {
-      console.log(e.name + ':' + e.message)
+      // console.log(e.name + ':' + e.message)
     }
     return _isError
   }
@@ -784,7 +784,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
         return true
       })
     } catch (e) {
-      console.log(e.name + ':' + e.message)
+      // console.log(e.name + ':' + e.message)
     }
     return _isError
   }
@@ -1107,7 +1107,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
         return true
       })
     } catch (e) {
-      console.log(e.name + ':' + e.message)
+      // console.log(e.name + ':' + e.message)
     }
 
     return _internalid
@@ -1124,10 +1124,20 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
     try {
       var _ns_tax_amount = Math.round(ns_tax_amount)
       var _gw_tax_amount = Math.round(ns_sales_amount * ns_tax_rate)
+      log.debug({
+        title: 'checkTaxDifference',
+        details: {
+          _ns_tax_amount,
+          _gw_tax_amount,
+          tax_diff_balance,
+          differenceAmt: _gw_tax_amount - _ns_tax_amount,
+          isTaxPass: !((_gw_tax_amount - _ns_tax_amount) > tax_diff_balance)
+        }
+      })
       if (Math.abs(_gw_tax_amount - _ns_tax_amount) > tax_diff_balance)
         _result = true
     } catch (e) {
-      console.log(e.name + ':' + e.message)
+      // console.log(e.name + ':' + e.message)
     }
 
     return _result
@@ -1578,7 +1588,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
           try {
             var callId = _assignLogRecord.save()
           } catch (e) {
-            console.log(e.name + ':' + e.message)
+            // console.log(e.name + ':' + e.message)
           }
 
           _resultNumber = _invoiceTrack + _assignlog_lastinvnumbe
@@ -1670,7 +1680,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
 		  try {
 			   _internal_id = _assignLogRefRecord.save() 			  
 	      } catch (e) {
-	           console.log(e.name + ':' + e.message)	           
+	           // console.log(e.name + ':' + e.message)
 	      }	 
 	  }
 	   
@@ -1926,7 +1936,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
       })
        
     } catch (e) {
-      console.log(e.name + ':' + e.message)
+      // console.log(e.name + ':' + e.message)
     }
      
     return _isError
