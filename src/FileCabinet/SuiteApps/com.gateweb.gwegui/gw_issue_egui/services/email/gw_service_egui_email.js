@@ -41,8 +41,8 @@ define([
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   }
 
-  function getHtmlTemplateFile(migType) {
-    let filename = (migType === 'C0401' || migType === 'C0501')? 'eguiEmailTemplate.ftl': 'allowanceEmailTemplate.ftl'
+  function getHtmlTemplateFile(documentType) {
+    let filename = documentType === 'EGUI'? 'eguiEmailTemplate.ftl': 'allowanceEmailTemplate.ftl'
     return isInDebuggerMode() ? `${debuggerPath}/${filename}` : `./${filename}`
   }
 
@@ -68,7 +68,7 @@ define([
   class EmailService {
     getEmailBody(eguiObj) {
       var htmlTemplateFile = file.load({
-        id: getHtmlTemplateFile(eguiObj.migTypeOption.migType)
+        id: getHtmlTemplateFile(eguiObj.documentType)
       })
       var htmlRenderer = render.create()
       htmlRenderer.templateContent = htmlTemplateFile.getContents()
@@ -118,7 +118,7 @@ define([
         line.quantity = parseInt(line.quantity).toLocaleString()
         line.unitPrice = parseFloat(line.unitPrice).toLocaleString()
         line.salesAmt = Math.round(parseInt(line.salesAmt)).toLocaleString()
-        line.taxAmt = parseInt(line.taxAmt).toLocaleString()
+        line.taxAmt = parseFloat(line.taxAmt).toLocaleString()
         line.totalAmt = parseInt(line.totalAmt).toLocaleString()
 
         return line

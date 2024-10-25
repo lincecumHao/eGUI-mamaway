@@ -84,6 +84,15 @@
     <tr>
       <td style="padding: 8px;
             border: 1px solid #ddd;
+            word-break: break-word;">稅額:
+      </td>
+      <td style="padding: 8px;
+            border: 1px solid #ddd;
+            word-break: break-word;">${guiData.taxAmt}</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px;
+            border: 1px solid #ddd;
             word-break: break-word;">消費金額:
       </td>
       <td style="padding: 8px;
