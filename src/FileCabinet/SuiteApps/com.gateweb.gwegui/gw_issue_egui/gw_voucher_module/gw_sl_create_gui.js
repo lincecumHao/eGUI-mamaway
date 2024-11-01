@@ -483,22 +483,22 @@ define(['N/format',
       deductionSalesAmount
     ) {
       let _filterArray = []
-      let sumSalesＭinusDiscount = ''
+      let sumSalesMinusDiscount = ''
       let _amountSum = 0
       let taxName = ''
 
       switch (disconutTaxType) {
         case '1':
           taxName = '應稅'
-          sumSalesＭinusDiscount = 'sum(formulanumeric:{custrecord_gw_sales_amount}-{custrecord_gw_discount_sales_amount})'
+          sumSalesMinusDiscount = 'sum(formulanumeric:{custrecord_gw_sales_amount}-{custrecord_gw_discount_sales_amount})'
           break
         case '2':
           taxName = '零稅率'
-          sumSalesＭinusDiscount = 'sum(formulanumeric:{custrecord_gw_zero_sales_amount}-{custrecord_gw_discount_zero_amount})'
+          sumSalesMinusDiscount = 'sum(formulanumeric:{custrecord_gw_zero_sales_amount}-{custrecord_gw_discount_zero_amount})'
           break
         case '3':
           taxName = '免稅'
-          sumSalesＭinusDiscount = 'sum(formulanumeric:{custrecord_gw_free_sales_amount}-{custrecord_gw_discount_free_amount})'
+          sumSalesMinusDiscount = 'sum(formulanumeric:{custrecord_gw_free_sales_amount}-{custrecord_gw_discount_free_amount})'
           break
         default:
         // A0101
@@ -675,7 +675,7 @@ define(['N/format',
         if (mainObj.mig_type === 'B2C') {
           _filterArray.push('and')
           _filterArray.push([
-            sumSalesＭinusDiscount,
+            sumSalesMinusDiscount,
             search.Operator.NOTEQUALTO,
             0
           ])
