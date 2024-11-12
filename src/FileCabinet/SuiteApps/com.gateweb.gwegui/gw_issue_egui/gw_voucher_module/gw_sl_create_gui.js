@@ -102,23 +102,23 @@ define(['N/format',
 
       //檢查折讓金額是否足夠
       for (let i = 0; i < taxTypeAry.length; i++) {
-        let taxType = taxTypeAry[i]
+        let checkTaxType = taxTypeAry[i]
 
-        if (organisingDocumentObj[taxType].CREDITMEMO_TOTAL_AMOUNT !== 0) {
+        if (organisingDocumentObj[checkTaxType].CREDITMEMO_TOTAL_AMOUNT !== 0) {
           checkCreditMemoAmount(
             mainObj,
             _year_month,
             _voucher_date,
-            taxType,
-            organisingDocumentObj[taxType].CREDITMEMO_TOTAL_AMOUNT
+            checkTaxType,
+            organisingDocumentObj[checkTaxType].CREDITMEMO_TOTAL_AMOUNT
           )
-
-          _requireCount += organisingDocumentObj[taxType].length
         }
+
+        _requireCount += organisingDocumentObj[checkTaxType].EGUI.length
       }
 
       //計算發票筆數
-      _requireCount = (mainObj.mig_type === 'B2C' && taxType === mixedTaxType)? organisingDocumentObj['9'].length: _requireCount
+      _requireCount = (mainObj.mig_type === 'B2C' && taxType === mixedTaxType)? organisingDocumentObj['9'].EGUI.length: _requireCount
 
       if (_requireCount > 0 && stringutility.trim(mainObj.manual_voucher_number) === '') {
         if (checkAssignLogUseCount(
@@ -130,6 +130,14 @@ define(['N/format',
           saveEguiDataResult.message += '字軌可開立張數不足或開立日期小於字軌日期,請重新確認!'
         }
       }
+
+      //手開發票檢查
+      if (_requireCount > 0 && stringutility.trim(mainObj.manual_voucher_number) !== '') {
+        if (checkAssignLogForManual(mainObj, _year_month) === false) {
+          saveEguiDataResult.message += '字軌可開立張數不足或開立日期小於字軌日期,請重新確認!'
+        }
+      }
+
 
       //檢查資料-END
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -469,6 +477,73 @@ define(['N/format',
       return _resultObj
     }
 
+    function checkAssignLogForManual(
+      mainObj,
+      year_month
+    ) {
+      try {
+        let assignLogSearch = search.create({
+          type: 'customrecord_gw_assignlog',
+          columns: [
+            search.createColumn({ name: 'internalid' }),
+            search.createColumn({ name: 'custrecord_gw_assignlog_startno' }),
+            search.createColumn({ name: 'custrecord_gw_assignlog_endno' }),
+            search.createColumn({ name: 'custrecord_gw_assignlog_lastinvnumbe' })
+          ]
+        })
+
+        let filterArray = []
+
+        filterArray.push(['custrecord_gw_assignlog_businessno', 'is', mainObj.company_ban])
+        filterArray.push('and')
+        filterArray.push(['custrecord_gw_egui_format_code', 'is', mainObj.egui_format_code])
+        filterArray.push('and')
+        filterArray.push(['custrecord_gw_assignlog_invoicetype', 'is', mainObj.invoice_type])
+        filterArray.push('and')
+        filterArray.push(['custrecord_gw_assignlog_deptcode', 'is' + (mainObj.dept_code ? '' : 'empty'), mainObj.dept_code])
+        filterArray.push('and')
+        filterArray.push(['custrecord_gw_assignlog_classification', 'is' + (mainObj.classification ? '' : 'empty'), mainObj.classification])
+        filterArray.push('and')
+        filterArray.push(['custrecord_gw_assignlog_yearmonth', 'is', year_month])
+        filterArray.push('and')
+        filterArray.push([
+          ['custrecord_gw_assignlog_status', search.Operator.IS, '31'],
+          'or',
+          ['custrecord_gw_assignlog_status', search.Operator.IS, '32'],
+          'or',
+          ['custrecord_gw_assignlog_status', search.Operator.IS, '33']
+        ])
+        filterArray.push('and')
+        filterArray.push([
+          ['custrecord_gw_assignlog_startno', search.Operator.LESSTHANOREQUALTO, parseInt(mainObj.manual_voucher_number.substring(2))],
+          'and',
+          ['custrecord_gw_assignlog_endno', search.Operator.GREATERTHANOREQUALTO, parseInt(mainObj.manual_voucher_number.substring(2))]
+        ])
+        log.debug('checkAssignLogForManual_filterArray',filterArray)
+        assignLogSearch.filterExpression = filterArray
+        assignLogSearch.run().each(function(result) {
+          mainObj.assignlog_internalid = result.getValue({
+            name: 'internalid'
+          })
+
+          mainObj.assignlog_startno = result.getValue({
+            name: 'custrecord_gw_assignlog_startno'
+          })
+          mainObj.assignlog_endno = result.getValue({
+            name: 'custrecord_gw_assignlog_endno'
+          })
+          mainObj.assignlog_lastinvnumbe = result.getValue({
+            name: 'custrecord_gw_assignlog_lastinvnumbe'
+          })
+          return true
+        })
+      } catch (e) {
+        log.debug('checkAssignLogForManual_error' , e.name + ':' + e.message)
+      }
+      return (mainObj.assignlog_internalid > 0)
+    }
+
+
     //檢查發票可扣抵金額是否足夠
     /**
      * year_month: 期數
@@ -800,64 +875,21 @@ define(['N/format',
       let _filterArray = []
       _filterArray.push(['custrecord_gw_assignlog_businessno', 'is', mainObj.company_ban])
       _filterArray.push('and')
-      _filterArray.push([
-        'custrecord_gw_egui_format_code',
-        search.Operator.IS,
-        _invoceFormatCode
-      ])
+      _filterArray.push(['custrecord_gw_egui_format_code', search.Operator.IS, mainObj.egui_format_code])
       _filterArray.push('and')
-      _filterArray.push([
-        'custrecord_gw_assignlog_invoicetype',
-        'is',
-        mainObj.invoice_type
-      ])
+      _filterArray.push(['custrecord_gw_assignlog_invoicetype', 'is', mainObj.invoice_type])
       _filterArray.push('and')
-      if (mainObj.dept_code === '') {
-        _filterArray.push(['custrecord_gw_assignlog_deptcode', 'isempty', ''])
-      } else {
-        _filterArray.push(['custrecord_gw_assignlog_deptcode', 'is',mainObj.dept_code])
-      }
+      _filterArray.push(['custrecord_gw_assignlog_deptcode', 'is' + (mainObj.dept_code? '': 'empty'), mainObj.dept_code])
       _filterArray.push('and')
-      if (mainObj.classification === '') {
-        _filterArray.push([
-          'custrecord_gw_assignlog_classification',
-          'isempty',
-          ''
-        ])
-      } else {
-        _filterArray.push([
-          'custrecord_gw_assignlog_classification',
-          'is',
-          mainObj.classification
-        ])
-      }
+      _filterArray.push(['custrecord_gw_assignlog_classification', 'is' + (mainObj.classification? '': 'empty'), mainObj.classification])
       _filterArray.push('and')
       _filterArray.push(['custrecord_gw_assignlog_yearmonth', 'is', year_month])
-      ///////////////////////////////////////////////////////////////////////////////////////////////////
-      /**
-       _filterArray.push('and')
-       _filterArray.push([
-       'custrecord_gw_last_invoice_date',
-       search.Operator.LESSTHANOREQUALTO,
-       parseInt(_voucher_date),
-       ])
-       */
-      ///////////////////////////////////////////////////////////////////////////////////////////////////
       _filterArray.push('and')
-      //_filterArray.push([['custrecord_gw_assignlog_status','is', '11'],'or',['custrecord_gw_assignlog_status','is', '12']]);
-      if (mainObj.assign_log_type !== 'NONE') {
-        _filterArray.push([
-          ['custrecord_gw_assignlog_status', search.Operator.IS, '11'],
-          'or',
-          ['custrecord_gw_assignlog_status', search.Operator.IS, '12']
-        ])
-      } else {
-        _filterArray.push([
-          ['custrecord_gw_assignlog_status', search.Operator.IS, '21'],
-          'or',
-          ['custrecord_gw_assignlog_status', search.Operator.IS, '22']
-        ])
-      }
+      _filterArray.push([
+        ['custrecord_gw_assignlog_status', search.Operator.IS, '11'],
+        'or',
+        ['custrecord_gw_assignlog_status', search.Operator.IS, '12']
+      ])
 
       _assignLogSearch.filterExpression = _filterArray
       //alert('GET assign log filterArray: ' + JSON.stringify(_filterArray));
@@ -1086,8 +1118,9 @@ define(['N/format',
           let _invoiceNumber = ''
           if (stringutility.trim(mainObj.manual_voucher_number) !== '') {
             _invoiceNumber = mainObj.manual_voucher_number
-            //NE-338
-            _default_upload_status = 'C'
+
+            invoiceutility.setAssignLogNumberForManual(voucher_date, mainObj)
+
           } else {
             _invoiceNumber = invoiceutility.getAssignLogNumberAndCheckDuplicate(
               -1,
@@ -1099,6 +1132,10 @@ define(['N/format',
               mainObj.assign_log_type,
               voucher_date
             )
+          }
+
+          if (mainObj.assign_log_type === 'NONE') {
+            _default_upload_status = 'C'
           }
 
           if (_invoiceNumber.length === 0 || _invoiceNumber === 'BUSY') {
@@ -1546,7 +1583,6 @@ define(['N/format',
       let _creditMemoFormatCode = gwconfigure.getGwVoucherFormatAllowanceCode()
       let _net_value = -1
 
-      debugger
       if (typeof documentAry !== 'undefined') {
         for (let i = 0; i < documentAry.length; i++) {
           let _documentObj = documentAry[i]
@@ -2641,7 +2677,6 @@ define(['N/format',
       checkField,
       deductionTotalAmount
     ) {
-      debugger
       let _ok = false
       let _objAry = []
       let _search = search.create({

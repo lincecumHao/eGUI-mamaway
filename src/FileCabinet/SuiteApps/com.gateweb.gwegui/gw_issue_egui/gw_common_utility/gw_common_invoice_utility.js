@@ -411,19 +411,12 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
     ])
     */
     _filterArray.push('and')
-    if (assignLogType !== 'NONE') {
-      _filterArray.push([
-        ['custrecord_gw_assignlog_status', search.Operator.IS, '11'],
-        'or',
-        ['custrecord_gw_assignlog_status', search.Operator.IS, '12']
-      ])
-    } else {
-      _filterArray.push([
-        ['custrecord_gw_assignlog_status', search.Operator.IS, '21'],
-        'or',
-        ['custrecord_gw_assignlog_status', search.Operator.IS, '22']
-      ])
-    }
+    _filterArray.push([
+      ['custrecord_gw_assignlog_status', search.Operator.IS, '11'],
+      'or',
+      ['custrecord_gw_assignlog_status', search.Operator.IS, '12']
+    ])
+
     //alert('Parse 11 _filterArray='+JSON.stringify(_filterArray));
     _assignLogSearch.filterExpression = _filterArray
 
@@ -1946,6 +1939,47 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
     return 'MI' 
   }
 
+  function setAssignLogNumberForManual(voucher_date, mainObj) {
+    log.debug('test_mainObj_setAssignLogNumberForManual',mainObj)
+    log.debug('test_voucher_date_setAssignLogNumberForManual',voucher_date)
+    let voucher_number = mainObj.manual_voucher_number.substring(2)
+
+    if (voucher_number >= mainObj.assignlog_lastinvnumbe){
+      let assignLogRecord = record.load({
+        type: _assignLogRecordId,
+        id: mainObj.assignlog_internalid,
+        isDynamic: true
+      })
+
+      assignLogRecord.setValue({
+        fieldId: 'custrecord_gw_assignlog_lastinvnumbe',
+        value: voucher_number
+      })
+
+      assignLogRecord.setValue({
+        fieldId: 'custrecord_gw_assignlog_usedcount',
+        value: parseInt(voucher_number) - parseInt(mainObj.assignlog_startno) + 1
+      })
+
+      assignLogRecord.setValue({
+        fieldId: 'custrecord_gw_last_invoice_date',
+        value: voucher_date
+      })
+
+      assignLogRecord.setValue({
+        fieldId: 'custrecord_gw_assignlog_status',
+        value: parseInt(mainObj.assignlog_endno) !== parseInt(voucher_number) ? 32 : 33
+      })
+
+      try {
+        assignLogRecord.save()
+      } catch (e) {
+        console.log('setAssignLogNumber_' + e.name + ':' + e.message)
+      }
+      log.debug('end_test','')
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////////////////////
 
   return {
@@ -1962,6 +1996,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
     checkInvoiceNumberDuplicate: checkInvoiceNumberDuplicate,
     checkInvoiceNumberExistRange: checkInvoiceNumberExistRange,
     checkAssignLogDuplicate: checkAssignLogDuplicate,
+    setAssignLogNumberForManual: setAssignLogNumberForManual,
     getAssignLogTrack: getAssignLogTrack,
     getInvoiceTypeDesc: getInvoiceTypeDesc,
     getMigTypeDesc: getMigTypeDesc,
@@ -1972,12 +2007,12 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
     getAssignLogNumber: getAssignLogNumber,
     getRandomNum: getRandomNum,
     getSellerInfoBySubsidiary: getSellerInfoBySubsidiary,
-	getRandomNumNew: getRandomNumNew,
-	checkInvoiceManualNumberExistRange: checkInvoiceManualNumberExistRange,
+	  getRandomNumNew: getRandomNumNew,
+	  checkInvoiceManualNumberExistRange: checkInvoiceManualNumberExistRange,
     getAssignLogNumberAndCheckDuplicate: getAssignLogNumberAndCheckDuplicate,
     getAllowanceTaxCode: getAllowanceTaxCode,
     getManualOpenID: getManualOpenID,
     getPrintMark: getPrintMark,
-	getVoucherMigType: getVoucherMigType,
+	  getVoucherMigType: getVoucherMigType,
   }
 })

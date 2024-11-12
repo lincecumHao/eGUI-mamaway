@@ -614,26 +614,7 @@ define([
       label: '格式代號 *',
       container: 'row02_fieldgroupid'
     })
-    _eguiFormatCode.addSelectOption({
-      value: '31-01',
-      text: '31-銷項三聯式[裝訂數:50張]'
-    })
-    _eguiFormatCode.addSelectOption({
-      value: '31-05',
-      text: '31-銷項電子計算機統一發票[裝訂數:50張]'
-    })
-    _eguiFormatCode.addSelectOption({
-      value: '32-02',
-      text: '32-銷項二聯式[裝訂數:50張]'
-    })
-    _eguiFormatCode.addSelectOption({
-      value: '32-03',
-      text: '32-銷項二聯式收銀機統一發票[裝訂數:250張]'
-    })
-    _eguiFormatCode.addSelectOption({
-      value: '35-06',
-      text: '35-銷項三聯式收銀機統一發票[裝訂數:250張]'
-    })
+
     _eguiFormatCode.addSelectOption({
       value: '35-07',
       text: '35-一般稅額電子發票[裝訂數:50張]'

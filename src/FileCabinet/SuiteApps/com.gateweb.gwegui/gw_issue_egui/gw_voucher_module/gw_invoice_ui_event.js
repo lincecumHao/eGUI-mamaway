@@ -133,6 +133,50 @@ define([
 
       _deduction_egui_number.isDisplay = (_allowance_deduction_period === 'user_selected')
 
+      if (_allowance_deduction_period !== 'user_selected'){
+        _current_record.setValue({
+          fieldId: 'custpage_deduction_egui_number',
+          value: '',
+          ignoreFieldChange: true
+        })
+      }
+
+      setCustpageAllowanceLogType()
+
+    } else if (_changeFieldId == 'custpage_deduction_egui_number'){
+      setCustpageAllowanceLogType()
+
+    } else if (_changeFieldId === 'custpage_allowance_log_type') {
+      let allowanceLogType = _current_record.getValue({ fieldId: 'custpage_allowance_log_type' })
+      let eguiFormatCode = _current_record.getField({fieldId: 'custpage_egui_format_code'})
+
+      eguiFormatCode.removeSelectOption({ value: null })
+
+      if (allowanceLogType === 'NONE') {
+
+        eguiFormatCode.insertSelectOption({
+          value: '31-01', text: '31-銷項三聯式[裝訂數:50張]'
+        })
+        eguiFormatCode.insertSelectOption({
+          value: '31-05', text: '31-銷項電子計算機統一發票[裝訂數:50張]'
+        })
+        eguiFormatCode.insertSelectOption({
+          value: '32-02', text: '32-銷項二聯式[裝訂數:50張]'
+        })
+        eguiFormatCode.insertSelectOption({
+          value: '32-03', text: '32-銷項二聯式收銀機統一發票[裝訂數:250張]'
+        })
+        eguiFormatCode.insertSelectOption({
+          value: '35-06', text: '35-銷項三聯式收銀機統一發票[裝訂數:250張]'
+        })
+      }
+      eguiFormatCode.insertSelectOption({
+        value: '35-07', text: '35-一般稅額電子發票[裝訂數:50張]'
+      })
+
+      _current_record.setValue({fieldId: 'custpage_egui_format_code', value: '35-07'})
+      _current_record.getField({fieldId: 'custpage_manual_voucher_number'}).isDisplay = (allowanceLogType === 'NONE')
+      _current_record.setValue({fieldId: 'custpage_manual_voucher_number', value: ''})
     }
   }
  
@@ -578,6 +622,13 @@ define([
         }
       }
 
+      if (_current_record.getValue({ fieldId: 'custpage_allowance_log_type' }).defaultValue === 'NONE' &&
+        _current_record.getValue({ fieldId: 'custpage_egui_format_code' }).defaultValue !== '35-07' &&
+        _current_record.getValue({ fieldId: 'custpage_manual_voucher_number' }).defaultValue === '') {
+
+        _errorMsg += '格式代號為非 35-一般稅額電子發票[裝訂數:50張] 則手開發票號碼為必填<br>'
+      }
+
       //檢查明細(名稱:256+明細備註:40)
       _errorMsg += checkDetailItems(_manual_voucher_number)
     } catch (e) {
@@ -801,7 +852,7 @@ define([
 
     } else if (_invoiceAry.length > 1 && _creditMemoAry.length <= 1) {
       _voucherOpenType += 'INVOICE'
-      _current_record.getField({fieldId: 'custpage_allowance_deduction_period'}).isDisplay = false
+      _current_record.getField({fieldId: 'custpage_manual_voucher_number'}).isDisplay = (_current_record.getValue({ fieldId: 'custpage_allowance_log_type' }) === 'NONE')
 
     } else if (_creditMemoAry.length > 1 && _invoiceAry.length <= 1) {
       _voucherOpenType += 'CREDITMEMO'
@@ -946,19 +997,15 @@ define([
         var _classification = _current_record.getField({
           fieldId: 'custpage_classification'
         })
-        _classification.isDisplay = false 
-        _current_record.setValue({
-          fieldId: 'custpage_allowance_log_type',
-          value: 'NONE',
-          ignoreFieldChange: true
-        })  
-      } 
+        _classification.isDisplay = false
+      }
       //////////////////////////////////////////////////////////////
       //NE-338
+      var _field_allowance_log_type = _current_record.getField({
+        fieldId: 'custpage_allowance_log_type'
+      })
+
       if(invoice_length <= 1) {
-        var _field_allowance_log_type = _current_record.getField({
-          fieldId: 'custpage_allowance_log_type'
-        })
         _field_allowance_log_type.insertSelectOption({
           value: 'RETRIEVE',
           isSelected: true,
@@ -968,11 +1015,7 @@ define([
 
       var allowanceDefaultUploadOption = getAllowanceDefaultUploadOption()
 
-      _current_record.setValue({
-        fieldId: 'custpage_allowance_log_type',
-        value: allowanceDefaultUploadOption,
-        ignoreFieldChange: true
-      })
+      setCustpageAllowanceLogType()
 
     } catch (e) {
       console.log(e.name + ':' + e.message)
@@ -1163,14 +1206,21 @@ define([
   function saveData(reason) {
     if (reason === false) return
 
+    let errorMsg = validateForm()
+
+    if (errorMsg.length !== 0) {
+      gwmessage.showErrorMessage('憑證管理', errorMsg)
+      return
+    }
+
     document.getElementById('custpage_create_voucher_button').disabled = true
     document.getElementById('custpage_forward_back_button').disabled = true
 
     loadAllTaxInformation()
 
     let mainObj = getApplyMainObject()
-    let jsonDocumemtLists = splitDocumentDetail(mainObj.mig_type)
-    let result = callCreateEgui(mainObj, jsonDocumemtLists)
+    let jsonDocumentLists = splitDocumentDetail(mainObj.mig_type)
+    let result = callCreateEgui(mainObj, jsonDocumentLists)
 
     if (result.message !== '') {
       gwmessage.showErrorMessage(result.title, result.message)
@@ -1196,7 +1246,10 @@ define([
         returnExternalUrl: false
       })
     }
-
+    else {
+      gwmessage.showInformationMessage('憑證管理', '開立完成!')
+      document.getElementById('custpage_forward_back_button').disabled = false
+    }
   }
 
   function callCreateEgui(mainObj, jsonDocumemtLists) {
@@ -1419,9 +1472,7 @@ define([
     })
 
     var _year_month = dateutility.getTaxYearMonthByDateObj(_select_voucher_date) //10910
-    var _voucher_date = dateutility.getConvertDateByDateObj(
-      _select_voucher_date
-    ) //20201005
+    var _voucher_date = dateutility.getConvertDateByDateObj(_select_voucher_date) //20201005
 
     //依照金額判斷開立方式==>整理資料每999筆1包
     var _mig_type = _current_record.getValue({ fieldId: 'custpage_mig_type' }) //B2BS, B2BE, B2C
@@ -2070,9 +2121,6 @@ define([
     var _company_address = _current_record.getValue({
       fieldId: 'custpage_company_address'
     })
-    var _invoice_type = _current_record.getValue({
-      fieldId: 'custpage_invoice_type'
-    })
     var _print_type = _current_record.getValue({
       fieldId: 'custpage_print_type'
     })
@@ -2170,16 +2218,11 @@ define([
       fieldId: 'custpage_manual_voucher_number'
     })
 
-    var _format_code = _invoceFormatCode //35
-    //手開發票格式代號 31-01
     var _egui_format_code = _current_record.getValue({
       fieldId: 'custpage_egui_format_code'
     })
-    if (stringutility.trim(_manual_voucher_number) != '') {
-      var _format_code_ary = _egui_format_code.split('-')
-      _format_code = _format_code_ary[0]
-      _invoice_type = _format_code_ary[1]
-    }
+    var _format_code = _egui_format_code.split('-')[0]
+    var _invoice_type = _egui_format_code.split('-')[1]
 
     //new
     //憑證日期
@@ -2257,6 +2300,10 @@ define([
       customs_export_no: _customs_export_no,
       customs_export_date: _customs_export_date,
       voucher_open_type: 'SINGLE', //先設 default value
+      assignlog_internalid: 0,
+      assignlog_startno: '',
+      assignlog_endno: '',
+      assignlog_lastinvnumbe: '',
       select_voucher_date: _select_voucher_date,
       deduction_egui_number:_deduction_egui_number,
       assign_log_type:_assign_log_type,
@@ -4917,9 +4964,9 @@ define([
       ])
     } else {
       _filterArray.push([
-        ['custrecord_gw_assignlog_status', search.Operator.IS, '21'],
+        ['custrecord_gw_assignlog_status', search.Operator.IS, '31'],
         'or',
-        ['custrecord_gw_assignlog_status', search.Operator.IS, '22']
+        ['custrecord_gw_assignlog_status', search.Operator.IS, '32']
       ])
     }
 
@@ -6011,6 +6058,45 @@ define([
       }
     }
     //////////////////////////////////////////////////////////////////////////////////////////////
+  }
+
+  //設定是否上傳憑證
+  function setCustpageAllowanceLogType(){
+    let eguiNumber = _current_record.getValue({fieldId: 'custpage_deduction_egui_number'})
+    let allowanceDefaultUploadOption = getAllowanceDefaultUploadOption()
+    let searchResultCount = 0
+
+    if (eguiNumber !== '') {
+      let searchFormatCode = search.create({
+        type: "customrecord_gw_voucher_main",
+        filters:
+          [
+            ["custrecord_gw_voucher_number", "is", eguiNumber],
+            "AND",
+            ["custrecord_gw_voucher_format_code", "is", "35"]
+          ],
+        columns:
+          [
+            "custrecord_gw_voucher_format_code"
+          ]
+      });
+      searchResultCount = searchFormatCode.runPaged().count;
+      console.log(searchResultCount);
+
+      allowanceDefaultUploadOption = (searchResultCount === 1? allowanceDefaultUploadOption: 'NONE' )
+    }
+    console.log('searchResultCount' + searchResultCount)
+
+    _current_record.setValue({
+      fieldId: 'custpage_allowance_log_type',
+      value: allowanceDefaultUploadOption,
+      ignoreFieldChange: true
+    })
+
+    _current_record.getField({
+      fieldId: 'custpage_allowance_log_type'
+    }).isDisabled = (allowanceDefaultUploadOption === 'NONE')
+
   }
 
   //回前一頁
