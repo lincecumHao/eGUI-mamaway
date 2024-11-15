@@ -1501,19 +1501,12 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
     ])
     */
     _filterArray.push('and')
-    if (assignLogType !== 'NONE') {
-      _filterArray.push([
-        ['custrecord_gw_assignlog_status', search.Operator.IS, '11'],
-        'or',
-        ['custrecord_gw_assignlog_status', search.Operator.IS, '12']
-      ])
-    } else {
-      _filterArray.push([
-        ['custrecord_gw_assignlog_status', search.Operator.IS, '21'],
-        'or',
-        ['custrecord_gw_assignlog_status', search.Operator.IS, '22']
-      ])
-    }
+    _filterArray.push([
+      ['custrecord_gw_assignlog_status', search.Operator.IS, '11'],
+      'or',
+      ['custrecord_gw_assignlog_status', search.Operator.IS, '12']
+    ])
+
     //alert('Parse 11 _filterArray='+JSON.stringify(_filterArray));
     _assignLogSearch.filterExpression = _filterArray
 
