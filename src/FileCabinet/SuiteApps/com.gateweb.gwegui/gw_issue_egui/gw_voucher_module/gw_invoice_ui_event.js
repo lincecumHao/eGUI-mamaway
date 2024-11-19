@@ -146,7 +146,7 @@ define([
     } else if (_changeFieldId == 'custpage_deduction_egui_number'){
       setCustpageAllowanceLogType()
 
-    } else if (_changeFieldId === 'custpage_allowance_log_type') {
+    } else if (_changeFieldId === 'custpage_allowance_log_type' && _current_record.getValue({ fieldId: 'custpage_voucher_open_type' }) !== 'MERGE-CREDITMEMO') {
       let allowanceLogType = _current_record.getValue({ fieldId: 'custpage_allowance_log_type' })
       let eguiFormatCode = _current_record.getField({fieldId: 'custpage_egui_format_code'})
 
@@ -970,8 +970,8 @@ define([
         _carrier_id_1.isDisplay = false
         var _carrier_id_2 = _current_record.getField({
 	        fieldId: 'custpage_carrier_id_2'
-	    })
-	    _carrier_id_2.isDisplay = false
+	      })
+	      _carrier_id_2.isDisplay = false
 	     
         var _npo_ban = _current_record.getField({ fieldId: 'custpage_npo_ban' })
         _npo_ban.isDisplay = false
@@ -985,11 +985,7 @@ define([
           fieldId: 'custpage_egui_format_code'
         })
         _custpage_egui_format_code.isDisplay = false
-        
-        var _manual_voucher_number = _current_record.getField({
-          fieldId: 'custpage_manual_voucher_number'
-        })
-        _manual_voucher_number.isDisplay = false
+
         var _dept_code = _current_record.getField({
           fieldId: 'custpage_dept_code'
         })
@@ -999,6 +995,12 @@ define([
         })
         _classification.isDisplay = false
       }
+
+      var _manual_voucher_number = _current_record.getField({
+        fieldId: 'custpage_manual_voucher_number'
+      })
+      _manual_voucher_number.isDisplay = false
+
       //////////////////////////////////////////////////////////////
       //NE-338
       var _field_allowance_log_type = _current_record.getField({
