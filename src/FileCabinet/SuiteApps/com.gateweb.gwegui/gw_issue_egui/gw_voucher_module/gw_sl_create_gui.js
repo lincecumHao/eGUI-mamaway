@@ -1739,6 +1739,10 @@ define(['N/format',
               fieldId: 'custrecord_gw_buyer_address',
               value: stringutility.trim(_main.buyer_address)
             })
+            _voucherMainRecord.setValue({
+              fieldId: 'custrecord_gw_buyer_email',
+              value: stringutility.trim(_main.buyer_email)
+            })
             //_voucherMainRecord.setValue({fieldId:'custrecord_gw_buyer_dept_code',value:_main.dept_code});	//暫時不用
             _voucherMainRecord.setValue({
               fieldId: 'custrecord_gw_voucher_dept_code',
