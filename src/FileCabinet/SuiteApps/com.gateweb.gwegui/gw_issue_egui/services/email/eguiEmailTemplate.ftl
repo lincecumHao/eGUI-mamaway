@@ -19,7 +19,7 @@
   <div style="font-size: 20px;
             text-align: center;
             color: #1a202c;
-            padding: 10px 0;">電子發票<#if guiData.migTypeOption.migType == 'C0401'>開立<#else>作廢</#if>通知
+            padding: 10px 0;">電子發票<#if guiData.documentStatus?contains("CANCEL")>作廢<#else>開立</#if>通知
   </div>
   <div style="font-size: 14px;
             text-align: center;
