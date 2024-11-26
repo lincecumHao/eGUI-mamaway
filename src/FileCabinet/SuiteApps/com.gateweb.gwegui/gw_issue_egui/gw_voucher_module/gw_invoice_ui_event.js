@@ -622,9 +622,9 @@ define([
         }
       }
 
-      if (_current_record.getValue({ fieldId: 'custpage_allowance_log_type' }).defaultValue === 'NONE' &&
-        _current_record.getValue({ fieldId: 'custpage_egui_format_code' }).defaultValue !== '35-07' &&
-        _current_record.getValue({ fieldId: 'custpage_manual_voucher_number' }).defaultValue === '') {
+      if (_current_record.getValue({ fieldId: 'custpage_allowance_log_type' }) === 'NONE' &&
+        _current_record.getValue({ fieldId: 'custpage_egui_format_code' }) !== '35-07' &&
+        _current_record.getValue({ fieldId: 'custpage_manual_voucher_number' }) === '') {
 
         _errorMsg += '格式代號為非 35-一般稅額電子發票[裝訂數:50張] 則手開發票號碼為必填<br>'
       }
