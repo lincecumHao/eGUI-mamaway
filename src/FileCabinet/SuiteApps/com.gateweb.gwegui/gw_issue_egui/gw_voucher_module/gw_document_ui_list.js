@@ -736,11 +736,11 @@ define([
       text: 'Paid In Full',
     })
     _selectInvoiceStatus.addSelectOption({
-      value: 'CustInvc:C',
+      value: 'CustInvc:D',
       text: 'Pending Approval',
     })
     _selectInvoiceStatus.addSelectOption({
-      value: 'CustInvc:D',
+      value: 'CustInvc:E',
       text: 'Rejected',
     })    
     _selectInvoiceStatus.defaultValue = 'CustInvc:A'
