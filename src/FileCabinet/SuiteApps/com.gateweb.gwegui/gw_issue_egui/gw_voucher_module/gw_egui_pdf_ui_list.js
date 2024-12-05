@@ -431,6 +431,7 @@ define([
           _result.values.custrecord_gw_uploadstatus_messag
         var _need_upload_egui_mig =
           _result.values.custrecord_gw_need_upload_egui_mig //Y/N
+        var _buyer_email =_result.values.custrecord_gw_buyer_email
 
         //處理 Print 紀錄
         var _is_printed = '' //_mig_type
@@ -631,6 +632,11 @@ define([
             id: 'customer_voucher_manual_egui',
             line: _index,
             value: _voucher_manual_egui,
+          })
+          subListObj.setSublistValue({
+            id: 'customer_voucher_email',
+            line: _index,
+            value: _buyer_email === ''? ' ': _buyer_email,
           })
 
           _indexId = _id
@@ -1154,6 +1160,11 @@ define([
       id: 'customer_voucher_isprinted',
       type: serverWidget.FieldType.TEXT,
       label: '已下載',
+    })
+    _sublist.addField({
+      id: 'customer_voucher_email',
+      type: serverWidget.FieldType.TEXT,
+      label: 'E-mail',
     })
     ////////////////////////////////////////////////////////////////////////////////////////////
     return _sublist
