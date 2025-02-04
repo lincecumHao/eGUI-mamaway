@@ -35,7 +35,7 @@
 			    <Quantity>${allowanceDetailEntity.quantity}</Quantity>
 			    <Unit/>
 			    <UnitPrice>${allowanceDetailEntity.unitPrice}</UnitPrice>
-			    <Amount>${allowanceDetailEntity.totalAmt}</Amount>
+			    <Amount>${allowanceDetailEntity.salesAmt}</Amount>
 			    <Tax>${allowanceDetailEntity.taxAmt}</Tax>
 			    <AllowanceSequenceNumber>${allowanceDetailEntity.lineSeq}1</AllowanceSequenceNumber>
 			    <TaxType>${allowanceDetailEntity.taxType}</TaxType>
@@ -44,6 +44,6 @@
     </Details>
     <Amount>
         <TaxAmount>${guiData.taxAmt}</TaxAmount>
-        <TotalAmount>${guiData.totalAmt}</TotalAmount>
+        <TotalAmount>${guiData.salesAmt}</TotalAmount>
     </Amount>
 </Allowance>
