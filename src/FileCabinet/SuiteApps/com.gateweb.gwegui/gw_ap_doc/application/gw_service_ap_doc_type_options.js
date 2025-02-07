@@ -1,5 +1,6 @@
-define(['N/record', './gw_lib_search', './gw_lib_wrapper'], function (
+define(['N/record', 'N/search', './gw_lib_search', './gw_lib_wrapper'], function (
   record,
+  search,
   GwSearch,
   wrapperLib
 ) {
@@ -91,6 +92,32 @@ define(['N/record', './gw_lib_search', './gw_lib_wrapper'], function (
     return 0
   }
 
+  function getMofValue(yearMonth, typeCode, invoiceTrack) {
+    let mySearch
+    let filterArray = []
+    let mofValue = ''
+
+    mySearch = search.create({
+      type: 'customrecord_gw_assignlog_track',
+      columns: [{ name: 'custrecord_gw_track_invoice_type' }]
+    })
+
+    filterArray.push(['custrecord_gw_track_year_month', 'is', yearMonth])
+    filterArray.push('and')
+    filterArray.push(['custrecord_gw_track_type_code', 'is', typeCode])
+    filterArray.push('and')
+    filterArray.push(['custrecord_gw_track_invoice_track', 'is', invoiceTrack])
+
+    mySearch.filterExpression = filterArray
+    mySearch.run().each(function(result) {
+      mofValue = result.getValue({ name: 'custrecord_gw_track_invoice_type' })
+
+      return true
+    })
+
+    return mofValue
+  }
+
   exports.getDocTypeCodeByRecordId = constructorWrapper(
     getDocTypeCodeByRecordId
   )
@@ -101,5 +128,7 @@ define(['N/record', './gw_lib_search', './gw_lib_wrapper'], function (
   exports.getApDocTypeIdByValueAndInvoiceCode = constructorWrapper(
     getApDocTypeIdByValueAndInvoiceCode
   )
+  exports.getMofValue = getMofValue
+
   return exports
 })

@@ -115,7 +115,8 @@ define([
       fieldValidationLib.validateBuyerTaxId
     fieldRoute[apDocFields.fields.sellerTaxId.id] =
       fieldValidationLib.validateSellerTaxId
-    fieldRoute[apDocFields.fields.taxAmt.id] = fieldValidationLib.validateTaxAmt
+    fieldRoute[apDocFields.fields.taxAmt.id] =
+      fieldValidationLib.validateTaxAmt
     fieldRoute[apDocFields.fields.salesAmt.id] =
       fieldValidationLib.validateSalesAmt
     fieldRoute[apDocFields.fields.zeroTaxSalesAmt.id] =
@@ -320,6 +321,8 @@ define([
       console.log('validateFieldAction - e', e)
     }
   }
+
+  exports.validateFieldForAPI = validateField
 
   exports.fieldChanged = sublistFilterWrapper(fieldChanged)
   exports.lineInit = sublistFilterWrapper(lineInit)

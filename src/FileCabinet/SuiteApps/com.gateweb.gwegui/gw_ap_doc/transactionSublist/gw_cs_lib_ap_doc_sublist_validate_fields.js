@@ -87,21 +87,19 @@ define([
    * @function validateGuiNumber
    */
   function validateGuiNumber(context, fieldValue) {
-    console.log('validateGuiNumber fieldValue', fieldValue)
+    //console.log('validateGuiNumber fieldValue', fieldValue)
     var resultObj = {
       isValid: true,
       error: []
     }
     var guiNumber = fieldValue // getSublistValue(context.fieldId)
-    var docType = apDocTypeService.getDocTypeCodeByRecordId(
-      getNumberSublistFieldValue(apDocFields.fields.docType.id)
-    )
-    console.log('docType', docType)
-    console.log(
-      'docType value',
-      getNumberSublistFieldValue(apDocFields.fields.docType.id)
-    )
-    console.log('currentSublistId', currentSublistApDocRecord.id)
+    var docType = getDocType(getNumberSublistFieldValue(apDocFields.fields.docType.id))
+    // console.log('docType', docType)
+    // console.log(
+    //   'docType value',
+    //   getNumberSublistFieldValue(apDocFields.fields.docType.id)
+    // )
+    // console.log('currentSublistId', currentSublistApDocRecord.id)
     if (parseInt(docType) !== 24 && parseInt(docType) !== 23 &&
       guiNumberValidator.isGuiNumberDuplicated(
         guiNumber,
@@ -113,7 +111,7 @@ define([
       resultObj.error.push(GwError.GuiNumberDuplicated)
       return resultObj
     }
-    console.log('validateGuiNumber docType', docType)
+    // console.log('validateGuiNumber docType', docType)
     if (guiNumberValidator.isGuiNumberRequired(docType)) {
       resultObj = validateRequiredGuiNumber(guiNumber, docType)
     }
@@ -124,7 +122,7 @@ define([
       resultObj = validateMustNotHaveGuiNumber(guiNumber)
     }
 
-    console.log('validateGuiNumber result', resultObj)
+    // console.log('validateGuiNumber result', resultObj)
     return resultObj
     // return true
   }
@@ -163,7 +161,7 @@ define([
       return resultObj
     }
     resultObj = validateGuiNumberValue(value, docType)
-    console.log('validateRequiredGuiNumber resultObj', resultObj)
+    // console.log('validateRequiredGuiNumber resultObj', resultObj)
     return resultObj
   }
 
@@ -195,17 +193,17 @@ define([
           resultObj.isValid = false
           resultObj.error.push(GwError.GuiTrackError)
         } else {
-          console.log('validateGuiNumber track is valid')
+          //console.log('validateGuiNumber track is valid')
         }
       } else {
-        console.log('validateGuiNumber no check track')
+        //console.log('validateGuiNumber no check track')
       }
     }
     return resultObj
   }
 
   function initAvailableGuiTrack() {
-    console.log('initAvailableGuiTrack')
+    //console.log('initAvailableGuiTrack')
     var docTypeFieldValue = getNumberSublistFieldValue(
       apDocFields.fields.docType.id
     )
@@ -215,13 +213,13 @@ define([
     var guiPeriod = applyPeriodService.convertGuiPeriod(guiDate)
     var applyPeriod = getSublistValue(apDocFields.fields.applyPeriod.id)
     if (!docTypeFieldValue || !applyPeriod) return true
-    console.log('initAvailableGuiTrack docTypeObj', docTypeObj)
-    console.log('initAvailableGuiTrack guiPeriod', guiPeriod)
+    //console.log('initAvailableGuiTrack docTypeObj', docTypeObj)
+    //console.log('initAvailableGuiTrack guiPeriod', guiPeriod)
     var availableTrack = assignLogTrackService.getAvailableGuiTrack(
       docTypeObj,
       guiPeriod
     )
-    console.log('initAvailableGuiTrack availableTrack', availableTrack)
+    //console.log('initAvailableGuiTrack availableTrack', availableTrack)
     guiNumberValidator.setAvailableTrackValues(availableTrack)
   }
 
@@ -257,38 +255,37 @@ define([
    * @function validateCommonNumber
    */
   function validateCommonNumber(context, fieldValue) {
-    console.log('validateCommonNumber fieldValue', fieldValue)
+    //console.log('validateCommonNumber fieldValue', fieldValue)
     var resultObj = {
       isValid: true,
       error: []
     }
     var guiNumber = getSublistValue(apDocFields.fields.guiNum.id)
-    console.log('validateCommonNumber guiNumber', guiNumber)
+    //console.log('validateCommonNumber guiNumber', guiNumber)
     var commonNumber = fieldValue
-    var docType = apDocTypeService.getDocTypeCodeByRecordId(
-      getNumberSublistFieldValue(apDocFields.fields.docType.id)
-    )
-    console.log('validateCommonNumber, docType', docType)
+    var docType = getDocType(getNumberSublistFieldValue(apDocFields.fields.docType.id))
+
+    //console.log('validateCommonNumber, docType', docType)
 
     var consolidationMark =
       apDocConsolidationMarkService.getConsolidateMarkValueByRecordId(
         getNumberSublistFieldValue(apDocFields.fields.consolidationMark.id)
       )
-    console.log('validateCommonNumber consolidationMark', consolidationMark)
+    // console.log('validateCommonNumber consolidationMark', consolidationMark)
 
     if (commonNumberValidator.isCommonNumberMustNotHave(docType)) {
-      console.log('validateCommonNumber common number must not have')
+      //console.log('validateCommonNumber common number must not have')
       resultObj = validateCommonNumberForbidden(commonNumber)
     }
     if (commonNumberValidator.isCommonNumberRequired(docType)) {
-      console.log('validateCommonNumber common number must have')
-      resultObj = validateCommonNumberRequired(commonNumber, docType)
+      //console.log('validateCommonNumber common number must have')
+      resultObj = validateCommonNumberRequired(commonNumber)
     }
     if (commonNumberValidator.isCommonNumberOptional(docType)) {
-      console.log('validateCommonNumber common number is optional')
+      //console.log('validateCommonNumber common number is optional')
       resultObj = validateCommonNumberOptional(docType, commonNumber)
     }
-    console.log('validateCommonNumber, resultObj', resultObj)
+    //console.log('validateCommonNumber, resultObj', resultObj)
     return resultObj
     // return true
   }
@@ -305,7 +302,7 @@ define([
     return resultObj
   }
 
-  function validateCommonNumberRequired(value, docType) {
+  function validateCommonNumberRequired(value) {
     var resultObj = {
       isValid: true,
       error: []
@@ -338,7 +335,7 @@ define([
       return resultObj
     }
     if (!stringUtil.isNullOrEmpty(value)) {
-      console.log('validateCommonNumber validate number value')
+      //console.log('validateCommonNumber validate number value')
       resultObj = validateCommonNumberValue(docType, value)
     }
     return resultObj
@@ -362,8 +359,8 @@ define([
       isValid: true,
       error: []
     }
-    console.log('validatCommonNumberValue docType', docType)
-    console.log('validatCommonNumberValue value', value)
+    //console.log('validatCommonNumberValue docType', docType)
+    //console.log('validatCommonNumberValue value', value)
     if (!commonNumberValidator.isLengthValid(docType, value)) {
       resultObj.isValid = false
       resultObj.error.push(GwError.GuiFormatError)
@@ -411,7 +408,7 @@ define([
    * @function validateBuyerTaxId
    */
   function validateBuyerTaxId(context, value) {
-    console.log('validateBuyerTaxId fieldValue', value)
+    //console.log('validateBuyerTaxId fieldValue', value)
     var resultObj = {
       isValid: true,
       error: []
@@ -462,15 +459,14 @@ define([
    * @function validateSellerTaxId
    */
   function validateSellerTaxId(context, value) {
-    console.log('validateSellerTaxId fieldValue', value)
+    //console.log('validateSellerTaxId fieldValue', value)
     var resultObj = {}
     var consolidationMark =
       apDocConsolidationMarkService.getConsolidateMarkValueByRecordId(
         getNumberSublistFieldValue(apDocFields.fields.consolidationMark.id)
       )
-    var docType = apDocTypeService.getDocTypeCodeByRecordId(
-      getNumberSublistFieldValue(apDocFields.fields.docType.id)
-    )
+    var docType = getDocType(getNumberSublistFieldValue(apDocFields.fields.docType.id))
+
     var guiNumber = getSublistValue(apDocFields.fields.guiNum.id)
 
     if (isSellerTaxIdRequired(docType, consolidationMark, guiNumber)) {
@@ -733,19 +729,18 @@ define([
    * @function validateTaxAmt
    */
   function validateTaxAmt(context, value) {
-    console.log('in validateTaxAmt')
+    //console.log('in validateTaxAmt')
     var resultObj = {
       isValid: true,
       error: []
     }
     var salesAmt = getNumberSublistFieldValue(apDocFields.fields.salesAmt.id)
-    console.log('in validateTaxAmt - salesAmt', salesAmt)
+    //console.log('in validateTaxAmt - salesAmt', salesAmt)
     var taxAmt = value
-    console.log('in validateTaxAmt - taxAmt', taxAmt)
-    var docType = apDocTypeService.getDocTypeCodeByRecordId(
-        getNumberSublistFieldValue(apDocFields.fields.docType.id)
-    )
-    console.log('in validateTaxAmt - docType', docType)
+    //console.log('in validateTaxAmt - taxAmt', taxAmt)
+    var docType = getDocType(getNumberSublistFieldValue(apDocFields.fields.docType.id))
+
+    //console.log('in validateTaxAmt - docType', docType)
     var guiNumber = getSublistValue(apDocFields.fields.guiNum.id)
     if (!taxAmtValidator.isLengthValid(value)) {
       resultObj.isValid = false
@@ -953,6 +948,11 @@ define([
   function getSublistValue(fieldId) {
     return currentSublistApDocRecord[fieldId]
   }
+
+  function getDocType(docType){
+      return apDocTypeService.getDocTypeCodeByRecordId(docType)
+  }
+
 
   //endregion
 

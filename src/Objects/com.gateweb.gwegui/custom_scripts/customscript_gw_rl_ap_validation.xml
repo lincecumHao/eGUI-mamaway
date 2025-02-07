@@ -1,0 +1,22 @@
+<restlet scriptid="customscript_gw_rl_ap_validation">
+  <description></description>
+  <isinactive>F</isinactive>
+  <name>GW RL AP VALIDATION</name>
+  <notifyadmins>F</notifyadmins>
+  <notifyemails></notifyemails>
+  <notifyowner>T</notifyowner>
+  <notifyuser>F</notifyuser>
+  <scriptfile>[/SuiteApps/com.gateweb.gwegui/gw_ap_doc/integration_api/gw_rl_ap_validation.js]</scriptfile>
+  <scriptdeployments>
+    <scriptdeployment scriptid="customdeploy_gw_rl_ap_validation">
+      <allemployees>T</allemployees>
+      <allpartners>F</allpartners>
+      <allroles>T</allroles>
+      <audslctrole></audslctrole>
+      <isdeployed>T</isdeployed>
+      <loglevel>DEBUG</loglevel>
+      <status>RELEASED</status>
+      <title>GW RL AP VALIDATION</title>
+    </scriptdeployment>
+  </scriptdeployments>
+</restlet>

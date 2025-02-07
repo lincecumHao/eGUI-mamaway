@@ -84,5 +84,6 @@ define(['N/record', './gw_lib_search', './gw_lib_wrapper'], function (
   exports.getCustomClearanceMarkRecordIdByValue = constructorWrapper(
     getCustomClearanceMarkRecordIdByValue
   )
+  exports.getAllOptions = getAllOptions
   return exports
 })

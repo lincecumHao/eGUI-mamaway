@@ -375,5 +375,6 @@ define(['../vo/gw_ap_doc_fields'], function (apDocFields) {
   exports.setCurrentContext = setCurrentContext
   exports.isFieldDisabled = isFieldDisabled
   exports.clearDisabledFieldsContent = clearDisabledFieldsContent
+  exports.formDisplaySettings = formDisplaySettings
   return exports
 })

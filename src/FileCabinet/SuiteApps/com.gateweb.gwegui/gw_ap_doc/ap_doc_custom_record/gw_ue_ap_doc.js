@@ -1,7 +1,17 @@
 define([
-    'N/runtime'
+  'N/runtime',
+  'N/error',
+  '../vo/gw_ap_doc_fields',
+  '../transactionSublist/gw_cs_ap_sublist_display',
+  '../transactionSublist/gw_cs_trans_ap_doc_sublist',
+  '../application/gw_service_ap_doc_type_options',
 ], (
-    runtime
+  runtime,
+  error,
+  apDocFields,
+  sublistDisplay,
+  apDocSublist,
+  apDocTypeService
 ) => {
   /**
    * Module Description...
@@ -37,6 +47,7 @@ define([
    */
   function beforeLoad(context) {
     // TODO
+
     log.debug({
       title: 'beforeLoad',
       details: {
@@ -62,8 +73,27 @@ define([
    */
   function beforeSubmit(context) {
     // TODO
-
     log.debug({ title: 'beforeSubmit', details: context.type })
+
+    if(context.type !== context.UserEventType.CREATE) return
+
+    let errorMessageAry =[]
+
+    if (checkRequiredFields(context, errorMessageAry)) {
+      let recordData = getRecordData(context)
+
+      checkFieldsDisplay(context, errorMessageAry)
+      validateLine(recordData, context, errorMessageAry)
+    }
+
+    if (errorMessageAry.length > 0) {
+      let errorMessage = errorMessageAry.join('，')
+      log.debug({ title: 'importErrorMessage', details: errorMessage })
+
+      throw errorMessage
+    }
+
+    log.debug({ title: 'beforeSubmit_end', details: context })
   }
 
   /**
@@ -78,8 +108,76 @@ define([
    */
   function afterSubmit(context) {
     // TODO
-
     log.debug({ title: 'afterSubmit', details: context.type })
+  }
+
+  function checkRequiredFields(context, errorMessageAry) {
+    let transactionNo = context.newRecord.getValue({fieldId:'custrecord_gw_apt_doc_tran_id'})
+    let docType = apDocTypeService.getDocTypeCodeByRecordId(context.newRecord.getValue({fieldId:'custrecord_gw_ap_doc_type'}))
+
+    if (transactionNo === '') {
+      errorMessageAry.push('transactionNo為必填欄位')
+    }
+
+    if (docType === '') {
+      errorMessageAry.push('憑證格式代碼為必填欄位')
+    }
+
+     return (errorMessageAry.length === 0)
+  }
+
+  function checkFieldsDisplay(context, errorMessageAry){
+    let docType = apDocTypeService.getDocTypeCodeByRecordId(context.newRecord.getValue({fieldId:'custrecord_gw_ap_doc_type'}))
+
+    sublistDisplay.formDisplaySettings[docType]['mandatoryFields'].map(function (field){
+      if (context.newRecord.getValue({ fieldId:  field.id}) === '') {
+        errorMessageAry.push(field.chtName + '為必填欄位')
+      }
+    })
+
+    sublistDisplay.formDisplaySettings[docType]['disabledFields'].map(function (field){
+      if (context.newRecord.getValue({ fieldId:  field.id}) !== '') {
+        errorMessageAry.push(field.chtName + '需為空值')
+      }
+    })
+  }
+
+  function getRecordData(context){
+    let recordData = {}
+
+    apDocFields.fieldNames.forEach(function (fieldName) {
+      let fieldDefObj = apDocFields.fields[fieldName]
+      recordData[fieldDefObj.id] = context.newRecord.getValue({ fieldId: fieldDefObj.id })
+    })
+
+    return recordData
+  }
+
+  function validateLine(recordData, context, errorMessageAry) {
+    Object.keys(recordData).forEach(function(fieldId) {
+      let ignoreFields = ['']
+      if (ignoreFields.indexOf(fieldId) === -1) {
+        let fieldValidationResult = apDocSublist.validateFieldForAPI('', fieldId, recordData)
+
+        if (!fieldValidationResult.isValid) {
+          //log.debug({ title: 'fieldValidationResult', details: fieldValidationResult.error })
+          errorMessageAry.push(getChtNameByFieldId(fieldId) + ': ' + fieldValidationResult.error[0].chtMessage)
+        }
+      }
+    })
+  }
+
+  function getChtNameByFieldId(fieldId) {
+    let fields = apDocFields.fields
+    let chtName
+
+    for (let key in fields) {
+      if (fields[key].id === fieldId) {
+        chtName = fields[key].chtName
+        break
+      }
+    }
+    return chtName || fieldId
   }
 
   exports.beforeLoad = beforeLoad

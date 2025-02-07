@@ -15,7 +15,8 @@ define([], function () {
   var fields = {
     docType: {
       name: 'docType',
-      id: 'custrecord_gw_ap_doc_type'
+      id: 'custrecord_gw_ap_doc_type',
+      chtName: '憑證格式代碼'
     },
     guiNum: {
       name: 'guiNum',
@@ -27,21 +28,24 @@ define([], function () {
       name: 'commonNumber',
       id: 'custrecord_gw_ap_doc_comm_num',
       maxLength: 16,
-      chtName: '共通號碼'
+      chtName: '其他憑證號碼'
     },
     guiStatus: {
       name: 'guiStatus',
       id: 'custrecord_gw_ap_doc_status',
-      maxLength: 5
+      maxLength: 5,
+      chtName: '狀態'
     },
     guiDate: {
       name: 'guiDate',
       id: 'custrecord_gw_ap_doc_issue_date',
-      maxLength: 10
+      maxLength: 10,
+      chtName: '憑證開立日期'
     },
     buyer: {
       name: 'buyer',
-      id: 'custrecord_gw_ap_doc_buyer'
+      id: 'custrecord_gw_ap_doc_buyer',
+      chtName: '買方'
     },
     buyerTaxId: {
       name: 'buyerTaxId',
@@ -51,7 +55,8 @@ define([], function () {
     buyerName: {
       name: 'buyerName',
       id: 'custrecord_gw_ap_doc_buyer_name',
-      maxLength: 60
+      maxLength: 60,
+      chtName: '買方公司名稱'
     },
     sellerTaxId: {
       name: 'sellerTaxId',
@@ -62,7 +67,8 @@ define([], function () {
     sellerName: {
       name: 'sellerName',
       id: 'custrecord_gw_ap_doc_seller_name',
-      maxLength: 60
+      maxLength: 60,
+      chtName: '賣方公司名稱'
     },
     salesAmt: {
       name: 'salesAmt',
@@ -79,11 +85,13 @@ define([], function () {
     totalAmt: {
       name: 'totalAmt',
       id: 'custrecord_gw_ap_doc_total_amt',
-      maxLength: 12
+      maxLength: 12,
+      chtName: '總計'
     },
     taxType: {
       name: 'TaxType',
-      id: 'custrecord_gw_ap_doc_tax_type'
+      id: 'custrecord_gw_ap_doc_tax_type',
+      chtName: '課稅別'
     },
     taxExemptedSalesAmt: {
       name: 'taxExemptedSalesAmt',
@@ -115,36 +123,43 @@ define([], function () {
     },
     customClearanceMark: {
       name: 'customClearanceMark',
-      id: 'custrecord_gw_ap_doc_custom_mark'
+      id: 'custrecord_gw_ap_doc_custom_mark',
+      chtName: '通關註記'
     },
     currency: {
       name: 'currency',
       id: 'custrecord_gw_ap_doc_currency',
-      maxLength: 3
+      maxLength: 3,
+      chtName: '幣別'
     },
     zeroTaxMark: {
       name: 'zeroTaxMark',
-      id: 'custrecord_gw_ap_doc_zero_tax_mark'
+      id: 'custrecord_gw_ap_doc_zero_tax_mark',
+      chtName: '零稅率銷售額'
     },
     outputDate: {
       name: 'outputDate',
       id: 'custrecord_gw_ap_doc_close_date',
-      maxLength: 10
+      maxLength: 10,
+      chtName: '外銷結匯日期'
     },
     businessUnit: {
       name: 'businessUnit',
       id: 'custrecord_gw_ap_doc_business_unit',
-      maxLength: 30
+      maxLength: 30,
+      chtName: '業務單位'
     },
     relatedNumber: {
       name: 'relatedNumber',
       id: 'custrecord_gw_ap_doc_related_number',
-      maxLength: 30
+      maxLength: 30,
+      chtName: '傳票單據號碼'
     },
     applyPeriod: {
       name: 'applyPeriod',
       id: 'custrecord_gw_ap_doc_acct_period',
-      maxLength: 6
+      maxLength: 6,
+      chtName: '憑證期別'
     },
     applyMonth: {
       name: 'applyMonth',
@@ -153,12 +168,14 @@ define([], function () {
     source: {
       name: 'source',
       id: 'custrecord_gw_ap_doc_source',
-      maxLength: 30
+      maxLength: 30,
+      chtName: '資料來源'
     },
     uniqueId: {
       name: 'uniqueId',
       id: 'custrecord_gw_ap_doc_unique_id',
-      maxLength: 20
+      maxLength: 20,
+      chtName: '資料識別碼'
     },
     transaction: {
       name: 'transaction',
@@ -166,7 +183,8 @@ define([], function () {
     },
     applyPeriodSelect: {
       name: 'applyPeriodSelect',
-      id: 'custrecord_gw_ap_doc_apply_period'
+      id: 'custrecord_gw_ap_doc_apply_period',
+      chtName: '申報期別'
     },
     applyMonthSelect: {
       name: 'applyMonthSelect',
@@ -174,7 +192,8 @@ define([], function () {
     },
     filingSalesTax: {
       name: 'filingSalesTax',
-      id: 'custrecord_gw_ap_doc_apply'
+      id: 'custrecord_gw_ap_doc_apply',
+      chtName: '申報營業稅'
     }
   }
 

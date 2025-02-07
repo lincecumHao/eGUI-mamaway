@@ -1,0 +1,293 @@
+<savedcsvimport scriptid="custimport_gw_ap_doc">
+  <charencoding>UTF_8</charencoding>
+  <columndelimiter>COMMA</columndelimiter>
+  <customrecord>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc]</customrecord>
+  <datahandling>ADD</datahandling>
+  <decimaldelimiter>PERIOD</decimaldelimiter>
+  <ignorereadonly>T</ignorereadonly>
+  <importname>GW Ap Doc</importname>
+  <logsystemnotescustfields>F</logsystemnotescustfields>
+  <multiselectdelimiter>|</multiselectdelimiter>
+  <overwritemissingfields>F</overwritemissingfields>
+  <overwritesublists>F</overwritesublists>
+  <recordtype>CUSTOMRECORD</recordtype>
+  <runserversuitescript>T</runserversuitescript>
+  <usemultithread>F</usemultithread>
+  <validatemandatorycustfields>T</validatemandatorycustfields>
+  <audience>
+    <allemployees>F</allemployees>
+    <allpartners>F</allpartners>
+    <allroles>F</allroles>
+    <globaledit>F</globaledit>
+    <ispublic>T</ispublic>
+    <roles></roles>
+  </audience>
+  <filemappings>
+    <filemapping>
+      <file>CUSTOMRECORD</file>
+    </filemapping>
+  </filemappings>
+  <recordmappings>
+    <recordmapping>
+      <record>CUSTOMRECORD</record>
+      <fieldmappings>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_acct_period]</field>
+          <columnreference>
+            <column>憑證期別</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_apply]</field>
+          <columnreference>
+            <column>申報營業稅</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_apply_month]</field>
+          <columnreference>
+            <column>申報月</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_apply_period]</field>
+          <columnreference>
+            <column>申報期別</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_business_unit]</field>
+          <columnreference>
+            <column>業務單位</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_buyer]</field>
+          <columnreference>
+            <column>買方</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_buyer_name]</field>
+          <columnreference>
+            <column>買方公司名稱</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_buyer_tax_id]</field>
+          <columnreference>
+            <column>買方統編</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_close_date]</field>
+          <columnreference>
+            <column>外銷結匯日期</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_co_mark]</field>
+          <columnreference>
+            <column>匯總或分攤註記</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_co_qty]</field>
+          <columnreference>
+            <column>匯總數量</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_comm_num]</field>
+          <columnreference>
+            <column>其他憑證號碼</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_currency]</field>
+          <columnreference>
+            <column>幣別</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_custom_mark]</field>
+          <columnreference>
+            <column>通關註記</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_deduct_code]</field>
+          <columnreference>
+            <column>進項扣抵代號</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_exempt_amt]</field>
+          <columnreference>
+            <column>免稅銷售額</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_gui_num]</field>
+          <columnreference>
+            <column>發票號碼</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_issue_date]</field>
+          <columnreference>
+            <column>憑證開立日期</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_related_number]</field>
+          <columnreference>
+            <column>傳票單據號碼</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_sales_amt]</field>
+          <columnreference>
+            <column>應稅銷售額</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_seller_name]</field>
+          <columnreference>
+            <column>賣方公司名稱</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_seller_tax_id]</field>
+          <columnreference>
+            <column>賣方統編</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_source]</field>
+          <columnreference>
+            <column>資料來源</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_status]</field>
+          <columnreference>
+            <column>狀態</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_tax_amt]</field>
+          <columnreference>
+            <column>稅額</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_tax_type]</field>
+          <columnreference>
+            <column>課稅別</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_total_amt]</field>
+          <columnreference>
+            <column>總計</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_type]</field>
+          <columnreference>
+            <column>憑證格式代碼</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_unique_id]</field>
+          <columnreference>
+            <column>資料識別碼</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_zero_tax_mark]</field>
+          <columnreference>
+            <column>適用零稅率註記</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_ap_doc_ztr_amt]</field>
+          <columnreference>
+            <column>零稅率銷售額</column>
+            <file>CUSTOMRECORD</file>
+            <type>NAME</type>
+          </columnreference>
+        </fieldmapping>
+        <fieldmapping>
+          <field>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc.custrecord_gw_apt_doc_tran_id]</field>
+          <columnreference>
+            <column>Transaction No</column>
+            <file>CUSTOMRECORD</file>
+            <type>INTERNAL_ID</type>
+          </columnreference>
+        </fieldmapping>
+      </fieldmappings>
+    </recordmapping>
+  </recordmappings>
+</savedcsvimport>

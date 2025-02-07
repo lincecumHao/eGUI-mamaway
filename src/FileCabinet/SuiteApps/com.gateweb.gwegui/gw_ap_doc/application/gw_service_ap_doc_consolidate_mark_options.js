@@ -112,5 +112,6 @@ define(['N/record', './gw_lib_search', './gw_lib_wrapper'], function (
   exports.isSingle = isSingle
   exports.isShared = isShared
   exports.isConsolidate = isConsolidate
+  exports.getAllOptions = getAllOptions
   return exports
 })

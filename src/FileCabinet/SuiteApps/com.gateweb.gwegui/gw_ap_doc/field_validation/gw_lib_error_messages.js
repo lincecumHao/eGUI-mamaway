@@ -33,7 +33,7 @@ define([], function () {
   exports.GuiNumberCommonNumberConflictError = {
     code: 'GUI_COMMON_CAN_ONLY_HAVE_ONE',
     message: 'GUI Number and Common number should choose 1',
-    chtMessage: '發票號碼與共通號碼請擇一輸入',
+    chtMessage: '發票號碼與其他憑證號碼請擇一輸入',
   }
   exports.GuiNumberMustNotHaveValueError = {
     code: 'GUI_NUMBER_MUST_NOT_HAVE',
@@ -61,31 +61,31 @@ define([], function () {
   exports.CommonNumberSimilarToGuiNumber = {
     code: 'COMMON_NUMBER_SIMILAR_GUI_NUMBER',
     message: 'Common Number can not be similar to Gui Number',
-    chtMessage: '共通號碼不可與發票號碼格式相似 (2為英文字母與8位數字)',
+    chtMessage: '其他憑證號碼不可與發票號碼格式相似 (2為英文字母與8位數字)',
   }
 
   exports.CommonNumberFormatError = {
     code: 'COMMON_NUMBER_FORMAT_ERROR',
     message: 'Common Number format error',
-    chtMessage: '共通號碼格式錯誤 (BB + 8位數字或英文)',
+    chtMessage: '其他憑證號碼格式錯誤 (BB + 8位數字或英文)',
   }
 
   exports.CommonNumberRequired = {
     code: 'COMMON_NUMBER_REQUIRED',
     message: 'Common Number Required',
-    chtMessage: '共通號碼必填',
+    chtMessage: '其他憑證號碼必填',
   }
 
   exports.CommonNumberMustNotHave = {
     code: 'COMMON_NUMBER_MUST_NOT_HAVE',
     message: 'Common Number Must not have',
-    chtMessage: '共通號碼不可填',
+    chtMessage: '其他憑證號碼不可填',
   }
 
   exports.CommonNumberCustomLenthError = {
     code: 'COMMON_NUMBER_CUSTOM_LENGTH_ERROR',
     message: 'Common Number Custom Length is incorrect',
-    chtMessage: '長度錯誤, 共通號碼應14碼進口海關代徵號碼',
+    chtMessage: '長度錯誤, 其他憑證號碼應14碼進口海關代徵號碼',
   }
   //endregion
 
