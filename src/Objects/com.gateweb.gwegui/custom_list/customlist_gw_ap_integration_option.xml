@@ -1,0 +1,20 @@
+<customlist scriptid="customlist_gw_ap_integration_option">
+  <description></description>
+  <isinactive>F</isinactive>
+  <isordered>T</isordered>
+  <name>GW AP Integration Option</name>
+  <customvalues>
+    <customvalue scriptid="val_113376_td2905095_309">
+      <isinactive>F</isinactive>
+      <value>Validation</value>
+    </customvalue>
+    <customvalue scriptid="val_113377_td2905095_909">
+      <isinactive>F</isinactive>
+      <value>Validation &amp; Create Voucher Record</value>
+    </customvalue>
+    <customvalue scriptid="val_113378_td2905095_777">
+      <isinactive>F</isinactive>
+      <value>Validation &amp; Create Transaction &amp; Create AP Voucher Record</value>
+    </customvalue>
+  </customvalues>
+</customlist>

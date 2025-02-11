@@ -32,6 +32,12 @@ define([
         3: 'expensereport'
     }
 
+    const INTEGRATION_OPTION = {
+        1: 'VALIDATION',
+        2: 'VALIDATION_AND_CREATE_VOUCHER_RECORD',
+        3: 'VALIDATION_AND_CREATE_TRANSACTION_AND_CREATE_VOUCHER_RECORD'
+    }
+
     function callApValidation (request) {
         log.audit({title: 'callApValidation - request', details: request})
         const scriptId = 'customscript_gw_rl_ap_validation'
@@ -369,7 +375,7 @@ define([
         return request
     }
 
-    function getConsolidatedResultObject (resultArrayObject) {
+    function getConsolidatedResultObject (resultArrayObject, integrationOption) {
         log.audit({title: 'getConsolidatedResultObject', details: 'start...'})
         let consolidateResultArrayObject = []
         resultArrayObject.forEach(function (eachObject) {
@@ -379,6 +385,10 @@ define([
                 consolidateResult: [],
                 consolidateErrorMessage: [],
                 request: eachObject
+            }
+            if(INTEGRATION_OPTION[integrationOption] === 'VALIDATION') {
+                delete eachResultObject['transactionId']
+                delete eachResultObject['consolidateResult']
             }
             if(eachObject.transactions.recordId) {
                 if(!eachObject.isValid) {
@@ -398,7 +408,10 @@ define([
                 let eachConsolidatedObject = {
                     guiNumber: eachGUI.guiNum,
                     commonNumber: eachGUI.commonNumber,
-                    voucherRecordId: eachObject.isValid ? eachGUI.voucherRecordId : null,
+                    voucherRecordId: null
+                }
+                if(eachObject.isValid && eachGUI.voucherRecordId) {
+                    eachConsolidatedObject.voucherRecordId = eachGUI.voucherRecordId
                 }
                 if(!eachObject.isValid) {
                     if(eachGUI.errorMessage && eachGUI.errorMessage.length > 0) {
@@ -407,16 +420,34 @@ define([
                         eachConsolidatedObject.errorMessage = eachObject.transactions.errorMessage
                     }
                     eachResultObject.consolidateErrorMessage.push(eachConsolidatedObject)
-                } else {
+                } else if (INTEGRATION_OPTION[integrationOption] !== 'VALIDATION'){
                     eachResultObject.consolidateResult.push(eachConsolidatedObject)
                 }
             })
 
             log.audit({title: 'getConsolidatedResultObject - eachResultObject', details: eachResultObject})
+            log.debug({title: 'before push 3', details: '...'})
             consolidateResultArrayObject.push(eachResultObject)
         })
 
         return consolidateResultArrayObject
+    }
+
+    function getSetupOption () {
+        const type = 'customrecord_gw_ap_integration_setup'
+        let filters = []
+        filters.push(['internalid', 'anyof', 1])
+        let columns = []
+        columns.push('custrecord_gw_ais_option')
+        const integrationSetupSearch = search.create({type, filters, columns})
+        let option = null
+        integrationSetupSearch.run().each(function(result){
+            // .run().each has a limit of 4,000 results
+            option = result.getValue({name: 'custrecord_gw_ais_option'})
+            return true
+        })
+
+        return option
     }
 
     exports.callApValidation = callApValidation
@@ -424,5 +455,7 @@ define([
     exports.createAccountPayableTransaction = createAccountPayableTransaction
     exports.createAccountPayableVoucher = createAccountPayableVoucher
     exports.getConsolidatedResultObject = getConsolidatedResultObject
+    exports.getSetupOption = getSetupOption
+    exports.integrationOptionMapping = INTEGRATION_OPTION
     return exports
 });
