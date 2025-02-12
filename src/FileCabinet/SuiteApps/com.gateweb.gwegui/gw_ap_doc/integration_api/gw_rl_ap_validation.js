@@ -19,7 +19,8 @@ define([
   '../application/gw_service_ap_doc_consolidate_mark_options',
   '../application/gw_service_ap_doc_custom_clearance_mark_options',
   '../application/gw_service_ap_doc_exempt_option',
-  '../application/gw_service_ap_doc_currency_options'
+  '../application/gw_service_ap_doc_currency_options',
+  '../field_validation/gw_lib_field_validation_gui_number',
 ], function(
   format,
   record,
@@ -37,7 +38,8 @@ define([
   apDocConsolidateMarkService,
   apDocCustomClearanceMarkService,
   apDocExemptService,
-  apDocCurrencyService
+  apDocCurrencyService,
+  guiNumberValidator
 ) {
 
   function post(requestBody) {
@@ -226,12 +228,12 @@ define([
     let mof = ''
     let recordId = 0
 
-    if (item.guiNum !== '') {
+    if (guiNumberValidator.isGuiTrackValidationRequired(value) && item.guiNum !== '') {
       mof = apDocTypeService.getMofValue(item.docIssuePeriod, item.docType, item.guiNum.substring(0, 2))
     } else if (item.commonNumber !== '' && value === '22') {
       mof = '02'
     } else {
-      return
+      mof = '00'
     }
 
     recordId = apDocTypeService.getApDocTypeIdByValueAndInvoiceCode(value, mof)
