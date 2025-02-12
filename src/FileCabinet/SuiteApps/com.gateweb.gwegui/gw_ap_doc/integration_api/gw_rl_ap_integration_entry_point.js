@@ -16,19 +16,8 @@ define([
 
     let exports = {};
 
-    const INTEGRATION_OPTION = {
-        1: 'VALIDATION',
-        2: 'VALIDATION_AND_CREATE_VOUCHER_RECORD',
-        3: 'VALIDATION_AND_CREATE_TRANSACTION_AND_CREATE_VOUCHER_RECORD'
-    }
-
     function isValidRequest(req){
         return req && req.length > 0
-    }
-
-    function isNeedToCreateTransaction() {
-        let flag = false
-        return flag
     }
 
     function post(request) {
@@ -36,7 +25,7 @@ define([
 
         try {
             //TODO - get integration setup
-            const integrationOption = gwLibApIntegration.getSetupOption()
+            let integrationOption = gwLibApIntegration.getSetupOption()
             if(!integrationOption) {
                 var errorResponse = new RestletResponse('', '')
                 errorResponse.addError({
@@ -60,6 +49,11 @@ define([
             let createTransactionResponse = null
             let createAccountPayableVoucherResponse = null
             let returnObject = null
+
+            log.debug({title: 'request[0].action', details: request[0].action})
+            if(request[0].action && request[0].action === 'validation') {
+                integrationOption = 1 // default to validation
+            }
 
             switch (gwLibApIntegration.integrationOptionMapping[integrationOption]) {
                 case 'VALIDATION':
