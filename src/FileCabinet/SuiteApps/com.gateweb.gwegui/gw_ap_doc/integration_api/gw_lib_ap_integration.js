@@ -175,29 +175,56 @@ define([
                 transactionObject.BillItemDetail &&
                 transactionObject.BillItemDetail.length > 0) {
                 //TODO - update item line
-                /**
                 const itemSublistId = 'item'
-                for (let itemLine = 0; itemLine < transactionObject.transactions.BillItemDetail.length; itemLine ++) {
-                    recordObject.selectNewLine({sublistId: itemSublistId})
-                    vendorBill.allItemLineFields.forEach(function (prop) {
-                        let fieldId = vendorBill.fields[prop].internalId
-                        let value = transactionObject.transactions.BillItemDetail[itemLine][prop]
-                        log.debug({
-                            title: 'adding item line',
-                            details: {
+                let itemLine = recordObject.getLineCount({sublistId: itemSublistId})
+                let currentLine = 0
+                log.debug({
+                    title: 'createVendorBill - itemLine - before remove',
+                    details: recordObject.getLineCount({sublistId: itemSublistId})
+                })
+                do {
+                    recordObject.selectLine({ sublistId: itemSublistId, line: currentLine })
+                    const itemId = recordObject.getCurrentSublistValue({sublistId: itemSublistId, fieldId: 'item'})
+                    const orderLine = recordObject.getCurrentSublistValue({sublistId: itemSublistId, fieldId: 'orderline'})
+                    log.debug({
+                        title: 'createVendorBill - line info',
+                        details: {
+                            itemId,
+                            orderLine
+                        }
+                    })
+                    const matchedItemObject = transactionObject.BillItemDetail.find(function (lineObject) {
+                        return lineObject.LineID == orderLine && lineObject.ItemCode == itemId
+                    })
+
+                    if(matchedItemObject) {
+                        vendorBill.allItemLineFields.forEach(function (prop) {
+                            let fieldId = vendorBill.fields[prop].internalId
+                            let value = matchedItemObject[prop]
+                            log.debug({
+                                title: 'update item line',
+                                details: {
+                                    fieldId,
+                                    value
+                                }
+                            })
+                            recordObject.setCurrentSublistValue({
+                                sublistId: itemSublistId,
                                 fieldId,
                                 value
-                            }
+                            })
                         })
-                        recordObject.setCurrentSublistValue({
-                            sublistId: itemSublistId,
-                            fieldId,
-                            value
-                        })
-                    })
-                    recordObject.commitLine({sublistId: itemSublistId})
-                }
-                **/
+                        recordObject.commitLine({sublistId: itemSublistId})
+                        currentLine ++
+                    } else {
+                        recordObject.removeLine({ sublistId: itemSublistId, line: currentLine });
+                        itemLine --
+                    }
+                } while (currentLine < itemLine);
+                log.debug({
+                    title: 'createVendorBill - itemLine - after remove',
+                    details: recordObject.getLineCount({sublistId: itemSublistId})
+                })
             }
             if(!transactionObject.POID && transactionObject.BillExpenseDetail &&
                 transactionObject.BillExpenseDetail.length > 0) {
@@ -210,10 +237,7 @@ define([
                         let value = transactionObject.BillExpenseDetail[expenseLine][prop]
                         log.debug({
                             title: 'adding expense line',
-                            details: {
-                                fieldId,
-                                value
-                            }
+                            details: {fieldId, value}
                         })
                         recordObject.setCurrentSublistValue({
                             sublistId: expenseSublistId,
