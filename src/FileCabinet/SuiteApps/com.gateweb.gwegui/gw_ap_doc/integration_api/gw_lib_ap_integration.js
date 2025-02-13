@@ -208,11 +208,13 @@ define([
                                     value
                                 }
                             })
-                            recordObject.setCurrentSublistValue({
-                                sublistId: itemSublistId,
-                                fieldId,
-                                value
-                            })
+                            if(value) {
+                                recordObject.setCurrentSublistValue({
+                                    sublistId: itemSublistId,
+                                    fieldId,
+                                    value
+                                })
+                            }
                         })
                         recordObject.commitLine({sublistId: itemSublistId})
                         currentLine ++
@@ -307,11 +309,13 @@ define([
                         if(prop === 'ExpenseCurrency') {
                             value = getCurrencyIdByCode(transactionObject.Expenses[expenseLine][prop])
                         }
-                        recordObject.setCurrentSublistValue({
-                            sublistId: expenseSublistId,
-                            fieldId,
-                            value
-                        })
+                        if(value) {
+                            recordObject.setCurrentSublistValue({
+                                sublistId: expenseSublistId,
+                                fieldId,
+                                value
+                            })
+                        }
                     })
                     recordObject.commitLine({sublistId: expenseSublistId})
                 }
