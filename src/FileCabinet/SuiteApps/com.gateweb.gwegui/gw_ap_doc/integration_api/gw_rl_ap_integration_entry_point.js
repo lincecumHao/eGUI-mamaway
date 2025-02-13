@@ -82,32 +82,7 @@ define([
                     returnObject = gwLibApIntegration.getConsolidatedResultObject(createAccountPayableVoucherResponse, integrationOption)
                     break;
             }
-
             return JSON.stringify(returnObject)
-
-            // if(INTEGRATION_OPTION[integrationOption] === 'VALIDATION') {
-            //     return validationResponse.body
-            // } else {
-            //     return JSON.stringify(returnObject)
-            // }
-
-/**
-            //TODO - call validation Restlet
-            const validateResult = gwLibApIntegration.callApValidation(request)
-            log.debug({title: 'post - validateResult', details: validateResult})
-            // return validateResult.body
-            //TODO - call create transaction Restlet
-            if(isNeedToCreateTransaction()) {
-                const response = gwLibApIntegration.createTransaction(JSON.parse(validateResult.body))
-                //TODO - call create ap doc record Restlet
-                const createAccountPayableVoucherResult = gwLibApIntegration.createAccountPayableVoucher(JSON.parse(response.body))
-                const consolidateResultObject = gwLibApIntegration.getConsolidatedResultObject(createAccountPayableVoucherResult)
-                // return response.body
-                return JSON.stringify(consolidateResultObject)
-            } else {
-                return validateResult.body
-            }
-**/
         } catch (e) {
             log.error({
                 title: 'post error',

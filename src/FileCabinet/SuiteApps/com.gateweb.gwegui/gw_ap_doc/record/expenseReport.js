@@ -110,7 +110,7 @@ define([
             isHeader: false,
             isLine: true
         },
-        Relateddocuments: {
+        BPMNumber: {
             internalId: 'custbody_gw_reference_number',
             isHeader: true,
             isLine: false

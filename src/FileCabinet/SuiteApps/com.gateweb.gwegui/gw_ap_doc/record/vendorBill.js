@@ -99,7 +99,7 @@ define([
             isItemLine: false,
             isExpenseLine: true
         },
-        Relateddocuments: {
+        BPMNumber: {
             internalId: 'custbody_gw_reference_number',
             isHeader: true,
             isItemLine: false,

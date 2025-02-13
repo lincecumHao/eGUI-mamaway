@@ -45,7 +45,7 @@ define([
         Class: {
             internalId: 'class',
         },
-        Relateddocuments: {
+        BPMNumber: {
             internalId: 'custbody_gw_reference_number',
         },
     }

@@ -103,13 +103,15 @@ define([
 
             vendorPrepayment.allFields.forEach(function (prop) {
                 let fieldId = vendorPrepayment.fields[prop].internalId
-                let value = transactionObject.transactions[prop]
-                if(prop === 'Date') {
-                    value = new Date(dateUtil.getDateWithFormat(
-                        transactionObject.transactions[prop], 'YYYY-MM-DD', 'YYYY/MM/DD'
-                    ))
+                let value = transactionObject[prop]
+                if(value) {
+                    if(prop === 'Date') {
+                        value = new Date(dateUtil.getDateWithFormat(
+                            transactionObject[prop], 'YYYY-MM-DD', 'YYYY/MM/DD'
+                        ))
+                    }
+                    recordObject.setValue({fieldId, value})
                 }
-                recordObject.setValue({fieldId, value})
             })
 
             resultObject.recordId = recordObject.save({
@@ -123,8 +125,8 @@ define([
         log.audit({title: 'createVendorPrepayment - resultObject', details: resultObject})
 
         transactionObject.isValid = resultObject.recordId !== null
-        transactionObject.transactions.recordId = resultObject.recordId
-        transactionObject.transactions.errorMessage = resultObject.errorMessage
+        transactionObject.recordId = resultObject.recordId
+        transactionObject.errorMessage = resultObject.errorMessage
     }
 
     function createVendorBill(transactionObject) {
@@ -135,10 +137,10 @@ define([
         }
         try {
             let recordObject = null
-            if(transactionObject.transactions.POID) {
+            if(transactionObject.POID) {
                 recordObject = record.transform({
                     fromType: record.Type.PURCHASE_ORDER,
-                    fromId: transactionObject.transactions.POID,
+                    fromId: transactionObject.POID,
                     toType: RECORD_ID_MAPPING[transactionObject.Type],
                     isDynamic: true
                 })
@@ -151,7 +153,7 @@ define([
 
             vendorBill.allHeaderFields.forEach(function (prop) {
                 let fieldId = vendorBill.fields[prop].internalId
-                let value = transactionObject.transactions[prop]
+                let value = transactionObject[prop]
                 log.debug({
                     title: 'set header field value',
                     details: {
@@ -159,17 +161,19 @@ define([
                         value
                     }
                 })
-                if(prop === 'Date' || prop === 'DueDate') {
-                    value = new Date(dateUtil.getDateWithFormat(
-                        transactionObject.transactions[prop], 'YYYY-MM-DD', 'YYYY/MM/DD'
-                    ))
+                if(value) {
+                    if(prop === 'Date' || prop === 'DueDate') {
+                        value = new Date(dateUtil.getDateWithFormat(
+                            transactionObject[prop], 'YYYY-MM-DD', 'YYYY/MM/DD'
+                        ))
+                    }
+                    if(transactionObject[prop]) recordObject.setValue({fieldId, value})
                 }
-                if(transactionObject.transactions[prop]) recordObject.setValue({fieldId, value})
             })
 
-            if(transactionObject.transactions.POID &&
-                transactionObject.transactions.BillItemDetail &&
-                transactionObject.transactions.BillItemDetail.length > 0) {
+            if(transactionObject.POID &&
+                transactionObject.BillItemDetail &&
+                transactionObject.BillItemDetail.length > 0) {
                 //TODO - update item line
                 /**
                 const itemSublistId = 'item'
@@ -195,16 +199,15 @@ define([
                 }
                 **/
             }
-            if(!transactionObject.transactions.POID &&
-                transactionObject.transactions.BillExpenseDetail &&
-                transactionObject.transactions.BillExpenseDetail.length > 0) {
+            if(!transactionObject.POID && transactionObject.BillExpenseDetail &&
+                transactionObject.BillExpenseDetail.length > 0) {
                 //TODO - add expense line
-                for (let expenseLine = 0; expenseLine < transactionObject.transactions.BillExpenseDetail.length; expenseLine ++) {
+                for (let expenseLine = 0; expenseLine < transactionObject.BillExpenseDetail.length; expenseLine ++) {
                     const expenseSublistId = 'expense'
                     recordObject.selectNewLine({sublistId: expenseSublistId})
                     vendorBill.allExpenseLineFields.forEach(function (prop) {
                         let fieldId = vendorBill.fields[prop].internalId
-                        let value = transactionObject.transactions.BillExpenseDetail[expenseLine][prop]
+                        let value = transactionObject.BillExpenseDetail[expenseLine][prop]
                         log.debug({
                             title: 'adding expense line',
                             details: {
@@ -232,8 +235,8 @@ define([
         }
 
         transactionObject.isValid = resultObject.recordId !== null
-        transactionObject.transactions.recordId = resultObject.recordId
-        transactionObject.transactions.errorMessage = resultObject.errorMessage
+        transactionObject.recordId = resultObject.recordId
+        transactionObject.errorMessage = resultObject.errorMessage
     }
 
     function createExpenseReport(transactionObject) {
@@ -250,33 +253,35 @@ define([
 
             expenseReport.allHeaderFields.forEach(function (prop) {
                 let fieldId = expenseReport.fields[prop].internalId
-                let value = transactionObject.transactions[prop]
-                if(prop === 'Date' || prop === 'DueDate') {
-                    value = new Date(dateUtil.getDateWithFormat(
-                        transactionObject.transactions[prop], 'YYYY-MM-DD', 'YYYY/MM/DD'
-                    ))
+                let value = transactionObject[prop]
+                if(value) {
+                    if(prop === 'Date' || prop === 'DueDate') {
+                        value = new Date(dateUtil.getDateWithFormat(
+                            transactionObject[prop], 'YYYY-MM-DD', 'YYYY/MM/DD'
+                        ))
+                    }
+                    if(prop === 'Currency') {
+                        value = getCurrencyIdByCode(transactionObject[prop])
+                    }
+                    recordObject.setValue({fieldId, value})
                 }
-                if(prop === 'Currency') {
-                    value = getCurrencyIdByCode(transactionObject.transactions[prop])
-                }
-                recordObject.setValue({fieldId, value})
             })
 
-            if(transactionObject.transactions.Expenses && transactionObject.transactions.Expenses.length > 0) {
+            if(transactionObject.Expenses && transactionObject.Expenses.length > 0) {
                 //TODO - add item line
                 const expenseSublistId = 'expense'
-                for (let expenseLine = 0; expenseLine < transactionObject.transactions.Expenses.length; expenseLine ++) {
+                for (let expenseLine = 0; expenseLine < transactionObject.Expenses.length; expenseLine ++) {
                     recordObject.selectNewLine({sublistId: expenseSublistId})
                     expenseReport.allLineFields.forEach(function (prop) {
                         let fieldId = expenseReport.fields[prop].internalId
-                        let value = transactionObject.transactions.Expenses[expenseLine][prop]
+                        let value = transactionObject.Expenses[expenseLine][prop]
                         if(prop === 'ExpenseDate') {
                             value = new Date(dateUtil.getDateWithFormat(
-                                transactionObject.transactions.Expenses[expenseLine][prop], 'YYYY-MM-DD', 'YYYY/MM/DD'
+                                transactionObject.Expenses[expenseLine][prop], 'YYYY-MM-DD', 'YYYY/MM/DD'
                             ))
                         }
                         if(prop === 'ExpenseCurrency') {
-                            value = getCurrencyIdByCode(transactionObject.transactions.Expenses[expenseLine][prop])
+                            value = getCurrencyIdByCode(transactionObject.Expenses[expenseLine][prop])
                         }
                         recordObject.setCurrentSublistValue({
                             sublistId: expenseSublistId,
@@ -298,8 +303,8 @@ define([
         }
 
         transactionObject.isValid = resultObject.recordId !== null
-        transactionObject.transactions.recordId = resultObject.recordId
-        transactionObject.transactions.errorMessage = resultObject.errorMessage
+        transactionObject.recordId = resultObject.recordId
+        transactionObject.errorMessage = resultObject.errorMessage
     }
 
     function createAccountPayableTransaction (transactionObject) {
@@ -334,7 +339,7 @@ define([
             if(eachRequest.isValid) {
                 eachRequest.GUIs.forEach(function (eachGUI) {
                     delete eachGUI['docType']
-                    eachGUI['transaction'] = eachRequest.transactions.recordId
+                    eachGUI['transaction'] = eachRequest.recordId
                     log.audit({
                         title: 'createAccountPayableVoucher - eachGUI',
                         details: eachGUI
@@ -390,16 +395,16 @@ define([
                 delete eachResultObject['transactionId']
                 delete eachResultObject['consolidateResult']
             }
-            if(eachObject.transactions.recordId) {
+            if(eachObject.recordId) {
                 if(!eachObject.isValid) {
                     // TODO - remove transaction
                     log.audit({title: 'getConsolidatedResultObject - delete transaction', details: 'proceed delete...'})
                     record.delete({
                         type: RECORD_ID_MAPPING[eachObject.Type],
-                        id: eachObject.transactions.recordId
+                        id: eachObject.recordId
                     })
                 } else {
-                    eachResultObject.transactionId = eachObject.transactions.recordId
+                    eachResultObject.transactionId = eachObject.recordId
                 }
             }
 
@@ -416,8 +421,8 @@ define([
                 if(!eachObject.isValid) {
                     if(eachGUI.errorMessage && eachGUI.errorMessage.length > 0) {
                         eachConsolidatedObject.errorMessage = eachGUI.errorMessage
-                    } else if (eachObject.transactions.errorMessage && eachObject.transactions.errorMessage.length > 0){
-                        eachConsolidatedObject.errorMessage = eachObject.transactions.errorMessage
+                    } else if (eachObject.errorMessage && eachObject.errorMessage.length > 0){
+                        eachConsolidatedObject.errorMessage = eachObject.errorMessage
                     }
                     eachResultObject.consolidateErrorMessage.push(eachConsolidatedObject)
                 } else if (INTEGRATION_OPTION[integrationOption] !== 'VALIDATION'){
