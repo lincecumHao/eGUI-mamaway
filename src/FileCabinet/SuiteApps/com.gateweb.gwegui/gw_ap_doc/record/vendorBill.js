@@ -51,12 +51,12 @@ define([
             isItemLine: false,
             isExpenseLine: false
         },
-        ItemCode: {
-            internalId: 'item',
-            isHeader: false,
-            isItemLine: true,
-            isExpenseLine: false
-        },
+        // ItemCode: {
+        //     internalId: 'item',
+        //     isHeader: false,
+        //     isItemLine: true,
+        //     isExpenseLine: false
+        // },
         Quantity: {
             internalId: 'quantity',
             isHeader: false,

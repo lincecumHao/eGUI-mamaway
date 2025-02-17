@@ -194,7 +194,7 @@ define([
                         }
                     })
                     const matchedItemObject = transactionObject.BillItemDetail.find(function (lineObject) {
-                        return lineObject.LineID == orderLine && lineObject.ItemCode == itemId
+                        return lineObject.LineID == orderLine
                     })
 
                     if(matchedItemObject) {
