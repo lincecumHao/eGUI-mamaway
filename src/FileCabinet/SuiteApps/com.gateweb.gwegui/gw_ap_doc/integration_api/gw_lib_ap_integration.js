@@ -167,7 +167,10 @@ define([
                             transactionObject[prop], 'YYYY-MM-DD', 'YYYY/MM/DD'
                         ))
                     }
-                    if(transactionObject[prop]) recordObject.setValue({fieldId, value})
+                    if(transactionObject[prop]
+                        && fieldId !== 'entity' || (fieldId === 'entity' && !transactionObject.POID)) {
+                        recordObject.setValue({fieldId, value})
+                    }
                 }
             })
 
@@ -186,29 +189,43 @@ define([
                     recordObject.selectLine({ sublistId: itemSublistId, line: currentLine })
                     const itemId = recordObject.getCurrentSublistValue({sublistId: itemSublistId, fieldId: 'item'})
                     const orderLine = recordObject.getCurrentSublistValue({sublistId: itemSublistId, fieldId: 'orderline'})
+                    const rate = recordObject.getCurrentSublistValue({sublistId: itemSublistId, fieldId: 'rate'})
+                    const amount = recordObject.getCurrentSublistValue({sublistId: itemSublistId, fieldId: 'amount'})
                     log.debug({
                         title: 'createVendorBill - line info',
                         details: {
                             itemId,
-                            orderLine
+                            orderLine,
+                            rate,
+                            amount
                         }
                     })
                     const matchedItemObject = transactionObject.BillItemDetail.find(function (lineObject) {
                         return lineObject.LineID == orderLine
                     })
-
+                    log.debug({
+                        title: 'createVendorBill - matchedItemObject',
+                        details: matchedItemObject
+                    })
                     if(matchedItemObject) {
                         vendorBill.allItemLineFields.forEach(function (prop) {
                             let fieldId = vendorBill.fields[prop].internalId
                             let value = matchedItemObject[prop]
                             log.debug({
-                                title: 'update item line',
+                                title: 'before update item line',
                                 details: {
                                     fieldId,
                                     value
                                 }
                             })
                             if(value) {
+                                log.debug({
+                                    title: 'in update item line',
+                                    details: {
+                                        fieldId,
+                                        value
+                                    }
+                                })
                                 recordObject.setCurrentSublistValue({
                                     sublistId: itemSublistId,
                                     fieldId,
