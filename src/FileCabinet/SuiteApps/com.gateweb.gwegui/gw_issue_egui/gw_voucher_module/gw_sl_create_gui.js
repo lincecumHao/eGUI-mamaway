@@ -1546,6 +1546,10 @@ define(['N/format',
               fieldId: 'custrecord_gw_is_completed_detail',
               value: true
             })
+            _voucherMainRecord.setValue({
+              fieldId: 'custrecord_gw_ns_transaction',
+              value: _gw_ns_document_apply_id_ary
+            })
 
             try {
               _mainRecordId = _voucherMainRecord.save()
