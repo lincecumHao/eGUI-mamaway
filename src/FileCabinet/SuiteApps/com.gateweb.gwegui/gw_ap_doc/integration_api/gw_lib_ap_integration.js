@@ -110,6 +110,9 @@ define([
                             transactionObject[prop], 'YYYY-MM-DD', 'YYYY/MM/DD'
                         ))
                     }
+                    if(prop === 'Account') {
+                        value = getAccountIdByAccountNumber(value)
+                    }
                     recordObject.setValue({fieldId, value})
                 }
             })
@@ -127,6 +130,31 @@ define([
         transactionObject.isValid = resultObject.recordId !== null
         transactionObject.recordId = resultObject.recordId
         transactionObject.errorMessage = resultObject.errorMessage
+    }
+
+    function getAccountIdByAccountNumber(accountNumber) {
+        const type = 'account'
+        let filters = []
+        filters.push(['number', 'is', accountNumber])
+        filters.push('AND')
+        filters.push(['isinactive', 'is', 'F'])
+        let columns = []
+        columns.push('name')
+        columns.push('displayname')
+        columns.push('type')
+        const accountSearchObj = search.create({type, filters, columns})
+        let accountId = null
+        accountSearchObj.run().each(function(result){
+            // .run().each has a limit of 4,000 results
+            log.debug({
+                title: 'getAccountIdByAccountNumber - result',
+                details: JSON.stringify(result)
+            })
+            accountId = result.id
+            return true
+        });
+
+        return accountId || accountNumber
     }
 
     function createVendorBill(transactionObject) {
@@ -245,8 +273,7 @@ define([
                     details: recordObject.getLineCount({sublistId: itemSublistId})
                 })
             }
-            if(!transactionObject.POID && transactionObject.BillExpenseDetail &&
-                transactionObject.BillExpenseDetail.length > 0) {
+            if(transactionObject.BillExpenseDetail && transactionObject.BillExpenseDetail.length > 0) {
                 //TODO - add expense line
                 for (let expenseLine = 0; expenseLine < transactionObject.BillExpenseDetail.length; expenseLine ++) {
                     const expenseSublistId = 'expense'
@@ -258,11 +285,16 @@ define([
                             title: 'adding expense line',
                             details: {fieldId, value}
                         })
-                        recordObject.setCurrentSublistValue({
-                            sublistId: expenseSublistId,
-                            fieldId,
-                            value
-                        })
+                        if(fieldId === 'account' && value) {
+                            value = getAccountIdByAccountNumber(value)
+                        }
+                        if(value) {
+                            recordObject.setCurrentSublistValue({
+                                sublistId: expenseSublistId,
+                                fieldId,
+                                value
+                            })
+                        }
                     })
                     recordObject.commitLine({sublistId: expenseSublistId})
                 }
@@ -325,6 +357,9 @@ define([
                         }
                         if(prop === 'ExpenseCurrency') {
                             value = getCurrencyIdByCode(transactionObject.Expenses[expenseLine][prop])
+                        }
+                        if(prop === 'ExpenseAccount') {
+                            value = getAccountIdByAccountNumber(value)
                         }
                         if(value) {
                             recordObject.setCurrentSublistValue({
