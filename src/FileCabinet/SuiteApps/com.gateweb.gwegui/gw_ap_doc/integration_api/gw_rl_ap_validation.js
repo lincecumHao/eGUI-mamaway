@@ -54,7 +54,7 @@ define([
 
       transaction.GUIs.forEach(function(item) {
         addDisplaySetting(docFields, item['docType'], allDocType)
-
+        updateItemObj(item, docFields)
         recordData = getRecordData(item, docFields)
         changeDocTypeToRecordId(item, recordData)
         checkRepeatGui(requestBody, item, recordData)
@@ -121,6 +121,12 @@ define([
     }
   }
 
+  function updateItemObj(item, docFields) {
+    if (item.consolidationMark === '' && docFields['consolidationMark'].display !== 'disabledFields') {
+      item.consolidationMark = 'S'
+    }
+  }
+
   function getRecordData(inputData, docFields) {
     let recordData = {}
     let reFieldName = { applyPeriod: 'docIssuePeriod', applyPeriodSelect: 'taxFilingPeriod' }
@@ -143,7 +149,7 @@ define([
           recordData['errorMessage'].push(fieldName + '：' + fieldObj.chtName + '為必填欄位')
         } else if (!!fieldObj.maxLength && fieldObj.maxLength < String(value).length) {
           recordData['errorMessage'].push(fieldName + '：' + fieldObj.chtName + '最大長度為：' + fieldObj.maxLength)
-        } else if (!!fieldObj.isNumber && typeof value !== 'number') {
+        } else if (!!fieldObj.isNumber && typeof value !== 'number' && value !== '') {
           recordData['errorMessage'].push(fieldName + '：' + fieldObj.chtName + '需為數字')
         } else if (!!fieldObj.isDate && !isValidDate(value)) {
           recordData['errorMessage'].push(fieldName + '：' + fieldObj.chtName + '日期需為' + (value.length > 5 ? 'YYYYMMDD or YYYY-MM-DD' : 'YYYMM'))
