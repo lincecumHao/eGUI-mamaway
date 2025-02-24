@@ -34,7 +34,7 @@
   <encryptatrest>F</encryptatrest>
   <fieldtype>TEXT</fieldtype>
   <fldsizelabel></fldsizelabel>
-  <globalsearch>F</globalsearch>
+  <globalsearch>T</globalsearch>
   <help></help>
   <isformula>F</isformula>
   <ismandatory>F</ismandatory>
