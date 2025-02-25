@@ -17,7 +17,45 @@ define([
     let exports = {};
 
     function isValidRequest(req){
-        return req && req.length > 0
+        log.audit({title: 'in isValidRequest', details: 'start...'})
+        let isRequestParamsValid = true
+
+        if(req && req.length > 0) {
+            for (let transactionIndex = 0 ; transactionIndex < req.length; transactionIndex++) {
+                let eachObj = req[transactionIndex]
+                log.debug({title: 'isValidRequest - eachObj', details: eachObj})
+                const hasGUI = 'GUIs' in eachObj
+                log.debug({title: 'isValidRequest - hasGUI', details: hasGUI})
+                if(hasGUI && eachObj.GUIs.length > 0) {
+                    for (let index = 0; index < eachObj.GUIs.length; index++) {
+                        log.debug({title: 'isValidRequest - each GUI object', details: eachObj.GUIs[index]})
+                        for(let propIndex = 0; propIndex < gwLibApIntegration.GUI_OBJECT_PROPERTIES.length; propIndex++) {
+                            const prop = gwLibApIntegration.GUI_OBJECT_PROPERTIES[propIndex]
+                            if(!(prop in eachObj.GUIs[index]) || eachObj.GUIs[index][prop] === null) {
+                                log.error({
+                                    title: 'isValidRequest - prop info',
+                                    details: {
+                                        prop: prop,
+                                        value: eachObj.GUIs[index][prop],
+                                        hasProp: prop in eachObj.GUIs[index]
+                                    }
+                                })
+                                isRequestParamsValid = false
+                                break
+                            }
+                        }
+                    }
+                } else {
+                    isRequestParamsValid = false
+                    break
+                }
+            }
+        } else {
+            isRequestParamsValid = false
+        }
+
+        log.audit({title: 'isValidRequest - isRequestParamsValid', details: isRequestParamsValid})
+        return isRequestParamsValid
     }
 
     function post(request) {
@@ -44,6 +82,8 @@ define([
                 })
                 return [errorResponse.getResponse()]
             }
+
+
 
             let validationResponse = null
             let createTransactionResponse = null

@@ -38,6 +38,39 @@ define([
         3: 'VALIDATION_AND_CREATE_TRANSACTION_AND_CREATE_VOUCHER_RECORD'
     }
 
+    const GUI_OBJECT_PROPERTIES = [
+        'docType',
+        'guiDate',
+        'docIssuePeriod',
+        'taxFilingPeriod',
+        'filingSalesTax',
+        'guiNum',
+        'commonNumber',
+        'guiStatus',
+        'buyerTaxId',
+        'buyerName',
+        'sellerTaxId',
+        'sellerName',
+        'taxType',
+        'salesAmt',
+        'zeroTaxSalesAmt',
+        'taxExemptedSalesAmt',
+        'taxAmt',
+        'totalAmt',
+        'deductionCode',
+        'consolidationMark',
+        'consolidationQty',
+        'customClearanceMark',
+        'currency',
+        'zeroTaxMark',
+        'outputDate',
+        'businessUnit',
+        'relatedNumber',
+        'source',
+        'uniqueId',
+        'buyer'
+    ]
+
     function callApValidation (request) {
         log.audit({title: 'callApValidation - request', details: request})
         const scriptId = 'customscript_gw_rl_ap_validation'
@@ -465,6 +498,7 @@ define([
         let consolidateResultArrayObject = []
         resultArrayObject.forEach(function (eachObject) {
             let eachResultObject = {
+                status: '1',
                 isSuccess: eachObject.isValid,
                 transactionId: null,
                 consolidateResult: [],
@@ -542,5 +576,6 @@ define([
     exports.getConsolidatedResultObject = getConsolidatedResultObject
     exports.getSetupOption = getSetupOption
     exports.integrationOptionMapping = INTEGRATION_OPTION
+    exports.GUI_OBJECT_PROPERTIES = GUI_OBJECT_PROPERTIES
     return exports
 });
