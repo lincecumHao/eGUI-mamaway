@@ -8,10 +8,12 @@
  */
 define([
     './gw_lib_ap_integration',
-    '../../ap-integration/infrastructure/gw_vo_response'
+    '../../ap-integration/infrastructure/gw_vo_response',
+    'N/error'
 ], (
     gwLibApIntegration,
     RestletResponse,
+    error
 ) => {
 
     let exports = {};
@@ -61,74 +63,83 @@ define([
     function post(request) {
         log.audit({title: 'post - request', details: request})
 
-        try {
-            //TODO - get integration setup
-            let integrationOption = gwLibApIntegration.getSetupOption()
-            if(!integrationOption) {
-                var errorResponse = new RestletResponse('', '')
-                errorResponse.addError({
-                    errorCode: 'INTEGRATION_SETUP_OPTION_MISSING',
-                    errorMessage: 'The integration setup option is invalid'
-                })
-                return [errorResponse.getResponse()]
-            }
-            //TODO - validate request params
-            const requestObj = typeof request === 'string' ? JSON.parse(request) : request // Array Objects
-            if(!isValidRequest(requestObj)){
-                var errorResponse = new RestletResponse('', '')
-                errorResponse.addError({
-                    errorCode: 'INVALID_REQUEST',
-                    errorMessage: 'The request is invalid'
-                })
-                return [errorResponse.getResponse()]
-            }
-
-
-
-            let validationResponse = null
-            let createTransactionResponse = null
-            let createAccountPayableVoucherResponse = null
-            let returnObject = null
-
-            log.debug({title: 'request[0].action', details: request[0].action})
-            if(request[0].action && request[0].action === 'validation') {
-                integrationOption = 1 // default to validation
-            }
-
-            switch (gwLibApIntegration.integrationOptionMapping[integrationOption]) {
-                case 'VALIDATION':
-                    log.debug({title: 'in VALIDATION', details: 'start...'})
-                    //TODO - validation - call validation Restlet
-                    validationResponse = gwLibApIntegration.callApValidation(request)
-                    log.debug({title: 'post - validateResult', details: validationResponse})
-                    returnObject = gwLibApIntegration.getConsolidatedResultObject(JSON.parse(validationResponse.body), integrationOption)
-                    break;
-                case 'VALIDATION_AND_CREATE_TRANSACTION_AND_CREATE_VOUCHER_RECORD':
-                    log.debug({title: 'in VALIDATION_AND_CREATE_TRANSACTION_AND_CREATE_VOUCHER_RECORD', details: 'start...'})
-                    //TODO - validation & create transaction & create voucher record
-                    validationResponse = gwLibApIntegration.callApValidation(request)
-                    //TODO - call create transaction Restlet
-                    createTransactionResponse = gwLibApIntegration.createTransaction(JSON.parse(validationResponse.body))
-                    //TODO - call create ap doc record Restlet
-                    createAccountPayableVoucherResponse = gwLibApIntegration.createAccountPayableVoucher(JSON.parse(createTransactionResponse.body))
-                    returnObject = gwLibApIntegration.getConsolidatedResultObject(createAccountPayableVoucherResponse, integrationOption)
-                    break;
-                case 'VALIDATION_AND_CREATE_VOUCHER_RECORD':
-                    log.debug({title: 'in VALIDATION_AND_CREATE_VOUCHER_RECORD', details: 'start...'})
-                    //TODO - validation & create voucher record
-                    validationResponse = gwLibApIntegration.callApValidation(request)
-                    //TODO - call create ap doc record Restlet
-                    createAccountPayableVoucherResponse = gwLibApIntegration.createAccountPayableVoucher(JSON.parse(validationResponse.body))
-                    returnObject = gwLibApIntegration.getConsolidatedResultObject(createAccountPayableVoucherResponse, integrationOption)
-                    break;
-            }
-            return JSON.stringify(returnObject)
-        } catch (e) {
-            log.error({
-                title: 'post error',
-                details: e
+        //TODO - get integration setup
+        let integrationOption = gwLibApIntegration.getSetupOption()
+        if (!integrationOption) {
+            const integrationError = error.create({
+                name: 'INVALID_INTEGRATION_OPTION',
+                message: 'Integration option is invalid',
+                notifyOff: false
             })
+            throw {name: integrationError.name, message: integrationError.message}
         }
+        //TODO - validate request params
+        const requestObj = typeof request === 'string' ? JSON.parse(request) : request // Array Objects
+        if (!isValidRequest(requestObj)) {
+            const validateRequestError = error.create({
+                name: 'INVALID_REQUEST',
+                message: 'The request parameters is invalid',
+                notifyOff: false
+            })
+            throw {name: validateRequestError.name, message: validateRequestError.message}
+        }
+
+        let validationResponse = null
+        let createTransactionResponse = null
+        let createAccountPayableVoucherResponse = null
+        let returnObject = null
+
+        log.debug({title: 'request[0].action', details: request[0].action})
+        if (request[0].action && request[0].action === 'validation') {
+            integrationOption = 1 // default to validation
+        }
+
+        switch (gwLibApIntegration.integrationOptionMapping[integrationOption]) {
+            case 'VALIDATION':
+                log.debug({title: 'in VALIDATION', details: 'start...'})
+                //TODO - validation - call validation Restlet
+                validationResponse = gwLibApIntegration.callApValidation(request)
+                log.debug({title: 'post - validateResult', details: validationResponse})
+                returnObject = gwLibApIntegration.getConsolidatedResultObject(JSON.parse(validationResponse.body), integrationOption)
+                break;
+            case 'VALIDATION_AND_CREATE_TRANSACTION_AND_CREATE_VOUCHER_RECORD':
+                log.debug({
+                    title: 'in VALIDATION_AND_CREATE_TRANSACTION_AND_CREATE_VOUCHER_RECORD',
+                    details: 'start...'
+                })
+                //TODO - validation & create transaction & create voucher record
+                validationResponse = gwLibApIntegration.callApValidation(request)
+                //TODO - call create transaction Restlet
+                createTransactionResponse = gwLibApIntegration.createTransaction(JSON.parse(validationResponse.body))
+                //TODO - call create ap doc record Restlet
+                createAccountPayableVoucherResponse = gwLibApIntegration.createAccountPayableVoucher(JSON.parse(createTransactionResponse.body))
+                returnObject = gwLibApIntegration.getConsolidatedResultObject(createAccountPayableVoucherResponse, integrationOption)
+                break;
+            case 'VALIDATION_AND_CREATE_VOUCHER_RECORD':
+                log.debug({title: 'in VALIDATION_AND_CREATE_VOUCHER_RECORD', details: 'start...'})
+                //TODO - validation & create voucher record
+                validationResponse = gwLibApIntegration.callApValidation(request)
+                //TODO - call create ap doc record Restlet
+                createAccountPayableVoucherResponse = gwLibApIntegration.createAccountPayableVoucher(JSON.parse(validationResponse.body))
+                returnObject = gwLibApIntegration.getConsolidatedResultObject(createAccountPayableVoucherResponse, integrationOption)
+                break;
+        }
+
+        const failedRequest = returnObject.find(function (eachObject) {
+            return !eachObject.isSuccess
+        })
+        log.audit({title: 'failedRequest', details: failedRequest})
+        if (failedRequest) {
+            // todo - throw error
+            const consolidateError = error.create({
+                name: 'FAILURE',
+                message: JSON.stringify(failedRequest.consolidateErrorMessage),
+                notifyOff: false
+            })
+            throw {name: consolidateError.name, message: consolidateError.message}
+        }
+
+        return JSON.stringify(returnObject)
     }
 
     exports.post = post
