@@ -235,7 +235,7 @@ define([
     let recordId = 0
 
     if (guiNumberValidator.isGuiTrackValidationRequired(value) && item.guiNum !== '') {
-      mof = apDocTypeService.getMofValue(item.docIssuePeriod, item.docType, item.guiNum.substring(0, 2))
+      mof = apDocTypeService.getMofValue(item.taxFilingPeriod, item.docType, item.guiNum.substring(0, 2))
     } else if (item.commonNumber !== '' && value === '22') {
       mof = '02'
     } else {
