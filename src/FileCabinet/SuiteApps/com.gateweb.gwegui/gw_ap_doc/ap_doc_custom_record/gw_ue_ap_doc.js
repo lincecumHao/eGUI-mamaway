@@ -75,7 +75,7 @@ define([
     // TODO
     log.debug({ title: 'beforeSubmit', details: context.type })
 
-    if(context.type !== context.UserEventType.CREATE) return
+    if(context.type !== context.UserEventType.CREATE || runtime.executionContext === runtime.ContextType.RESTLET) return
 
     let errorMessageAry =[]
 
