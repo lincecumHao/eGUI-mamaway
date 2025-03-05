@@ -20,7 +20,8 @@ define([
         try {
             request.forEach(function (eachTransactionObj) {
                 log.debug({title: 'post - eachTransactionObj', details: eachTransactionObj})
-                if(eachTransactionObj.isValid) {
+                if(eachTransactionObj.isValid ||
+                    (eachTransactionObj.action && eachTransactionObj.action === 'createTransaction')) {
                     // TODO - create ap transaction
                     gwLibApIntegration.createAccountPayableTransaction(eachTransactionObj)
                 }

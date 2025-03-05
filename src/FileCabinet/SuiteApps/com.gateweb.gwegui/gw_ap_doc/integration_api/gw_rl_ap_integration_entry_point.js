@@ -18,7 +18,7 @@ define([
 
     let exports = {};
 
-    function isValidRequest(req){
+    function isValidRequest(req, integrationOption){
         log.audit({title: 'in isValidRequest', details: 'start...'})
         let isRequestParamsValid = true
 
@@ -26,6 +26,10 @@ define([
             for (let transactionIndex = 0 ; transactionIndex < req.length; transactionIndex++) {
                 let eachObj = req[transactionIndex]
                 log.debug({title: 'isValidRequest - eachObj', details: eachObj})
+                if(integrationOption === 4) {
+                    isRequestParamsValid = true
+                    break
+                }
                 const hasGUI = 'GUIs' in eachObj
                 log.debug({title: 'isValidRequest - hasGUI', details: hasGUI})
                 if(hasGUI && eachObj.GUIs.length > 0) {
@@ -73,9 +77,15 @@ define([
             })
             throw {name: integrationError.name, message: integrationError.message}
         }
+        log.debug({title: 'request[0].action', details: request[0].action})
+        if (request[0].action && request[0].action === 'validation') {
+            integrationOption = 1 // default to validation
+        } else if (request[0].action && request[0].action === 'createTransaction') {
+            integrationOption = 4 // default to create transaction
+        }
         //TODO - validate request params
         const requestObj = typeof request === 'string' ? JSON.parse(request) : request // Array Objects
-        if (!isValidRequest(requestObj)) {
+        if (!isValidRequest(requestObj, integrationOption)) {
             const validateRequestError = error.create({
                 name: 'INVALID_REQUEST',
                 message: 'The request parameters is invalid',
@@ -88,11 +98,6 @@ define([
         let createTransactionResponse = null
         let createAccountPayableVoucherResponse = null
         let returnObject = null
-
-        log.debug({title: 'request[0].action', details: request[0].action})
-        if (request[0].action && request[0].action === 'validation') {
-            integrationOption = 1 // default to validation
-        }
 
         switch (gwLibApIntegration.integrationOptionMapping[integrationOption]) {
             case 'VALIDATION':
@@ -123,6 +128,14 @@ define([
                 createAccountPayableVoucherResponse = gwLibApIntegration.createAccountPayableVoucher(JSON.parse(validationResponse.body))
                 returnObject = gwLibApIntegration.getConsolidatedResultObject(createAccountPayableVoucherResponse, integrationOption)
                 break;
+            case 'CREATE_TRANSACTION':
+                log.debug({
+                    title: 'in CREATE_TRANSACTION',
+                    details: 'start...'
+                })
+                createTransactionResponse = gwLibApIntegration.createTransaction(request)
+                returnObject = gwLibApIntegration.getConsolidatedResultObject(JSON.parse(createTransactionResponse.body), integrationOption)
+                break;
         }
 
         const failedRequest = returnObject.find(function (eachObject) {
@@ -130,12 +143,20 @@ define([
         })
         log.audit({title: 'failedRequest', details: failedRequest})
         if (failedRequest) {
-            // todo - throw error
-            const consolidateError = error.create({
-                name: 'FAILURE',
-                message: JSON.stringify(failedRequest.consolidateErrorMessage),
-                notifyOff: false
-            })
+            let consolidateError = null
+            if(integrationOption === 4) {
+                 consolidateError = error.create({
+                    name: 'FAILURE',
+                    message: failedRequest.errorMessage,
+                    notifyOff: false
+                })
+            } else {
+                 consolidateError = error.create({
+                    name: 'FAILURE',
+                    message: JSON.stringify(failedRequest.consolidateErrorMessage),
+                    notifyOff: false
+                })
+            }
             throw {name: consolidateError.name, message: consolidateError.message}
         }
 

@@ -35,7 +35,8 @@ define([
     const INTEGRATION_OPTION = {
         1: 'VALIDATION',
         2: 'VALIDATION_AND_CREATE_VOUCHER_RECORD',
-        3: 'VALIDATION_AND_CREATE_TRANSACTION_AND_CREATE_VOUCHER_RECORD'
+        3: 'VALIDATION_AND_CREATE_TRANSACTION_AND_CREATE_VOUCHER_RECORD',
+        4: 'CREATE_TRANSACTION'
     }
 
     const GUI_OBJECT_PROPERTIES = [
@@ -495,6 +496,7 @@ define([
 
     function getConsolidatedResultObject (resultArrayObject, integrationOption) {
         log.audit({title: 'getConsolidatedResultObject', details: 'start...'})
+        log.audit({title: 'getConsolidatedResultObject - resultArrayObject', details: resultArrayObject})
         let consolidateResultArrayObject = []
         resultArrayObject.forEach(function (eachObject) {
             let eachResultObject = {
@@ -508,41 +510,48 @@ define([
             if(INTEGRATION_OPTION[integrationOption] === 'VALIDATION') {
                 delete eachResultObject['transactionId']
                 delete eachResultObject['consolidateResult']
+            } else if (INTEGRATION_OPTION[integrationOption] === 'CREATE_TRANSACTION') {
+                delete eachResultObject['consolidateResult']
+                delete eachResultObject['consolidateErrorMessage']
             }
             if(eachObject.recordId) {
-                if(!eachObject.isValid) {
+                if(eachObject.isValid || INTEGRATION_OPTION[integrationOption] === 'CREATE_TRANSACTION') {
+                    eachResultObject.transactionId = eachObject.recordId
+                } else {
                     // TODO - remove transaction
                     log.audit({title: 'getConsolidatedResultObject - delete transaction', details: 'proceed delete...'})
                     record.delete({
                         type: RECORD_ID_MAPPING[eachObject.Type],
                         id: eachObject.recordId
                     })
-                } else {
-                    eachResultObject.transactionId = eachObject.recordId
                 }
+            } else {
+                eachResultObject.errorMessage = eachObject.errorMessage
             }
-
-            eachObject.GUIs.forEach(function (eachGUI) {
-                log.audit({title: 'getConsolidatedResultObject - eachObject', details: eachObject})
-                let eachConsolidatedObject = {
-                    guiNumber: eachGUI.guiNum,
-                    commonNumber: eachGUI.commonNumber,
-                    voucherRecordId: null
-                }
-                if(eachObject.isValid && eachGUI.voucherRecordId) {
-                    eachConsolidatedObject.voucherRecordId = eachGUI.voucherRecordId
-                }
-                if(!eachObject.isValid) {
-                    if(eachGUI.errorMessage && eachGUI.errorMessage.length > 0) {
-                        eachConsolidatedObject.errorMessage = eachGUI.errorMessage
-                    } else if (eachObject.errorMessage && eachObject.errorMessage.length > 0){
-                        eachConsolidatedObject.errorMessage = eachObject.errorMessage
+            if(eachObject.GUIs && eachObject.GUIs.length > 0 &&
+                INTEGRATION_OPTION[integrationOption] !== 'CREATE_TRANSACTION') {
+                eachObject.GUIs.forEach(function (eachGUI) {
+                    log.audit({title: 'getConsolidatedResultObject - eachObject', details: eachObject})
+                    let eachConsolidatedObject = {
+                        guiNumber: eachGUI.guiNum,
+                        commonNumber: eachGUI.commonNumber,
+                        voucherRecordId: null
                     }
-                    eachResultObject.consolidateErrorMessage.push(eachConsolidatedObject)
-                } else if (INTEGRATION_OPTION[integrationOption] !== 'VALIDATION'){
-                    eachResultObject.consolidateResult.push(eachConsolidatedObject)
-                }
-            })
+                    if(eachObject.isValid && eachGUI.voucherRecordId) {
+                        eachConsolidatedObject.voucherRecordId = eachGUI.voucherRecordId
+                    }
+                    if(!eachObject.isValid) {
+                        if(eachGUI.errorMessage && eachGUI.errorMessage.length > 0) {
+                            eachConsolidatedObject.errorMessage = eachGUI.errorMessage
+                        } else if (eachObject.errorMessage && eachObject.errorMessage.length > 0){
+                            eachConsolidatedObject.errorMessage = eachObject.errorMessage
+                        }
+                        eachResultObject.consolidateErrorMessage.push(eachConsolidatedObject)
+                    } else if (INTEGRATION_OPTION[integrationOption] !== 'VALIDATION'){
+                        eachResultObject.consolidateResult.push(eachConsolidatedObject)
+                    }
+                })
+            }
 
             log.audit({title: 'getConsolidatedResultObject - eachResultObject', details: eachResultObject})
             log.debug({title: 'before push 3', details: '...'})
