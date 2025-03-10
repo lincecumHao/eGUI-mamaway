@@ -75,18 +75,18 @@ define([
             isHeader: false,
             isLine: true
         },
-        ExpenseExRate: {
-            internalId: 'exchangerate',
-            isHeader: false,
-            isLine: true
-        },
         TaxCode: {
             internalId: 'taxcode',
             isHeader: false,
             isLine: true
         },
         ExpenseAmount: {
-            internalId: 'amount',
+            internalId: 'foreignamount',
+            isHeader: false,
+            isLine: true
+        },
+        ExpenseExRate: {
+            internalId: 'exchangerate',
             isHeader: false,
             isLine: true
         },
