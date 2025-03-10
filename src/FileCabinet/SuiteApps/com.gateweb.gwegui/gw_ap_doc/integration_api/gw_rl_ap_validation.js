@@ -233,9 +233,10 @@ define([
     let value = item.docType
     let mof = ''
     let recordId = 0
+    let guiPeriod = getGuiPeriod(item.guiDate)
 
     if (guiNumberValidator.isGuiTrackValidationRequired(value) && item.guiNum !== '') {
-      mof = apDocTypeService.getMofValue(item.taxFilingPeriod, item.docType, item.guiNum.substring(0, 2))
+      mof = apDocTypeService.getMofValue(guiPeriod, item.docType, item.guiNum.substring(0, 2))
     } else if (item.commonNumber !== '' && value === '22') {
       mof = '02'
     } else {
@@ -254,6 +255,19 @@ define([
     if (!ignoreDocType.includes(item.docType.toString()) && allData.flatMap(obj => obj.GUIs).filter(gui => gui.guiNum === item.guiNum).length > 1) {
       recordData['errorMessage'].push('guiNum：僅有docType為 23, 24, 29 可以重複發票號碼進行折讓')
     }
+  }
+
+  function getGuiPeriod(guiDate) {
+    let year = parseInt(guiDate.substring(0, 4)) - 1911
+    let month = parseInt(guiDate.substring(5, 7))
+
+    if (month % 2 !== 0) {
+      month += 1
+    }
+
+    month = month < 10 ? `0${month}` : month
+
+    return `${year}${month}`;
   }
 
   return { post }
