@@ -1,11 +1,11 @@
-<savedcsvimport scriptid="custimport_gw_ap_doc">
+<savedcsvimport scriptid="custimport_gw_ap_csv_import">
   <charencoding>UTF_8</charencoding>
   <columndelimiter>COMMA</columndelimiter>
   <customrecord>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_ap_doc]</customrecord>
   <datahandling>ADD</datahandling>
   <decimaldelimiter>PERIOD</decimaldelimiter>
   <ignorereadonly>T</ignorereadonly>
-  <importname>GW Ap Doc</importname>
+  <importname>GW_進項憑證匯入Template</importname>
   <logsystemnotescustfields>F</logsystemnotescustfields>
   <multiselectdelimiter>|</multiselectdelimiter>
   <overwritemissingfields>F</overwritemissingfields>
