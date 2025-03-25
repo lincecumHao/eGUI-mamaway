@@ -2737,6 +2737,24 @@ define([
 
   }
 
+  function isMergeCreate(selectedInvoiceIds, selectedCreditMemoId) {
+    log.audit({title: 'in isMergeCreate', details: 'start...'})
+    const invoiceArray = selectedInvoiceIds.split(',')
+    const creditMemoArray = selectedCreditMemoId.split(',')
+    log.audit({title: 'in isMergeCreate - invoiceArray', details: invoiceArray})
+    log.audit({title: 'in isMergeCreate - creditMemoArray', details: creditMemoArray})
+    return invoiceArray.length >= 3 || creditMemoArray.length >= 3
+        || (invoiceArray.length >= 2 && creditMemoArray.length >= 2)
+  }
+
+  function getCurrentDate() {
+    log.audit({title: 'in getCurrentDate', details: 'start...'})
+    const configRecObject = config.load({type: config.Type.COMPANY_PREFERENCES})
+    const dateFormat = configRecObject.getValue({fieldId: 'DATEFORMAT'})
+    log.debug({title: 'getCurrentDate - dateFormat', details: dateFormat})
+    return gwDateUtil.getNsCompatibleDate(null, dateFormat)
+  }
+
   function onRequest(context) {
     //取得開立統編
     var _selected_business_no = context.request.parameters.custpage_businessno
@@ -2821,22 +2839,29 @@ define([
     isEGUIDepartmentEnable = eGUIConfig.isEGUIDepartment
 
     if (_selected_invoice_Id != null) {
-      var _idAry = _selected_invoice_Id.split(',')
-      if (_idAry.length > 1) {
-        const invoiceSearchResultArray = getInvoiceDetailsById(_selected_invoice_Id)
-        const invoiceDetailsArrayObject = composeResultObject(invoiceSearchResultArray)
-        log.debug({title: 'invoiceDetailsArrayObject', details: invoiceDetailsArrayObject})
-        createInvoiceDetails(form, invoiceDetailsArrayObject)
-      }
+        var _idAry = _selected_invoice_Id.split(',')
+        if (_idAry.length > 1) {
+            const invoiceSearchResultArray = getInvoiceDetailsById(_selected_invoice_Id)
+            const invoiceDetailsArrayObject = composeResultObject(invoiceSearchResultArray)
+            log.debug({title: 'invoiceDetailsArrayObject', details: invoiceDetailsArrayObject})
+            createInvoiceDetails(form, invoiceDetailsArrayObject)
+        }
     }
     if (_selected_creditmemo_Id != null) {
-      var _idAry = _selected_creditmemo_Id.split(',')
-      if (_idAry.length > 1) {
-        const creditMemoSearchResultArray = getCreditMemoDetailsById(_selected_creditmemo_Id)
-        const creditMemoDetailsArrayObject = composeResultObject(creditMemoSearchResultArray)
-        log.debug({title: 'creditMemoDetailsArrayObject', details: creditMemoDetailsArrayObject})
-        createCreditMemoDetails(form, creditMemoDetailsArrayObject)
-      }
+        var _idAry = _selected_creditmemo_Id.split(',')
+        if (_idAry.length > 1) {
+            const creditMemoSearchResultArray = getCreditMemoDetailsById(_selected_creditmemo_Id)
+            const creditMemoDetailsArrayObject = composeResultObject(creditMemoSearchResultArray)
+            log.debug({title: 'creditMemoDetailsArrayObject', details: creditMemoDetailsArrayObject})
+            createCreditMemoDetails(form, creditMemoDetailsArrayObject)
+        }
+    }
+    if(isMergeCreate(_selected_invoice_Id, _selected_creditmemo_Id)) {
+      log.audit({title: 'isMergeCreate is true', details: 'go...'})
+      const voucherDataField = form.getField({
+        id: 'custpage_select_voucher_date'
+      })
+      voucherDataField.defaultValue = getCurrentDate()
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////
