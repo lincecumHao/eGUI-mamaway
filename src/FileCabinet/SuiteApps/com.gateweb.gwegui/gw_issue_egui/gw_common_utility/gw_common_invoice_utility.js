@@ -1212,7 +1212,7 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
   }
 
   //透過user_id取得資料營業人清單
-  function getBusinessEntityByUserId(currentUserObject) {
+  function getBusinessEntityByUserId(currentUserObject, isApprovalVoidPage) {
     var companyArray = []
 
     var userRole = currentUserObject.role
@@ -1222,7 +1222,11 @@ define(['N/format', 'N/record', 'N/search'], function (format, record, search) {
     searchColumns.push('custrecord_gw_be_gui_title')
     searchColumns.push('custrecord_gw_be_ns_subsidiary')
     var searchFilters = []
-    searchFilters.push(['custrecord_gw_business_entity_role_list', 'anyof', userRole])
+    if(isApprovalVoidPage) {
+      searchFilters.push(['custrecord_gw_be_approver_role', 'anyof', userRole])
+    } else {
+      searchFilters.push(['custrecord_gw_business_entity_role_list', 'anyof', userRole])
+    }
     var getBusinessEntitySearchObject = search.create({
       type: recordType,
       columns: searchColumns,
