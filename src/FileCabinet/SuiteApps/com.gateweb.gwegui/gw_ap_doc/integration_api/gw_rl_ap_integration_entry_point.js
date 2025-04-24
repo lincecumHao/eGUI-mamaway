@@ -82,6 +82,8 @@ define([
             integrationOption = 1 // default to validation
         } else if (request[0].action && request[0].action === 'createTransaction') {
             integrationOption = 4 // default to create transaction
+        } else if (request[0].action === 'validation&CreateVoucher') {
+            integrationOption = 2 // default to validation & create voucher record
         }
         //TODO - validate request params
         const requestObj = typeof request === 'string' ? JSON.parse(request) : request // Array Objects

@@ -453,7 +453,7 @@ define([
             if(eachRequest.isValid) {
                 eachRequest.GUIs.forEach(function (eachGUI) {
                     delete eachGUI['docType']
-                    eachGUI['transaction'] = eachRequest.recordId
+                    if(eachRequest.recordId) eachGUI['transaction'] = eachRequest.recordId
                     log.audit({
                         title: 'createAccountPayableVoucher - eachGUI',
                         details: eachGUI
