@@ -23,11 +23,11 @@ define([
 
   function onButtonClickForEGUI() {
     var _internalId = _current_record.id
+    const isSubsidiariesEnabled = runtime.isFeatureInEffect({ feature: 'SUBSIDIARIES'})
+
     if (_internalId != 0) {
       try {
-        var _subsidiary = _current_record.getValue({
-          fieldId: 'subsidiary'
-        })
+        var _subsidiary = isSubsidiariesEnabled? _current_record.getValue({ fieldId: 'subsidiary' }): 1
         var _selected_business_no = getBusinessNoBySubsidiary(_subsidiary)
         var _invoice_hiddent_listid = '-1,' + _internalId
         var _creditmemo_hiddent_listid = ''

@@ -9,6 +9,7 @@ define([
   'N/record',
   'N/search',
   'N/format',
+  'N/runtime',
   '../gw_common_utility/gw_common_invoice_utility',
   '../gw_common_utility/gw_common_date_utility',
   '../gw_common_utility/gw_common_string_utility',
@@ -25,6 +26,7 @@ define([
   record,
   search,
   format,
+  runtime,
   invoiceutility,
   dateutility,
   stringutility,
@@ -193,6 +195,7 @@ define([
   function createFormHeader(apply_business_no, form, context) {
     /////////////////////////////////////////////////////////////
     //load company information
+    log.debug('test_apply_business_no=' + apply_business_no)
     var _seller_obj = getSellerInfo(apply_business_no)
     var _taxid = _seller_obj.tax_id_number
     var _companyname = _seller_obj.be_gui_title
@@ -825,6 +828,9 @@ define([
     gwTransactionFields.allSearchColumnFields.forEach(function (searchFieldId) {
       searchColumns.push(searchFieldId)
     })
+
+    if (!runtime.isFeatureInEffect({ feature: 'SUBSIDIARIES'})) searchColumns = searchColumns.filter(field => field !== 'subsidiary')
+
     log.debug({title: 'getSearchColumns - searchColumns', details: searchColumns})
     return searchColumns;
   }
@@ -842,6 +848,7 @@ define([
 
   function getInvoiceDetailsById(selectedInvoiceIds) {
     log.debug({title: 'getInvoiceDetailsById - start ...', details: ''});
+
     var searchFilters = getSearchInvoiceFilters(selectedInvoiceIds)
     var searchColumns = getSearchColumns()
     var searchSetting = getSearchSetting()
@@ -849,7 +856,7 @@ define([
       type: gwTransactionFields.recordId,
       filters: searchFilters,
       columns: searchColumns,
-      settings: searchSetting
+      settings: runtime.isFeatureInEffect({ feature: 'SUBSIDIARIES'}) ? searchSetting : null
     });
     var searchResultCount = invoiceSearchObj.runPaged().count;
     log.debug({title: 'getInvoiceDetailsById - invoiceSearchObj result count', details: searchResultCount});
@@ -914,7 +921,7 @@ define([
       type: gwTransactionFields.recordId,
       filters: searchFilters,
       columns: searchColumns,
-      settings: searchSetting
+      settings: runtime.isFeatureInEffect({ feature: 'SUBSIDIARIES'}) ? searchSetting : null
     });
     var searchResultCount = creditMemoSearchObj.runPaged().count;
     log.debug({title: 'getCreditMemoDetailsById - creditMemoSearchObj result count', details: searchResultCount});
