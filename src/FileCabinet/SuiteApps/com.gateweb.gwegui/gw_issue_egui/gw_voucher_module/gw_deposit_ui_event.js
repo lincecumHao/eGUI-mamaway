@@ -1505,6 +1505,10 @@ define([
           fieldId: 'custrecord_gw_voucher_main_apply_user_id',
           value: user_id,
         })
+        _voucherMainRecord.setValue({
+          fieldId: 'custrecord_gw_ns_transaction',
+          value: [documentAry[0].customerdeposit_id],
+        })
         try {
           _mainRecordId = _voucherMainRecord.save() 
         } catch (e) {
