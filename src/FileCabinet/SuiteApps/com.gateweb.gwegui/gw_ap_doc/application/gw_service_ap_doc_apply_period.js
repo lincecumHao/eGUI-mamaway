@@ -66,12 +66,17 @@ define([
     return applyYear.toString() + ('0' + applyMonth.toString()).slice(-2)
   }
 
-  function convertGuiPeriod(dateTimeValue) {
+  function convertGuiPeriod(dateTimeValue, singleMonthBln) {
     var currentDate = dateTimeValue ? moment(dateTimeValue) : moment()
     var currentYear = currentDate.year()
     var currentMonth = currentDate.month() + 1
     var applyYear = currentYear - 1911
     var applyMonth = currentMonth % 2 === 0 ? currentMonth : currentMonth + 1
+
+    if (singleMonthBln){
+      applyMonth = currentMonth
+    }
+
     return applyYear.toString() + ('0' + applyMonth.toString()).slice(-2)
   }
 

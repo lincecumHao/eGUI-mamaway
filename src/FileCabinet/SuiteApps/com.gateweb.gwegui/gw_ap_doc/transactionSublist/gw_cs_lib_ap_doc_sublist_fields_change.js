@@ -298,9 +298,13 @@ define([
   function setDocPeriodCore() {
     var docIssueDate = getSublistValue(apDocFields.fields.guiDate.id)
     console.log('setDocPeriodCore docIssueDate', docIssueDate)
-    var fieldValue = applyPeriodService.convertGuiPeriod(docIssueDate)
+    var fieldValue = applyPeriodService.convertGuiPeriod(docIssueDate, true)
     console.log('setDocPeriodCore fieldValue', fieldValue)
     setSublistValue(apDocFields.fields.applyPeriod.id, fieldValue)
+    var applyPeriod = applyPeriodService.convertGuiPeriod(docIssueDate)
+    var applyPeriodRecord = applyPeriodService.getRecordByValue(applyPeriod)
+    console.log('setDocPeriodCore applyPeriodSelect fieldValue', applyPeriodRecord.id)
+    setSublistValue(apDocFields.fields.applyPeriodSelect.id, applyPeriodRecord.id)
   }
 
   function getFormatCodeById(selectedDocTypeId) {
