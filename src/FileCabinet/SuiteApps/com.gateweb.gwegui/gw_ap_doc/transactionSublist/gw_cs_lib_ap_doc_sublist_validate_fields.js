@@ -750,6 +750,16 @@ define([
       resultObj.isValid = false
       resultObj.error.push(GwError.TaxAmtOver5Error)
     }
+
+    var consolidationQty = getSublistValue(apDocFields.fields.consolidationQty.id)
+    
+    if (docType === '26' || docType === '27' ) { 
+      if (!taxAmtValidator.isTaxTotalValid(value, consolidationQty)) {
+        resultObj.isValid = false
+        resultObj.error.push(GwError.TaxAmtOver500Error)
+      }
+    }
+
     return resultObj
   }
 

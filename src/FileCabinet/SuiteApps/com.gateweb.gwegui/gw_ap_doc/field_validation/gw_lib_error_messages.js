@@ -160,8 +160,8 @@ define([], function () {
   }
   exports.TaxAmtOver500Error = {
     code: 'TAX_AMOUNT_EXCEED_FIVE_HUNDRED',
-    message: 'Tax amount is over 500 dollar',
-    chtMessage: '若憑證代號為26或27時則稅金不可超過500元',
+    message: 'Tax amount is over 500 dollar ＊ consolidationQty',
+    chtMessage: '若憑證代號為26或27時則稅金不可超過500元 * 彙總數量',
   }
 
   // Tax ID
