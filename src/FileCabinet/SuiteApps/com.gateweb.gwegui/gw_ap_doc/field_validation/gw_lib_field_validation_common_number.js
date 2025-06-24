@@ -12,7 +12,7 @@ define([], function () {
 
    */
   var exports = {}
-  var eguiFormat = /^([A-Z]{0,2})([0-9]{8})$/
+  var eguiFormat = /^([A-Z]{2})([0-9]{8})$/
   var commonFormat = /^([B]{2})([A-Z,0-9]{8})$/
 
   function isFormatSimilarToGuiNumber(value) {

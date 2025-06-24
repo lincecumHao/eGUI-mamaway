@@ -237,7 +237,7 @@ define([
 
     if (guiNumberValidator.isGuiTrackValidationRequired(value) && item.guiNum !== '') {
       mof = apDocTypeService.getMofValue(guiPeriod, item.docType, item.guiNum.substring(0, 2))
-    } else if (item.commonNumber !== '' && value === '22') {
+    } else if (item.commonNumber !== '' && value === 22) {
       mof = '02'
     } else {
       mof = '00'
