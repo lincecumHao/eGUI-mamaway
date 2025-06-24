@@ -39,7 +39,7 @@ define([], function () {
   exports.GuiNumberCommonNumberConflictError = {
     errorCode: 'IE0201',
     errorMessage: 'GUI Number and Common number should choose 1',
-    errorChtMessage: '發票號碼與共通號碼請擇一輸入',
+    errorChtMessage: '發票號碼與其他憑證號碼請擇一輸入',
   }
   exports.GuiNumberMustNotHaveValueError = {
     errorCode: 'IE0102',
@@ -67,31 +67,31 @@ define([], function () {
   exports.CommonNumberSimilarToGuiNumber = {
     errorCode: 'COMMON_NUMBER_SIMILAR_GUI_NUMBER',
     errorMessage: 'Common Number can not be similar to Gui Number',
-    errorChtMessage: '共通號碼不可與發票號碼格式相似 (2為英文字母與8位數字)',
+    errorChtMessage: '其他憑證號碼不可與發票號碼格式相似 (2位英文字母與8位數字)',
   }
 
   exports.CommonNumberFormatError = {
     errorCode: 'IE0206',
     errorMessage: 'Common Number format error',
-    errorChtMessage: '共通號碼格式錯誤 (BB + 8位數字或英文)',
+    errorChtMessage: '其他憑證號碼格式錯誤 (10位數字或英文)',
   }
 
   exports.CommonNumberRequired = {
     errorCode: 'COMMON_NUMBER_REQUIRED',
     errorMessage: 'Common Number Required',
-    errorChtMessage: '共通號碼必填',
+    errorChtMessage: '其他憑證號碼必填',
   }
 
   exports.CommonNumberMustNotHave = {
     errorCode: 'IE0205',
     errorMessage: 'Common Number Must not have',
-    errorChtMessage: '共通號碼不可填',
+    errorChtMessage: '其他憑證號碼不可填',
   }
 
   exports.CommonNumberCustomLenthError = {
     errorCode: 'IE0206',
     errorMessage: 'Common Number Custom Length is incorrect',
-    errorChtMessage: '長度錯誤, 共通號碼應14碼進口海關代徵號, 碼格式為 3 碼大寫英文 + 11 碼數字',
+    errorChtMessage: '長度錯誤, 其他憑證號碼應14碼進口海關代徵號, 碼格式為 3 碼大寫英文 + 11 碼數字',
   }
   //endregion
 

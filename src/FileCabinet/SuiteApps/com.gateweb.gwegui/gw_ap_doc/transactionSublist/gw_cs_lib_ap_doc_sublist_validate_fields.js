@@ -363,7 +363,7 @@ define([
     //console.log('validatCommonNumberValue value', value)
     if (!commonNumberValidator.isLengthValid(docType, value)) {
       resultObj.isValid = false
-      resultObj.error.push(GwError.GuiFormatError)
+      resultObj.error.push(GwError.CommonNumberFormatError)
     }
     if (docType === 25 && !commonNumberValidator.isFormatValid(value)) {
       resultObj.isValid = false

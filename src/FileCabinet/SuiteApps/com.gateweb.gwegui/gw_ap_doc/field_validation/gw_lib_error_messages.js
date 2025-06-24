@@ -61,13 +61,13 @@ define([], function () {
   exports.CommonNumberSimilarToGuiNumber = {
     code: 'COMMON_NUMBER_SIMILAR_GUI_NUMBER',
     message: 'Common Number can not be similar to Gui Number',
-    chtMessage: '其他憑證號碼不可與發票號碼格式相似 (2為英文字母與8位數字)',
+    chtMessage: '其他憑證號碼不可與發票號碼格式相似 (2位英文字母與8位數字)',
   }
 
   exports.CommonNumberFormatError = {
     code: 'COMMON_NUMBER_FORMAT_ERROR',
     message: 'Common Number format error',
-    chtMessage: '其他憑證號碼格式錯誤 (BB + 8位數字或英文)',
+    chtMessage: '其他憑證號碼格式錯誤 (10位數字或英文)',
   }
 
   exports.CommonNumberRequired = {
