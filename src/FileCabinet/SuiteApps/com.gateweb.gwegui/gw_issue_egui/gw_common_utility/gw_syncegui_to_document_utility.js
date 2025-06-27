@@ -43,7 +43,35 @@ define(['N/record',
         log.error(e.name, e.message)
     } 
   }
-  
+
+  function isDepartmentValid(departmentId) {
+	  const type = 'department'
+	  let filters = []
+	  filters.push(['isinactive', 'is', 'F'])
+	  filters.push('AND')
+	  filters.push(['internalid', 'anyof', departmentId])
+	  let columns = []
+	  columns.push('name')
+	  const isDepartmentValidSearchObj = search.create({type, filters, columns})
+	  const searchResultCount = isDepartmentValidSearchObj.runPaged().count;
+
+	  return searchResultCount > 0
+  }
+
+  function isClassValid(classId) {
+	  const type = 'classification'
+	  let filters = []
+	  filters.push(['isinactive', 'is', 'F'])
+	  filters.push('AND')
+	  filters.push(['internalid', 'anyof', classId])
+	  let columns = []
+	  columns.push('name')
+	  const isClassValidSearchObj = search.create({type, filters, columns});
+	  const searchResultCount = isClassValidSearchObj.runPaged().count;
+
+	  return searchResultCount > 0
+  }
+
   function syncToNetsuiteDocument(voucher_main_record, document_type, document_internal_id) { 
 	log.audit({
 		title: 'syncToNetsuiteDocument - params',
@@ -120,9 +148,11 @@ define(['N/record',
 		    //零稅銷售額 
 		    values['custbody_gw_gui_sales_amt_tax_zero'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_zero_sales_amount'}).toString()
 		    //發票部門
-		    values['custbody_gw_gui_department'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_dept_code'}) 
+			const departmentId = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_dept_code'})
+		    values['custbody_gw_gui_department'] = (departmentId && isDepartmentValid(departmentId)) ? departmentId : ''
 		    //發票分類
-		    values['custbody_gw_gui_class'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_classification'}) 
+			const classId = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_classification'})
+		    values['custbody_gw_gui_class'] = (classId && isClassValid(classId)) ? classId : ''
 		    //營業稅申報期別  
 		    values['custbody_gw_gui_apply_period'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_yearmonth'})  
 		    
