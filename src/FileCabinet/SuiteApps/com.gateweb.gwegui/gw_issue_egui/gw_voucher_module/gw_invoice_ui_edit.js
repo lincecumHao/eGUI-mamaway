@@ -941,11 +941,11 @@ define([
   function composeResultObject(transactionSearchResultArray) {
     let resultArray = []
     transactionSearchResultArray.forEach(function (transactionSearchResultObject) {
-      log.audit({title: 'composeResultObject - transactionSearchResultObject', details: transactionSearchResultObject})
+      // log.audit({title: 'composeResultObject - transactionSearchResultObject', details: transactionSearchResultObject})
       let optionObject = {};
       gwTransactionFields.allFieldIds.forEach(function (searchFieldId) {
         const searchColumnObject = gwTransactionFields.fields[searchFieldId]
-        log.audit({title: 'composeResultObject - searchColumnObject', details: searchColumnObject})
+        // log.audit({title: 'composeResultObject - searchColumnObject', details: searchColumnObject})
         let attribute = searchColumnObject.name;
         if (searchColumnObject.join) attribute = `${searchColumnObject.join}.${attribute}`
         optionObject[searchColumnObject.outputField] =
@@ -954,7 +954,7 @@ define([
       })
       optionObject.id = transactionSearchResultObject.id
       optionObject.recordType = transactionSearchResultObject.recordType
-      log.audit({title: 'composeResultObject - optionObject', details: JSON.stringify(optionObject)})
+      // log.audit({title: 'composeResultObject - optionObject', details: JSON.stringify(optionObject)})
       resultArray.push(optionObject)
     })
     log.audit({title: 'composeResultObject - resultArray', details: JSON.stringify(resultArray)})
@@ -1281,6 +1281,9 @@ define([
         _sales_order_number = result.createdfrom[0].text //sales order  #42
       }
 
+      if (Number(result.amount) !== Number(result.grossamount)) {
+        result.amount = result.grossamount;
+      }
       var _amount = stringutility.convertToFloat(result.amount) //31428.57(未稅)
       //20210707 walter modify
       if (stringutility.convertToFloat(result.quantity) < 0)
@@ -1300,11 +1303,15 @@ define([
       var _ns_item_tax_amount = stringutility.convertToFloat(
         result.taxamount
       ) //稅額總計 -5.00
+
       var _ns_item_total_amount =
           stringutility.convertToFloat(result.amount) + stringutility.convertToFloat(result.taxamount)
       if(result.item.length > 0 && stringutility.convertToFloat(result.quantity) < 0) {
         _ns_item_total_amount = Math.abs(stringutility.convertToFloat(result.amount)) + Math.abs(_ns_item_tax_amount)
       }
+      log.audit({title: '_ns_item_total_amount in loop', details: {
+          _ns_item_total_amount, amount: result.amount, taxamount: result.taxamount,  grossAmount: result.grossamount
+        }})
 
       var _linesequencenumber = result.linesequencenumber //1
       var _line = result.line //1
@@ -1386,9 +1393,9 @@ define([
       if (_itemtype === 'Discount') {
         //20210908 walter modify => 折扣項目作進Item, 不另外處理
         //折扣項目
-        //_sumDiscountAmount += stringutility.convertToFloat(_amount)
+        // _sumDiscountAmount += stringutility.convertToFloat(_amount)
         //Discount 要再紀錄近來,不然會少
-        //_sumTaxAmount += stringutility.convertToFloat(_ns_item_tax_amount)
+        // _sumTaxAmount += stringutility.convertToFloat(_ns_item_tax_amount)
       }
       //主檔才做
       if (_recordType == 'invoice' && _mainline == '*') {
@@ -1528,6 +1535,7 @@ define([
         
          //NE241 含稅金額
         _sum_item_total_amount += stringutility.convertToFloat(_ns_item_total_amount)
+        log.audit({title: '_sum_item_total_amount in loop', details: _sum_item_total_amount})
 
         sublist.setSublistValue({
           id: 'custpage_invoice_total_tax_amount',

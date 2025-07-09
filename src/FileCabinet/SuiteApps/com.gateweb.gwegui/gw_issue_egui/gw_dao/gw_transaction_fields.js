@@ -133,6 +133,13 @@ define(['../../library/ramda.min'], function (ramda) {
             name: 'amount',
             join: '',
         },
+        grossamount: {
+            id: 'grossamount',
+            sourceField: 'grossamount',
+            outputField: 'grossamount',
+            name: 'grossamount',
+            join: '',
+        },
         total: {
             id: 'total',
             sourceField: 'total',
