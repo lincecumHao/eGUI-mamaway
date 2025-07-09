@@ -208,23 +208,24 @@ define([
         }
         try {
             let recordObject = null
+            let type = transactionObject.Type;
+            if (transactionObject.transactions) {
+                transactionObject = transactionObject.transactions;
+            }
+
             if(transactionObject.POID) {
                 recordObject = record.transform({
                     fromType: record.Type.PURCHASE_ORDER,
                     fromId: transactionObject.POID,
-                    toType: RECORD_ID_MAPPING[transactionObject.Type],
+                    toType: RECORD_ID_MAPPING[type],
                     isDynamic: true
                 })
             } else {
                 recordObject = record.create({
-                    type: RECORD_ID_MAPPING[transactionObject.Type],
+                    type: RECORD_ID_MAPPING[type],
                     isDynamic: true
                 })
             }
-
-          if (transactionObject.transactions) {
-            transactionObject = transactionObject.transactions;
-          }
 
             vendorBill.allHeaderFields.forEach(function (prop) {
                 let fieldId = vendorBill.fields[prop].internalId
