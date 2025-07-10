@@ -26,8 +26,7 @@ define([], () => {
    * @param {Form} context.form - The current UI form
    */
   function beforeLoad(context) {
-    // TODO
-    if (context.type === context.UserEventType.VIEW) addApImportBtn(context)
+    // if (context.type === context.UserEventType.VIEW) addApImportBtn(context)
   }
 
   /**
