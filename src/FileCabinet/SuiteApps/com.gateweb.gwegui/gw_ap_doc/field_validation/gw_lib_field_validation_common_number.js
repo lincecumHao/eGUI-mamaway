@@ -21,27 +21,27 @@ define([], function () {
   }
 
   function isCommonNumberOptional(docType) {
-    var docTypeInt = docType ? parseInt(docType) : 0
+    // var docTypeInt = docType ? parseInt(docType) : 0
     var commonOptionalDocType = [22, 24, 25, 27]
-    return commonOptionalDocType.indexOf(docTypeInt) > -1
+    return commonOptionalDocType.indexOf(docType) > -1
   }
 
   function isCommonNumberRequired(docType) {
-    var docTypeInt = docType ? parseInt(docType) : 0
+    // var docTypeInt = docType ? parseInt(docType) : 0
     var commonRequiredDocType = [28, 29]
-    return commonRequiredDocType.indexOf(docTypeInt) > -1
+    return commonRequiredDocType.indexOf(docType) > -1
   }
 
   function isCommonNumberMustNotHave(docType) {
-    var docTypeInt = docType ? parseInt(docType) : 0
+    // var docTypeInt = docType ? parseInt(docType) : 0
     var commonMustNotHaveDocType = [21, 26, 23]
-    return commonMustNotHaveDocType.indexOf(docTypeInt) > -1
+    return commonMustNotHaveDocType.indexOf(docType) > -1
   }
 
   function isLengthValid(docType, value) {
-    var docTypeInt = docType ? parseInt(docType) : 0
+    // var docTypeInt = docType ? parseInt(docType) : 0
     if (isCommonNumberOptional(docType)) {
-      if (docTypeInt === 25) {
+      if (docType === 25) {
         return value.toString().length === 10
       } else {
         return value.toString().length >= 1 && value.toString().length <= 10
@@ -52,7 +52,7 @@ define([], function () {
     }
   }
 
-  function isExportNumberLenghValid(value) {
+  function isExportNumberLengthValid(value) {
     return value.toString().length === 14
   }
 
@@ -65,7 +65,7 @@ define([], function () {
   exports.isCommonNumberRequired = isCommonNumberRequired
   exports.isCommonNumberMustNotHave = isCommonNumberMustNotHave
   exports.isLengthValid = isLengthValid
-  exports.isExportNumberLenghValid = isExportNumberLenghValid
+  exports.isExportNumberLengthValid = isExportNumberLengthValid
   exports.isFormatValid = isFormatValid
   return exports
 })
