@@ -26,6 +26,10 @@ define([], function () {
     return commonOptionalDocType.indexOf(docType) > -1
   }
 
+  function isCommonNumberDuplicate(docType) {
+    return docType === 25;
+  }
+
   function isCommonNumberRequired(docType) {
     // var docTypeInt = docType ? parseInt(docType) : 0
     var commonRequiredDocType = [28, 29]
@@ -62,6 +66,7 @@ define([], function () {
 
   exports.isFormatSimilarToGuiNumber = isFormatSimilarToGuiNumber
   exports.isCommonNumberOptional = isCommonNumberOptional
+  exports.isCommonNumberDuplicate = isCommonNumberDuplicate
   exports.isCommonNumberRequired = isCommonNumberRequired
   exports.isCommonNumberMustNotHave = isCommonNumberMustNotHave
   exports.isLengthValid = isLengthValid

@@ -82,6 +82,18 @@ define([], function () {
     chtMessage: '其他憑證號碼不可填',
   }
 
+  exports.CommonNumberMustNotDuplicate = function(ids) {
+    var chtMessage = '其他憑證號碼在相同年月中僅能出現一次';
+    if(ids && ids.length > 0) {
+      chtMessage += '<br/> 已出現於: <br/>' + ids.join('<br/>');
+    }
+    return {
+      code: 'COMMON_NUMBER_MUST_NOT_DUPLICATE',
+      message: 'Common Number Must not duplicate',
+      chtMessage: chtMessage,
+    }
+  }
+
   exports.CommonNumberCustomLenthError = {
     code: 'COMMON_NUMBER_CUSTOM_LENGTH_ERROR',
     message: 'Common Number Custom Length is incorrect',
