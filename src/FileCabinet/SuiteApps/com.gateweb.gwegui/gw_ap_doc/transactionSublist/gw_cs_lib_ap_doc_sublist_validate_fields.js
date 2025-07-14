@@ -264,6 +264,7 @@ define([
     //console.log('validateCommonNumber guiNumber', guiNumber)
     var commonNumber = fieldValue
     var docType = getDocType(getNumberSublistFieldValue(apDocFields.fields.docType.id))
+    docType = docType ? Number(docType) : 0;
 
     //console.log('validateCommonNumber, docType', docType)
 
@@ -312,7 +313,7 @@ define([
       resultObj.error.push(GwError.CommonNumberRequired)
       return resultObj
     }
-    if (!commonNumberValidator.isExportNumberLenghValid(value)) {
+    if (!commonNumberValidator.isExportNumberLengthValid(value)) {
       resultObj.isValid = false
       resultObj.error.push(GwError.CommonNumberCustomLenthError)
     }
