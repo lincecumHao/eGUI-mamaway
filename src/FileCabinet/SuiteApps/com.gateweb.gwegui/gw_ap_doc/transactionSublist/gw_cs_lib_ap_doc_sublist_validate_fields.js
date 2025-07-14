@@ -13,7 +13,8 @@ define([
   '../field_validation/gw_lib_field_validation_tax_amt',
   '../field_validation/gw_lib_field_validation_taxable_sales_amt',
   '../field_validation/gw_lib_field_validation_tax_exempt_sales_amt',
-  '../field_validation/gw_lib_field_validation_tax_zero_sales_amt'
+  '../field_validation/gw_lib_field_validation_tax_zero_sales_amt',
+  'N/search'
 ], function (
   stringUtil,
   apDocFields,
@@ -29,7 +30,8 @@ define([
   taxAmtValidator,
   salesAmtValidator,
   taxExemptSalesAmtValidator,
-  taxZeroSalesAmtValidator
+  taxZeroSalesAmtValidator,
+  search
 ) {
   /**
    * Module Description...
@@ -266,7 +268,7 @@ define([
     var docType = getDocType(getNumberSublistFieldValue(apDocFields.fields.docType.id))
     docType = docType ? Number(docType) : 0;
 
-    //console.log('validateCommonNumber, docType', docType)
+    console.log('validateCommonNumber, docType', docType, typeof docType);
 
     var consolidationMark =
       apDocConsolidationMarkService.getConsolidateMarkValueByRecordId(
@@ -286,6 +288,9 @@ define([
       //console.log('validateCommonNumber common number is optional')
       resultObj = validateCommonNumberOptional(docType, commonNumber)
     }
+    if(commonNumberValidator.isCommonNumberDuplicate(docType)) {
+      resultObj = validateCommonNumberDuplicate(context, docType, commonNumber)
+    }
     //console.log('validateCommonNumber, resultObj', resultObj)
     return resultObj
     // return true
@@ -301,6 +306,77 @@ define([
       resultObj.error.push(GwError.CommonNumberMustNotHave)
     }
     return resultObj
+  }
+
+  function validateCommonNumberDuplicate(context, docType, commonNumber) {
+    var resultObj = {
+      isValid: true,
+      error: []
+    }
+
+    function getKey(period, commonNumber) {
+      return period + ':' + commonNumber;
+    }
+
+    // 判斷自己這張 record 有沒有重複
+    var currentRecord = context.currentRecord;
+    var sublistId = 'recmachcustrecord_gw_apt_doc_tran_id';
+    var currentPeriod = currentRecord.getCurrentSublistValue({sublistId, fieldId: 'custrecord_gw_ap_doc_acct_period'})
+    var currentId = currentRecord.getCurrentSublistValue({sublistId, fieldId: 'id'})
+    var currentKey = getKey(currentPeriod, commonNumber);
+    var lineCount = currentRecord.getLineCount({ sublistId });
+    var count = 0;
+    for (let line = 0; line < lineCount; line++) {
+      var id = currentRecord.getSublistValue({
+        sublistId, line, fieldId: 'id'
+      });
+      if(id === currentId) continue;
+
+      var commonNumberInTheList = currentRecord.getSublistValue({
+        sublistId, line, fieldId: 'custrecord_gw_ap_doc_comm_num'
+      });
+      var period = currentRecord.getSublistValue({
+        sublistId, line, fieldId: 'custrecord_gw_ap_doc_acct_period'
+      });
+      var key = getKey(period, commonNumberInTheList);
+      console.log(commonNumberInTheList, commonNumber, period, currentPeriod, key, currentKey);
+      if(key === currentKey) count++;
+    }
+    if(count >= 1 && lineCount ) {
+      resultObj.isValid = false
+      resultObj.error.push(GwError.CommonNumberMustNotDuplicate())
+      return resultObj
+    }
+
+    // 判斷 custom record 有沒有重複
+    var filters = [
+      ["custrecord_gw_ap_doc_acct_period","is", currentPeriod],
+      "AND",
+      ["custrecord_gw_ap_doc_comm_num","is", commonNumber],
+      "AND",
+      ["custrecord_gw_ap_doc_type.custrecord_gw_ap_doc_type_value","equalto","25"],
+    ]
+    if (currentRecord.id) {
+     filters.push('AND');
+     filters.push(["custrecord_gw_apt_doc_tran_id","noneof", currentRecord.id]);
+    }
+    var apDocSearch = search.create({
+      type: "customrecord_gw_ap_doc",
+      filters,
+      columns: ["id", 'custrecord_gw_apt_doc_tran_id']
+    });
+    var tranIds = [];
+    apDocSearch.run().each(function(result){
+      tranIds.push(result.getText({name: 'custrecord_gw_apt_doc_tran_id'}));
+      return true;
+    });
+    console.log(tranIds);
+    if(tranIds.length >= 1) {
+      resultObj.isValid = false
+      resultObj.error.push(GwError.CommonNumberMustNotDuplicate(tranIds))
+      return resultObj
+    }
+    return resultObj;
   }
 
   function validateCommonNumberRequired(value) {
