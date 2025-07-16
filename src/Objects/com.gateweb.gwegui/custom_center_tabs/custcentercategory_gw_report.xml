@@ -9,5 +9,17 @@
       <linktasktype>SRCH_RSLT</linktasktype>
       <shortlist>F</shortlist>
     </link>
+    <link>
+      <linklabel>每期進項申報查詢</linklabel>
+      <linkobject>[scriptid=customsearch_gw_gui_input_report]</linkobject>
+      <linktasktype>SRCH_RSLT</linktasktype>
+      <shortlist>F</shortlist>
+    </link>
+    <link>
+      <linklabel>每期開立發票查詢</linklabel>
+      <linkobject>[scriptid=customsearch_gw_gui_output_report]</linkobject>
+      <linktasktype>SRCH_RSLT</linktasktype>
+      <shortlist>F</shortlist>
+    </link>
   </links>
 </centercategory>
