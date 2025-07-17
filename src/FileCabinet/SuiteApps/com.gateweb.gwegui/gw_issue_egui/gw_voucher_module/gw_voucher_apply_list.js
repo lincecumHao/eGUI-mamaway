@@ -277,7 +277,7 @@ define([
     })
     ///////////////////////////////////////////////////////////////////////////////////
     var currentUserObject = runtime.getCurrentUser()
-    var _company_ary = invoiceutility.getBusinessEntitByUserId(currentUserObject)
+    var _company_ary = invoiceutility.getBusinessEntitByUserId(currentUserObject, true)
     gwLibSuiteLetUtility.addBusinessEntitySelectOption(_company_ary, _selectBusinessNo)
     //////////////////////////////////////////////////////////////////////////////////
     //客戶代碼

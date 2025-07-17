@@ -503,7 +503,47 @@ define([
     }
   }
 
-  function unLockVoucher(voucher_list_id) {
+    function getInitialIssueStatus() {
+        const type = 'customrecord_gw_evidence_status'
+        let filters = []
+        filters.push(['custrecord_gw_evidence_status_value', 'is', 'MI'])
+        let columns = []
+        columns.push('name')
+        var getInitialIssueStatusSearchObject = search.create({type, filters, columns})
+        let initialIssueStatusId = null
+        getInitialIssueStatusSearchObject.run().each(function(result){
+            // .run().each has a limit of 4,000 results
+            initialIssueStatusId = result.id
+            return true;
+        });
+
+        return initialIssueStatusId
+    }
+
+    function getResetValues() {
+        return {
+            custbody_gw_lock_transaction: false,
+            custbody_gw_gui_num_start: '',
+            custbody_gw_gui_num_end: '',
+            custbody_gw_allowance_num_start: '',
+            custbody_gw_allowance_num_end: '',
+            custbody_gw_evidence_issue_status: getInitialIssueStatus(),
+            custbody_gw_gui_apply_period: '',
+            custbody_gw_gui_date: '',
+            custbody_gw_gui_format: '',
+            custbody_gw_gui_sales_amt: '',
+            custbody_gw_gui_sales_amt_tax_exempt: '',
+            custbody_gw_gui_sales_amt_tax_zero: '',
+            custbody_gw_gui_tax_amt: '',
+            custbody_gw_gui_tax_file_date: '',
+            custbody_gw_gui_tax_rate: '',
+            custbody_gw_gui_tax_type: '',
+            custbody_gw_gui_tax_type: '',
+            custbody_gw_gui_total_amt: ''
+        }
+    }
+
+    function unLockVoucher(voucher_list_id) {
     //1.delete details
     //2.delete main
     //3.delete apply
@@ -600,41 +640,30 @@ define([
       //un lock invoice egui start and end number
       if (_invoice_id_ary.length != 0) {
         for (var i = 0; i < _invoice_id_ary.length; i++) {
-          var _internalid = _invoice_id_ary[i]
-          //unlock
-          var values = {}
-          values[_invoce_control_field_id] = false
-          values['custbody_gw_gui_num_start'] = ''
-          values['custbody_gw_gui_num_end'] = ''
-          values['custbody_gw_allowance_num_start'] = ''
-          values['custbody_gw_allowance_num_end'] = ''
-
-          var _id = record.submitFields({
-            type: search.Type.INVOICE,
-            id: parseInt(_internalid),
-            values: values,
-            options: {
-              enableSourcing: false,
-              ignoreMandatoryFields: true,
-            },
-          })
+            record.submitFields({
+                type: search.Type.INVOICE,
+                id: parseInt(_invoice_id_ary[i]),
+                values: getResetValues(),
+                options: {
+                enableSourcing: false,
+                ignoreMandatoryFields: true,
+                },
+            })
         }
       }
 
       if (_creditmemo_id_ary.length != 0) {
         for (var i = 0; i < _creditmemo_id_ary.length; i++) {
-          var _internalid = _creditmemo_id_ary[i]
           //unlock
           var values = {}
           values[_invoce_control_field_id] = false
-          //values['custbody_gw_gui_num_start'] = ''
-          //values['custbody_gw_gui_num_end'] = ''
           values['custbody_gw_allowance_num_start'] = ''
           values['custbody_gw_allowance_num_end'] = ''
+          values['custbody_gw_evidence_issue_status'] = getInitialIssueStatus()
 
           var _id = record.submitFields({
             type: search.Type.CREDIT_MEMO,
-            id: parseInt(_internalid),
+            id: parseInt(_creditmemo_id_ary[i]),
             values: values,
             options: {
               enableSourcing: false,

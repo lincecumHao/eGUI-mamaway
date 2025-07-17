@@ -7,7 +7,7 @@ define(['./gw_lib_error_messages'], function (GwError) {
    * @copyright 2020 Gateweb
    * @author Sean Lin <seanlin816@gmail.com>
    *
-   * @NApiVersion 2.0
+   * @NApiVersion 2.1
    * @NModuleScope Public
 
    */
@@ -58,9 +58,17 @@ define(['./gw_lib_error_messages'], function (GwError) {
     return Math.round((salesAmt * 5) / 100)
   }
 
+  function isTaxTotalValid(value, quantity) {
+    const oneQuantityTax = 500;
+    const maxTax = oneQuantityTax * parseInt(quantity);
+
+    return parseInt(value) <= maxTax
+  }
+
   exports.isLengthValid = isLengthValid
   exports.isValueValid = isValueValid
   exports.isTaxAmtOver500 = isTaxAmtOver500
   exports.isTaxAmtInAccetableRange = isTaxAmtInRange
+  exports.isTaxTotalValid = isTaxTotalValid
   return exports
 })

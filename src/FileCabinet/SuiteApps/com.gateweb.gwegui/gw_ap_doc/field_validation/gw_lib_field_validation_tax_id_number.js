@@ -51,10 +51,15 @@ define([], function () {
     return result
   }
 
+  function isValidUniformNumberFormat(number) {
+    return /^[0-9]{8}$/.test(number) && number !== '00000000'
+  }
+
   exports.isLengthValid = isLengthValid
   exports.isB2CTaxId = isB2CTaxId
   exports.isMustNotHave = isMustNotHave
   exports.isNumberCalculatedValid = isNumberCalculatedValid
   exports.isOptional = isOptional
+  exports.isValidUniformNumberFormat = isValidUniformNumberFormat
   return exports
 })

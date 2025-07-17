@@ -11,7 +11,7 @@
       <feature required="true">CLASSES</feature>
       <feature required="true">DEPARTMENTS</feature>
       <feature required="true">ACCOUNTING</feature>
-      <feature required="true">SUBSIDIARIES</feature>
+      <feature required="false">SUBSIDIARIES</feature>
       <feature required="true">CRM</feature>
       <feature required="false">MULTILANGUAGE</feature>
       <feature required="false">RECEIVABLES</feature>

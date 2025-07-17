@@ -99,7 +99,7 @@ define([
     _filterArray.push(['CUSTBODY_GW_EVIDENCE_ISSUE_STATUS.custrecord_gw_evidence_status_value', search.Operator.IS, _manual_evidence_status_value])
  
      
-    if (subsidiary != '') {
+    if (subsidiary != '' && runtime.isFeatureInEffect({ feature: 'SUBSIDIARIES'})) {
 	    _filterArray.push('and')
 	    _filterArray.push(['subsidiary', search.Operator.ANYOF, subsidiary])
 	    //_filterArray.push(['custbody_gw_tax_id_number', search.Operator.IS, subsidiary])
@@ -322,7 +322,7 @@ define([
     _filterArray.push('and')
     _filterArray.push(['CUSTBODY_GW_EVIDENCE_ISSUE_STATUS.custrecord_gw_evidence_status_value', search.Operator.IS, _manual_evidence_status_value])
   
-    if (subsidiary != '') {
+    if (subsidiary != '' && runtime.isFeatureInEffect({ feature: 'SUBSIDIARIES'})) {
 	    _filterArray.push('and')
 	    _filterArray.push(['subsidiary', search.Operator.ANYOF, subsidiary])
 	    //_filterArray.push(['custbody_gw_tax_id_number', search.Operator.IS, subsidiary])

@@ -126,6 +126,7 @@ define([
     function createVendorPrepayment(transactionObject) {
         log.audit({title: 'createVendorPrepayment', details: 'start...'})
         let resultObject = {
+            isValid: false,
             recordId: null,
             errorMessage: null
         }
@@ -135,13 +136,17 @@ define([
                 isDynamic: true
             })
 
+            if (transactionObject.transactions) {
+              transactionObject = transactionObject.transactions;
+            }
+
             vendorPrepayment.allFields.forEach(function (prop) {
                 let fieldId = vendorPrepayment.fields[prop].internalId
                 let value = transactionObject[prop]
                 if(value) {
                     if(prop === 'Date') {
                         value = new Date(dateUtil.getDateWithFormat(
-                            transactionObject[prop], 'YYYY-MM-DD', 'YYYY/MM/DD'
+                            value, 'YYYY-MM-DD', 'YYYY/MM/DD'
                         ))
                     }
                     if(prop === 'Account') {
@@ -154,16 +159,19 @@ define([
             resultObject.recordId = recordObject.save({
                 ignoreMandatoryFields: true,
                 enableSourcing: true
-            })
+            });
+            resultObject.isValid = true;
         } catch (e) {
             resultObject.errorMessage = e.message
         }
 
         log.audit({title: 'createVendorPrepayment - resultObject', details: resultObject})
 
-        transactionObject.isValid = resultObject.recordId !== null
-        transactionObject.recordId = resultObject.recordId
-        transactionObject.errorMessage = resultObject.errorMessage
+        return resultObject;
+        // transactionObject.isValid = resultObject.recordId !== null
+        // transactionObject.recordId = resultObject.recordId
+        // transactionObject.errorMessage = resultObject.errorMessage
+        // return transactionObject;
     }
 
     function getAccountIdByAccountNumber(accountNumber) {
@@ -194,21 +202,27 @@ define([
     function createVendorBill(transactionObject) {
         log.audit({title: 'createVendorBill', details: 'start...'})
         let resultObject = {
+          isValid: false,
             recordId: null,
             errorMessage: null
         }
         try {
             let recordObject = null
+            let type = transactionObject.Type;
+            if (transactionObject.transactions) {
+                transactionObject = transactionObject.transactions;
+            }
+
             if(transactionObject.POID) {
                 recordObject = record.transform({
                     fromType: record.Type.PURCHASE_ORDER,
                     fromId: transactionObject.POID,
-                    toType: RECORD_ID_MAPPING[transactionObject.Type],
+                    toType: RECORD_ID_MAPPING[type],
                     isDynamic: true
                 })
             } else {
                 recordObject = record.create({
-                    type: RECORD_ID_MAPPING[transactionObject.Type],
+                    type: RECORD_ID_MAPPING[type],
                     isDynamic: true
                 })
             }
@@ -338,19 +352,23 @@ define([
                 ignoreMandatoryFields: true,
                 enableSourcing: true
             })
+          resultObject.isValid = true;
 
         } catch (e) {
             resultObject.errorMessage = e.message
         }
 
-        transactionObject.isValid = resultObject.recordId !== null
-        transactionObject.recordId = resultObject.recordId
-        transactionObject.errorMessage = resultObject.errorMessage
+        return resultObject;
+        // transactionObject.isValid = resultObject.recordId !== null
+        // transactionObject.recordId = resultObject.recordId
+        // transactionObject.errorMessage = resultObject.errorMessage
+        // return transactionObject;
     }
 
     function createExpenseReport(transactionObject) {
         log.audit({title: 'createExpenseReport', details: 'start...'})
         let resultObject = {
+          isValid: false,
             recordId: null,
             errorMessage: null
         }
@@ -359,6 +377,10 @@ define([
                 type: RECORD_ID_MAPPING[transactionObject.Type],
                 isDynamic: true
             })
+
+          if (transactionObject.transactions) {
+            transactionObject = transactionObject.transactions;
+          }
 
             expenseReport.allHeaderFields.forEach(function (prop) {
                 let fieldId = expenseReport.fields[prop].internalId
@@ -411,14 +433,18 @@ define([
                 ignoreMandatoryFields: true,
                 enableSourcing: true
             })
+          resultObject.isValid = true;
 
         } catch (e) {
             resultObject.errorMessage = e.message
         }
 
-        transactionObject.isValid = resultObject.recordId !== null
-        transactionObject.recordId = resultObject.recordId
-        transactionObject.errorMessage = resultObject.errorMessage
+        return resultObject;
+
+        // transactionObject.isValid = resultObject.recordId !== null
+        // transactionObject.recordId = resultObject.recordId
+        // transactionObject.errorMessage = resultObject.errorMessage
+        // return transactionObject;
     }
 
     function createAccountPayableTransaction (transactionObject) {
@@ -427,18 +453,20 @@ define([
             title: 'before - createAccountPayableTransaction - RECORD_ID_MAPPING[transactionObject.Type]',
             details: RECORD_ID_MAPPING[transactionObject.Type]
         })
+        let response = {};
         switch (RECORD_ID_MAPPING[transactionObject.Type]) {
             case record.Type.VENDOR_PREPAYMENT:
-                createVendorPrepayment(transactionObject)
+                response = createVendorPrepayment(transactionObject)
                 break;
             case record.Type.VENDOR_BILL:
-                createVendorBill(transactionObject)
+                response = createVendorBill(transactionObject)
                 break;
             case record.Type.EXPENSE_REPORT:
-                createExpenseReport(transactionObject)
+                response = createExpenseReport(transactionObject)
                 break;
         }
         log.audit({title: 'after - createAccountPayableTransaction - transactionObject', details: transactionObject})
+        return response;
     }
 
     function createAccountPayableVoucher (request) {
@@ -453,7 +481,7 @@ define([
             if(eachRequest.isValid) {
                 eachRequest.GUIs.forEach(function (eachGUI) {
                     delete eachGUI['docType']
-                    eachGUI['transaction'] = eachRequest.recordId
+                    if(eachRequest.recordId) eachGUI['transaction'] = eachRequest.recordId
                     log.audit({
                         title: 'createAccountPayableVoucher - eachGUI',
                         details: eachGUI

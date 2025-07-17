@@ -16,5 +16,9 @@
       <isinactive>F</isinactive>
       <value>Validation &amp; Create Transaction &amp; Create AP Voucher Record</value>
     </customvalue>
+    <customvalue scriptid="val_113378_td2905095_888">
+      <isinactive>F</isinactive>
+      <value>CREATE_TRANSACTION</value>
+    </customvalue>
   </customvalues>
 </customlist>

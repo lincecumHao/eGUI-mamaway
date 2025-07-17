@@ -440,7 +440,7 @@ define([
     //console.log('validatCommonNumberValue value', value)
     if (!commonNumberValidator.isLengthValid(docType, value)) {
       resultObj.isValid = false
-      resultObj.error.push(GwError.GuiFormatError)
+      resultObj.error.push(GwError.CommonNumberFormatError)
     }
     if (docType === 25 && !commonNumberValidator.isFormatValid(value)) {
       resultObj.isValid = false
@@ -827,6 +827,16 @@ define([
       resultObj.isValid = false
       resultObj.error.push(GwError.TaxAmtOver5Error)
     }
+
+    var consolidationQty = getSublistValue(apDocFields.fields.consolidationQty.id)
+    
+    if (docType === '26' || docType === '27' ) { 
+      if (!taxAmtValidator.isTaxTotalValid(value, consolidationQty)) {
+        resultObj.isValid = false
+        resultObj.error.push(GwError.TaxAmtOver500Error)
+      }
+    }
+
     return resultObj
   }
 

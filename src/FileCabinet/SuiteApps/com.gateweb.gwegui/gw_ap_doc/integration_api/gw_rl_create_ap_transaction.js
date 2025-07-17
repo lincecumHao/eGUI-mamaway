@@ -18,13 +18,15 @@ define([
         log.audit({title: 'post - request', details: request})
 
         try {
-            request.forEach(function (eachTransactionObj) {
+            request = request.map(function (eachTransactionObj) {
                 log.debug({title: 'post - eachTransactionObj', details: eachTransactionObj})
                 if(eachTransactionObj.isValid ||
                     (eachTransactionObj.action && eachTransactionObj.action === 'createTransaction')) {
                     // TODO - create ap transaction
-                    gwLibApIntegration.createAccountPayableTransaction(eachTransactionObj)
+                    const response = gwLibApIntegration.createAccountPayableTransaction(eachTransactionObj)
+                    return Object.assign(eachTransactionObj, response);
                 }
+                return eachTransactionObj;
             })
         } catch (e) {
             log.error({
@@ -32,7 +34,6 @@ define([
                 details: e
             })
         }
-
         return request
     }
 

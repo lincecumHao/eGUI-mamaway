@@ -49,5 +49,6 @@
         <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_voucher_apply_ui_event.js</path>
         <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_voucherview_ui_event.js</path>
         <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_cs_invoice_field_validator.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_validation/gw_cs_taxId_validation.js</path>
     </apply>
 </preference>
